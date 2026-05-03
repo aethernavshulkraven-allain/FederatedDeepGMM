@@ -232,7 +232,31 @@ def load_partition_data_mnist_by_device_id(batch_size, device_id, train_path="MN
 def load_partition_data_mnist(
     args, batch_size
 ):
-    scenario = AbstractScenario(filename="data/mnist_x/" + args.scenario_name + ".npz") 
+    # scenario = AbstractScenario(filename="data/mnist_x/" + args.scenario_name + ".npz") 
+    import os
+    # Try multiple possible paths for the scenario file
+    scenario_filename = args.scenario_name + ".npz"
+    possible_paths = [
+        os.path.join("data", "mnist_x", scenario_filename),
+        os.path.join("data", "zoo", scenario_filename),
+        os.path.join(args.data_cache_dir, "mnist_x", scenario_filename),
+        os.path.join(args.data_cache_dir, scenario_filename),
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "mnist_x", scenario_filename)
+    ]
+    
+    path = None
+    for p in possible_paths:
+        if os.path.exists(p):
+            path = p
+            break
+            
+    if path is None:
+        logging.error(f"Could not find scenario file {scenario_filename} in any of the following locations: {possible_paths}")
+        # Fallback to the original hardcoded path to let it raise the original FileNotFoundError if needed
+        path = os.path.join("data", "mnist_x", scenario_filename)
+
+    logging.info(f"Loading scenario from: {path}")
+    scenario = AbstractScenario(filename=path) 
     scenario.info()
     scenario.to_tensor()
     scenario.to_cuda()

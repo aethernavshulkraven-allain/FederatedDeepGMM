@@ -25,7 +25,9 @@ from model_selection.learning_eval_nostop import \
     FHistoryLearningEvalGradientDecentNoStop, FHistoryLearningEvalNoStop, \
     FHistoryLearningEvalSGDNoStop
 from game_objectives.approximate_psi_objective import approx_psi_eval
-from fedgmm.sp_decentralized_mnist_lr_example.plotting import PlotElement
+# from fedgmm.sp_decentralized_mnist_lr_example.plotting import PlotElement
+from plotting import PlotElement
+
 from .client import Client
 
 def log_results_to_csv(file_path, round_number, mse):
@@ -41,6 +43,18 @@ class FedProxTrainer(object):
     def __init__(self, dataset, model, device, args):
         self.device = device
         self.args = args
+        research_args = {
+            'video_plotter': False,
+            'print_freq': 1,
+            'eval_freq': 1,
+            'burn_in': 0,
+            'max_no_progress': 100,
+            'verbose': True,
+            'print_freq_mul': 1
+        }
+        for arg_name, default_value in research_args.items():
+            if not hasattr(self.args, arg_name):
+                setattr(self.args, arg_name, default_value)
         [
             train_data_num,
             test_data_num,
@@ -68,6 +82,20 @@ class FedProxTrainer(object):
         self.val_data_local_dict = val_data_local_dict
 
         logging.info("model = {}".format(model))
+        self.model = model
+        self.device = device
+
+        # Move models to device
+        if isinstance(self.model, list):
+            for model_list in self.model:
+                if isinstance(model_list, list):
+                    for m in model_list:
+                        if isinstance(m, torch.nn.Module):
+                            m.to(self.device).double()
+                elif isinstance(model_list, torch.nn.Module):
+                    model_list.to(self.device).double()
+        elif isinstance(self.model, torch.nn.Module):
+            self.model.to(self.device).double()
         # self.model_trainer = create_model_trainer(model, args)
         g_learning_rates = [self.args.learning_rate]
         game_objectives = [

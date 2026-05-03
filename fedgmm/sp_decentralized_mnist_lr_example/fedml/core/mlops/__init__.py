@@ -125,7 +125,7 @@ def init(args, should_init_logs=True):
     # Bind local device as simulation device on FedML® Nexus AI Platform
     setattr(args, "using_mlops", True)
     setattr(args, "rank", 1)
-    MLOpsStore.mlops_bind_result = bind_simulation_device(args, api_key, args.config_version)
+    MLOpsStore.mlops_bind_result = bind_simulation_device(args, api_key)
     if not MLOpsStore.mlops_bind_result:
         setattr(args, "using_mlops", False)
         if should_init_logs:

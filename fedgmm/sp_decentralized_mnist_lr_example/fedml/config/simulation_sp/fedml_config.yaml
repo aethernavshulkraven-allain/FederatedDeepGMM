@@ -8,8 +8,9 @@ common_args:
   mlops_run_name: fedml_torch_fedavg_mnist_lr
 
 data_args:
-  dataset: "mnist"
-  data_cache_dir: "../../../data/mnist"
+  # dataset: "mnist"
+  dataset: "linear"
+  data_cache_dir: "data"
   partition_method: "hetero"
   partition_alpha: 0.5
 
@@ -19,13 +20,14 @@ model_args:
 train_args:
   federated_optimizer: "FedAvg"
   client_id_list: "[]"
-  client_num_in_total: 1000
+  client_num_in_total: 100
   client_num_per_round: 10
-  comm_round: 200
-  epochs: 1
+  comm_round: 1000
+  epochs: 20
   batch_size: 10
+  # client_optimizer: ogda
   client_optimizer: sgd
-  learning_rate: 0.03
+  learning_rate: 0.3
   weight_decay: 0.001
 
 validation_args:

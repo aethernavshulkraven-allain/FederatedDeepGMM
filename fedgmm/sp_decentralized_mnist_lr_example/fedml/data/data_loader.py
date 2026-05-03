@@ -247,6 +247,9 @@ def combine_batches(batches):
 def load_synthetic_data(args):
     dataset_name = args.dataset
     centralized = False
+    val_data_num = 0
+    val_data_global = None
+    val_data_local_dict = None
     # check if the full-batch training is enabled
     args_batch_size = args.batch_size
     if args.batch_size <= 0:
@@ -255,8 +258,15 @@ def load_synthetic_data(args):
     else:
         full_batch = False
 
-    if dataset_name == "zoo":
+    # if dataset_name == "zoo":
+    # if dataset_name == "zoo" or dataset_name == "mnist":
+    zoo_datasets = ['linear', 'abs', 'sin', 'step']
+    if dataset_name == "zoo" or dataset_name == "mnist" or dataset_name in zoo_datasets:
         logging.info("load_data. dataset_name = %s" % dataset_name)
+        if dataset_name in zoo_datasets:
+            args.scenario_name = dataset_name
+        if not hasattr(args, "scenario_name") or args.scenario_name is None:
+            args.scenario_name = "main"
         (
             client_num,
             train_data_num,
@@ -680,3 +690,4 @@ def load_synthetic_data(args):
 
 def load_poisoned_dataset_from_edge_case_examples(args):
     return load_poisoned_dataset(args=args)
+

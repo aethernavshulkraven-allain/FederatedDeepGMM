@@ -229,13 +229,75 @@ def load_partition_data_mnist_by_device_id(batch_size, device_id, train_path="MN
     return load_partition_data_mnist(batch_size, train_path, test_path)
 
 
+# def load_partition_data_mnist(
+#     args, batch_size
+# ):
+#     scenario = AbstractScenario(filename="data/mnist_x/" + args.scenario_name + ".npz") 
+#     scenario.info()
+#     scenario.to_tensor()
+#     # scenario.to_cuda()
+#     if torch.cuda.is_available():
+#         scenario.to_cuda()
+#     train = scenario.get_dataset("train")
+#     dev = scenario.get_dataset("dev")
+#     test = scenario.get_dataset("test")
+    
+#     train_data_local_dict, test_data_local_dict,\
+#     val_data_local_dict, train_data_local_num_dict,\
+#     test_data_local_num_dict, val_data_local_num_dict = load_data(args, train, test, dev)
+
+#     return (
+#         args.client_num_in_total,
+#         train.y.shape[0],
+#         test.y.shape[0],
+#         dev.y.shape[0],
+#         train,
+#         test,
+#         dev,
+#         train_data_local_num_dict,
+#         train_data_local_dict,
+#         test_data_local_dict,
+#         val_data_local_dict,
+#         10,
+#     )
+
 def load_partition_data_mnist(
     args, batch_size
 ):
-    scenario = AbstractScenario(filename="data/mnist_x/" + args.scenario_name + ".npz") 
+    import os
+    # Try multiple possible paths for the scenario file
+    scenario_filename = args.scenario_name + ".npz"
+    # Determine primary directory based on dataset name
+    zoo_datasets = ['linear', 'abs', 'sin', 'step']
+    if args.dataset in zoo_datasets:
+        primary_dir = "zoo"
+    elif args.dataset == "mnist":
+        primary_dir = "mnist_x" # default fallback for plain 'mnist'
+    else:
+        primary_dir = args.dataset # use dataset name directly (e.g. 'mnist_z', 'mnist_x')
+
+    possible_paths = [
+        os.path.join("data", primary_dir, scenario_filename),
+        os.path.join(args.data_cache_dir, primary_dir, scenario_filename),
+        os.path.join("data", "mnist_x", scenario_filename), # legacy fallback
+        os.path.join("data", "zoo", scenario_filename),     # legacy fallback
+    ]
+    
+    path = None
+    for p in possible_paths:
+        if os.path.exists(p):
+            path = p
+            break
+            
+    if path is None:
+        raise FileNotFoundError(f"Could not find scenario file {scenario_filename} in any of these locations: {possible_paths}. Please check your YAML 'dataset' value and that you have generated the data.")
+
+    logging.info(f"Loading scenario from: {path}")
+    scenario = AbstractScenario(filename=path) 
     scenario.info()
     scenario.to_tensor()
-    scenario.to_cuda()
+    if torch.cuda.is_available():
+        scenario.to_cuda()
 
     train = scenario.get_dataset("train")
     dev = scenario.get_dataset("dev")
@@ -244,6 +306,11 @@ def load_partition_data_mnist(
     train_data_local_dict, test_data_local_dict,\
     val_data_local_dict, train_data_local_num_dict,\
     test_data_local_num_dict, val_data_local_num_dict = load_data(args, train, test, dev)
+    zoo_datasets = ['linear', 'abs', 'sin', 'step']
+    if args.dataset in zoo_datasets:
+        class_num = 1
+    else:
+        class_num = 10 # Default for MNIST
 
     return (
         args.client_num_in_total,
@@ -257,5 +324,6 @@ def load_partition_data_mnist(
         train_data_local_dict,
         test_data_local_dict,
         val_data_local_dict,
-        None,
+        # None,
+        class_num,
     )
