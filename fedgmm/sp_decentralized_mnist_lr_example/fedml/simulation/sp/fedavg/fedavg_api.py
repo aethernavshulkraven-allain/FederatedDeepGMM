@@ -27,6 +27,8 @@ from plotting import PlotElement
 import matplotlib.pyplot as plt
 
 def log_results_to_csv(file_path, round_number, mse):
+       if os.path.dirname(file_path):
+           os.makedirs(os.path.dirname(file_path), exist_ok=True)
        file_exists = os.path.isfile(file_path)
        with open(file_path, 'a', newline='') as csvfile:
         fieldnames = ['Round', 'MSE']
@@ -45,7 +47,7 @@ class FedAvgAPI(object):
             'print_freq': 1,
             'eval_freq': 1,
             'burn_in': 0,
-            'max_no_progress': 100,
+            'max_no_progress': 10000,
             'verbose': True,
             'print_freq_mul': 1
         }
@@ -99,7 +101,9 @@ class FedAvgAPI(object):
         ##g_learning_rates =[0.01, 0.001,0.0001,0.0005]
         # g_learning_rates = [0.0005]
         # g_learning_rates=[0.1,0.2,0.5]
-        g_learning_rates =[0.00010, 0.000050, 0.000020]
+        # g_learning_rates =[0.00010, 0.000050, 0.000020]
+        # Use the learning rate from the YAML configuration
+        g_learning_rates = [self.args.learning_rate]
         game_objectives = [ 
             OptimalMomentObjective(),
         ]
@@ -120,15 +124,15 @@ class FedAvgAPI(object):
                         "g_optimizer_factory": OptimizerFactory(
                             OGDA, lr=float(g_lr)),
                         "f_optimizer_factory": OptimizerFactory(
-                            OGDA, lr=5.0*float(g_lr)),
+                            OGDA, lr=20.0*float(g_lr)),
                         "game_objective": game_objective
                     }
                 else:
                     learning_setup = {
                         "g_optimizer_factory": OptimizerFactory(
-                            CustomSGD, lr=float(g_lr), momentum=0.9),
+                            CustomSGD, lr=float(g_lr), momentum=0.0),
                         "f_optimizer_factory": OptimizerFactory(
-                            CustomSGD, lr=5.0*float(g_lr), momentum=0.9),
+                            CustomSGD, lr=20.0*float(g_lr), momentum=0.0),
                         "game_objective": game_objective
                     }
                 learning_setups.append(learning_setup)
@@ -144,8 +148,8 @@ class FedAvgAPI(object):
             default_g_opt_factory = OptimizerFactory(OGDA, lr=0.01)
             default_f_opt_factory = OptimizerFactory(OGDA, lr=0.01)
         else:
-            default_g_opt_factory = OptimizerFactory(CustomSGD, lr=0.01, momentum=0.9)
-            default_f_opt_factory = OptimizerFactory(CustomSGD, lr=0.01, momentum=0.9)
+            default_g_opt_factory = OptimizerFactory(CustomSGD, lr=0.01, momentum=0.0)
+            default_f_opt_factory = OptimizerFactory(CustomSGD, lr=0.01, momentum=0.0)
             
         # default_g_opt_factory = OptimizerFactory(
         #     sgd, lr=0.0001, betas=(0.5, 0.9))
@@ -240,7 +244,6 @@ class FedAvgAPI(object):
             )
             self.client_list.append(c)
         logging.info("############setup_clients (END)#############")
-    
 
     def train(self):
         # logging.info("self.model_trainer = {}".format(self.model_trainer))
@@ -254,7 +257,28 @@ class FedAvgAPI(object):
         # mlops.log_round_info(self.args.comm_round, -1)
         current_no_progress = 0
         
-        for round_idx in range(self.args.comm_round):
+        start_round = 0
+        if hasattr(self.args, 'resume') and self.args.resume is not None:
+            if os.path.isfile(self.args.resume):
+                logging.info(f"=> loading checkpoint '{self.args.resume}'")
+                checkpoint = torch.load(self.args.resume, map_location=self.device)
+                start_round = checkpoint['round'] + 1
+                self.model_trainer.set_g_model_params(checkpoint['g_state_dict'])
+                self.model_trainer.set_f_model_params(checkpoint['f_state_dict'])
+                
+                # Initialize self.g and self.f which are normally set in eval_global_model
+                self.g = self.model_trainer.g
+                self.f = self.model_trainer.f
+                
+                logging.info(f"=> loaded checkpoint '{self.args.resume}' (round {checkpoint['round']})")
+                
+                # Update local globals for the first round of resumed training
+                g_global = self.model_trainer.get_g_model_params()
+                f_global = self.model_trainer.get_f_model_params()
+            else:
+                logging.error(f"=> no checkpoint found at '{self.args.resume}'")
+
+        for round_idx in range(start_round, self.args.comm_round):
 
             # logging.info("################Communication round : {}".format(round_idx))
 
@@ -298,8 +322,38 @@ class FedAvgAPI(object):
                 w_locals_reg.append((client.get_sample_number(), copy.deepcopy(w_reg)))
                 # w_locals_prev = t
             # update global weights
-            # mlops.event("agg", event_started=True, event_value=str(round_idx))
-            w_global = self._aggregate(w_locals)
+            w_agg = self._aggregate(w_locals)
+            
+            if self.args.client_optimizer == "ogda":
+                # Suitable beta (Server LR). 1.0 is standard for FedAvg. 
+                # Can be lowered (e.g., 0.5) for more stability.
+                server_lr = 1.0 
+
+                # Current weights (theta_t)
+                g_old = self.model_trainer.get_g_model_params()
+                f_old = self.model_trainer.get_f_model_params()
+                
+                # Current updates (delta_t = w_agg - theta_t)
+                delta_g = {k: w_agg[0][k] - g_old[k] for k in g_old.keys()}
+                delta_f = {k: w_agg[1][k] - f_old[k] for k in f_old.keys()}
+                
+                if round_idx == start_round or self.delta_g_prev is None:
+                    # Round 1: theta_{t+1} = theta_t + beta * delta_t
+                    g_new = {k: g_old[k] + server_lr * delta_g[k] for k in g_old.keys()}
+                    f_new = {k: f_old[k] + server_lr * delta_f[k] for k in f_old.keys()}
+                else:
+                    # Round t > 1: Optimistic Update
+                    # theta_{t+1} = theta_t + beta * (2*delta_t - delta_{t-1})
+                    g_new = {k: g_old[k] + server_lr * (2.0 * delta_g[k] - self.delta_g_prev[k]) for k in g_old.keys()}
+                    f_new = {k: f_old[k] + server_lr * (2.0 * delta_f[k] - self.delta_f_prev[k]) for k in f_old.keys()}
+                
+                # Store deltas for the next round
+                self.delta_g_prev = delta_g
+                self.delta_f_prev = delta_f
+                w_global = [g_new, f_new]
+            else:
+                w_global = w_agg
+
             w_global_reg = self._aggregate_reg(w_locals_reg)
             self.model_trainer.set_g_model_params(w_global[0])
             self.model_trainer.set_f_model_params(w_global[1])
@@ -311,11 +365,12 @@ class FedAvgAPI(object):
             #     self._local_test_on_all_clients(round_idx)
             # per {frequency_of_the_test} round
             mse, obj_train, obj_dev, curr_eval, max_recent_eval, f_of_z_train, f_of_z_dev = self.eval_global_model()
-            # log_results_to_csv("/home/somya/thesis/mnist_x_sgd.csv", round_idx, mse)
-            log_results_to_csv(f"gauranshi_{self.args.client_optimizer}_{self.args.dataset}_1000rounds_20local.csv", round_idx, mse)
+            log_results_to_csv(f"csv/critic20_{self.args.client_optimizer}_{self.args.dataset}.csv", round_idx, mse)
+            
             # Save checkpoint every 100 rounds
             if round_idx % 100 == 0:
-                checkpoint_path = f"checkpoint_{self.args.client_optimizer}_{self.args.dataset}_round_{round_idx}.pt"
+                checkpoint_path = f"checkpoints/critic20_{self.args.client_optimizer}_{self.args.dataset}_round_{round_idx}.pt"
+                os.makedirs("checkpoints", exist_ok=True)
                 torch.save({
                     'round': round_idx,
                     'g_state_dict': self.g.state_dict(),
@@ -403,9 +458,9 @@ class FedAvgAPI(object):
         # gmm_pred_sgd = model_linear_sgd(self.test_global.x)
         # fedavg_sgd = model_linear_sgd_fedavg(self.test_global.x)
         # sgd_plain = model_linear_sgd_plain(self.test_global.x)
+        
         # mse = float(((fedavg_sgd - self.test_global.g) ** 2).mean())
         mse = float(((g_pred - self.test_global.g) ** 2).mean())
-
         # print("---------------")
         # print("finished running methodology on scenario %s" % self.args.scenario_name)
         print("MSE on test ------------------------------>>>>>>>>>>>>>>>>>>", mse)
@@ -427,7 +482,7 @@ class FedAvgAPI(object):
             x_label.append(i)
         g_pred_sort = g_pred[indices]
         g_true_sort = g_true[indices]
-         
+        
         # Save the data for later plotting
         numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_x.npy", x_sort)
         numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_pred.npy", g_pred_sort)
@@ -435,7 +490,6 @@ class FedAvgAPI(object):
         # gmm_true_sort = gmm_pred[indices]
         # gmm_sgd_sort = gmm_pred_sgd[indices]
         # fedavg_sgd_sort = fedavg_sgd[indices]
-        # sgd_plain_sort = sgd_plain[indices]
         # sgd_plain_sort = sgd_plain[indices]
         # for i in range(len(x_sort)):
         #     log_results_to_csv("/home/somya/thesis/new_FedDeepGMM-SGDA.csv", x_sort[i][0], g_pred_sort[i][0])
@@ -454,14 +508,17 @@ class FedAvgAPI(object):
 
         # plot_Avg = PlotElement(x_label,fedAvg,"FedAvg")
         # reg_NN_plot = PlotElement(x_sort, reg_pred_sort, "Direct predictions from Neural Network")
-        # fig, ax = plt.subplots()
+        
+        os.makedirs("plots", exist_ok=True)
+        fig, ax = plt.subplots()
         # ax = sgd_plain_plot.plot(ax=ax)
-        # ax = true_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
+        ax = true_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
         # ax = gmm_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
         # ax = gmm_sgd_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
         # ax = fedavg_sgd_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
-        # ax = pred_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
+        ax = pred_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
         # ax = reg_NN_plot.plot(ax=ax, save_path=f'plots/aaaacomparison_{self.args.run_name}_.png')
+        
         # mlops.log_training_finished_status()
         # mlops.log_aggregation_finished_status()
         

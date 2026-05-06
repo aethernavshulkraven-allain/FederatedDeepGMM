@@ -63,6 +63,8 @@ def add_args():
 
     # default arguments
     parser.add_argument("--using_mlops", type=bool, default=False)
+    
+    parser.add_argument("--resume", type=str, default=None, help="Path to checkpoint to resume from")
 
     args, unknown = parser.parse_known_args()
 

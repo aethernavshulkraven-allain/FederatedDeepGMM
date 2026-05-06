@@ -109,14 +109,62 @@
 # if __name__ == "__main__":
 #     create_comparison_plots()
 ##################################################################################
+# import numpy as np
+# import matplotlib.pyplot as plt
+
+# def generate_final_comparison():
+#     # Set up the figure with 2 subplots (1 row, 2 columns)
+#     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+
+#     # --- PLOT 1: ABSOLUTE SCENARIO ---
+#     x_abs = np.load("results_abs_sgd_x.npy")
+#     y_true_abs = np.load("results_abs_sgd_y_true.npy")
+#     y_gda_abs = np.load("results_abs_sgd_y_pred.npy")
+#     y_ogda_abs = np.load("results_abs_ogda_y_pred.npy")
+
+#     ax1.plot(x_abs, y_true_abs, label="Actual Causal Effect", color='blue', linewidth=2)
+#     ax1.plot(x_abs, y_gda_abs, label="FedDeepGMM-GDA", color='brown', linestyle='--')
+#     ax1.plot(x_abs, y_ogda_abs, label="FedDeepGMM-OGDA", color='red', linestyle='-')
+    
+#     ax1.set_title("(a) Absolute Scenario")
+#     ax1.set_xlabel("x")
+#     ax1.set_ylabel("g(x)")
+#     ax1.grid(True, alpha=0.3)
+#     ax1.legend()
+
+#     # --- PLOT 2: LINEAR SCENARIO ---
+#     x_lin = np.load("results_linear_sgd_x.npy")
+#     y_true_lin = np.load("results_linear_sgd_y_true.npy")
+#     y_gda_lin = np.load("results_linear_sgd_y_pred.npy")
+#     y_ogda_lin = np.load("results_linear_ogda_y_pred.npy")
+
+#     ax2.plot(x_lin, y_true_lin, label="Actual Causal Effect", color='blue', linewidth=2)
+#     ax2.plot(x_lin, y_gda_lin, label="FedDeepGMM-GDA", color='brown', linestyle='--')
+#     ax2.plot(x_lin, y_ogda_lin, label="FedDeepGMM-OGDA", color='red', linestyle='-')
+    
+#     ax2.set_title("(c) Linear Scenario")
+#     ax2.set_xlabel("x")
+#     ax2.set_ylabel("g(x)")
+#     ax2.grid(True, alpha=0.3)
+#     ax2.legend()
+
+#     # Layout and Save
+#     plt.tight_layout()
+#     plt.savefig("Final_Federated_Comparison_Results.png", dpi=300)
+#     print("Graphs generated successfully as 'Final_Federated_Comparison_Results.png'")
+#     plt.show()
+
+# if __name__ == "__main__":
+#     generate_final_comparison()
+######################################## 3 plots ###########################################################
 import numpy as np
 import matplotlib.pyplot as plt
 
 def generate_final_comparison():
-    # Set up the figure with 2 subplots (1 row, 2 columns)
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+    # Set up the figure with 3 subplots (1 row, 3 columns)
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(20, 5))
 
-    # --- PLOT 1: ABSOLUTE SCENARIO ---
+    # --- PLOT 1: (a) ABSOLUTE SCENARIO ---
     x_abs = np.load("results_abs_sgd_x.npy")
     y_true_abs = np.load("results_abs_sgd_y_true.npy")
     y_gda_abs = np.load("results_abs_sgd_y_pred.npy")
@@ -132,26 +180,42 @@ def generate_final_comparison():
     ax1.grid(True, alpha=0.3)
     ax1.legend()
 
-    # --- PLOT 2: LINEAR SCENARIO ---
-    x_lin = np.load("results_linear_sgd_x.npy")
-    y_true_lin = np.load("results_linear_sgd_y_true.npy")
-    y_gda_lin = np.load("results_linear_sgd_y_pred.npy")
-    y_ogda_lin = np.load("results_linear_ogda_y_pred.npy")
+    # --- PLOT 2: (b) STEP SCENARIO ---
+    x_step = np.load("results_step_sgd_x.npy")
+    y_true_step = np.load("results_step_sgd_y_true.npy")
+    y_gda_step = np.load("results_step_sgd_y_pred.npy")
+    y_ogda_step = np.load("results_step_ogda_y_pred.npy")
 
-    ax2.plot(x_lin, y_true_lin, label="Actual Causal Effect", color='blue', linewidth=2)
-    ax2.plot(x_lin, y_gda_lin, label="FedDeepGMM-GDA", color='brown', linestyle='--')
-    ax2.plot(x_lin, y_ogda_lin, label="FedDeepGMM-OGDA", color='red', linestyle='-')
+    ax2.plot(x_step, y_true_step, label="Actual Causal Effect", color='blue', linewidth=2)
+    ax2.plot(x_step, y_gda_step, label="FedDeepGMM-GDA", color='brown', linestyle='--')
+    ax2.plot(x_step, y_ogda_step, label="FedDeepGMM-OGDA", color='red', linestyle='-')
     
-    ax2.set_title("(c) Linear Scenario")
+    ax2.set_title("(b) Step Scenario")
     ax2.set_xlabel("x")
     ax2.set_ylabel("g(x)")
     ax2.grid(True, alpha=0.3)
     ax2.legend()
 
+    # --- PLOT 3: (c) LINEAR SCENARIO ---
+    x_lin = np.load("results_linear_sgd_x.npy")
+    y_true_lin = np.load("results_linear_sgd_y_true.npy")
+    y_gda_lin = np.load("results_linear_sgd_y_pred.npy")
+    y_ogda_lin = np.load("results_linear_ogda_y_pred.npy")
+
+    ax3.plot(x_lin, y_true_lin, label="Actual Causal Effect", color='blue', linewidth=2)
+    ax3.plot(x_lin, y_gda_lin, label="FedDeepGMM-GDA", color='brown', linestyle='--')
+    ax3.plot(x_lin, y_ogda_lin, label="FedDeepGMM-OGDA", color='red', linestyle='-')
+    
+    ax3.set_title("(c) Linear Scenario")
+    ax3.set_xlabel("x")
+    ax3.set_ylabel("g(x)")
+    ax3.grid(True, alpha=0.3)
+    ax3.legend()
+
     # Layout and Save
     plt.tight_layout()
-    plt.savefig("Final_Federated_Comparison_Results.png", dpi=300)
-    print("Graphs generated successfully as 'Final_Federated_Comparison_Results.png'")
+    plt.savefig("All_3.png", dpi=300)
+    print("Graphs generated successfully as 'Final_Federated_Comparison_Results_All_3.png'")
     plt.show()
 
 if __name__ == "__main__":

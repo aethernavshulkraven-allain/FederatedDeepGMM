@@ -363,10 +363,15 @@ class ModelTrainerCLS(ClientTrainer):
         g = self.g
         f = self.f
         
+        # Clear optimizer states because the model weights were just updated with global weights!
+        # This is critical for stateful optimizers like OGDA, otherwise prev_grad is stale.
+        self.g_optimizer.state.clear()
+        self.f_optimizer.state.clear()
         g.to(device)
         f.to(device)
         g.train()
         f.train()
+        
         
     # Snapshot of parameters before training
         # initial_g_params = self.get_params_snapshot(g)
