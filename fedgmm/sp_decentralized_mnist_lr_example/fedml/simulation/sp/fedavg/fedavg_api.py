@@ -108,6 +108,13 @@ class FedAvgAPI(object):
             OptimalMomentObjective(),
         ]
         learning_setups = []
+        # Dynamically adjust Critic multiplier based on dataset complexity
+        # CNN critics (in z and xz scenarios) are very powerful and need a lower multiplier to avoid NaN
+        critic_multiplier = 20.0
+        if args.dataset in ['mnist_z', 'femnist_z', 'mnist_xz', 'femnist_xz','cifar10_z', 'cifar10_xz', 'cifar_xz']:
+            critic_multiplier = 5.0  # CNN Critic is powerful enough without a high LR
+        elif args.dataset in ['mnist_x', 'femnist_x','cifar10_x', 'cifar_x']:
+            critic_multiplier = 3.0  # Balanced approach
        
         for g_lr in g_learning_rates:
             for game_objective in game_objectives:
@@ -124,7 +131,8 @@ class FedAvgAPI(object):
                         "g_optimizer_factory": OptimizerFactory(
                             OGDA, lr=float(g_lr)),
                         "f_optimizer_factory": OptimizerFactory(
-                            OGDA, lr=20.0*float(g_lr)),
+                            # OGDA, lr=20.0*float(g_lr)),
+                            OGDA, lr=critic_multiplier*float(g_lr)), # Adjusted
                         "game_objective": game_objective
                     }
                 else:
@@ -132,7 +140,8 @@ class FedAvgAPI(object):
                         "g_optimizer_factory": OptimizerFactory(
                             CustomSGD, lr=float(g_lr), momentum=0.0),
                         "f_optimizer_factory": OptimizerFactory(
-                            CustomSGD, lr=20.0*float(g_lr), momentum=0.0),
+                            # CustomSGD, lr=20.0*float(g_lr), momentum=0.0),
+                            CustomSGD, lr=critic_multiplier*float(g_lr), momentum=0.0),
                         "game_objective": game_objective
                     }
                 learning_setups.append(learning_setup)
@@ -146,10 +155,12 @@ class FedAvgAPI(object):
 # }
         if args.client_optimizer == "ogda":
             default_g_opt_factory = OptimizerFactory(OGDA, lr=0.01)
-            default_f_opt_factory = OptimizerFactory(OGDA, lr=0.01)
+            # default_f_opt_factory = OptimizerFactory(OGDA, lr=0.01)
+            default_f_opt_factory = OptimizerFactory(OGDA, lr=critic_multiplier*args.learning_rate)
         else:
             default_g_opt_factory = OptimizerFactory(CustomSGD, lr=0.01, momentum=0.0)
-            default_f_opt_factory = OptimizerFactory(CustomSGD, lr=0.01, momentum=0.0)
+            # default_f_opt_factory = OptimizerFactory(CustomSGD, lr=0.01, momentum=0.0)
+            default_f_opt_factory = OptimizerFactory(CustomSGD, lr=critic_multiplier*args.learning_rate, momentum=0.0)
             
         # default_g_opt_factory = OptimizerFactory(
         #     sgd, lr=0.0001, betas=(0.5, 0.9))
@@ -365,11 +376,11 @@ class FedAvgAPI(object):
             #     self._local_test_on_all_clients(round_idx)
             # per {frequency_of_the_test} round
             mse, obj_train, obj_dev, curr_eval, max_recent_eval, f_of_z_train, f_of_z_dev = self.eval_global_model()
-            log_results_to_csv(f"csv/critic20_{self.args.client_optimizer}_{self.args.dataset}.csv", round_idx, mse)
+            log_results_to_csv(f"csv/{self.args.client_optimizer}_{self.args.dataset}.csv", round_idx, mse)
             
-            # Save checkpoint every 100 rounds
-            if round_idx % 100 == 0:
-                checkpoint_path = f"checkpoints/critic20_{self.args.client_optimizer}_{self.args.dataset}_round_{round_idx}.pt"
+            # Save checkpoint every 200 rounds
+            if round_idx % 200 == 0:
+                checkpoint_path = f"checkpoints/{self.args.client_optimizer}_{self.args.dataset}_round_{round_idx}.pt"
                 os.makedirs("checkpoints", exist_ok=True)
                 torch.save({
                     'round': round_idx,

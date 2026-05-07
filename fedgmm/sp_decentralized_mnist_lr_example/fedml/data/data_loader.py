@@ -261,12 +261,14 @@ def load_synthetic_data(args):
     # if dataset_name == "zoo":
     # if dataset_name == "zoo" or dataset_name == "mnist":
     zoo_datasets = ['linear', 'abs', 'sin', 'step']
+    if not hasattr(args, "scenario_name") or args.scenario_name is None:
+        args.scenario_name = "main"
     if dataset_name == "zoo" or dataset_name == "mnist" or dataset_name in zoo_datasets:
         logging.info("load_data. dataset_name = %s" % dataset_name)
         if dataset_name in zoo_datasets:
             args.scenario_name = dataset_name
-        if not hasattr(args, "scenario_name") or args.scenario_name is None:
-            args.scenario_name = "main"
+        # if not hasattr(args, "scenario_name") or args.scenario_name is None:
+        #     args.scenario_name = "main"
         (
             client_num,
             train_data_num,
@@ -288,7 +290,8 @@ def load_synthetic_data(args):
         For shallow NN or linear models, 
         we uniformly sample a fraction of clients each round (as the original FedAvg paper)
         """
-    elif dataset_name == "mnist_xz":
+    # elif dataset_name == "mnist_xz":
+    elif dataset_name in ["mnist_xz", "femnist_xz"]:
         logging.info("load_data. dataset_name = %s" % dataset_name)
         (
             client_num,
@@ -307,7 +310,8 @@ def load_synthetic_data(args):
             args,
             args.batch_size
         )
-    elif dataset_name == "mnist_z":
+    # elif dataset_name == "mnist_z":
+    elif dataset_name in ["mnist_z", "femnist_z"]:
         logging.info("load_data. dataset_name = %s" % dataset_name)
         (
             client_num,
@@ -326,7 +330,8 @@ def load_synthetic_data(args):
             args,
             args.batch_size
         )
-    elif dataset_name == "mnist_x":
+    # elif dataset_name == "mnist_x":
+    elif dataset_name in ["mnist_x", "femnist_x"]:
         logging.info("load_data. dataset_name = %s" % dataset_name)
         (
             client_num,
@@ -525,7 +530,9 @@ def load_synthetic_data(args):
             
         )
 
-    elif  dataset_name =="cifar_x":
+    # elif  dataset_name =="cifar_x":
+    # elif dataset_name in ["cifar10_x", "cifar_x", "cifar10_z", "cifar_z", "cifar10_xz", "cifar_xz"]:
+    elif dataset_name in ["cifar10_x", "cifar_x", "cifar10_z", "cifar_z", "cifar10_xz", "cifar_xz", "cifar10_y", "cifar_y"]:
         logging.info("load_data. dataset_name = %s" % dataset_name)
         (
             client_num,

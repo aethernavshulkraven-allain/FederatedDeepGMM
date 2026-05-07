@@ -357,7 +357,9 @@ def load_partition_data_distributed_cifar10(
 
 def efficient_load_partition_data_cifar10(args):
 
-    scenario = AbstractScenario(filename="data/cifar_x/" + args.scenario_name + ".npz")
+    # scenario = AbstractScenario(filename="data/cifar10_x/" + args.scenario_name + ".npz")
+    scenario = AbstractScenario(filename="data/" + args.dataset + "/" + args.scenario_name + ".npz")
+
     scenario.info()
     scenario.to_tensor()
     scenario.to_cuda()

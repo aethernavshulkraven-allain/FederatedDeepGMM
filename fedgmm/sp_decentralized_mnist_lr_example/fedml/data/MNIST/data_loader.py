@@ -69,21 +69,27 @@ def load_data(args, train, test, dev):
     for i in clients_num:
         end = start + train_samples_per_client[i]
         subset_indices = indices_train[start:end]
+        # train_data_local_dict[i] = DataLoader(Subset(train_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
         train_data_local_dict[i] = DataLoader(Subset(train_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
+
         start = end
 
     start = 0
     for i in clients_num:
         end = start + test_samples_per_client[i]
         subset_indices = indices_test[start:end]
+        # test_data_local_dict[i] = DataLoader(Subset(test_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
         test_data_local_dict[i] = DataLoader(Subset(test_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
+
         start = end
 
     start = 0
     for i in clients_num:
         end = start + dev_samples_per_client[i]
         subset_indices = indices_dev[start:end]
+        # val_data_local_dict[i] = DataLoader(Subset(dev_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
         val_data_local_dict[i] = DataLoader(Subset(dev_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
+
         start = end
     # Distributing the batches among clients
     # for i, (train_batch, test_batch, dev_batch) in enumerate(zip(train_loader, test_loader, dev_loader)):

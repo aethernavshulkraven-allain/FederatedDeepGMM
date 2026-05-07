@@ -4,6 +4,9 @@ import numpy as np
 import torch
 from torchvision import datasets, transforms
 
+# Monkeypatch the broken EMNIST URL (NIST moved the file)
+datasets.EMNIST.url = "https://biometrics.nist.gov/cs_links/EMNIST/gzip.zip"
+
 from scenarios.abstract_scenario import AbstractScenario
 from scenarios.toy_scenarios import AGMMZoo
 

@@ -76,6 +76,7 @@ def load_data(args, train, test, dev):
     for i in clients_num:
         end = start + test_samples_per_client[i]
         subset_indices = indices_test[start:end]
+        # test_data_local_dict[i] = DataLoader(Subset(test_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
         test_data_local_dict[i] = DataLoader(Subset(test_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
         start = end
 

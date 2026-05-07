@@ -1,6 +1,6 @@
 common_args:
   training_type: "simulation"
-  using_mlops: true
+  using_mlops: false
   random_seed: 0
   config_version: "release"
   mlops_api_key: f5b88f5dca344e6faf17809139b89c48
@@ -8,8 +8,9 @@ common_args:
   mlops_run_name: fedml_torch_fedavg_mnist_lr
 
 data_args:
-  # dataset: "mnist"
-  dataset: "step"
+  # dataset: "cifar10_x"
+  dataset: "femnist_xz"
+  # dataset: "abs"
   data_cache_dir: "data"
   partition_method: "hetero"
   partition_alpha: 0.5
@@ -24,10 +25,10 @@ train_args:
   client_num_per_round: 10
   comm_round: 500
   epochs: 3
-  batch_size: 10
-  # client_optimizer: ogda
-  client_optimizer: sgd
-  learning_rate: 0.0030
+  batch_size: 64
+  client_optimizer: ogda
+  # client_optimizer: sgd
+  learning_rate: 0.0001
   weight_decay: 0.001
 
 validation_args:
@@ -41,7 +42,7 @@ comm_args:
   backend: "sp"
 
 tracking_args:
-  enable_tracking: true
+  enable_tracking: false
    # When running on MLOps platform(open.fedml.ai), the default log path is at ~/.fedml/fedml-client/fedml/logs/ and ~/.fedml/fedml-server/fedml/logs/
   enable_wandb: false
   wandb_key: ee0b5f53d949c84cee7decbe7a629e63fb2f8408

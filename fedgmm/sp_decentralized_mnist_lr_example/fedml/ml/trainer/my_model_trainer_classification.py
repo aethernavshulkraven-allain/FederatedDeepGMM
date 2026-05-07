@@ -320,7 +320,7 @@ class ModelTrainerCLS(ClientTrainer):
                     optimizer.step()
 
                 # Uncommet this following line to avoid nan loss
-                # torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
 
                 # logging.info(
                 #     "Update Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}".format(
@@ -390,6 +390,7 @@ class ModelTrainerCLS(ClientTrainer):
                 self.g_optimizer.zero_grad()
                 # optimizer_g.zero_grad()
                 g_obj.backward(retain_graph=True)
+                torch.nn.utils.clip_grad_norm_(g.parameters(), 1.0)
                 # final_g.step()
                 self.g_optimizer.step()
                 # optimizer_g.step()
@@ -398,6 +399,7 @@ class ModelTrainerCLS(ClientTrainer):
                 # optimizer_f.zero_grad()
                 # final_f.zero_grad()
                 f_obj.backward()
+                torch.nn.utils.clip_grad_norm_(f.parameters(), 1.0)
                 # final_f.step()
                 self.f_optimizer.step()
                 # optimizer_f.step()

@@ -11,3 +11,35 @@ Learning Rate Configuration for Optimizers Different learning rates are used for
 1. Federated DeepGMM with OAdam Optimizer (dataset lr_for_g lr_for_f) step 0.01 0.03 abs 0.03 0.03 linear 0.02 0.02 mnist_x 0.0001 0.001 mnist_z 0.001 0.0001 mnist_xz 0.0001 0.0001
 
 2. Federated DeepGMM with SGDM Optimizer (dataset lr_for_g lr_for_f) step 0.03 0.03 abs 0.1 0.1 linear 0.01 0.01 mnist_x 0.01 0.01 mnist_z 0.01 0.01 mnist_xz 0.01 0.01
+
+
+-----
+## Toy Example
+
+To run the toy example comparing FedOGDA and FedGDA:
+
+```bash
+cd Toy_Example
+python example.py
+```
+
+Required Python packages:
+
+```bash
+pip install numpy matplotlib
+```
+
+Optional packages for saving experiment results to Excel:
+
+```bash
+pip install pandas openpyxl
+```
+
+Running `example.py` generates the following plots:
+
+- `last_iterate_zoom`
+- `phase_trajectories`
+- `radius_plot`
+- `timeseries`
+
+---

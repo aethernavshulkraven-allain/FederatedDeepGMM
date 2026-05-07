@@ -1,5 +1,8 @@
 __pycache__/
 *.pyc
 fedgmm/sp_decentralized_mnist_lr_example/data/
+fedgmm/sp_decentralized_mnist_lr_example/checkpoints/
 *.npz
 checkpoints/
+datasets/
+*.npy
