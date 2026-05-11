@@ -42,4 +42,13 @@ Running `example.py` generates the following plots:
 - `radius_plot`
 - `timeseries`
 
+## Running code in latest branch:
+* In /project/fedgmm/sp_decentralized_mnist_lr_example
+```
+CUDA_VISIBLE_DEVICES=3 nohup python main.py --cf fedml/config/simulation_sp/fedml_config.yaml
+```
+
+* CSV files are present in project/fedgmm/sp_decentralized_mnist_lr_example/csv
+* Checkpoints are present in project/fedgmm/sp_decentralized_mnist_lr_example/checkpoints
+* Plotting file for curve fitting: project/fedgmm/sp_decentralized_mnist_lr_example/gauranshi_plot.py
 ---
