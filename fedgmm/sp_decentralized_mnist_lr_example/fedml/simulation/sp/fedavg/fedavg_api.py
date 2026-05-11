@@ -111,6 +111,8 @@ class FedAvgAPI(object):
         # Dynamically adjust Critic multiplier based on dataset complexity
         # CNN critics (in z and xz scenarios) are very powerful and need a lower multiplier to avoid NaN
         critic_multiplier = 20.0
+        if args.dataset in ['linear', 'abs', 'sin', 'step', 'zoo']:
+            critic_multiplier = 10.0
         if args.dataset in ['mnist_z', 'femnist_z', 'mnist_xz', 'femnist_xz','cifar10_z', 'cifar10_xz', 'cifar_xz']:
             critic_multiplier = 5.0  # CNN Critic is powerful enough without a high LR
         elif args.dataset in ['mnist_x', 'femnist_x','cifar10_x', 'cifar_x']:

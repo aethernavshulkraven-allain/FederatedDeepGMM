@@ -984,4 +984,1921 @@ Call stack:
     logging.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 Message: 'Uncaught exception'
 Arguments: ()
-[FedML-Client @device-id-0] [T
+[FedML-Client @device-id-0] [T[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:30] [INFO] [__init__.py:163:init] args.rank = 0, args.worker_num = 10
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:30] [INFO] [main.py:13:<module>] DEBUG: fedml.init() successful.
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:30] [INFO] [main.py:13:<module>] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:30] [INFO] [ml_engine_adapter.py:147:get_torch_device] args = <fedml.arguments.Arguments object at 0x7ec9abf95dd0>, using_gpu = True, device_id = 0, device_type = gpu
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:30] [INFO] [device.py:48:get_device] device = cuda:0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:30] [INFO] [data_loader.py:536:load_synthetic_data] load_data. dataset_name = cifar10_x
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:116:info] test
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 10000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:116:info] train
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 20000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info]       min: -2.43
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info] , max: 2.75
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info]       min: -3.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info] , max: 3.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info]       min: -3.61
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info] , max: 5.23
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info]       min: -0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info] , max: 0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info]       min: 0.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info] , max: 9.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:116:info] dev
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 10000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:31] [INFO] [model_hub.py:25:create] create_model. model_name = lr, output_dim = None, dataset = cifar10_x
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:34] [INFO] [fedavg_api.py:85:__init__] model = [[CIFAR10CNN(
+  (cnn): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=5184, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)], [MLPModel(
+  (model): Sequential(
+    (0): Linear(in_features=1, out_features=20, bias=True)
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): Linear(in_features=20, out_features=1, bias=True)
+  )
+)], [CIFAR10CNN(
+  (cnn): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=5184, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)]]
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:34] [INFO] [model_selection_class.py:38:do_model_selection] starting learning args eval 0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:37:34] [INFO] [model_selection_class.py:38:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:68:do_model_selection] learning eval:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:68:do_model_selection] -0.019768885471209276
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:68:do_model_selection] OptimalObjective::lambda_1=1.000000
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0001
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.00030000000000000003
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:68:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:82:do_model_selection] size of f_z collection:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:82:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:82:do_model_selection] 120
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [model_selection_class.py:82:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [fedavg_api.py:240:_setup_clients] ############setup_clients (START)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [fedavg_api.py:257:_setup_clients] ############setup_clients (END)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [INFO] [fedavg_api.py:274:train] => loading checkpoint 'checkpoints/ogda_cifar10_x_round_100.pt'
+/home/somya/project/fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py:275: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(self.args.resume, map_location=self.device)
+DEBUG: Calling fedml.init()...
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:18] [ERROR] [mlops_runtime_log.py:62:handle_exception] Uncaught exception
+Traceback (most recent call last):
+  File "/home/somya/project/fedgmm/sp_decentralized_mnist_lr_example/main.py", line 26, in <module>
+    fedml_runner.run()
+  File "/home/somya/project/fedgmm/sp_decentralized_mnist_lr_example/fedml/runner.py", line 182, in run
+    self.runner.run()
+  File "/home/somya/project/fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/simulator.py", line 67, in run
+    self.fl_trainer.train()
+  File "/home/somya/project/fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py", line 275, in train
+    checkpoint = torch.load(self.args.resume, map_location=self.device)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/somya/miniconda3/envs/dl/lib/python3.11/site-packages/torch/serialization.py", line 1114, in load
+    return _legacy_load(
+           ^^^^^^^^^^^^^
+  File "/home/somya/miniconda3/envs/dl/lib/python3.11/site-packages/torch/serialization.py", line 1338, in _legacy_load
+    magic_number = pickle_module.load(f, **pickle_load_args)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+EOFError: Ran out of input
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:42:19] [INFO] [mlops_metrics.py:260:report_server_id_status] report_server_id_status; topic_name: fl_server/flserver_agent_0/status, msg: {'run_id': None, 'edge_id': 0, 'status': 'EXCEPTION'}
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:02] [INFO] [__init__.py:163:init] args.rank = 0, args.worker_num = 10
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:02] [INFO] [main.py:13:<module>] DEBUG: fedml.init() successful.
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:02] [INFO] [main.py:13:<module>] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:02] [INFO] [ml_engine_adapter.py:147:get_torch_device] args = <fedml.arguments.Arguments object at 0x728d37b0c050>, using_gpu = True, device_id = 0, device_type = gpu
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:02] [INFO] [device.py:48:get_device] device = cuda:0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:02] [INFO] [data_loader.py:536:load_synthetic_data] load_data. dataset_name = cifar10_x
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:116:info] test
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 10000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:116:info] train
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 20000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info]       min: -2.43
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info] , max: 2.75
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info]       min: -3.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info] , max: 3.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info]       min: -3.61
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info] , max: 5.23
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info]       min: -0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info] , max: 0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info]       min: 0.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info] , max: 9.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:116:info] dev
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 10000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:03] [INFO] [model_hub.py:25:create] create_model. model_name = lr, output_dim = None, dataset = cifar10_x
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:04] [INFO] [fedavg_api.py:85:__init__] model = [[CIFAR10CNN(
+  (cnn): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=5184, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)], [MLPModel(
+  (model): Sequential(
+    (0): Linear(in_features=1, out_features=20, bias=True)
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): Linear(in_features=20, out_features=1, bias=True)
+  )
+)], [CIFAR10CNN(
+  (cnn): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=5184, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)]]
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:04] [INFO] [model_selection_class.py:38:do_model_selection] starting learning args eval 0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:44:04] [INFO] [model_selection_class.py:38:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:68:do_model_selection] learning eval:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:68:do_model_selection] -0.019768885471209276
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:68:do_model_selection] OptimalObjective::lambda_1=1.000000
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0001
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.00030000000000000003
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:68:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:82:do_model_selection] size of f_z collection:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:82:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:82:do_model_selection] 120
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [model_selection_class.py:82:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:49] [INFO] [fedavg_api.py:240:_setup_clients] ############setup_clients (START)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 04:48:50] [INFO] [fedavg_api.py:257:_setup_clients] ############setup_clients (END)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [__init__.py:163:init] args.rank = 0, args.worker_num = 10
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [main.py:13:<module>] DEBUG: fedml.init() successful.
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [main.py:13:<module>] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [ml_engine_adapter.py:147:get_torch_device] args = <fedml.arguments.Arguments object at 0x7bebb41963d0>, using_gpu = True, device_id = 0, device_type = gpu
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [device.py:48:get_device] device = cuda:0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [data_loader.py:267:load_synthetic_data] load_data. dataset_name = step
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [data_loader.py:301:load_partition_data_mnist] Loading scenario from: data/zoo/step.npz
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:116:info] test
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x2
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:116:info] train
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info]       min: -6.13
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info] , max: 5.79
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x2
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info]       min: -3.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info] , max: 3.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info]       min: -4.02
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info] , max: 3.69
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info]       min: -0.31
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info] , max: 0.32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info]       min: -6.13
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info] , max: 5.79
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:116:info] dev
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x2
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [model_hub.py:25:create] create_model. model_name = lr, output_dim = 1, dataset = step
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [model_hub.py:28:create] MLPModel + DeepGMM for Zoo dataset: step
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [fedavg_api.py:85:__init__] model = [[MLPModel(
+  (model): Sequential(
+    (0): Linear(in_features=1, out_features=20, bias=True)
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): Linear(in_features=20, out_features=20, bias=True)
+    (3): LeakyReLU(negative_slope=0.01)
+    (4): Linear(in_features=20, out_features=1, bias=True)
+  )
+)], [MLPModel(
+  (model): Sequential(
+    (0): Linear(in_features=2, out_features=20, bias=True)
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): Linear(in_features=20, out_features=20, bias=True)
+    (3): LeakyReLU(negative_slope=0.01)
+    (4): Linear(in_features=20, out_features=1, bias=True)
+  )
+)], [MLPModel(
+  (model): Sequential(
+    (0): Linear(in_features=1, out_features=20, bias=True)
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): Linear(in_features=20, out_features=20, bias=True)
+    (3): LeakyReLU(negative_slope=0.01)
+    (4): Linear(in_features=20, out_features=1, bias=True)
+  )
+)]]
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [model_selection_class.py:38:do_model_selection] starting learning args eval 0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:05:18] [INFO] [model_selection_class.py:38:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:68:do_model_selection] learning eval:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:68:do_model_selection] 0.0014198304986959417
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:68:do_model_selection] OptimalObjective::lambda_1=0.100000
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0005
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.005
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:68:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:82:do_model_selection] size of f_z collection:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:82:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:82:do_model_selection] 120
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [model_selection_class.py:82:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [fedavg_api.py:242:_setup_clients] ############setup_clients (START)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:06:21] [INFO] [fedavg_api.py:259:_setup_clients] ############setup_clients (END)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:36:03] [INFO] [fedavg_api.py:477:train] MSE on test ------------------------------>>>>>>>>>>>>>>>>>>
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:36:03] [INFO] [fedavg_api.py:477:train]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:36:03] [INFO] [fedavg_api.py:477:train] 0.22968597779699976
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:36:03] [INFO] [fedavg_api.py:477:train] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:40:00] [INFO] [fedavg_api.py:479:train] MSE on test ------------------------------>>>>>>>>>>>>>>>>>>
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:40:00] [INFO] [fedavg_api.py:479:train]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:40:00] [INFO] [fedavg_api.py:479:train] 0.03559358894002192
+[FedML-Client @device-id-0] [Thu, 07 May 2026 05:40:00] [INFO] [fedavg_api.py:479:train] 
+
+DEBUG: Calling fedml.init()...
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:48] [INFO] [__init__.py:163:init] args.rank = 0, args.worker_num = 10
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:48] [INFO] [main.py:13:<module>] DEBUG: fedml.init() successful.
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:48] [INFO] [main.py:13:<module>] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [ml_engine_adapter.py:147:get_torch_device] args = <fedml.arguments.Arguments object at 0x7efa2fd9a810>, using_gpu = True, device_id = 0, device_type = gpu
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [device.py:48:get_device] device = cuda:0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [data_loader.py:536:load_synthetic_data] load_data. dataset_name = cifar10_z
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:116:info] test
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 10000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:116:info] train
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info]       min: -4.47
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info] , max: 14.28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 20000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info]       min: -2.43
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info] , max: 2.75
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info]       min: -3.61
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info] , max: 5.23
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info]       min: -0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info] , max: 2.03
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info]       min: -4.47
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info] , max: 14.28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:116:info] dev
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 10000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:49] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:50] [INFO] [model_hub.py:25:create] create_model. model_name = lr, output_dim = None, dataset = cifar10_z
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:50] [INFO] [fedavg_api.py:85:__init__] model = [[MLPModel(
+  (model): Sequential(
+    (0): Linear(in_features=1, out_features=20, bias=True)
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): Linear(in_features=20, out_features=1, bias=True)
+  )
+)], [CIFAR10CNN(
+  (cnn): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=5184, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)], [MLPModel(
+  (model): Sequential(
+    (0): Linear(in_features=1, out_features=20, bias=True)
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): Linear(in_features=20, out_features=1, bias=True)
+  )
+)]]
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:50] [INFO] [model_selection_class.py:38:do_model_selection] starting learning args eval 0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:41:50] [INFO] [model_selection_class.py:38:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:56] [INFO] [__init__.py:163:init] args.rank = 0, args.worker_num = 10
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:56] [INFO] [main.py:13:<module>] DEBUG: fedml.init() successful.
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:56] [INFO] [main.py:13:<module>] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:56] [INFO] [ml_engine_adapter.py:147:get_torch_device] args = <fedml.arguments.Arguments object at 0x743c8cd963d0>, using_gpu = True, device_id = 0, device_type = gpu
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:56] [INFO] [device.py:48:get_device] device = cuda:0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:56] [INFO] [data_loader.py:536:load_synthetic_data] load_data. dataset_name = cifar10_xz
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:116:info] test
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 10000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 10000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:116:info] train
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 20000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info]       min: -2.43
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info] , max: 2.75
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 20000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info]       min: -2.43
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info] , max: 2.75
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info]       min: -3.61
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info] , max: 5.23
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info]       min: -0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info] , max: 0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info]       min: 0.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info] , max: 9.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:116:info] dev
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 10000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 10000x3x32x32
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:58] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:59] [INFO] [model_hub.py:25:create] create_model. model_name = lr, output_dim = None, dataset = cifar10_xz
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:59] [INFO] [fedavg_api.py:85:__init__] model = [[CIFAR10CNN(
+  (cnn): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=5184, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)], [CIFAR10CNN(
+  (cnn): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=5184, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)], [CIFAR10CNN(
+  (cnn): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=5184, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)]]
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:59] [INFO] [model_selection_class.py:38:do_model_selection] starting learning args eval 0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:43:59] [INFO] [model_selection_class.py:38:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:68:do_model_selection] learning eval:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:68:do_model_selection] 0.05735189452238784
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:68:do_model_selection] OptimalObjective::lambda_1=0.100000
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0001
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0005
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:68:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:82:do_model_selection] size of f_z collection:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:82:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:82:do_model_selection] 120
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [model_selection_class.py:82:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [fedavg_api.py:242:_setup_clients] ############setup_clients (START)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 07:49:55] [INFO] [fedavg_api.py:259:_setup_clients] ############setup_clients (END)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:68:do_model_selection] learning eval:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:68:do_model_selection] 0.0853645771875604
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:68:do_model_selection] OptimalObjective::lambda_1=0.100000
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0001
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0005
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:68:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:82:do_model_selection] size of f_z collection:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:82:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:82:do_model_selection] 120
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [model_selection_class.py:82:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [fedavg_api.py:242:_setup_clients] ############setup_clients (START)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 08:01:14] [INFO] [fedavg_api.py:259:_setup_clients] ############setup_clients (END)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:21:31] [INFO] [fedavg_api.py:479:train] MSE on test ------------------------------>>>>>>>>>>>>>>>>>>
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:21:31] [INFO] [fedavg_api.py:479:train]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:21:31] [INFO] [fedavg_api.py:479:train] 1.4271872134754222
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:21:31] [INFO] [fedavg_api.py:479:train] 
+
+DEBUG: Calling fedml.init()...
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [__init__.py:163:init] args.rank = 0, args.worker_num = 10
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [main.py:13:<module>] DEBUG: fedml.init() successful.
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [main.py:13:<module>] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [ml_engine_adapter.py:147:get_torch_device] args = <fedml.arguments.Arguments object at 0x7e01ba513050>, using_gpu = True, device_id = 0, device_type = gpu
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [device.py:48:get_device] device = cuda:0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [data_loader.py:335:load_synthetic_data] load_data. dataset_name = femnist_x
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [data_loader.py:301:load_partition_data_mnist] Loading scenario from: data/femnist_x/main.npz
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:116:info] test
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 10000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:116:info] train
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 20000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info]       min: -0.42
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info] , max: 2.82
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info]       min: -3.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info] , max: 3.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info]       min: -3.61
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info] , max: 5.23
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info]       min: -0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info] , max: 0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info]       min: 0.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info] , max: 9.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:116:info] dev
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 10000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:10] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:11] [INFO] [model_hub.py:25:create] create_model. model_name = lr, output_dim = 10, dataset = femnist_x
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:11] [INFO] [fedavg_api.py:85:__init__] model = [[DefaultCNN(
+  (cnn): Sequential(
+    (0): Conv2d(1, 20, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(20, 50, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=3200, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)], [MLPModel(
+  (model): Sequential(
+    (0): Linear(in_features=1, out_features=20, bias=True)
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): Linear(in_features=20, out_features=1, bias=True)
+  )
+)], [DefaultCNN(
+  (cnn): Sequential(
+    (0): Conv2d(1, 20, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(20, 50, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=3200, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)]]
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:11] [INFO] [model_selection_class.py:38:do_model_selection] starting learning args eval 0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:27:11] [INFO] [model_selection_class.py:38:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [__init__.py:163:init] args.rank = 0, args.worker_num = 10
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [main.py:13:<module>] DEBUG: fedml.init() successful.
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [main.py:13:<module>] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [ml_engine_adapter.py:147:get_torch_device] args = <fedml.arguments.Arguments object at 0x7527320cb590>, using_gpu = True, device_id = 0, device_type = gpu
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [device.py:48:get_device] device = cuda:0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [data_loader.py:315:load_synthetic_data] load_data. dataset_name = femnist_z
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [data_loader.py:301:load_partition_data_mnist] Loading scenario from: data/femnist_z/main.npz
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:116:info] test
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 10000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:116:info] train
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info]       min: -4.47
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info] , max: 14.28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 20000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info]       min: -0.42
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info] , max: 2.82
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info]       min: -3.61
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info] , max: 5.23
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info]       min: -0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info] , max: 2.03
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info]       min: -4.47
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info] , max: 14.28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:116:info] dev
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 10000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:15] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:16] [INFO] [model_hub.py:25:create] create_model. model_name = lr, output_dim = 10, dataset = femnist_z
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:16] [INFO] [fedavg_api.py:85:__init__] model = [[MLPModel(
+  (model): Sequential(
+    (0): Linear(in_features=1, out_features=20, bias=True)
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): Linear(in_features=20, out_features=1, bias=True)
+  )
+)], [DefaultCNN(
+  (cnn): Sequential(
+    (0): Conv2d(1, 20, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(20, 50, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=3200, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)], [MLPModel(
+  (model): Sequential(
+    (0): Linear(in_features=1, out_features=20, bias=True)
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): Linear(in_features=20, out_features=1, bias=True)
+  )
+)]]
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:16] [INFO] [model_selection_class.py:38:do_model_selection] starting learning args eval 0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:16] [INFO] [model_selection_class.py:38:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [__init__.py:163:init] args.rank = 0, args.worker_num = 10
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [main.py:13:<module>] DEBUG: fedml.init() successful.
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [main.py:13:<module>] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [ml_engine_adapter.py:147:get_torch_device] args = <fedml.arguments.Arguments object at 0x7bbc6f1a8c10>, using_gpu = True, device_id = 0, device_type = gpu
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [device.py:48:get_device] device = cuda:0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [data_loader.py:295:load_synthetic_data] load_data. dataset_name = femnist_xz
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [data_loader.py:301:load_partition_data_mnist] Loading scenario from: data/femnist_xz/main.npz
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:116:info] test
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 10000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 10000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:116:info] train
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 20000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info]       min: -0.42
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info] , max: 2.82
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 20000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info]       min: -0.42
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info] , max: 2.82
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info]       min: -3.61
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info] , max: 5.23
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info]       min: -0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info] , max: 0.73
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 20000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info]       min: 0.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info] , max: 9.00
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:33:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:116:info] dev
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:116:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   x:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 10000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   z:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float32): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 10000x1x28x28
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   y:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   g:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]   w:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] ndarray
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] (float64): 
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 10000x1
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:47] [INFO] [abstract_scenario.py:31:info] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:48] [INFO] [model_hub.py:25:create] create_model. model_name = lr, output_dim = 10, dataset = femnist_xz
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:48] [INFO] [fedavg_api.py:85:__init__] model = [[DefaultCNN(
+  (cnn): Sequential(
+    (0): Conv2d(1, 20, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(20, 50, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=3200, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)], [DefaultCNN(
+  (cnn): Sequential(
+    (0): Conv2d(1, 20, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(20, 50, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=3200, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)], [DefaultCNN(
+  (cnn): Sequential(
+    (0): Conv2d(1, 20, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (1): LeakyReLU(negative_slope=0.01)
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (3): Dropout(p=0.0, inplace=False)
+    (4): Conv2d(20, 50, kernel_size=(3, 3), stride=(1, 1), padding=(2, 2))
+    (5): LeakyReLU(negative_slope=0.01)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Dropout(p=0.0, inplace=False)
+  )
+  (linear_1): Linear(in_features=3200, out_features=200, bias=True)
+  (linear_2): Linear(in_features=200, out_features=10, bias=True)
+  (linear_3): Linear(in_features=10, out_features=1, bias=True)
+  (bn): BatchNorm1d(10, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+)]]
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:48] [INFO] [model_selection_class.py:38:do_model_selection] starting learning args eval 0
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:28:48] [INFO] [model_selection_class.py:38:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:68:do_model_selection] learning eval:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:68:do_model_selection] -0.037739688968936806
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:68:do_model_selection] OptimalObjective::lambda_1=0.100000
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0001
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.00030000000000000003
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:68:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:82:do_model_selection] size of f_z collection:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:82:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:82:do_model_selection] 120
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [model_selection_class.py:82:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [fedavg_api.py:242:_setup_clients] ############setup_clients (START)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:34:50] [INFO] [fedavg_api.py:259:_setup_clients] ############setup_clients (END)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:68:do_model_selection] learning eval:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:68:do_model_selection] 0.019819263747397703
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:68:do_model_selection] OptimalObjective::lambda_1=0.100000
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0001
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0005
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:68:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:82:do_model_selection] size of f_z collection:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:82:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:82:do_model_selection] 120
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [model_selection_class.py:82:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [fedavg_api.py:242:_setup_clients] ############setup_clients (START)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:37:00] [INFO] [fedavg_api.py:259:_setup_clients] ############setup_clients (END)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:68:do_model_selection] learning eval:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:68:do_model_selection] 0.04664449974374474
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:68:do_model_selection] OptimalObjective::lambda_1=0.100000
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0001
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:68:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:68:do_model_selection] OGDA:::'lr'=0.0005
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:68:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:82:do_model_selection] size of f_z collection:
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:82:do_model_selection]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:82:do_model_selection] 120
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [model_selection_class.py:82:do_model_selection] 
+
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [fedavg_api.py:242:_setup_clients] ############setup_clients (START)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 09:42:32] [INFO] [fedavg_api.py:259:_setup_clients] ############setup_clients (END)#############
+[FedML-Client @device-id-0] [Thu, 07 May 2026 10:51:35] [INFO] [fedavg_api.py:479:train] MSE on test ------------------------------>>>>>>>>>>>>>>>>>>
+[FedML-Client @device-id-0] [Thu, 07 May 2026 10:51:35] [INFO] [fedavg_api.py:479:train]  
+[FedML-Client @device-id-0] [Thu, 07 May 2026 10:51:35] [INFO] [fedavg_api.py:479:train] 0.31921323649534655
+[FedML-Client @device-id-0] [Thu, 07 May 2026 10:51:35] [INFO] [fedavg_api.py:479:train] 
+

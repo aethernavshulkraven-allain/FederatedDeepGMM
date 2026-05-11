@@ -87,7 +87,7 @@ class HingeRegularizedMomentObjective(RegularizedMomentObjective):
 
 
 class OptimalMomentObjective(AbstractObjective):
-    def __init__(self, lambda_1=1.0):
+    def __init__(self, lambda_1=0.1):
         AbstractObjective.__init__(self)
         self._lambda_1 = lambda_1
 
