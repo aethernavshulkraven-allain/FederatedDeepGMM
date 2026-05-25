@@ -235,13 +235,135 @@ def load(args):
     return load_synthetic_data(args)
 
 
+def _to_tensor(x, float_cast=False):
+    if isinstance(x, np.ndarray):
+        x = torch.from_numpy(x)
+    if not isinstance(x, torch.Tensor):
+        return x
+    if float_cast:
+        if x.dtype in (torch.float32, torch.float64):
+            return x
+        return x.float()
+    return x
+
+
+def _normalize_batch_item(item):
+    if not isinstance(item, (list, tuple)):
+        raise TypeError(f"Unexpected batch item type: {type(item)}")
+
+    if len(item) == 2:
+        x, y = item
+        z = None
+        g = None
+        w = None
+    elif len(item) == 3:
+        x, y, z = item
+        g = None
+        w = None
+    elif len(item) == 4:
+        # assume (g, w, x, y) or (x, y, z, extra), but preserve x,y mainly
+        g, w, x, y = item
+        z = None
+    elif len(item) >= 5:
+        g, w, x, y, z = item[:5]
+    else:
+        raise ValueError(f"Unexpected batch tuple length: {len(item)}")
+
+    x = _to_tensor(x, float_cast=True)
+    y = _to_tensor(y)
+    z = _to_tensor(z, float_cast=True) if z is not None else None
+    g = _to_tensor(g, float_cast=True) if g is not None else None
+    w = _to_tensor(w, float_cast=True) if w is not None else None
+
+    if z is not None and g is not None and w is not None:
+        return (g, w, x, y, z)
+    if z is not None:
+        return (x, y, z)
+    return (x, y)
+
+
 def combine_batches(batches):
-    full_x = torch.from_numpy(np.asarray([])).float()
-    full_y = torch.from_numpy(np.asarray([])).long()
-    for (batched_x, batched_y) in batches:
-        full_x = torch.cat((full_x, batched_x), 0)
-        full_y = torch.cat((full_y, batched_y), 0)
-    return [(full_x, full_y)]
+    if len(batches) == 0:
+        return []
+
+    item = batches[0]
+    if len(item) == 2:
+        xs = [batch[0] for batch in batches]
+        ys = [batch[1] for batch in batches]
+        return [(torch.cat(xs, dim=0), torch.cat(ys, dim=0))]
+    if len(item) == 3:
+        xs = [batch[0] for batch in batches]
+        ys = [batch[1] for batch in batches]
+        zs = [batch[2] for batch in batches]
+        return [(torch.cat(xs, dim=0), torch.cat(ys, dim=0), torch.cat(zs, dim=0))]
+    if len(item) == 5:
+        gs = [batch[0] for batch in batches]
+        ws = [batch[1] for batch in batches]
+        xs = [batch[2] for batch in batches]
+        ys = [batch[3] for batch in batches]
+        zs = [batch[4] for batch in batches]
+        return [(
+            torch.cat(gs, dim=0),
+            torch.cat(ws, dim=0),
+            torch.cat(xs, dim=0),
+            torch.cat(ys, dim=0),
+            torch.cat(zs, dim=0),
+        )]
+    raise ValueError(f"Unexpected normalized batch tuple length: {len(item)}")
+
+
+def to_batch_list(data):
+    # Handle simple scenario Dataset objects that hold arrays/tensors as attributes
+    if hasattr(data, "x") and hasattr(data, "y"):
+        x = data.x
+        y = data.y
+        z = getattr(data, "z", None)
+        g = getattr(data, "g", None)
+        w = getattr(data, "w", None)
+
+        x = _to_tensor(x, float_cast=True)
+        y = _to_tensor(y)
+        z = _to_tensor(z, float_cast=True) if z is not None else None
+        g = _to_tensor(g, float_cast=True) if g is not None else None
+        w = _to_tensor(w, float_cast=True) if w is not None else None
+
+        if z is not None and g is not None and w is not None:
+            return [(g, w, x, y, z)]
+        if z is not None:
+            return [(x, y, z)]
+        return [(x, y)]
+
+    # Torch-style Dataset with .tensors
+    if isinstance(data, torch.utils.data.Dataset):
+        if hasattr(data, "tensors") and len(getattr(data, "tensors", ())) >= 2:
+            tensors = tuple(getattr(data, "tensors", ()))
+            if len(tensors) >= 5:
+                g, w, x, y, z = tensors[:5]
+                return [(_to_tensor(g, float_cast=True), _to_tensor(w, float_cast=True), _to_tensor(x, float_cast=True), _to_tensor(y), _to_tensor(z, float_cast=True))]
+            if len(tensors) == 3:
+                x, y, z = tensors
+                return [(_to_tensor(x, float_cast=True), _to_tensor(y), _to_tensor(z, float_cast=True))]
+            return [(_to_tensor(tensors[0], float_cast=True), _to_tensor(tensors[1]))]
+        if hasattr(data, "__len__") and hasattr(data, "__getitem__"):
+            lst = [data[i] for i in range(len(data))]
+            converted = []
+            for item in lst:
+                normalized = _normalize_batch_item(item)
+                converted.append(normalized)
+            return converted
+        raise TypeError(f"Cannot convert Dataset of type {type(data)} to batch list")
+
+    # Generic iterable of batches (list, generator that was realized)
+    try:
+        lst = list(data)
+    except TypeError:
+        raise TypeError(f"Cannot convert object of type {type(data)} to batch list")
+
+    converted = []
+    for item in lst:
+        normalized = _normalize_batch_item(item)
+        converted.append(normalized)
+    return converted
 
 
 def load_synthetic_data(args):
@@ -286,6 +408,17 @@ def load_synthetic_data(args):
             args,
             args.batch_size
         )
+        # Convert DataLoaders to lists of batches for zoo datasets to enable combine_batches
+        if dataset_name in zoo_datasets:
+            train_data_local_dict = {
+                cid: list(train_data_local_dict[cid]) for cid in train_data_local_dict.keys()
+            }
+            test_data_local_dict = {
+                cid: list(test_data_local_dict[cid]) for cid in test_data_local_dict.keys()
+            }
+            val_data_local_dict = {
+                cid: list(val_data_local_dict[cid]) for cid in val_data_local_dict.keys()
+            }
         """
         For shallow NN or linear models, 
         we uniformly sample a fraction of clients each round (as the original FedAvg paper)
@@ -607,13 +740,31 @@ def load_synthetic_data(args):
                     args.client_num_in_total = 1
 
                 if full_batch:
-                    train_data_global = combine_batches(train_data_global)
-                    test_data_global = combine_batches(test_data_global)
+                    from types import SimpleNamespace
+
+                    def _wrap_global_inline(data):
+                        combined = combine_batches(to_batch_list(data))
+                        if not combined:
+                            return SimpleNamespace(x=None, y=None, z=None, g=None, w=None)
+                        item = combined[0]
+                        if len(item) == 2:
+                            x_cat, y_cat = item
+                            return SimpleNamespace(x=x_cat, y=y_cat, z=None, g=None, w=None)
+                        if len(item) == 3:
+                            x_cat, y_cat, z_cat = item
+                            return SimpleNamespace(x=x_cat, y=y_cat, z=z_cat, g=None, w=None)
+                        if len(item) == 5:
+                            g_cat, w_cat, x_cat, y_cat, z_cat = item
+                            return SimpleNamespace(x=x_cat, y=y_cat, z=z_cat, g=g_cat, w=w_cat)
+                        raise ValueError(f"Unexpected combined batch length: {len(item)}")
+
+                    train_data_global = _wrap_global_inline(train_data_global)
+                    test_data_global = _wrap_global_inline(test_data_global)
                     train_data_local_dict = {
-                        cid: combine_batches(train_data_local_dict[cid]) for cid in train_data_local_dict.keys()
+                        cid: combine_batches(to_batch_list(train_data_local_dict[cid])) for cid in train_data_local_dict.keys()
                     }
                     test_data_local_dict = {
-                        cid: combine_batches(test_data_local_dict[cid]) for cid in test_data_local_dict.keys()
+                        cid: combine_batches(to_batch_list(test_data_local_dict[cid])) for cid in test_data_local_dict.keys()
                     }
                     args.batch_size = args_batch_size
 
@@ -670,12 +821,38 @@ def load_synthetic_data(args):
         args.client_num_in_total = 1
 
     if full_batch:
-        train_data_global = combine_batches(train_data_global)
-        test_data_global = combine_batches(test_data_global)
+        # combine_batches returns a list with a single normalized tuple.
+        # Wrap globals into a simple object with attributes so downstream code
+        # can access `.x`, `.y`, `.z`, `.g`, `.w` as expected.
+        from types import SimpleNamespace
+
+        def _wrap_global(data):
+            combined = combine_batches(to_batch_list(data))
+            if not combined:
+                return SimpleNamespace(x=None, y=None, z=None, g=None, w=None)
+            item = combined[0]
+            if len(item) == 2:
+                x_cat, y_cat = item
+                return SimpleNamespace(x=x_cat, y=y_cat, z=None, g=None, w=None)
+            if len(item) == 3:
+                x_cat, y_cat, z_cat = item
+                return SimpleNamespace(x=x_cat, y=y_cat, z=z_cat, g=None, w=None)
+            if len(item) == 5:
+                g_cat, w_cat, x_cat, y_cat, z_cat = item
+                return SimpleNamespace(x=x_cat, y=y_cat, z=z_cat, g=g_cat, w=w_cat)
+            raise ValueError(f"Unexpected combined batch length: {len(item)}")
+
+        train_data_global = _wrap_global(train_data_global)
+        test_data_global = _wrap_global(test_data_global)
+        val_data_global = _wrap_global(val_data_global)
+
+        # For local dicts we keep the combined list-of-1 tuples; callers that
+        # expect iterables over batches will still work. If later code needs
+        # per-client `.x` access, we can wrap those as well.
         train_data_local_dict = {
-            cid: combine_batches(train_data_local_dict[cid]) for cid in train_data_local_dict.keys()
+            cid: combine_batches(to_batch_list(train_data_local_dict[cid])) for cid in train_data_local_dict.keys()
         }
-        test_data_local_dict = {cid: combine_batches(test_data_local_dict[cid]) for cid in test_data_local_dict.keys()}
+        test_data_local_dict = {cid: combine_batches(to_batch_list(test_data_local_dict[cid])) for cid in test_data_local_dict.keys()}
         args.batch_size = args_batch_size
 
     dataset = [

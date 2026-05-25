@@ -183,12 +183,16 @@ def generate_final_comparison():
     # --- PLOT 2: (b) STEP SCENARIO ---
     x_step = np.load("results_step_sgd_x.npy")
     y_true_step = np.load("results_step_sgd_y_true.npy")
-    y_gda_step = np.load("results_step_sgd_y_pred.npy")
-    y_ogda_step = np.load("results_step_ogda_y_pred.npy")
+    y_gda_step = np.load("results_step_sgd_y_prednew.npy")
+    y_ogda_step = np.load("results_step_ogda_y_prednew.npy")
+    y_fbgda_step = np.load("results_step_sgd_y_prednew_fullbatch.npy")
+    y_fb_ogda_step = np.load("results_step_ogda_y_prednew_fullbatch.npy")
 
     ax2.plot(x_step, y_true_step, label="Actual Causal Effect", color='blue', linewidth=2)
-    ax2.plot(x_step, y_gda_step, label="FedDeepGMM-GDA", color='brown', linestyle='--')
-    ax2.plot(x_step, y_ogda_step, label="FedDeepGMM-OGDA", color='red', linestyle='-')
+    ax2.plot(x_step, y_gda_step, label="FedDeepGMM-SGDA", color='brown', linestyle='--')
+    ax2.plot(x_step, y_ogda_step, label="FedDeepGMM-SOGDA", color='red', linestyle='-')
+    ax2.plot(x_step, y_fbgda_step, label="FedDeepGMM-GDA (FB)", color='green', linestyle='--')
+    ax2.plot(x_step, y_fb_ogda_step, label="FedDeepGMM-OGDA (FB)", color='orange', linestyle='-')
     
     ax2.set_title("(b) Step Scenario")
     ax2.set_xlabel("x")

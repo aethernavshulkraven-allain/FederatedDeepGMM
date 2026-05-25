@@ -112,7 +112,7 @@ class FedAvgAPI(object):
         # CNN critics (in z and xz scenarios) are very powerful and need a lower multiplier to avoid NaN
         critic_multiplier = 20.0
         if args.dataset in ['linear', 'abs', 'sin', 'step', 'zoo']:
-            critic_multiplier = 10.0
+            critic_multiplier = 15.0
         if args.dataset in ['mnist_z', 'femnist_z', 'mnist_xz', 'femnist_xz','cifar10_z', 'cifar10_xz', 'cifar_xz']:
             critic_multiplier = 5.0  # CNN Critic is powerful enough without a high LR
         elif args.dataset in ['mnist_x', 'femnist_x','cifar10_x', 'cifar_x']:
@@ -340,7 +340,7 @@ class FedAvgAPI(object):
             if self.args.client_optimizer == "ogda":
                 # Suitable beta (Server LR). 1.0 is standard for FedAvg. 
                 # Can be lowered (e.g., 0.5) for more stability.
-                server_lr = 1.0 
+                server_lr = 1.5 
 
                 # Current weights (theta_t)
                 g_old = self.model_trainer.get_g_model_params()
@@ -365,7 +365,23 @@ class FedAvgAPI(object):
                 self.delta_f_prev = delta_f
                 w_global = [g_new, f_new]
             else:
-                w_global = w_agg
+                # w_global = w_agg
+                server_lr = 1.5 
+
+                # Current weights (theta_t)
+                g_old = self.model_trainer.get_g_model_params()
+                f_old = self.model_trainer.get_f_model_params()
+                
+                # Current updates (delta_t = w_agg - theta_t)
+                delta_g = {k: w_agg[0][k] - g_old[k] for k in g_old.keys()}
+                delta_f = {k: w_agg[1][k] - f_old[k] for k in f_old.keys()}
+                
+               
+                #theta_{t+1} = theta_t + beta * delta_t
+                g_new = {k: g_old[k] + server_lr * delta_g[k] for k in g_old.keys()}
+                f_new = {k: f_old[k] + server_lr * delta_f[k] for k in f_old.keys()}
+
+                w_global = [g_new, f_new]
 
             w_global_reg = self._aggregate_reg(w_locals_reg)
             self.model_trainer.set_g_model_params(w_global[0])
@@ -378,7 +394,7 @@ class FedAvgAPI(object):
             #     self._local_test_on_all_clients(round_idx)
             # per {frequency_of_the_test} round
             mse, obj_train, obj_dev, curr_eval, max_recent_eval, f_of_z_train, f_of_z_dev = self.eval_global_model()
-            log_results_to_csv(f"csv/{self.args.client_optimizer}_{self.args.dataset}.csv", round_idx, mse)
+            log_results_to_csv(f"csv/{self.args.client_optimizer}_{self.args.dataset}new.csv", round_idx, mse)
             
             # Save checkpoint every 200 rounds
             if round_idx % 200 == 0:
@@ -497,9 +513,9 @@ class FedAvgAPI(object):
         g_true_sort = g_true[indices]
         
         # Save the data for later plotting
-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_x.npy", x_sort)
-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_pred.npy", g_pred_sort)
-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_true.npy", g_true_sort)
+        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_xnew.npy", x_sort)
+        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_prednew.npy", g_pred_sort)
+        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_truenew.npy", g_true_sort)
         # gmm_true_sort = gmm_pred[indices]
         # gmm_sgd_sort = gmm_pred_sgd[indices]
         # fedavg_sgd_sort = fedavg_sgd[indices]
@@ -589,20 +605,26 @@ class FedAvgAPI(object):
                     f[k] += local_f[k] * w
         return [g, f]
 
+    def _effective_batch_size(self, num_data):
+        if not hasattr(self.args, "batch_size") or self.args.batch_size is None or self.args.batch_size <= 0:
+            return num_data
+        return self.args.batch_size
+
     def calc_f_g_obj(self, global_val):
         x = global_val.x
         y = global_val.y
         z = global_val.z
         num_data = x.shape[0]
-        num_batch = math.ceil(num_data * 1.0 / self.args.batch_size)
+        batch_size = self._effective_batch_size(num_data)
+        num_batch = math.ceil(num_data * 1.0 / batch_size)
         g_of_x = None
         f_of_z = None
         obj_total = 0
         for b in range(num_batch):
             if b < num_batch - 1:
-                batch_idx = list(range(b*self.args.batch_size, (b+1)*self.args.batch_size))
+                batch_idx = list(range(b*batch_size, (b+1)*batch_size))
             else:
-                batch_idx = list(range(b*self.args.batch_size, num_data))
+                batch_idx = list(range(b*batch_size, num_data))
             x_batch = x[batch_idx]
             z_batch = z[batch_idx]
             y_batch = y[batch_idx]
