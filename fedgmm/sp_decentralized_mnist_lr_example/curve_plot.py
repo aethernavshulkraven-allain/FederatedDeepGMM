@@ -169,12 +169,19 @@ def generate_final_comparison():
     y_true_abs = np.load("results_abs_sgd_y_true.npy")
     y_gda_abs = np.load("results_abs_sgd_y_pred.npy")
     y_ogda_abs = np.load("results_abs_ogda_y_pred.npy")
+    y_ogda_abs_prev = np.load("results_abs_ogda_y_prednew.npy")
+    y_ogda_abs_minibatch= np.load("results_abs_ogda_y_prednewmb.npy")
+    y_fbgda_abs = np.load("results_abs_ogda_y_prednewfb.npy")
+
 
     ax1.plot(x_abs, y_true_abs, label="Actual Causal Effect", color='blue', linewidth=2)
     ax1.plot(x_abs, y_gda_abs, label="FedDeepGMM-GDA", color='brown', linestyle='--')
     ax1.plot(x_abs, y_ogda_abs, label="FedDeepGMM-OGDA", color='red', linestyle='-')
-    
-    ax1.set_title("(a) Absolute Scenario")
+    ax1.plot(x_abs, y_ogda_abs_prev, label="FedDeepGMM-OGDA (Previous)", color='purple', linestyle='-.')
+    ax1.plot(x_abs, y_ogda_abs_minibatch, label="FedDeepGMM-OGDA (Minibatch)", color='green', linestyle=':')
+    ax1.plot(x_abs, y_fbgda_abs, label="FedDeepGMM-OGDA (Full Batch)", color='orange', linestyle='--')
+
+    ax1.set_title("(a) Absolute")
     ax1.set_xlabel("x")
     ax1.set_ylabel("g(x)")
     ax1.grid(True, alpha=0.3)
@@ -194,7 +201,7 @@ def generate_final_comparison():
     ax2.plot(x_step, y_fbgda_step, label="FedDeepGMM-GDA (FB)", color='green', linestyle='--')
     ax2.plot(x_step, y_fb_ogda_step, label="FedDeepGMM-OGDA (FB)", color='orange', linestyle='-')
     
-    ax2.set_title("(b) Step Scenario")
+    ax2.set_title("(b) Step")
     ax2.set_xlabel("x")
     ax2.set_ylabel("g(x)")
     ax2.grid(True, alpha=0.3)
@@ -210,7 +217,7 @@ def generate_final_comparison():
     ax3.plot(x_lin, y_gda_lin, label="FedDeepGMM-GDA", color='brown', linestyle='--')
     ax3.plot(x_lin, y_ogda_lin, label="FedDeepGMM-OGDA", color='red', linestyle='-')
     
-    ax3.set_title("(c) Linear Scenario")
+    ax3.set_title("(c) Linear")
     ax3.set_xlabel("x")
     ax3.set_ylabel("g(x)")
     ax3.grid(True, alpha=0.3)

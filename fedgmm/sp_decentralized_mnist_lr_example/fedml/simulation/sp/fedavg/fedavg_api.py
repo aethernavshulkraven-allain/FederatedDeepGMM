@@ -513,9 +513,9 @@ class FedAvgAPI(object):
         g_true_sort = g_true[indices]
         
         # Save the data for later plotting
-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_xnew.npy", x_sort)
+        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_x.npy", x_sort)
         numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_prednew.npy", g_pred_sort)
-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_truenew.npy", g_true_sort)
+        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_true.npy", g_true_sort)
         # gmm_true_sort = gmm_pred[indices]
         # gmm_sgd_sort = gmm_pred_sgd[indices]
         # fedavg_sgd_sort = fedavg_sgd[indices]
