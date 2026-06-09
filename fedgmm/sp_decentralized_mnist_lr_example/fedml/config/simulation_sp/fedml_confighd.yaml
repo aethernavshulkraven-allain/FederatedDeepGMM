@@ -98,7 +98,7 @@
 common_args:
   training_type: "simulation"
   using_mlops: false
-  random_seed: 0
+  random_seed: 5
   config_version: "release"
   mlops_api_key: f5b88f5dca344e6faf17809139b89c48
   mlops_project_name: sp_fedavg_test
@@ -106,8 +106,8 @@ common_args:
 
 data_args:
   # dataset: "cifar10_xz"
-  # dataset: "femnist_xz"
-  dataset: "abs"
+  dataset: "femnist_xz"
+  # dataset: "abs"
   data_cache_dir: "data"
   partition_method: "hetero"
   partition_alpha: 0.5
@@ -115,31 +115,19 @@ data_args:
 model_args:
   model: "lr"
 
-# train_args: #SGDA-Best working
-#   federated_optimizer: "FedAvg"
-#   client_id_list: "[]"
-#   client_num_in_total: 1000
-#   client_num_per_round: 10
-#   comm_round: 1500
-#   epochs: 7
-#   batch_size: 256
-#   # client_optimizer: ogda
-#   client_optimizer: sgd
-#   learning_rate: 0.003
-#   weight_decay: 0.03
-
-# train_args: #OGDA-Bestworking
-#   federated_optimizer: "FedAvg"
-#   client_id_list: "[]"
-#   client_num_in_total: 1000
-#   client_num_per_round: 10
-#   comm_round: 1500
-#   epochs: 7
-#   batch_size: 256
-#   client_optimizer: ogda
-#   # client_optimizer: sgd
-#   learning_rate: 0.001
-#   weight_decay: 0.05  #save file-prednew0_001wd0_05.npy critic multiplier was 10 and server_lr=1.5 
+train_args: #SGDA-Best working
+  federated_optimizer: "FedAvg"
+  client_id_list: "[]"
+  client_num_in_total: 1000
+  client_num_per_round: 10
+  comm_round: 1500
+  epochs: 3
+  batch_size: 256
+  client_optimizer: ogda # for ogda 0.001 and 0.003 are too small lrs that are leading to Nans
+  # client_optimizer: sgd
+  learning_rate: 0.001 #0.001, same, 0.003 now 
+  weight_decay: 0.05 #working well with larger weight decay (best wd-0.5)
+  
 
 # train_args: #OGDA-FB
 #   federated_optimizer: "FedAvg"
@@ -156,25 +144,39 @@ model_args:
 
 ######TRYING MINIBATCHES
 
-train_args: #OGDA-MINIBATCH
-  federated_optimizer: "FedAvg"
-  client_id_list: "[]"
-  client_num_in_total: 1000
-  client_num_per_round: 10
-  comm_round: 1500
-  epochs: 7
-  batch_size: 256
-  client_optimizer: ogda
-  # client_optimizer: sgd
-  learning_rate: 0.001
-  weight_decay: 0.1  #save file-prednew0_001wd0_1.npy critic multiplier was 10 and server_lr=1.5 weight decay 0.01 earlier
-# next try 0.03
+# train_args: #OGDA-MINIBATCH
+#   federated_optimizer: "FedAvg"
+#   client_id_list: "[]"
+#   client_num_in_total: 1000
+#   client_num_per_round: 10
+#   comm_round: 1500
+#   epochs: 7
+#   batch_size: 256
+#   client_optimizer: ogda
+#   # client_optimizer: sgd
+#   learning_rate: 0.01
+#   weight_decay: 0.05  #save file-prednewmini01wd05 critic multiplier was 15 [0.001 and wd 0.03]
+
+
+# train_args: #OGDA-MINIBATCH
+#   federated_optimizer: "FedAvg"
+#   client_id_list: "[]"
+#   client_num_in_total: 1000
+#   client_num_per_round: 10
+#   comm_round: 1500
+#   epochs: 7
+#   batch_size: 256
+#   client_optimizer: ogda
+#   # client_optimizer: sgd
+#   learning_rate: 0.01
+#   weight_decay: 0.001  #save file-prednewmini01wd001.npy critic multiplier was 10 and server_lr=1.5 weight decay 0.01 earlier
+
 validation_args:
   frequency_of_the_test: 5
 
 device_args:
   using_gpu: true
-  gpu_id: 3
+  gpu_id: 1
 
 comm_args:
   backend: "sp"

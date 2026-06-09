@@ -112,7 +112,7 @@ class FedAvgAPI(object):
         # CNN critics (in z and xz scenarios) are very powerful and need a lower multiplier to avoid NaN
         critic_multiplier = 20.0
         if args.dataset in ['linear', 'abs', 'sin', 'step', 'zoo']:
-            critic_multiplier = 15.0
+            critic_multiplier = 10.0
         if args.dataset in ['mnist_z', 'femnist_z', 'mnist_xz', 'femnist_xz','cifar10_z', 'cifar10_xz', 'cifar_xz']:
             critic_multiplier = 5.0  # CNN Critic is powerful enough without a high LR
         elif args.dataset in ['mnist_x', 'femnist_x','cifar10_x', 'cifar_x']:
@@ -394,7 +394,7 @@ class FedAvgAPI(object):
             #     self._local_test_on_all_clients(round_idx)
             # per {frequency_of_the_test} round
             mse, obj_train, obj_dev, curr_eval, max_recent_eval, f_of_z_train, f_of_z_dev = self.eval_global_model()
-            log_results_to_csv(f"csv/{self.args.client_optimizer}_{self.args.dataset}new.csv", round_idx, mse)
+            log_results_to_csv(f"csv/{self.args.client_optimizer}_{self.args.dataset}new0_001wd0_1.csv", round_idx, mse)
             
             # Save checkpoint every 200 rounds
             if round_idx % 200 == 0:
@@ -514,7 +514,7 @@ class FedAvgAPI(object):
         
         # Save the data for later plotting
         numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_x.npy", x_sort)
-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_prednew.npy", g_pred_sort)
+        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_prednew0_001wd0_1.npy", g_pred_sort)
         numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_true.npy", g_true_sort)
         # gmm_true_sort = gmm_pred[indices]
         # gmm_sgd_sort = gmm_pred_sgd[indices]
