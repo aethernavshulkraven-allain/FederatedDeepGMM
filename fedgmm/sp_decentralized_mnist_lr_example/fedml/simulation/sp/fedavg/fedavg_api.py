@@ -37,11 +37,16 @@ from experiment_utils import (
     append_aggregation_weights_by_round,
     append_mse_by_round,
     append_test_mse_by_round,
+    check_eicu_aggregation_weighting,
+    check_eicu_objective_mode,
     client_indices_for_round,
     compute_client_weights,
+    config_checksum,
     default_critic_multiplier,
     env_truthy,
     ensure_run_dirs,
+    equal_client_moment_violation,
+    equal_client_structural_mse,
     get_effective_config,
     moment_violation,
     prepare_run_dir,
@@ -59,6 +64,7 @@ from experiment_utils import (
     write_batching_summary,
     write_metrics,
     write_mse_by_round,
+    write_per_client_metrics,
     write_test_mse_by_round,
 )
 
@@ -100,6 +106,8 @@ class FedAvgAPI(object):
             setattr(self.args, "aggregation_weighting", "sample_size")
         if not hasattr(self.args, "objective_mode"):
             setattr(self.args, "objective_mode", "legacy")
+        if not hasattr(self.args, "campaign_role"):
+            setattr(self.args, "campaign_role", "")
         if not hasattr(self.args, "output_dir"):
             setattr(self.args, "output_dir", "results")
         if not hasattr(self.args, "run_id"):
@@ -163,21 +171,11 @@ class FedAvgAPI(object):
                 f"objective_mode must be one of {OBJECTIVE_MODE_CHOICES}, "
                 f"got {_objective_mode!r}"
             )
-        _is_eicu_dataset = str(getattr(self.args, "dataset", "")).startswith("eicu")
-        if _is_eicu_dataset and _aggregation_weighting != "uniform_clients":
-            raise ValueError(
-                "eICU runs must set aggregation_weighting: uniform_clients to match "
-                "the paper's federated objective U(theta,tau) = (1/N) sum_i U^i(theta,tau); "
-                f"got aggregation_weighting={_aggregation_weighting!r}. The legacy "
-                "sample_size weighting lets large hospitals dominate the global model, "
-                "which is exactly the failure mode this check exists to prevent."
-            )
-        if _is_eicu_dataset and _objective_mode != "paper_aligned":
-            raise ValueError(
-                "eICU runs must set objective_mode: paper_aligned -- Study A exists to "
-                "test the paper's actual FedDeepGMM formulation (frozen theta~, "
-                f"lambda=1/4), not the legacy objective; got objective_mode={_objective_mode!r}."
-            )
+        _campaign_role = str(getattr(self.args, "campaign_role", ""))
+        check_eicu_aggregation_weighting(
+            getattr(self.args, "dataset", ""), _aggregation_weighting, _campaign_role
+        )
+        check_eicu_objective_mode(getattr(self.args, "dataset", ""), _objective_mode)
         if bool(getattr(self.args, "require_multibatch_stochastic", False)) and int(getattr(self.args, "batch_size", 0)) <= 0:
             raise ValueError("require_multibatch_stochastic requires a positive batch_size")
         self.effective_config = get_effective_config(self.args)
@@ -248,6 +246,7 @@ class FedAvgAPI(object):
         self.delta_g_prev = None
         self.delta_f_prev = None
         self.diverged = False
+        self.nonfinite_first_round = None
         self.batching_summary_rows = []
         self.start_time = now_seconds()
         [
@@ -316,6 +315,7 @@ class FedAvgAPI(object):
             self._val_y_cpu = self.val_global.y.detach().cpu()
             self._val_g_cpu = self.val_global.g.detach().cpu()
             self._test_g_cpu = self.test_global.g.detach().cpu()
+            self._test_y_cpu = self.test_global.y.detach().cpu()
 
         # g_learning_rates = [0.010, 0.050, 0.020]
         ##g_learning_rates =[0.01, 0.001,0.0001,0.0005]
@@ -728,11 +728,15 @@ class FedAvgAPI(object):
             f_of_z_dev = eval_result["f_of_z_dev"]
             finite = state_is_finite(self.model_trainer.get_g_model_params()) and state_is_finite(self.model_trainer.get_f_model_params())
             diverged = not finite
+            if diverged and self.nonfinite_first_round is None:
+                self.nonfinite_first_round = round_idx
             self.diverged = self.diverged or diverged
             mse_row = {
                 "round": round_idx,
                 "train_mse": eval_result["train_mse"],
                 "val_mse": eval_result["val_mse"],
+                "primary_val_mse": eval_result["primary_val_mse"],
+                "equal_client_val_mse": eval_result["equal_client_val_mse"],
                 "train_moment_violation": eval_result["train_moment_violation"],
                 "val_moment_violation": eval_result["val_moment_violation"],
                 "gmm_train_objective": obj_train,
@@ -766,9 +770,13 @@ class FedAvgAPI(object):
             if getattr(self.args, "enable_legacy_outputs", True):
                 with self.profiler.span("legacy_csv_write", round_idx=round_idx):
                     log_results_to_csv(f"csv/{self.args.client_optimizer}_{self.args.dataset}newtrial.csv", round_idx, mse)
-            if eval_result["val_mse"] < self.best_validation_mse:
+            # Primary checkpoint selector: equal-client validation structural
+            # MSE for eICU (protocol_v1.md S5.1), which is identical to the
+            # legacy pooled val_mse for every other dataset (primary_val_mse
+            # == val_mse whenever client_id is unavailable).
+            if eval_result["primary_val_mse"] < self.best_validation_mse:
                 with self.profiler.span("best_validation_checkpoint", round_idx=round_idx):
-                    self.best_validation_mse = eval_result["val_mse"]
+                    self.best_validation_mse = eval_result["primary_val_mse"]
                     self.best_validation_round = round_idx
                     self.best_state = self._capture_training_state()
                     self.best_g_state = copy.deepcopy(self.best_state["g_state_dict"])
@@ -781,9 +789,14 @@ class FedAvgAPI(object):
                         eval_result,
                         "best_validation",
                     )
-            if eval_result["val_moment_violation"] < self.best_moment_violation:
+            _primary_val_moment_violation = (
+                eval_result["equal_client_val_moment_violation"]
+                if eval_result["equal_client_val_moment_violation"] is not None
+                else eval_result["val_moment_violation"]
+            )
+            if _primary_val_moment_violation < self.best_moment_violation:
                 with self.profiler.span("best_moment_violation_checkpoint", round_idx=round_idx):
-                    self.best_moment_violation = eval_result["val_moment_violation"]
+                    self.best_moment_violation = _primary_val_moment_violation
                     self.best_moment_violation_round = round_idx
                     self.best_moment_state = self._capture_training_state()
                     self._save_checkpoint(
@@ -894,6 +907,8 @@ class FedAvgAPI(object):
             self.final_f_state = copy.deepcopy(self.final_state["f_state_dict"])
             self.final_reg_state = copy.deepcopy(self.final_state["reg_state_dict"])
             self._load_training_state(self.final_state)
+        val_client_id = getattr(self.val_global, "client_id", None)
+        test_client_id = getattr(self.test_global, "client_id", None)
         with self.profiler.span("final_validation_test_eval"):
             final_validation_mse = structural_mse(self.model_trainer.g, self.val_global)
             final_test_mse = structural_mse(self.model_trainer.g, self.test_global)
@@ -907,6 +922,30 @@ class FedAvgAPI(object):
             final_moment_violation = moment_violation(
                 final_val_f_prediction, self._val_y_cpu, final_val_g_prediction
             )
+            # protocol_v1.md S5.2/metric_policy.md: report equal-client and
+            # sample-weighted structural MSE for the final iterate too, not
+            # only the best-validation checkpoint. Gated on client_id exactly
+            # like eval_global_model, so non-eICU behavior is untouched.
+            equal_client_final_validation_structural_mse = None
+            sample_weighted_final_validation_structural_mse = None
+            primary_final_validation_mse = final_validation_mse
+            if val_client_id is not None:
+                (
+                    equal_client_final_validation_structural_mse,
+                    sample_weighted_final_validation_structural_mse,
+                    _,
+                ) = equal_client_structural_mse(final_val_g_prediction, self._val_g_cpu, val_client_id)
+                primary_final_validation_mse = equal_client_final_validation_structural_mse
+            equal_client_final_test_structural_mse = None
+            sample_weighted_final_test_structural_mse = None
+            primary_final_test_mse = final_test_mse
+            if test_client_id is not None:
+                (
+                    equal_client_final_test_structural_mse,
+                    sample_weighted_final_test_structural_mse,
+                    _,
+                ) = equal_client_structural_mse(final_prediction, self._test_g_cpu, test_client_id)
+                primary_final_test_mse = equal_client_final_test_structural_mse
         with self.profiler.span("final_checkpoint"):
             self._save_checkpoint(
                 os.path.join(self.run_dir, "checkpoints", "final.pt"),
@@ -921,7 +960,7 @@ class FedAvgAPI(object):
             )
         if self.best_state is None:
             self.best_validation_round = final_round
-            self.best_validation_mse = final_validation_mse
+            self.best_validation_mse = primary_final_validation_mse
             self.best_state = copy.deepcopy(self.final_state)
             self.best_g_state = copy.deepcopy(self.final_g_state)
             self.best_f_state = copy.deepcopy(self.final_f_state)
@@ -935,6 +974,67 @@ class FedAvgAPI(object):
             self._load_training_state(self.best_state)
             best_prediction = predictions_for_split(self.model_trainer.g, self.test_global)
             best_test_mse = structural_mse_from_predictions(best_prediction, self._test_g_cpu)
+            best_val_g_prediction = predictions_for_split(self.model_trainer.g, self.val_global)
+            self.model_trainer.f.eval()
+            with torch.no_grad():
+                best_val_f_prediction = self.model_trainer.f(self.val_global.z)
+                best_test_f_prediction = self.model_trainer.f(self.test_global.z)
+            self.model_trainer.f.train()
+
+            # protocol_v1.md S5.1: for eICU the compatibility field
+            # test_mse_at_best_validation must itself carry equal-client
+            # semantics (not a sample-weighted/pooled value under that name)
+            # -- metric_policy.md's selection firewall explicitly forbids
+            # substituting one for the other.
+            equal_client_test_mse_at_best_validation = None
+            sample_weighted_test_mse_at_best_validation = None
+            per_client_test_mse_at_best_validation = None
+            primary_test_mse_at_best_validation = best_test_mse
+            if test_client_id is not None:
+                (
+                    equal_client_test_mse_at_best_validation,
+                    sample_weighted_test_mse_at_best_validation,
+                    per_client_test_mse_at_best_validation,
+                ) = equal_client_structural_mse(best_prediction, self._test_g_cpu, test_client_id)
+                primary_test_mse_at_best_validation = equal_client_test_mse_at_best_validation
+
+            equal_client_best_validation_structural_mse = None
+            sample_weighted_validation_mse_at_best_validation = None
+            equal_client_validation_moment_violation_at_best_validation = None
+            sample_weighted_validation_moment_violation_at_best_validation = None
+            if val_client_id is not None:
+                (
+                    equal_client_best_validation_structural_mse,
+                    sample_weighted_validation_mse_at_best_validation,
+                    _,
+                ) = equal_client_structural_mse(best_val_g_prediction, self._val_g_cpu, val_client_id)
+                (
+                    equal_client_validation_moment_violation_at_best_validation,
+                    sample_weighted_validation_moment_violation_at_best_validation,
+                    _,
+                ) = equal_client_moment_violation(
+                    best_val_f_prediction, self._val_y_cpu, best_val_g_prediction, val_client_id
+                )
+
+            equal_client_test_moment_violation_at_best_validation = None
+            sample_weighted_test_moment_violation_at_best_validation = None
+            per_client_test_moment_violation_at_best_validation = None
+            if test_client_id is not None:
+                (
+                    equal_client_test_moment_violation_at_best_validation,
+                    sample_weighted_test_moment_violation_at_best_validation,
+                    per_client_test_moment_violation_at_best_validation,
+                ) = equal_client_moment_violation(
+                    best_test_f_prediction, self._test_y_cpu, best_prediction, test_client_id
+                )
+
+            per_client_metrics_artifact = None
+            if test_client_id is not None:
+                per_client_metrics_artifact = write_per_client_metrics(
+                    self.run_dir,
+                    per_client_test_mse_at_best_validation,
+                    per_client_test_moment_violation_at_best_validation,
+                )
         print("MSE on test ------------------------------>>>>>>>>>>>>>>>>>>", best_test_mse)
 
         with self.profiler.span("best_moment_violation_test_eval"):
@@ -955,23 +1055,53 @@ class FedAvgAPI(object):
                 final_prediction,
                 self.effective_config,
             )
+
+        # Stability diagnostics (metric_policy.md "Stability metrics"):
+        # final-minus-best gaps and the spread of the primary (equal-client
+        # when available, else pooled) validation curve over its last 50
+        # recorded rounds.
+        final_vs_best_validation_gap = primary_final_validation_mse - self.best_validation_mse
+        final_vs_best_test_gap = primary_final_test_mse - primary_test_mse_at_best_validation
+        recent_primary_val_mse = [
+            row["primary_val_mse"] for row in self.mse_rows[-50:] if row.get("primary_val_mse") is not None
+        ]
+        if recent_primary_val_mse:
+            last_50_validation_mse_std = float(numpy.std(recent_primary_val_mse))
+            last_50_validation_mse_range = float(max(recent_primary_val_mse) - min(recent_primary_val_mse))
+        else:
+            last_50_validation_mse_std = None
+            last_50_validation_mse_range = None
+
         metrics = {
+            "run_id": self.effective_config.get("run_id", ""),
+            "method": self.effective_config.get("variant", ""),
+            "seed": self.effective_config.get("random_seed", 0),
+            "scenario_seed": self.effective_config.get("scenario_seed", 0),
+            "optimizer_seed": self.effective_config.get("optimizer_seed", 0),
             "best_validation_round": self.best_validation_round,
             "best_validation_mse": self.best_validation_mse,
-            "test_mse_at_best_validation": best_test_mse,
+            "test_mse_at_best_validation": primary_test_mse_at_best_validation,
             "best_moment_violation_round": self.best_moment_violation_round,
             "best_moment_violation": self.best_moment_violation,
             "test_mse_at_best_moment_violation": test_mse_at_best_moment_violation,
             "final_moment_violation": final_moment_violation,
-            "final_validation_mse": final_validation_mse,
-            "final_test_mse": final_test_mse,
+            "final_validation_mse": primary_final_validation_mse,
+            "final_test_mse": primary_final_test_mse,
             "best_gmm_eval_round": best_gmm_eval_round,
             "best_gmm_eval": self.eval_history[max_i],
             "diverged": self.diverged,
+            "nonfinite_first_round": self.nonfinite_first_round,
+            "run_status": "completed",
+            "failure_reason": None,
+            "rounds_completed": len(self.mse_rows),
             "runtime_seconds": now_seconds() - self.start_time,
             "test_mse_logged_by_round": self.log_test_mse_by_round,
             "test_mse_used_for_selection": False,
             "selection_metric_source": "validation",
+            "selection_source": "validation_only",
+            "selected_round": self.best_validation_round,
+            "test_mse_reported_after_selection": True,
+            "is_primary": str(getattr(self.args, "campaign_role", "")) != "aggregation_ablation",
             "skip_model_selection": self.skip_model_selection,
             "skip_gmm_eval": self.skip_gmm_eval,
             "gmm_eval_proxy": self.gmm_eval_proxy,
@@ -981,6 +1111,39 @@ class FedAvgAPI(object):
             "periodic_checkpoint_interval": self.periodic_checkpoint_interval,
             "aggregation_weighting": self.aggregation_weighting,
             "objective_mode": self.objective_mode,
+            "scenario_checksum": self.effective_config.get("scenario_checksum", ""),
+            "config_checksum": config_checksum(self.effective_config),
+            "per_client_metrics_artifact": per_client_metrics_artifact,
+            "curve_artifact": "mse_by_round.csv",
+            "best_checkpoint_artifact": os.path.join("checkpoints", "best_validation.pt"),
+            "final_checkpoint_artifact": os.path.join("checkpoints", "final.pt"),
+            "effective_config_artifact": "effective_config.json",
+            "equal_client_best_validation_structural_mse": equal_client_best_validation_structural_mse,
+            "sample_weighted_validation_mse_at_best_validation": sample_weighted_validation_mse_at_best_validation,
+            "equal_client_final_validation_structural_mse": equal_client_final_validation_structural_mse,
+            "sample_weighted_final_validation_structural_mse": sample_weighted_final_validation_structural_mse,
+            "equal_client_test_mse_at_best_validation": equal_client_test_mse_at_best_validation,
+            "sample_weighted_test_mse_at_best_validation": sample_weighted_test_mse_at_best_validation,
+            "equal_client_final_test_structural_mse": equal_client_final_test_structural_mse,
+            "sample_weighted_final_test_structural_mse": sample_weighted_final_test_structural_mse,
+            "equal_client_validation_moment_violation_at_best_validation": equal_client_validation_moment_violation_at_best_validation,
+            "sample_weighted_validation_moment_violation_at_best_validation": sample_weighted_validation_moment_violation_at_best_validation,
+            "equal_client_test_moment_violation_at_best_validation": equal_client_test_moment_violation_at_best_validation,
+            "sample_weighted_test_moment_violation_at_best_validation": sample_weighted_test_moment_violation_at_best_validation,
+            # Filled in post-hoc by analyze_eicu_study_a_checkpoint.py, which
+            # is the only place that knows how to build D=0/1 counterfactual
+            # rows for a given Study A scenario (see metric_policy.md
+            # "ATE error and individual-effect MAE" -- these are not
+            # substitutable and both require the scenario's true_effect
+            # array, unavailable to the dataset-agnostic trainer here).
+            "equal_client_absolute_ate_error_at_best_validation": None,
+            "sample_weighted_absolute_ate_error_at_best_validation": None,
+            "equal_client_individual_effect_mae_at_best_validation": None,
+            "sample_weighted_individual_effect_mae_at_best_validation": None,
+            "final_vs_best_validation_gap": final_vs_best_validation_gap,
+            "final_vs_best_test_gap": final_vs_best_test_gap,
+            "last_50_validation_mse_std": last_50_validation_mse_std,
+            "last_50_validation_mse_range": last_50_validation_mse_range,
         }
         with self.profiler.span("write_metrics"):
             write_metrics(self.run_dir, metrics)
@@ -1201,6 +1364,35 @@ class FedAvgAPI(object):
             f_of_z_train, self._train_y_cpu, g_of_x_train
         )
         val_moment_violation = moment_violation(f_of_z_dev, self._val_y_cpu, g_of_x_dev)
+
+        # protocol_v1.md S5.1/metric_policy.md: Study A's primary checkpoint
+        # selector is equal-client (per-hospital-averaged) validation
+        # structural MSE, not this pooled/sample-weighted val_mse. client_id
+        # survives on val_global untouched (Dataset.to_tensor/the eicu data
+        # loader never wrap or strip it -- see abstract_scenario.py), so it is
+        # available here for every eICU run and absent (None) for every other
+        # dataset family, which is exactly the gate this block uses: legacy
+        # datasets get val_mse unchanged, byte for byte.
+        val_client_id = getattr(self.val_global, "client_id", None)
+        equal_client_val_mse = None
+        sample_weighted_val_mse = None
+        per_client_val_mse = None
+        equal_client_val_moment_violation = None
+        sample_weighted_val_moment_violation = None
+        per_client_val_moment_violation = None
+        primary_val_mse = val_mse
+        if val_client_id is not None:
+            equal_client_val_mse, sample_weighted_val_mse, per_client_val_mse = (
+                equal_client_structural_mse(g_of_x_dev, self._val_g_cpu, val_client_id)
+            )
+            (
+                equal_client_val_moment_violation,
+                sample_weighted_val_moment_violation,
+                per_client_val_moment_violation,
+            ) = equal_client_moment_violation(
+                f_of_z_dev, self._val_y_cpu, g_of_x_dev, val_client_id
+            )
+            primary_val_mse = equal_client_val_mse
         if self.skip_gmm_eval:
             curr_eval = -float(val_mse)
         else:
@@ -1223,8 +1415,15 @@ class FedAvgAPI(object):
         return {
             "train_mse": train_mse,
             "val_mse": val_mse,
+            "primary_val_mse": primary_val_mse,
+            "equal_client_val_mse": equal_client_val_mse,
+            "sample_weighted_val_mse": sample_weighted_val_mse,
+            "per_client_val_mse": per_client_val_mse,
             "train_moment_violation": train_moment_violation,
             "val_moment_violation": val_moment_violation,
+            "equal_client_val_moment_violation": equal_client_val_moment_violation,
+            "sample_weighted_val_moment_violation": sample_weighted_val_moment_violation,
+            "per_client_val_moment_violation": per_client_val_moment_violation,
             "gmm_train_objective": obj_train,
             "gmm_val_objective": obj_dev,
             "gmm_eval": curr_eval,

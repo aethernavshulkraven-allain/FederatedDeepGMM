@@ -111,6 +111,12 @@ EFFECTIVE_CONFIG_FIELDS = (
     "enable_legacy_outputs",
     "enable_legacy_plot",
     "overwrite",
+    "scenario_seed",
+    "optimizer_seed",
+    "seed_pair_id",
+    "campaign_role",
+    "scenario_checksum",
+    "protocol_version",
 )
 
 
@@ -172,6 +178,52 @@ def weighted_average_state_dicts(state_dicts, weights):
     return result
 
 
+def check_eicu_aggregation_weighting(dataset, aggregation_weighting, campaign_role):
+    """Raise unless an eICU run uses uniform_clients, with one named exception.
+
+    protocol_v1.md S6.3/S6.4: primary eICU runs (confirmatory, tuning,
+    centralized) must use uniform_clients so no hospital's sample count can
+    dominate the global model. The required aggregation-weighting ablation
+    role is the sole, explicit, auditable exception -- it exists precisely
+    to measure sample_size against that primary policy, so it must opt in by
+    name (``campaign_role == "aggregation_ablation"``) rather than merely by
+    omitting aggregation_weighting.
+    """
+    is_eicu = str(dataset).startswith("eicu")
+    ablation_authorized = (
+        is_eicu
+        and campaign_role == "aggregation_ablation"
+        and aggregation_weighting == "sample_size"
+    )
+    if is_eicu and aggregation_weighting != "uniform_clients" and not ablation_authorized:
+        raise ValueError(
+            "eICU runs must set aggregation_weighting: uniform_clients to match "
+            "the paper's federated objective U(theta,tau) = (1/N) sum_i U^i(theta,tau); "
+            f"got aggregation_weighting={aggregation_weighting!r}. The legacy "
+            "sample_size weighting lets large hospitals dominate the global model, "
+            "which is exactly the failure mode this check exists to prevent. The only "
+            "exception is campaign_role: aggregation_ablation, Study A's explicit, "
+            "non-primary aggregation-weighting ablation role."
+        )
+
+
+def check_eicu_objective_mode(dataset, objective_mode):
+    """Raise unless an eICU run uses the paper-aligned objective.
+
+    protocol_v1.md S6.3: Study A exists to test the paper's actual FedDeepGMM
+    formulation (frozen theta~, lambda=1/4), not the legacy objective. Applies
+    identically to federated (FedAvgAPI) and centralized
+    (run_centralized_lowdim.py) eICU runs, since both must be comparable under
+    the same objective.
+    """
+    if str(dataset).startswith("eicu") and str(objective_mode) != "paper_aligned":
+        raise ValueError(
+            "eICU runs must set objective_mode: paper_aligned -- Study A exists to "
+            "test the paper's actual FedDeepGMM formulation (frozen theta~, "
+            f"lambda=1/4), not the legacy objective; got objective_mode={objective_mode!r}."
+        )
+
+
 def default_critic_multiplier(dataset):
     multiplier = 20.0
     if dataset in ZOO_DATASETS:
@@ -211,6 +263,15 @@ def get_effective_config(args):
         getattr(args, "aggregation_weighting", DEFAULT_AGGREGATION_WEIGHTING)
     )
     objective_mode = str(getattr(args, "objective_mode", DEFAULT_OBJECTIVE_MODE))
+
+    # Protocol v1 requires scenario_seed (controls DGP/split) and
+    # optimizer_seed (controls init/minibatch/optimizer randomness) as
+    # separate values bound by a seed_pair_id, never one conflated scalar.
+    # Absent both, default each to random_seed so pre-existing configs that
+    # only ever set random_seed keep their exact prior (conflated) behavior.
+    scenario_seed = int(getattr(args, "scenario_seed", seed))
+    optimizer_seed = int(getattr(args, "optimizer_seed", seed))
+    seed_pair_id = str(getattr(args, "seed_pair_id", ""))
 
     learning_rate = float(getattr(args, "learning_rate", 0.0))
     log_test_mse_by_round = bool(getattr(args, "log_test_mse_by_round", False))
@@ -276,6 +337,12 @@ def get_effective_config(args):
         "input_dim_g": int(getattr(args, "input_dim_g", 0)),
         "input_dim_f": int(getattr(args, "input_dim_f", 0)),
         "random_seed": seed,
+        "scenario_seed": scenario_seed,
+        "optimizer_seed": optimizer_seed,
+        "seed_pair_id": seed_pair_id,
+        "campaign_role": str(getattr(args, "campaign_role", "")),
+        "scenario_checksum": str(getattr(args, "scenario_checksum", "")),
+        "protocol_version": str(getattr(args, "protocol_version", "")),
         "run_id": run_id,
         "output_dir": output_dir,
         "partition_method": getattr(args, "partition_method", ""),
@@ -839,6 +906,124 @@ def moment_violation(f_values, y_values, g_values):
     return moment ** 2
 
 
+def _client_id_array(client_id):
+    import numpy as np
+
+    if client_id is None:
+        return None
+    return np.asarray(_to_numpy(client_id)).reshape(-1)
+
+
+def per_client_equal_and_sample_weighted(per_row_values, client_id):
+    """Group a per-row scalar metric by client and report both aggregates.
+
+    Per ``metric_policy.md``: ``Q_EC = mean_i(q_i)`` (every hospital equal
+    weight), ``Q_SW = sum_i(n_i*q_i)/sum_i(n_i)`` (every row equal weight,
+    which for a plain per-row mean is bit-equivalent to pooling all rows —
+    this is what every legacy (non-eICU) caller already computed, so
+    ``Q_SW`` is safe to treat as a drop-in relabeling of the old pooled
+    value). Every client present in ``client_id`` gets exactly one entry in
+    the equal-client mean regardless of row count; none are silently
+    dropped, matching the policy's "denominator and client IDs must be
+    recorded" rule.
+    """
+    import numpy as np
+
+    values = np.asarray(_to_numpy(per_row_values)).reshape(-1)
+    clients = _client_id_array(client_id)
+    if clients is None or len(clients) != len(values):
+        raise ValueError("client_id must be provided and match per-row metric length")
+    per_client = {}
+    for client in np.unique(clients):
+        mask = clients == client
+        per_client[int(client)] = {
+            "value": float(values[mask].mean()),
+            "n": int(mask.sum()),
+        }
+    equal_client = sum(entry["value"] for entry in per_client.values()) / len(per_client)
+    total_n = sum(entry["n"] for entry in per_client.values())
+    sample_weighted = sum(entry["value"] * entry["n"] for entry in per_client.values()) / total_n
+    return equal_client, sample_weighted, per_client
+
+
+def equal_client_structural_mse(prediction, true_g, client_id):
+    """Equal-client / sample-weighted structural MSE, grouped by client_id.
+
+    Returns ``(equal_client_mse, sample_weighted_mse, per_client)`` where
+    ``per_client`` maps client id -> ``{"value": mse_i, "n": n_i}``.
+    """
+    import numpy as np
+
+    pred = np.asarray(_to_numpy(prediction)).reshape(-1)
+    true = np.asarray(_to_numpy(true_g)).reshape(-1)
+    if len(pred) != len(true):
+        raise ValueError(
+            f"Prediction/target length mismatch: {len(pred)} != {len(true)}"
+        )
+    squared_error = (pred - true) ** 2
+    return per_client_equal_and_sample_weighted(squared_error, client_id)
+
+
+def equal_client_moment_violation(f_values, y_values, g_values, client_id):
+    """Equal-client / sample-weighted held-out moment violation.
+
+    Per ``metric_policy.md``, the client moment is averaged *within* each
+    client first (``mu_i = mean_{S_i} f(Z,W)(Y-g(D,W))``), then squared, and
+    only then aggregated across clients — squaring after the per-client mean
+    (not per-row) is what distinguishes this from a plain pooled
+    ``moment_violation`` and is why it cannot be derived from
+    ``per_client_equal_and_sample_weighted`` directly.
+    """
+    import numpy as np
+
+    f_arr = np.asarray(_to_numpy(f_values)).reshape(-1)
+    y_arr = np.asarray(_to_numpy(y_values)).reshape(-1)
+    g_arr = np.asarray(_to_numpy(g_values)).reshape(-1)
+    if not (len(f_arr) == len(y_arr) == len(g_arr)):
+        raise ValueError(
+            f"f/y/g length mismatch: {len(f_arr)}, {len(y_arr)}, {len(g_arr)}"
+        )
+    clients = _client_id_array(client_id)
+    if clients is None or len(clients) != len(f_arr):
+        raise ValueError("client_id must be provided and match per-row metric length")
+    residual_moment = f_arr * (y_arr - g_arr)
+    per_client = {}
+    for client in np.unique(clients):
+        mask = clients == client
+        mu_i = float(residual_moment[mask].mean())
+        per_client[int(client)] = {"value": mu_i ** 2, "n": int(mask.sum())}
+    equal_client = sum(entry["value"] for entry in per_client.values()) / len(per_client)
+    total_n = sum(entry["n"] for entry in per_client.values())
+    sample_weighted = sum(entry["value"] * entry["n"] for entry in per_client.values()) / total_n
+    return equal_client, sample_weighted, per_client
+
+
+def write_per_client_metrics(run_dir, per_client_mse, per_client_moment_violation):
+    """``per_client_metrics.csv``: one row per client, MSE + moment violation.
+
+    Accepted by the campaign validator's ``per_client_artifact_alternatives``.
+    ATE/individual-effect columns are appended post-hoc by
+    ``analyze_eicu_study_a_checkpoint.py``, which is the only place that
+    knows how to construct D=0/1 counterfactual rows for a given scenario.
+    """
+    path = os.path.join(run_dir, "per_client_metrics.csv")
+    client_ids = sorted(set(per_client_mse) | set(per_client_moment_violation))
+    fieldnames = ["client_id", "n", "structural_mse", "moment_violation"]
+    with open(path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for client_id in client_ids:
+            mse_entry = per_client_mse.get(client_id, {})
+            moment_entry = per_client_moment_violation.get(client_id, {})
+            writer.writerow({
+                "client_id": client_id,
+                "n": mse_entry.get("n", moment_entry.get("n", "")),
+                "structural_mse": mse_entry.get("value", ""),
+                "moment_violation": moment_entry.get("value", ""),
+            })
+    return path
+
+
 def structural_mse(model, split, batch_size=1024):
     if not hasattr(split, "x") or not hasattr(split, "g"):
         raise ValueError("Split must expose x and ground-truth structural g")
@@ -896,6 +1081,14 @@ def state_is_finite(state_dict):
     return True
 
 
+def config_checksum(config):
+    """Deterministic sha256 over a JSON-safe config, for cross-artifact provenance."""
+    import hashlib
+
+    serialized = json.dumps(json_safe(config), sort_keys=True)
+    return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+
+
 def write_effective_config(run_dir, config):
     ensure_run_dirs(run_dir)
     path = os.path.join(run_dir, "effective_config.json")
@@ -911,6 +1104,8 @@ def write_mse_by_round(run_dir, rows):
         "round",
         "train_mse",
         "val_mse",
+        "primary_val_mse",
+        "equal_client_val_mse",
         "train_moment_violation",
         "val_moment_violation",
         "gmm_train_objective",
@@ -933,6 +1128,8 @@ def append_mse_by_round(run_dir, row):
         "round",
         "train_mse",
         "val_mse",
+        "primary_val_mse",
+        "equal_client_val_mse",
         "train_moment_violation",
         "val_moment_violation",
         "gmm_train_objective",

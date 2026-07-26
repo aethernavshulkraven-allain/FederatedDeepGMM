@@ -1,9 +1,11 @@
-"""Resumable runner for the Study A centralized baselines (GDA, OAdam).
+"""Resumable runner for the Study A centralized baselines (GDA, SGDA, OAdam).
 
-3 g0 variants x 5 seeds x 2 methods = 30 runs. Centralized runs are a
-different code path from the federated manifest (``run_centralized_lowdim.py``
-pools all clients, no partitioning), so they are not launched through
-``run_manifest.py`` -- this is a thin, dedicated, resumable loop instead.
+3 g0 variants x 5 confirmatory seed pairs x 3 methods = 45 runs, matching
+protocol_v1.md S6.2's frozen centralized-baseline requirement. Centralized
+runs are a different code path from the federated manifest
+(``run_centralized_lowdim.py`` pools all clients, no partitioning), so they
+are not launched through ``run_manifest.py`` -- this is a thin, dedicated,
+resumable loop instead.
 
 Resume semantics match the rest of the repo: a run is skipped if its
 ``metrics.json`` already exists (unless ``--overwrite``), and one run's
@@ -27,8 +29,19 @@ DEFAULT_SCENARIO_DIR = os.path.join(
 )
 
 G0_VARIANTS = ("linear", "interaction", "mlp")
-SEEDS = (0, 1, 2, 3, 4)
-METHODS = ("gda", "oadam")
+METHODS = ("gda", "sgda", "oadam")
+
+# protocol_v1.md S7.3: frozen confirmatory seed pairs -- centralized baselines
+# use the identical scenario artifacts as the federated confirmatory/ablation
+# rows for the same (g0, seed_pair_id), so the comparison is apples-to-apples.
+CONFIRMATORY_SEED_PAIRS = (
+    ("confirmatory_01", 101, 1101),
+    ("confirmatory_02", 102, 1102),
+    ("confirmatory_03", 103, 1103),
+    ("confirmatory_04", 104, 1104),
+    ("confirmatory_05", 105, 1105),
+)
+PROTOCOL_VERSION = "eicu_study_a_v1"
 
 # Matches the federated protocol's frozen defaults; centralized runs use the
 # same objective/learning-rate scale as the federated smoke config so the
@@ -38,25 +51,33 @@ DEFAULT_F_LR = 0.01
 DEFAULT_WEIGHT_DECAY = 0.01
 DEFAULT_ITERATIONS = 500
 
+BATCH_SIZE = {"gda": 0, "sgda": 256, "oadam": 256}
 
-def run_dir_for(output_root, g0, seed, method):
-    return os.path.join(output_root, f"{g0}_seed{seed}", method, f"seed_{seed}")
+
+def run_dir_for(output_root, g0, seed_pair_id, optimizer_seed, method):
+    return os.path.join(
+        output_root, f"{g0}_{seed_pair_id}", method, f"seed_{optimizer_seed}"
+    )
 
 
 def already_complete(run_dir):
     return os.path.exists(os.path.join(run_dir, "metrics.json"))
 
 
-def build_command(python_bin, g0, seed, method, scenario_dir, output_root, args):
-    run_dir = run_dir_for(output_root, g0, seed, method)
-    batch_size = 0 if method == "gda" else 256
+def build_command(python_bin, g0, seed_pair_id, scenario_seed, optimizer_seed, method, scenario_dir, output_root, args):
+    run_dir = run_dir_for(output_root, g0, seed_pair_id, optimizer_seed, method)
+    batch_size = BATCH_SIZE[method]
     cmd = [
         python_bin,
         os.path.join(REPO_ROOT, "scripts", "run_centralized_lowdim.py"),
         "--dataset", "eicu_semisynth",
-        "--scenario-name", f"{g0}_seed{seed}",
+        "--scenario-name", f"{g0}_scenario_seed{scenario_seed}",
         "--method", method,
-        "--seed", str(seed),
+        "--seed", str(optimizer_seed),
+        "--scenario-seed", str(scenario_seed),
+        "--seed-pair-id", seed_pair_id,
+        "--protocol-version", PROTOCOL_VERSION,
+        "--objective-mode", "paper_aligned",
         "--output-dir", run_dir,
         "--iterations", str(args.iterations),
         "--batch-size", str(batch_size),
@@ -64,7 +85,7 @@ def build_command(python_bin, g0, seed, method, scenario_dir, output_root, args)
         "--f-lr", str(args.f_lr),
         "--weight-decay", str(args.weight_decay),
         "--data-dir", os.path.dirname(scenario_dir),
-        "--run-id", f"{g0}_{method}_seed{seed}",
+        "--run-id", f"{g0}_{method}_{seed_pair_id}",
         "--no-cuda",
     ]
     if args.overwrite:
@@ -92,12 +113,20 @@ def parse_args(argv=None):
 def main(argv=None):
     args = parse_args(argv)
 
-    jobs = [(g0, seed, method) for g0 in G0_VARIANTS for seed in SEEDS for method in METHODS]
+    jobs = [
+        (g0, seed_pair_id, scenario_seed, optimizer_seed, method)
+        for g0 in G0_VARIANTS
+        for seed_pair_id, scenario_seed, optimizer_seed in CONFIRMATORY_SEED_PAIRS
+        for method in METHODS
+    ]
     results = {"passed": [], "failed": [], "skipped_completed": []}
 
-    for g0, seed, method in jobs:
-        cmd, run_dir = build_command(args.python, g0, seed, method, args.scenario_dir, args.output_root, args)
-        run_id = f"{g0}_{method}_seed{seed}"
+    for g0, seed_pair_id, scenario_seed, optimizer_seed, method in jobs:
+        cmd, run_dir = build_command(
+            args.python, g0, seed_pair_id, scenario_seed, optimizer_seed, method,
+            args.scenario_dir, args.output_root, args,
+        )
+        run_id = f"{g0}_{method}_{seed_pair_id}"
 
         if not args.overwrite and already_complete(run_dir):
             print(f"SKIP  {run_id} (already complete)")

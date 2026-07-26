@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.0.0",
+  "contract_version": "2.0.0",
   "study": {
     "name": "eICU Study A",
     "claim": "extension_no_published_target",
@@ -15,10 +15,14 @@
       "run_id": "run_id",
       "role": "role",
       "dataset": "dataset",
-      "scenario": "scenario",
+      "scenario": "scenario_name",
       "g0": "g0",
       "method": "method",
-      "seed": "seed",
+      "seed": "scenario_seed",
+      "scenario_seed": "scenario_seed",
+      "optimizer_seed": "optimizer_seed",
+      "seed_pair_id": "seed_pair_id",
+      "campaign_role": "campaign_role",
       "aggregation_weighting": "aggregation_weighting",
       "objective_mode": "objective_mode",
       "alignment_label": "alignment_label",
@@ -32,8 +36,8 @@
       "scenario_metadata_path": "scenario_metadata_path",
       "result_path": "result_path",
       "output_root": "output_root",
-      "input_dim": "input_dim",
-      "instrument_dim": "instrument_dim"
+      "input_dim": "input_dim_g",
+      "instrument_dim": "input_dim_f"
     },
     "required_fields": [
       "run_id",
@@ -43,6 +47,9 @@
       "g0",
       "method",
       "seed",
+      "scenario_seed",
+      "optimizer_seed",
+      "seed_pair_id",
       "aggregation_weighting",
       "objective_mode",
       "alignment_label",
@@ -52,7 +59,6 @@
       "scenario_checksum",
       "scenario_scope",
       "study_claim",
-      "config_path",
       "scenario_metadata_path",
       "result_path",
       "input_dim",
@@ -60,6 +66,8 @@
     ],
     "integer_fields": [
       "seed",
+      "scenario_seed",
+      "optimizer_seed",
       "input_dim",
       "instrument_dim"
     ],
@@ -69,22 +77,24 @@
     "ablation_allowed_differences": [
       "run_id",
       "role",
+      "campaign_role",
       "aggregation_weighting",
       "alignment_label",
+      "result_path",
       "config_path",
-      "result_path"
+      "run_group",
+      "notes"
     ],
     "config_ablation_allowed_differences": [
       "run_id",
       "role",
       "campaign_role",
       "aggregation_weighting",
-      "federated.aggregation_weighting",
       "alignment_label"
     ]
   },
   "global_rules": {
-    "dataset": "eicu",
+    "dataset": "eicu_semisynth",
     "primary_selection_metric": "equal_client_validation_mse",
     "selection_source": "validation_only",
     "test_mse_used_for_selection": false,
@@ -108,11 +118,11 @@
         "mlp"
       ],
       "seeds": [
-        0,
-        1,
-        2,
-        3,
-        4
+        101,
+        102,
+        103,
+        104,
+        105
       ],
       "methods": [
         "fedgda_s",
@@ -133,7 +143,7 @@
       "federated": true,
       "primary": true,
       "reject_demo": true,
-      "require_frozen_config": true,
+      "require_frozen_config": false,
       "require_per_client_artifact": true
     },
     "centralized_baseline": {
@@ -145,16 +155,16 @@
         "mlp"
       ],
       "seeds": [
-        0,
-        1,
-        2,
-        3,
-        4
+        101,
+        102,
+        103,
+        104,
+        105
       ],
       "methods": [
-        "gda",
-        "sgda",
-        "oadam"
+        "gda_d",
+        "sgda_s",
+        "oadam_s"
       ],
       "aggregation_weighting": [
         "none"
@@ -171,7 +181,7 @@
       "federated": false,
       "primary": false,
       "reject_demo": true,
-      "require_frozen_config": true,
+      "require_frozen_config": false,
       "require_per_client_artifact": false
     },
     "aggregation_ablation": {
@@ -183,11 +193,11 @@
         "mlp"
       ],
       "seeds": [
-        0,
-        1,
-        2,
-        3,
-        4
+        101,
+        102,
+        103,
+        104,
+        105
       ],
       "methods": [
         "fedgda_s",
@@ -208,7 +218,7 @@
       "federated": true,
       "primary": false,
       "reject_demo": true,
-      "require_frozen_config": true,
+      "require_frozen_config": false,
       "require_per_client_artifact": false,
       "compare_to_role": "confirmatory"
     },
@@ -216,13 +226,17 @@
       "required": false,
       "fixed_row_count": null,
       "aggregation_weighting": [
-        "uniform_clients",
-        "none"
+        "uniform_clients"
       ],
       "alignment_label": [
         "validation_only_tuning"
       ],
+      "scenario_scope": [
+        "full_eicu",
+        "demo"
+      ],
       "primary": false,
+      "federated": true,
       "reject_demo": false,
       "require_frozen_config": false,
       "require_per_client_artifact": false
@@ -237,7 +251,12 @@
       "alignment_label": [
         "non_primary_smoke"
       ],
+      "scenario_scope": [
+        "full_eicu",
+        "demo"
+      ],
       "primary": false,
+      "federated": true,
       "reject_demo": false,
       "require_frozen_config": false,
       "require_per_client_artifact": false
@@ -246,7 +265,7 @@
   "pairing": {
     "key_fields": [
       "g0",
-      "seed"
+      "seed_pair_id"
     ],
     "scenario_identity_fields": [
       "dataset",
@@ -282,8 +301,8 @@
         "data.dataset"
       ],
       "scenario": [
-        "scenario",
-        "data.scenario"
+        "scenario_name",
+        "data.scenario_name"
       ],
       "g0": [
         "g0",
@@ -291,11 +310,25 @@
       ],
       "method": [
         "method",
+        "variant",
         "training.method"
       ],
       "seed": [
-        "seed",
+        "scenario_seed",
         "training.seed"
+      ],
+      "scenario_seed": [
+        "scenario_seed"
+      ],
+      "optimizer_seed": [
+        "optimizer_seed",
+        "random_seed"
+      ],
+      "seed_pair_id": [
+        "seed_pair_id"
+      ],
+      "campaign_role": [
+        "campaign_role"
       ],
       "aggregation_weighting": [
         "aggregation_weighting",
@@ -318,6 +351,7 @@
       ],
       "selection_source": [
         "selection_source",
+        "selection_metric_source",
         "selection.source"
       ],
       "scenario_checksum": [
@@ -329,39 +363,48 @@
         "data.scenario_scope"
       ],
       "input_dim": [
-        "input_dim",
+        "input_dim_g",
         "model.input_dim"
       ],
       "instrument_dim": [
-        "instrument_dim",
+        "input_dim_f",
         "model.instrument_dim"
       ]
     },
     "scenario": {
       "scenario_checksum": [
         "scenario_checksum",
+        "scenario_checksum_sha256",
         "checksum"
       ],
       "eligible_client_provenance": [
         "eligible_client_provenance"
       ],
       "g0": [
+        "g0.kind",
         "g0"
       ],
       "seed": [
+        "scenario_seed",
+        "seed"
+      ],
+      "scenario_seed": [
+        "scenario_seed",
         "seed"
       ],
       "input_dim": [
-        "dimensions.input_dim",
-        "input_dim"
+        "input_dim",
+        "n_features_x",
+        "dimensions.input_dim"
       ],
       "instrument_dim": [
-        "dimensions.instrument_dim",
-        "instrument_dim"
+        "instrument_dim",
+        "n_features_z",
+        "dimensions.instrument_dim"
       ],
       "outcome_dim": [
-        "dimensions.outcome_dim",
-        "outcome_dim"
+        "outcome_dim",
+        "dimensions.outcome_dim"
       ],
       "is_demo": [
         "is_demo"
@@ -370,8 +413,8 @@
         "scenario_scope"
       ],
       "artifact_path": [
-        "artifact_path",
-        "scenario_artifact"
+        "scenario_path",
+        "artifact_path"
       ]
     },
     "metrics": {
@@ -382,6 +425,7 @@
         "method"
       ],
       "seed": [
+        "scenario_seed",
         "seed"
       ],
       "scenario_checksum": [
@@ -393,6 +437,7 @@
       ],
       "selection_source": [
         "selection_source",
+        "selection_metric_source",
         "selection.source"
       ],
       "best_validation_round": [
@@ -401,6 +446,7 @@
       ],
       "selected_round": [
         "selected_round",
+        "best_validation_round",
         "selection.selected_round"
       ],
       "test_mse_at_best_validation": [
@@ -413,24 +459,29 @@
       ],
       "primary_equal_client_validation_mse": [
         "primary_equal_client_validation_mse",
+        "equal_client_best_validation_structural_mse",
         "metrics.equal_client.validation_mse"
       ],
       "primary_equal_client_test_mse": [
         "primary_equal_client_test_mse",
+        "equal_client_test_mse_at_best_validation",
         "metrics.equal_client.test_mse"
       ],
       "secondary_sample_weighted_validation_mse": [
         "secondary_sample_weighted_validation_mse",
+        "sample_weighted_validation_mse_at_best_validation",
         "metrics.sample_weighted.validation_mse"
       ],
       "secondary_sample_weighted_test_mse": [
         "secondary_sample_weighted_test_mse",
+        "sample_weighted_test_mse_at_best_validation",
         "metrics.sample_weighted.test_mse"
       ],
       "diverged": [
         "diverged"
       ],
       "nonfinite_parameters": [
+        "nonfinite_first_round",
         "divergence_evidence.nonfinite_parameters"
       ],
       "nonfinite_metrics": [
@@ -448,7 +499,7 @@
     "required_metadata_fields": [
       "eligible_client_provenance",
       "g0",
-      "seed",
+      "scenario_seed",
       "input_dim",
       "instrument_dim",
       "outcome_dim",
@@ -461,17 +512,21 @@
   "postrun": {
     "required_files": [
       "effective_config.json",
-      "metrics.json",
       "mse_by_round.csv",
+      "metrics.json",
       "predictions.npz"
     ],
     "required_file_alternatives": [
       [
+        "checkpoints/best_validation.pt",
+        "best_validation.pt",
         "best_checkpoint.pt",
         "best_model.pt",
         "checkpoint_best.pt"
       ],
       [
+        "checkpoints/final.pt",
+        "final.pt",
         "final_checkpoint.pt",
         "last_checkpoint.pt",
         "checkpoint_final.pt"
@@ -479,6 +534,7 @@
     ],
     "per_client_artifact_alternatives": [
       "per_client_metrics.csv",
+      "per_client_eval_best_validation_test.csv",
       "per_client_evaluation.json"
     ],
     "effective_config_compare_fields": [
@@ -511,7 +567,7 @@
     ],
     "round_curve_columns": {
       "round": "round",
-      "primary_validation_metric": "equal_client_validation_mse"
+      "primary_validation_metric": "primary_val_mse"
     }
   }
 }

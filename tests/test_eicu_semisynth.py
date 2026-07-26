@@ -23,12 +23,15 @@ sys.path.insert(0, os.path.join(REPO_ROOT, "fedgmm", "sp_decentralized_mnist_lr_
 
 from eicu_iv_diagnostics import ols, two_stage_least_squares  # noqa: E402
 from prepare_eicu_semisynth import (  # noqa: E402
+    ELIGIBILITY_SEED,
     G0_CHOICES,
+    G0_DISPLAY_LABEL,
     build_covariates,
     certify_simulated_first_stage,
     file_checksum,
     filter_clients_by_real_z_variation,
     generate,
+    infer_scenario_scope,
     make_g0,
     split_by_admission,
     write_scenario,
@@ -432,7 +435,7 @@ class ClientRelevanceFilterTest(unittest.TestCase):
         mapping = {i: int(h) for i, h in enumerate(client_category.cat.categories)}
 
         certification, summary = certify_simulated_first_stage(
-            cohort, treatment, z, client_codes, mapping
+            treatment, z, client_codes, mapping, np.ones(n, dtype=bool)
         )
         self.assertEqual(summary["n_clients_certified"], 6)
         for hospital_id in cohort["hospitalid"].unique():
@@ -450,9 +453,115 @@ class ClientRelevanceFilterTest(unittest.TestCase):
         mapping = {i: int(h) for i, h in enumerate(client_category.cat.categories)}
 
         certification, summary = certify_simulated_first_stage(
-            cohort, treatment, z, client_codes, mapping
+            treatment, z, client_codes, mapping, np.ones(n, dtype=bool)
         )
         self.assertEqual(summary["n_clients_certified"], 0)  # 3 rows each, below the floor
+
+    def test_certify_simulated_first_stage_excludes_test_rows(self):
+        """protocol_v1.md S3.2/S8.1: per-client first-stage diagnostics must
+        be computed from non-Test rows only. A client with 30 well-behaved
+        non-test rows and 30 additional test-only rows must be certified
+        identically whether or not those test rows are present in the
+        arrays, because non_test_mask excludes them either way.
+        """
+        cohort = synthetic_cohort(n_hospitals=2, n_wards=3, per_ward=40)
+        rng = np.random.default_rng(0)
+        n = len(cohort)
+        z = rng.normal(size=n)
+        treatment = (rng.random(n) < 1.0 / (1.0 + np.exp(-2.0 * z))).astype("float64")
+        client_category = cohort["hospitalid"].astype("category")
+        client_codes = client_category.cat.codes.to_numpy()
+        mapping = {i: int(h) for i, h in enumerate(client_category.cat.categories)}
+
+        # Mark the back half of each hospital's rows as test-only.
+        non_test_mask = np.ones(n, dtype=bool)
+        non_test_mask[n // 2 :] = False
+
+        cert_excluding_test, summary_excluding = certify_simulated_first_stage(
+            treatment, z, client_codes, mapping, non_test_mask
+        )
+        # Corrupt the excluded (test) rows with noise that would otherwise
+        # wreck the first-stage fit -- if the mask were ignored, this would
+        # change the certification; since it is honored, it must not.
+        treatment_corrupted = treatment.copy()
+        treatment_corrupted[~non_test_mask] = rng.random((~non_test_mask).sum()).round()
+        cert_with_corrupted_test, summary_with_corrupted = certify_simulated_first_stage(
+            treatment_corrupted, z, client_codes, mapping, non_test_mask
+        )
+        self.assertEqual(summary_excluding, summary_with_corrupted)
+        for hospital_id in cert_excluding_test:
+            self.assertAlmostEqual(
+                cert_excluding_test[hospital_id]["partial_f"],
+                cert_with_corrupted_test[hospital_id]["partial_f"],
+            )
+        self.assertEqual(summary_excluding["diagnostic_rows"], "non_test")
+
+
+class EligibilityIsFrozenAcrossScenarioSeedsTest(unittest.TestCase):
+    """protocol_v1.md S3.2: eligibility must be frozen before scenario
+    generation -- the same cohort/g0 must produce the identical eligible
+    client set regardless of scenario_seed, since cross-fitting fold
+    assignment noise must not be allowed to silently change who is eligible.
+    """
+
+    def test_eligible_client_ids_identical_across_scenario_seeds(self):
+        cohort = synthetic_cohort(n_hospitals=8, n_wards=3, per_ward=40)
+        _, meta_a = generate(cohort, g0_kind="linear", seed=101)
+        _, meta_b = generate(cohort, g0_kind="linear", seed=999)
+        self.assertEqual(meta_a["eligible_client_ids"], meta_b["eligible_client_ids"])
+        self.assertEqual(
+            meta_a["client_filter_report"]["eligible_hospital_ids"],
+            meta_b["client_filter_report"]["eligible_hospital_ids"],
+        )
+
+    def test_filter_uses_fixed_eligibility_seed_not_caller_seed(self):
+        cohort = synthetic_cohort(n_hospitals=8, n_wards=3, per_ward=40)
+        _, report_default = filter_clients_by_real_z_variation(cohort)
+        _, report_explicit = filter_clients_by_real_z_variation(cohort, seed=ELIGIBILITY_SEED)
+        self.assertEqual(report_default["eligibility_seed"], ELIGIBILITY_SEED)
+        self.assertEqual(report_default["eligible_hospital_ids"], report_explicit["eligible_hospital_ids"])
+
+
+class ScenarioMetadataProvenanceTest(unittest.TestCase):
+    def test_metadata_records_dimensions_and_scope(self):
+        cohort = synthetic_cohort()
+        _, meta = generate(cohort, g0_kind="mlp", seed=0, scenario_scope="full_eicu")
+        self.assertEqual(meta["input_dim"], meta["n_features_x"])
+        self.assertEqual(meta["instrument_dim"], meta["n_features_z"])
+        self.assertEqual(meta["outcome_dim"], 1)
+        self.assertEqual(meta["scenario_scope"], "full_eicu")
+        self.assertFalse(meta["is_demo"])
+        self.assertEqual(meta["g0_display_label"], "frozen_random_mlp")
+        self.assertEqual(meta["g0_display_label"], G0_DISPLAY_LABEL["mlp"])
+
+    def test_demo_scope_defaults_true_for_is_demo(self):
+        cohort = synthetic_cohort()
+        _, meta = generate(cohort, g0_kind="linear", seed=0)  # default scenario_scope="demo"
+        self.assertEqual(meta["scenario_scope"], "demo")
+        self.assertTrue(meta["is_demo"])
+
+    def test_eligible_client_provenance_is_recorded(self):
+        cohort = synthetic_cohort()
+        _, meta = generate(cohort, g0_kind="linear", seed=0)
+        provenance = meta["eligible_client_provenance"]
+        self.assertIn("real_z_filter", provenance)
+        self.assertIn("simulated_first_stage", provenance)
+        self.assertEqual(provenance["real_z_filter"]["eligibility_seed"], ELIGIBILITY_SEED)
+
+    def test_display_label_mapping_covers_all_g0_choices(self):
+        self.assertEqual(set(G0_DISPLAY_LABEL), set(G0_CHOICES))
+        self.assertEqual(G0_DISPLAY_LABEL["linear"], "linear")
+        self.assertEqual(G0_DISPLAY_LABEL["interaction"], "interaction")
+        self.assertEqual(G0_DISPLAY_LABEL["mlp"], "frozen_random_mlp")
+
+
+class InferScenarioScopeTest(unittest.TestCase):
+    def test_demo_path_is_detected(self):
+        self.assertEqual(infer_scenario_scope("experiments/eicu_v1_demo/cohort.csv"), "demo")
+        self.assertEqual(infer_scenario_scope("/data/eICU-CRD-Demo/cohort.csv"), "demo")
+
+    def test_non_demo_path_is_full_eicu(self):
+        self.assertEqual(infer_scenario_scope("experiments/eicu_v1_full/cohort.csv"), "full_eicu")
 
 
 class FileChecksumTest(unittest.TestCase):

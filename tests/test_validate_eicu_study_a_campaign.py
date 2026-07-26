@@ -32,10 +32,13 @@ FIELDS = [
     "run_id",
     "role",
     "dataset",
-    "scenario",
+    "scenario_name",
     "g0",
+    "scenario_seed",
+    "optimizer_seed",
+    "seed_pair_id",
+    "campaign_role",
     "method",
-    "seed",
     "aggregation_weighting",
     "objective_mode",
     "alignment_label",
@@ -49,8 +52,8 @@ FIELDS = [
     "scenario_metadata_path",
     "result_path",
     "output_root",
-    "input_dim",
-    "instrument_dim",
+    "input_dim_g",
+    "input_dim_f",
 ]
 
 
@@ -70,7 +73,11 @@ class SyntheticCampaign:
 
     def _build(self) -> None:
         for g0 in ("linear", "interaction", "mlp"):
-            for seed in range(5):
+            # Matches the shipped contract's frozen confirmatory scenario_seed
+            # values (protocol_v1.md S7.3) -- the contract's role rules
+            # declare these seeds explicitly, so a synthetic campaign must use
+            # them too, not an arbitrary range.
+            for seed in (101, 102, 103, 104, 105):
                 artifact_name = f"{g0}_{seed}.bin"
                 artifact = self.scenario_root / artifact_name
                 artifact.write_bytes(f"full-eicu:{g0}:{seed}".encode("utf-8"))
@@ -105,7 +112,7 @@ class SyntheticCampaign:
                         aggregation="uniform_clients",
                         label="primary_extension",
                     )
-                for method in ("gda", "sgda", "oadam"):
+                for method in ("gda_d", "sgda_s", "oadam_s"):
                     self._add_row(
                         role="centralized_baseline",
                         g0=g0,
@@ -140,10 +147,13 @@ class SyntheticCampaign:
             "run_id": run_id,
             "role": role,
             "dataset": "eicu",
-            "scenario": f"eicu_{g0}_seed{seed}",
+            "scenario_name": f"eicu_{g0}_seed{seed}",
             "g0": g0,
             "method": method,
-            "seed": seed,
+            "scenario_seed": seed,
+            "optimizer_seed": seed + 1000,
+            "seed_pair_id": f"pair_{seed:02d}",
+            "campaign_role": "aggregation_ablation" if role == "aggregation_ablation" else "",
             "aggregation_weighting": aggregation,
             "objective_mode": "paper_aligned",
             "alignment_label": label,
@@ -157,8 +167,8 @@ class SyntheticCampaign:
             "scenario_metadata_path": f"{g0}_{seed}.json",
             "result_path": run_id,
             "output_root": "",
-            "input_dim": 8,
-            "instrument_dim": 4,
+            "input_dim_g": 8,
+            "input_dim_f": 4,
         }
         self.rows.append(row)
         self.write_config(row)
@@ -179,10 +189,13 @@ class SyntheticCampaign:
                 "run_id",
                 "role",
                 "dataset",
-                "scenario",
+                "scenario_name",
                 "g0",
                 "method",
-                "seed",
+                "scenario_seed",
+                "optimizer_seed",
+                "seed_pair_id",
+                "campaign_role",
                 "aggregation_weighting",
                 "objective_mode",
                 "alignment_label",
@@ -191,8 +204,8 @@ class SyntheticCampaign:
                 "selection_source",
                 "scenario_checksum",
                 "scenario_scope",
-                "input_dim",
-                "instrument_dim",
+                "input_dim_g",
+                "input_dim_f",
             )
         }
         config["learning_rate"] = 0.01
@@ -219,7 +232,8 @@ class SyntheticCampaign:
             metrics = {
                 "run_id": row["run_id"],
                 "method": row["method"],
-                "seed": row["seed"],
+                "scenario_seed": row["scenario_seed"],
+                "seed": row["scenario_seed"],
                 "scenario_checksum": row["scenario_checksum"],
                 "selection_metric": "equal_client_validation_mse",
                 "selection_source": "validation_only",
@@ -245,13 +259,13 @@ class SyntheticCampaign:
             ) as handle:
                 writer = csv.DictWriter(
                     handle,
-                    fieldnames=["round", "equal_client_validation_mse"],
+                    fieldnames=["round", "primary_val_mse"],
                 )
                 writer.writeheader()
                 writer.writerows(
                     [
-                        {"round": 0, "equal_client_validation_mse": 2.0},
-                        {"round": 1, "equal_client_validation_mse": 1.0},
+                        {"round": 0, "primary_val_mse": 2.0},
+                        {"round": 1, "primary_val_mse": 1.0},
                     ]
                 )
             (result / "predictions.npz").write_bytes(b"synthetic-npz-placeholder")
@@ -268,14 +282,14 @@ class SyntheticCampaign:
         *,
         role: str,
         g0: str = "linear",
-        seed: int = 0,
+        seed: int = 101,
         method: str | None = None,
     ) -> dict[str, Any]:
         for row in self.rows:
             if (
                 row["role"] == role
                 and row["g0"] == g0
-                and row["seed"] == seed
+                and row["scenario_seed"] == seed
                 and (method is None or row["method"] == method)
             ):
                 return row
@@ -323,7 +337,7 @@ class ValidatorTestCase(unittest.TestCase):
 
     def test_missing_seed_method_pair(self) -> None:
         victim = self.campaign.row(
-            role="confirmatory", g0="mlp", seed=4, method="fedogda_s"
+            role="confirmatory", g0="mlp", seed=105, method="fedogda_s"
         )
         self.campaign.rows.remove(victim)
         self.campaign.write_manifest()
@@ -367,13 +381,13 @@ class ValidatorTestCase(unittest.TestCase):
 
     def test_input_dimension_mismatch(self) -> None:
         row = self.campaign.row(role="confirmatory", method="fedgda_s")
-        row["input_dim"] = 999
+        row["input_dim_g"] = 999
         self.campaign.write_manifest()
         report = self.validate()
         self.assertIn("scenario_manifest_mismatch", self.codes(report))
 
     def test_demo_marked_confirmatory(self) -> None:
-        path = self.campaign.scenario_root / "linear_0.json"
+        path = self.campaign.scenario_root / "linear_101.json"
         metadata = json.loads(path.read_text(encoding="utf-8"))
         metadata["is_demo"] = True
         self.campaign.write_json(path, metadata)
@@ -394,7 +408,7 @@ class ValidatorTestCase(unittest.TestCase):
 
     def test_metrics_and_effective_config_disagreement(self) -> None:
         self.campaign.materialize_results()
-        row = self.campaign.row(role="centralized_baseline", method="gda")
+        row = self.campaign.row(role="centralized_baseline", method="gda_d")
         result = self.campaign.results_root / str(row["result_path"])
         config = json.loads(
             (result / "effective_config.json").read_text(encoding="utf-8")

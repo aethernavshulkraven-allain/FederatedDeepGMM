@@ -32,6 +32,8 @@ from fedgmm.sp_decentralized_mnist_lr_example.experiment_utils import (  # noqa:
     AGGREGATION_WEIGHTING_CHOICES,
     DEFAULT_AGGREGATION_WEIGHTING,
     EFFECTIVE_CONFIG_FIELDS,
+    check_eicu_aggregation_weighting,
+    check_eicu_objective_mode,
     compute_client_weights,
     get_effective_config,
     weighted_average_state_dicts,
@@ -210,6 +212,45 @@ class EffectiveConfigAggregationWeightingTest(unittest.TestCase):
         config = get_effective_config(SimpleNamespace())
         for field in EFFECTIVE_CONFIG_FIELDS:
             self.assertIn(field, config)
+
+
+class EicuAggregationWeightingGuardTest(unittest.TestCase):
+    def test_non_eicu_dataset_allows_sample_size(self):
+        check_eicu_aggregation_weighting("abs", "sample_size", "")
+
+    def test_eicu_confirmatory_role_rejects_sample_size(self):
+        with self.assertRaises(ValueError):
+            check_eicu_aggregation_weighting("eicu_semisynth", "sample_size", "")
+
+    def test_eicu_confirmatory_role_rejects_sample_size_even_with_wrong_role_label(self):
+        with self.assertRaises(ValueError):
+            check_eicu_aggregation_weighting("eicu_semisynth", "sample_size", "confirmatory")
+
+    def test_eicu_uniform_clients_always_allowed(self):
+        check_eicu_aggregation_weighting("eicu_semisynth", "uniform_clients", "")
+        check_eicu_aggregation_weighting("eicu_semisynth", "uniform_clients", "aggregation_ablation")
+
+    def test_eicu_ablation_role_authorizes_sample_size(self):
+        check_eicu_aggregation_weighting("eicu_semisynth", "sample_size", "aggregation_ablation")
+
+    def test_eicu_ablation_role_does_not_authorize_other_weightings(self):
+        # campaign_role alone is not a blanket bypass -- the exception is
+        # specifically for sample_size, the one value the ablation role
+        # exists to test.
+        with self.assertRaises(ValueError):
+            check_eicu_aggregation_weighting("eicu_semisynth", "not_a_real_mode", "aggregation_ablation")
+
+
+class EicuObjectiveModeGuardTest(unittest.TestCase):
+    def test_non_eicu_dataset_allows_legacy(self):
+        check_eicu_objective_mode("abs", "legacy")
+
+    def test_eicu_rejects_legacy(self):
+        with self.assertRaises(ValueError):
+            check_eicu_objective_mode("eicu_semisynth", "legacy")
+
+    def test_eicu_allows_paper_aligned(self):
+        check_eicu_objective_mode("eicu_semisynth", "paper_aligned")
 
 
 if __name__ == "__main__":

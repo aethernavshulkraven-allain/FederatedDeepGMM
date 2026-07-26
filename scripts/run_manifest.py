@@ -333,6 +333,19 @@ def build_config(
         "aggregation_weighting": _config_value(row, "aggregation_weighting", "sample_size"),
         "input_dim_g": _as_int(_config_value(row, "input_dim_g", 0), "input_dim_g"),
         "input_dim_f": _as_int(_config_value(row, "input_dim_f", 0), "input_dim_f"),
+        # protocol_v1.md S7.1: scenario_seed (which DGP/scenario artifact) and
+        # optimizer_seed (this run's random_seed) must be recorded separately
+        # even though row["seed"] continues to mean "optimizer seed" for path
+        #/backward-compatibility purposes (_run_dir, the seed-mismatch check
+        # below, and every pre-Study-A manifest already key off row["seed"]).
+        # Absent scenario_seed defaults to row["seed"] so non-Study-A
+        # manifests keep today's conflated-but-consistent behavior exactly.
+        "scenario_seed": _as_int(_config_value(row, "scenario_seed", row["seed"]), "scenario_seed"),
+        "optimizer_seed": _as_int(row["seed"], "seed"),
+        "seed_pair_id": _config_value(row, "seed_pair_id", ""),
+        "campaign_role": _config_value(row, "campaign_role", ""),
+        "scenario_checksum": _config_value(row, "scenario_checksum", ""),
+        "protocol_version": _config_value(row, "protocol_version", ""),
     }
 
 
@@ -347,6 +360,7 @@ def write_config(path: Path, config: dict[str, Any]) -> None:
             "config_version": "release",
             "output_dir": config["output_dir"],
             "overwrite": config.get("overwrite", False),
+            **({"protocol_version": config["protocol_version"]} if config.get("protocol_version") else {}),
         },
         "data_args": {
             "dataset": config["dataset"],
@@ -356,6 +370,7 @@ def write_config(path: Path, config: dict[str, Any]) -> None:
             "dataloader_num_workers": config["dataloader_num_workers"],
             "dataloader_pin_memory": config["dataloader_pin_memory"],
             **({"scenario_name": config["scenario_name"]} if config.get("scenario_name") else {}),
+            **({"scenario_checksum": config["scenario_checksum"]} if config.get("scenario_checksum") else {}),
         },
         "model_args": {
             "model": config["model"],
@@ -396,6 +411,10 @@ def write_config(path: Path, config: dict[str, Any]) -> None:
             "periodic_checkpoint_interval": config["periodic_checkpoint_interval"],
             "objective_mode": config["objective_mode"],
             "aggregation_weighting": config["aggregation_weighting"],
+            "scenario_seed": config["scenario_seed"],
+            "optimizer_seed": config["optimizer_seed"],
+            **({"seed_pair_id": config["seed_pair_id"]} if config.get("seed_pair_id") else {}),
+            **({"campaign_role": config["campaign_role"]} if config.get("campaign_role") else {}),
         },
         "validation_args": {
             "frequency_of_the_test": config["frequency_of_the_test"],

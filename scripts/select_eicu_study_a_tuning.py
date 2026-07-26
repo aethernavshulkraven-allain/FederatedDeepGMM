@@ -1,20 +1,23 @@
 """Apply the frozen tuning selection rule to a completed Study A tuning stage.
 
-Selection order, exactly as specified for Study A (applied per (g0, method)
-across its 6 LR/server-LR candidates):
+Selection order, per protocol_v1.md S8.1, applied per (g0, method) across its
+LR/server-LR candidates:
 
     1. run must complete without divergence
-    2. lowest validation structural MSE
-    3. validation moment violation as the first tie-breaker
-    4. final-iterate validation MSE as the second tie-breaker
+    2. lowest (equal-client, for eICU) validation structural MSE
+    3. (equal-client) validation moment violation *at that selected
+       checkpoint* as the first tie-breaker -- not the best moment violation
+       seen at any round, which could come from a different, worse-MSE round
+    4. final-minus-best (equal-client) validation MSE gap as the second
+       tie-breaker -- not raw final validation MSE, which does not measure
+       degradation from the selected checkpoint
 
-For (3), this uses each candidate's ``best_moment_violation`` from
-``metrics.json`` (the lowest held-out moment violation seen at any round in
-that run) rather than re-reading ``mse_by_round.csv`` for the specific round
-that happened to have the best MSE -- a simpler, equally defensible
-operationalisation of "how good did this candidate's moment condition get,"
-documented here so the choice is explicit and auditable rather than a hidden
-assumption.
+Reads ``equal_client_validation_moment_violation_at_best_validation`` and
+``final_vs_best_validation_gap`` when present (eICU runs, once
+fedavg_api.py's Gate 1 fields are written) and falls back to
+``best_moment_violation``/``final_validation_mse`` for older metrics.json
+files that predate those fields, so this still works against
+non-Study-A/legacy runs.
 
 The test set is never read by this script.
 
@@ -52,14 +55,28 @@ def load_metrics(row):
         return json.load(handle)
 
 
+def moment_violation_at_selected_checkpoint(metrics):
+    value = metrics.get("equal_client_validation_moment_violation_at_best_validation")
+    if value is None:
+        value = metrics["best_moment_violation"]
+    return float(value)
+
+
+def final_vs_best_validation_gap(metrics):
+    value = metrics.get("final_vs_best_validation_gap")
+    if value is None:
+        value = metrics["final_validation_mse"]
+    return float(value)
+
+
 def selection_key(metrics):
     """Lower is better on every component -- a plain ascending sort applies
     the full 3-level tie-break in one comparison.
     """
     return (
         float(metrics["best_validation_mse"]),
-        float(metrics["best_moment_violation"]),
-        float(metrics["final_validation_mse"]),
+        moment_violation_at_selected_checkpoint(metrics),
+        final_vs_best_validation_gap(metrics),
     )
 
 
@@ -103,6 +120,8 @@ def select_candidates(rows):
             "best_validation_mse": float(best["metrics"]["best_validation_mse"]),
             "best_moment_violation": float(best["metrics"]["best_moment_violation"]),
             "final_validation_mse": float(best["metrics"]["final_validation_mse"]),
+            "moment_violation_at_best_validation": moment_violation_at_selected_checkpoint(best["metrics"]),
+            "final_vs_best_validation_gap": final_vs_best_validation_gap(best["metrics"]),
         }
         report[key]["selected"] = selected[key]
 

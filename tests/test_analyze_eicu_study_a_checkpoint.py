@@ -106,23 +106,36 @@ class EvaluateTest(unittest.TestCase):
         evald = post_hoc.evaluate(self.g, self.f, self._split())
         np.testing.assert_allclose(evald["pred_effect"], 0.0)
 
-    def test_ate_error_matches_true_effect_when_predicted_effect_is_zero(self):
-        # ate_error = pred_effect - true_effect = 0 - 2.0 = -2.0.
+    def test_individual_effect_error_matches_true_effect_when_predicted_effect_is_zero(self):
+        # individual_effect_error = pred_effect - true_effect = 0 - 2.0 = -2.0.
         evald = post_hoc.evaluate(self.g, self.f, self._split())
-        np.testing.assert_allclose(evald["ate_error"], -2.0)
+        np.testing.assert_allclose(evald["individual_effect_error"], -2.0)
+        np.testing.assert_allclose(evald["true_effect"], 2.0)
 
 
 class PerClientMetricsTest(unittest.TestCase):
-    def test_groups_correctly_by_client_id(self):
-        evald = {
-            "client_id": np.array([0, 0, 1]),
-            "squared_error": np.array([1.0, 3.0, 10.0]),
-            "ate_error": np.array([1.0, -1.0, 2.0]),
-            "pred_effect": np.array([0.5, 0.5, 0.5]),
-            "f_pred": np.array([1.0, 1.0, 1.0]),
-            "y": np.array([1.0, 1.0, 1.0]),
-            "g_pred": np.array([1.0, 1.0, 1.0]),
+    def _evald(self, client_id, squared_error, pred_effect, true_effect):
+        pred_effect = np.asarray(pred_effect)
+        true_effect = np.asarray(true_effect)
+        n = len(client_id)
+        return {
+            "client_id": np.asarray(client_id),
+            "squared_error": np.asarray(squared_error),
+            "pred_effect": pred_effect,
+            "true_effect": true_effect,
+            "individual_effect_error": pred_effect - true_effect,
+            "f_pred": np.ones(n),
+            "y": np.ones(n),
+            "g_pred": np.ones(n),
         }
+
+    def test_groups_correctly_by_client_id(self):
+        evald = self._evald(
+            client_id=[0, 0, 1],
+            squared_error=[1.0, 3.0, 10.0],
+            pred_effect=[0.5, 0.5, 0.5],
+            true_effect=[0.5, 0.5, 0.5],
+        )
         rows = post_hoc.per_client_metrics(evald, {"0": 100, "1": 200})
         by_client = {r["hospital_id"]: r for r in rows}
         self.assertEqual(by_client[100]["n"], 2)
@@ -130,18 +143,65 @@ class PerClientMetricsTest(unittest.TestCase):
         self.assertEqual(by_client[200]["n"], 1)
         self.assertAlmostEqual(by_client[200]["mse"], 10.0)
 
-    def test_ate_error_is_reported_as_absolute_value(self):
-        evald = {
-            "client_id": np.array([0, 0]),
-            "squared_error": np.array([0.0, 0.0]),
-            "ate_error": np.array([-3.0, -5.0]),
-            "pred_effect": np.array([0.0, 0.0]),
-            "f_pred": np.array([1.0, 1.0]),
-            "y": np.array([1.0, 1.0]),
-            "g_pred": np.array([1.0, 1.0]),
-        }
+    def test_abs_ate_error_matches_hand_computation(self):
+        # true_ate = mean(2.0, 2.0) = 2.0; pred_ate = mean(-3.0, -5.0) = -4.0
+        # -> |pred_ate - true_ate| = 6.0.
+        evald = self._evald(
+            client_id=[0, 0],
+            squared_error=[0.0, 0.0],
+            pred_effect=[-3.0, -5.0],
+            true_effect=[2.0, 2.0],
+        )
         rows = post_hoc.per_client_metrics(evald, {"0": 7})
-        self.assertAlmostEqual(rows[0]["ate_error_abs"], 4.0)  # mean(3.0, 5.0)
+        self.assertAlmostEqual(rows[0]["true_ate"], 2.0)
+        self.assertAlmostEqual(rows[0]["pred_ate"], -4.0)
+        self.assertAlmostEqual(rows[0]["per_client_abs_ate_error"], 6.0)
+
+    def test_ate_error_and_individual_effect_mae_diverge_under_sign_cancellation(self):
+        """metric_policy.md: "ATE error can be small because positive and
+        negative individual errors cancel; individual-effect MAE cannot."
+        Row-level effect errors are -2.0 and +2.0 (individual_effect_mae must
+        see both), but they average to 0 within the client (abs ATE error
+        must be 0) -- the two metrics are deliberately made to disagree here.
+        """
+        evald = self._evald(
+            client_id=[0, 0],
+            squared_error=[0.0, 0.0],
+            pred_effect=[0.0, 4.0],  # mean = 2.0
+            true_effect=[2.0, 2.0],  # mean = 2.0
+        )
+        rows = post_hoc.per_client_metrics(evald, {"0": 7})
+        self.assertAlmostEqual(rows[0]["per_client_abs_ate_error"], 0.0)
+        self.assertAlmostEqual(rows[0]["individual_effect_mae"], 2.0)  # mean(|-2|, |2|)
+
+
+class AggregateAteErrorTest(unittest.TestCase):
+    def test_equal_client_ate_error_averages_signed_ates_before_abs(self):
+        # client A: pred_ate=3.0, true_ate=1.0 (signed diff +2.0)
+        # client B: pred_ate=-1.0, true_ate=1.0 (signed diff -2.0)
+        # Naively averaging |diff| per client would give 2.0, but
+        # metric_policy.md's formula averages the signed ATEs first:
+        # mean(pred_ate) - mean(true_ate) = 1.0 - 1.0 = 0.0 -> |0.0| = 0.0.
+        rows = [
+            {"pred_ate": 3.0, "true_ate": 1.0, "n": 1, "per_client_abs_ate_error": 2.0},
+            {"pred_ate": -1.0, "true_ate": 1.0, "n": 1, "per_client_abs_ate_error": 2.0},
+        ]
+        agg = post_hoc.aggregate_ate_error(rows)
+        self.assertAlmostEqual(agg["equal_client"], 0.0)
+        # The per-client distribution stats still see the (larger) per-client values.
+        self.assertAlmostEqual(agg["median"], 2.0)
+        self.assertAlmostEqual(agg["worst"], 2.0)
+
+    def test_sample_weighted_ate_error_uses_n_weighted_means(self):
+        rows = [
+            {"pred_ate": 4.0, "true_ate": 0.0, "n": 1, "per_client_abs_ate_error": 4.0},
+            {"pred_ate": 0.0, "true_ate": 0.0, "n": 9, "per_client_abs_ate_error": 0.0},
+        ]
+        agg = post_hoc.aggregate_ate_error(rows)
+        # weighted pred_ate mean = (1*4 + 9*0)/10 = 0.4; weighted true_ate mean = 0.0
+        self.assertAlmostEqual(agg["sample_weighted"], 0.4)
+        # equal-client mean pred_ate = (4+0)/2 = 2.0
+        self.assertAlmostEqual(agg["equal_client"], 2.0)
 
 
 class EndToEndCliTest(unittest.TestCase):
@@ -213,8 +273,10 @@ class EndToEndCliTest(unittest.TestCase):
         self.assertAlmostEqual(summary["aggregates"]["mse"]["equal_client"], 4.0, places=8)
         self.assertAlmostEqual(summary["aggregates"]["mse"]["sample_weighted"], 4.0, places=8)
         # g is constant in D -> predicted effect is 0, matching the true (also
-        # constant-in-D) g0 exactly -> ATE error is 0.
-        self.assertAlmostEqual(summary["aggregates"]["ate_error_abs"]["equal_client"], 0.0, places=8)
+        # constant-in-D) g0 exactly -> both ATE error and individual-effect
+        # MAE are 0 (a case where they can't diverge, since there's no error).
+        self.assertAlmostEqual(summary["aggregates"]["absolute_ate_error"]["equal_client"], 0.0, places=8)
+        self.assertAlmostEqual(summary["aggregates"]["individual_effect_mae"]["equal_client"], 0.0, places=8)
 
         csv_path = os.path.join(self.tmpdir, "per_client_eval_best_validation_test.csv")
         self.assertTrue(os.path.exists(csv_path))

@@ -6,12 +6,14 @@ runs, so the selection/aggregation *logic* is checked against known answers
 independent of how long real runs take.
 """
 
+import csv
 import json
 import os
 import shutil
 import sys
 import tempfile
 import unittest
+from collections import Counter
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(REPO_ROOT, "scripts"))
@@ -24,9 +26,12 @@ import analyze_eicu_study_a_confirmatory as confirmatory  # noqa: E402
 class ManifestGenerationTest(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp(prefix="study_a_manifest_")
+        all_scenario_seeds = {p[1] for p in manifest_gen.TUNING_SEED_PAIRS} | {
+            p[1] for p in manifest_gen.CONFIRMATORY_SEED_PAIRS
+        }
         for g0 in manifest_gen.G0_VARIANTS:
-            for seed in (0, 1, 2, 3, 4):
-                path = os.path.join(self.tmpdir, f"{g0}_seed{seed}_metadata.json")
+            for scenario_seed in all_scenario_seeds:
+                path = os.path.join(self.tmpdir, f"{g0}_scenario_seed{scenario_seed}_metadata.json")
                 with open(path, "w") as handle:
                     json.dump({"n_features_x": 43, "n_features_z": 43, "n_clients": 3}, handle)
 
@@ -37,9 +42,22 @@ class ManifestGenerationTest(unittest.TestCase):
         rows = manifest_gen.generate_tuning(self.tmpdir, "/tmp/out")
         self.assertEqual(len(rows), len(manifest_gen.G0_VARIANTS) * 2 * 3 * 2)  # g0 x methods x lr x server_lr
 
-    def test_tuning_rows_are_all_seed_zero(self):
+    def test_tuning_rows_use_the_frozen_tuning_01_seed_pair_by_default(self):
         rows = manifest_gen.generate_tuning(self.tmpdir, "/tmp/out")
-        self.assertTrue(all(r["seed"] == manifest_gen.TUNING_SEED for r in rows))
+        expected_seed_pair_id, expected_scenario_seed, expected_optimizer_seed = manifest_gen.TUNING_SEED_PAIRS[0]
+        self.assertTrue(all(r["seed_pair_id"] == expected_seed_pair_id for r in rows))
+        self.assertTrue(all(r["scenario_seed"] == expected_scenario_seed for r in rows))
+        # row["seed"] is the optimizer/training seed (run_manifest.py's
+        # random_seed/run-dir semantics), never conflated with scenario_seed.
+        self.assertTrue(all(r["seed"] == expected_optimizer_seed for r in rows))
+        self.assertTrue(all(r["optimizer_seed"] == expected_optimizer_seed for r in rows))
+
+    def test_tuning_can_generate_additional_seed_pairs_for_shortlisted_candidates(self):
+        rows = manifest_gen.generate_tuning(self.tmpdir, "/tmp/out", seed_pairs=manifest_gen.TUNING_SEED_PAIRS)
+        self.assertEqual(len(rows), len(manifest_gen.G0_VARIANTS) * 2 * 3 * 2 * 3)
+        self.assertEqual(
+            {r["seed_pair_id"] for r in rows}, {p[0] for p in manifest_gen.TUNING_SEED_PAIRS}
+        )
 
     def test_tuning_uses_skip_model_selection(self):
         rows = manifest_gen.generate_tuning(self.tmpdir, "/tmp/out")
@@ -71,41 +89,146 @@ class ManifestGenerationTest(unittest.TestCase):
         rows = manifest_gen.generate_confirmatory(self.tmpdir, "/tmp/out", self._selected())
         self.assertEqual(len(rows), 3 * 5 * 2)  # g0 x seeds x methods
 
-    def test_confirmatory_spans_all_five_seeds(self):
+    def test_confirmatory_spans_all_five_frozen_seed_pairs(self):
         rows = manifest_gen.generate_confirmatory(self.tmpdir, "/tmp/out", self._selected())
-        self.assertEqual({r["seed"] for r in rows}, set(manifest_gen.CONFIRMATORY_SEEDS))
+        self.assertEqual(
+            {r["seed_pair_id"] for r in rows}, {p[0] for p in manifest_gen.CONFIRMATORY_SEED_PAIRS}
+        )
+        self.assertEqual(
+            {(r["scenario_seed"], r["optimizer_seed"]) for r in rows},
+            {(p[1], p[2]) for p in manifest_gen.CONFIRMATORY_SEED_PAIRS},
+        )
 
     def test_confirmatory_missing_selection_raises(self):
         with self.assertRaises(KeyError):
             manifest_gen.generate_confirmatory(self.tmpdir, "/tmp/out", {})
 
-    def test_ablation_has_10_rows_not_20(self):
-        """The uniform_clients arm is already covered by confirmatory; ablation
-        only adds the sample_size arm.
+    def test_confirmatory_does_not_authorize_sample_size_ablation(self):
+        rows = manifest_gen.generate_confirmatory(self.tmpdir, "/tmp/out", self._selected())
+        self.assertTrue(all(r["campaign_role"] == "" for r in rows))
+
+    def test_ablation_has_30_rows_across_all_g0(self):
+        """protocol_v1.md S6.4/decision_register.md D16: all three g0
+        variants, not linear only -- 3 g0 x 5 seed pairs x 2 methods = 30.
         """
         rows = manifest_gen.generate_ablation(self.tmpdir, "/tmp/out", self._selected())
-        self.assertEqual(len(rows), 2 * 5)  # methods x seeds, linear only
+        self.assertEqual(len(rows), 3 * 5 * 2)
 
-    def test_ablation_is_linear_only(self):
+    def test_ablation_spans_all_g0_variants(self):
         rows = manifest_gen.generate_ablation(self.tmpdir, "/tmp/out", self._selected())
-        self.assertTrue(all(r["g0"] == "linear" for r in rows))
+        self.assertEqual({r["g0"] for r in rows}, set(manifest_gen.G0_VARIANTS))
 
     def test_ablation_uses_sample_size_weighting(self):
         rows = manifest_gen.generate_ablation(self.tmpdir, "/tmp/out", self._selected())
         self.assertTrue(all(r["aggregation_weighting"] == "sample_size" for r in rows))
 
-    def test_dims_are_read_per_scenario_not_hardcoded(self):
-        """Different (g0, seed) scenarios can have different covariate widths
-        (categorical levels vary with which rows land in a tiny train split);
-        the manifest must read each one's own metadata, not assume one width.
+    def test_ablation_authorizes_sample_size_via_campaign_role(self):
+        """Without this, FedAvgAPI's eICU guard (check_eicu_aggregation_weighting)
+        would reject every ablation row's sample_size weighting.
         """
-        path = os.path.join(self.tmpdir, "linear_seed1_metadata.json")
+        rows = manifest_gen.generate_ablation(self.tmpdir, "/tmp/out", self._selected())
+        self.assertTrue(all(r["campaign_role"] == "aggregation_ablation" for r in rows))
+
+    def test_dims_are_read_per_scenario_not_hardcoded(self):
+        """Different (g0, scenario_seed) scenarios can have different
+        covariate widths (categorical levels vary with which rows land in a
+        tiny train split); the manifest must read each one's own metadata,
+        not assume one width.
+        """
+        _, first_scenario_seed, _ = manifest_gen.CONFIRMATORY_SEED_PAIRS[1]
+        path = os.path.join(self.tmpdir, f"linear_scenario_seed{first_scenario_seed}_metadata.json")
         with open(path, "w") as handle:
             json.dump({"n_features_x": 41, "n_features_z": 41, "n_clients": 3}, handle)
         rows = manifest_gen.generate_confirmatory(self.tmpdir, "/tmp/out", self._selected())
-        by_seed = {r["seed"]: r for r in rows if r["g0"] == "linear"}
-        self.assertEqual(by_seed[1]["input_dim_g"], 41)
-        self.assertEqual(by_seed[0]["input_dim_g"], 43)
+        by_scenario_seed = {r["scenario_seed"]: r for r in rows if r["g0"] == "linear"}
+        self.assertEqual(by_scenario_seed[first_scenario_seed]["input_dim_g"], 41)
+        other_scenario_seed = manifest_gen.CONFIRMATORY_SEED_PAIRS[0][1]
+        self.assertEqual(by_scenario_seed[other_scenario_seed]["input_dim_g"], 43)
+
+
+class CentralizedBaselineManifestTest(unittest.TestCase):
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp(prefix="study_a_centralized_manifest_")
+        for g0 in manifest_gen.G0_VARIANTS:
+            for _, scenario_seed, _ in manifest_gen.CONFIRMATORY_SEED_PAIRS:
+                path = os.path.join(self.tmpdir, f"{g0}_scenario_seed{scenario_seed}_metadata.json")
+                with open(path, "w") as handle:
+                    json.dump({"n_features_x": 43, "n_features_z": 43, "n_clients": 3}, handle)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
+    def test_45_rows_across_all_g0_seed_pairs_and_methods(self):
+        rows = manifest_gen.generate_centralized_baseline(self.tmpdir, "/tmp/out")
+        self.assertEqual(len(rows), 3 * 5 * 3)
+
+    def test_methods_are_canonical_suffixed_labels(self):
+        rows = manifest_gen.generate_centralized_baseline(self.tmpdir, "/tmp/out")
+        self.assertEqual({r["method"] for r in rows}, {"gda_d", "sgda_s", "oadam_s"})
+
+    def test_role_and_aggregation_mode(self):
+        rows = manifest_gen.generate_centralized_baseline(self.tmpdir, "/tmp/out")
+        self.assertTrue(all(r["role"] == "centralized_baseline" for r in rows))
+        self.assertTrue(all(r["aggregation_weighting"] == "none" for r in rows))
+        self.assertTrue(all(r["training_scope"] == "centralized" for r in rows))
+
+    def test_gda_d_is_deterministic_batch_size_zero(self):
+        rows = manifest_gen.generate_centralized_baseline(self.tmpdir, "/tmp/out")
+        gda_rows = [r for r in rows if r["method"] == "gda_d"]
+        self.assertTrue(all(r["batch_size"] == 0 for r in gda_rows))
+
+    def test_run_ids_are_unique(self):
+        rows = manifest_gen.generate_centralized_baseline(self.tmpdir, "/tmp/out")
+        run_ids = [r["run_id"] for r in rows]
+        self.assertEqual(len(run_ids), len(set(run_ids)))
+
+
+class CombinedManifestTest(unittest.TestCase):
+    """protocol_v1.json required_matrix: 30 confirmatory + 45 centralized_baseline
+    + 30 aggregation_ablation = 105 rows in one canonical manifest (Gate 6).
+    """
+
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp(prefix="study_a_combined_manifest_")
+        for g0 in manifest_gen.G0_VARIANTS:
+            for _, scenario_seed, _ in manifest_gen.CONFIRMATORY_SEED_PAIRS:
+                path = os.path.join(self.tmpdir, f"{g0}_scenario_seed{scenario_seed}_metadata.json")
+                with open(path, "w") as handle:
+                    json.dump({"n_features_x": 43, "n_features_z": 43, "n_clients": 3}, handle)
+        self.selected_path = os.path.join(self.tmpdir, "selected.json")
+        with open(self.selected_path, "w") as handle:
+            json.dump(
+                {
+                    manifest_gen.selection_key(g0, method): {
+                        "learning_rate": 0.001, "server_learning_rate": 1.5
+                    }
+                    for g0 in manifest_gen.G0_VARIANTS
+                    for method in manifest_gen.METHODS
+                },
+                handle,
+            )
+
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
+    def test_all_stage_produces_105_rows_with_correct_role_counts(self):
+        out_csv = os.path.join(self.tmpdir, "manifest.csv")
+        exit_code = manifest_gen.main([
+            "--stage", "all",
+            "--scenario-dir", self.tmpdir,
+            "--out", out_csv,
+            "--selected-hyperparameters", self.selected_path,
+        ])
+        self.assertEqual(exit_code, 0)
+        with open(out_csv, newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        self.assertEqual(len(rows), 105)
+        role_counts = Counter(row["role"] for row in rows)
+        self.assertEqual(role_counts, {
+            "confirmatory": 30, "centralized_baseline": 45, "aggregation_ablation": 30,
+        })
+        run_ids = [row["run_id"] for row in rows]
+        self.assertEqual(len(run_ids), len(set(run_ids)))
 
 
 class TuningSelectionTest(unittest.TestCase):
@@ -195,6 +318,52 @@ class TuningSelectionTest(unittest.TestCase):
         selected, report = tuning_select.select_candidates([row])
         self.assertNotIn("linear:fedgda_s", selected)
         self.assertEqual(report["linear:fedgda_s"]["n_missing"], 1)
+
+    def test_at_checkpoint_moment_violation_overrides_best_ever_when_present(self):
+        """protocol_v1.md S8.1: tie-break on moment violation *at the
+        validation-selected checkpoint*, not the best moment violation seen
+        at any round -- these two rows have identical best_validation_mse and
+        identical (misleading) best_moment_violation, but the run with the
+        worse at-checkpoint moment violation must lose.
+        """
+        root = self.tmpdir
+        rows = [
+            self._make_run("a", root, "eicu_semisynth", "fedgda_s", 0, {
+                "diverged": False, "best_validation_mse": 3.0,
+                "best_moment_violation": 0.05, "final_validation_mse": 3.0,
+                "equal_client_validation_moment_violation_at_best_validation": 0.9,
+            }),
+            self._make_run("b", root, "eicu_semisynth", "fedgda_s", 0, {
+                "diverged": False, "best_validation_mse": 3.0,
+                "best_moment_violation": 0.05, "final_validation_mse": 3.0,
+                "equal_client_validation_moment_violation_at_best_validation": 0.1,
+            }),
+        ]
+        selected, _ = tuning_select.select_candidates(rows)
+        self.assertEqual(selected["linear:fedgda_s"]["run_id"], "b")
+
+    def test_final_vs_best_gap_overrides_raw_final_mse_when_present(self):
+        """Second tie-break: final-minus-best validation gap, not raw final
+        validation MSE -- run 'a' has a lower raw final MSE but a much worse
+        degradation from its own best checkpoint, and must lose.
+        """
+        root = self.tmpdir
+        rows = [
+            self._make_run("a", root, "eicu_semisynth", "fedgda_s", 0, {
+                "diverged": False, "best_validation_mse": 3.0,
+                "best_moment_violation": 0.1, "final_validation_mse": 3.1,
+                "equal_client_validation_moment_violation_at_best_validation": 0.1,
+                "final_vs_best_validation_gap": 5.0,
+            }),
+            self._make_run("b", root, "eicu_semisynth", "fedgda_s", 0, {
+                "diverged": False, "best_validation_mse": 3.0,
+                "best_moment_violation": 0.1, "final_validation_mse": 9.0,
+                "equal_client_validation_moment_violation_at_best_validation": 0.1,
+                "final_vs_best_validation_gap": 0.5,
+            }),
+        ]
+        selected, _ = tuning_select.select_candidates(rows)
+        self.assertEqual(selected["linear:fedgda_s"]["run_id"], "b")
 
 
 class ConfirmatoryAggregationTest(unittest.TestCase):

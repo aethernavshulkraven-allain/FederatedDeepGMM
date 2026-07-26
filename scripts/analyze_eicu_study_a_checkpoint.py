@@ -9,9 +9,13 @@ one split, grouped by the `client_id` array that the scenario already carries.
 
 Reports, per client and in aggregate:
     * structural MSE against the known g0
-    * ATE error against the scenario's true per-client effect
+    * absolute ATE error (|mean predicted effect - mean true effect|, taken
+      *after* averaging -- positive/negative per-row errors can cancel)
+    * individual-effect MAE (mean absolute per-row effect error -- cannot
+      cancel; metric_policy.md is explicit that this is NOT the same
+      quantity as ATE error and the two must not be substituted)
     * held-out moment violation
-    * equal-client vs. sample-weighted aggregates of all three
+    * equal-client vs. sample-weighted aggregates of all of the above
 
 Usage:
     python scripts/analyze_eicu_study_a_checkpoint.py \\
@@ -106,7 +110,10 @@ def evaluate(g, f, split_data):
     y_np = y.numpy()
     squared_error = (g_pred - true_g) ** 2
     pred_effect = pred_treated - pred_control
-    ate_error = pred_effect - split_data["true_effect"].squeeze(-1)
+    true_effect = split_data["true_effect"].squeeze(-1)
+    # Per-row individual-effect error -- absolute value taken per row before
+    # any averaging, so it cannot benefit from cross-row sign cancellation.
+    individual_effect_error = pred_effect - true_effect
 
     return {
         "g_pred": g_pred,
@@ -114,25 +121,39 @@ def evaluate(g, f, split_data):
         "y": y_np,
         "squared_error": squared_error,
         "pred_effect": pred_effect,
-        "ate_error": ate_error,
+        "true_effect": true_effect,
+        "individual_effect_error": individual_effect_error,
         "client_id": split_data["client_id"],
     }
 
 
 def per_client_metrics(evald, client_code_to_hospital):
-    """One row per client: MSE, ATE error, moment violation, sample count."""
+    """One row per client: MSE, true/predicted ATE, individual-effect MAE,
+    moment violation, sample count.
+
+    ``per_client_abs_ate_error`` (|pred_ate - true_ate| for THIS client) is
+    reported only as a per-client distribution statistic -- the campaign
+    aggregate ATE error is computed differently (see ``aggregate_ate_error``):
+    metric_policy.md requires averaging predicted and true ATEs *across*
+    clients first and taking one absolute value at the end, not averaging
+    each client's already-absolute error.
+    """
     rows = []
     for code in np.unique(evald["client_id"]):
         mask = evald["client_id"] == code
         hospital_id = client_code_to_hospital.get(str(int(code)), client_code_to_hospital.get(int(code)))
+        true_ate = float(evald["true_effect"][mask].mean())
+        pred_ate = float(evald["pred_effect"][mask].mean())
         rows.append(
             {
                 "client_code": int(code),
                 "hospital_id": hospital_id,
                 "n": int(mask.sum()),
                 "mse": float(evald["squared_error"][mask].mean()),
-                "ate_error_abs": float(np.abs(evald["ate_error"][mask]).mean()),
-                "pred_ate": float(evald["pred_effect"][mask].mean()),
+                "true_ate": true_ate,
+                "pred_ate": pred_ate,
+                "per_client_abs_ate_error": abs(pred_ate - true_ate),
+                "individual_effect_mae": float(np.abs(evald["individual_effect_error"][mask]).mean()),
                 "moment_violation": _moment_violation_scalar(
                     evald["f_pred"][mask], evald["y"][mask], evald["g_pred"][mask]
                 ),
@@ -142,7 +163,13 @@ def per_client_metrics(evald, client_code_to_hospital):
 
 
 def aggregate(rows, key):
-    """Equal-client (mean of per-client values) vs sample-weighted (n-weighted)."""
+    """Equal-client (mean of per-client values) vs sample-weighted (n-weighted).
+
+    Valid for metrics that are already per-client scalars whose equal-client
+    and sample-weighted aggregates are each other's straightforward mean --
+    MSE, individual-effect MAE, and moment violation. NOT valid for ATE error:
+    see ``aggregate_ate_error``.
+    """
     values = np.array([r[key] for r in rows])
     counts = np.array([r["n"] for r in rows])
     equal_client = float(values.mean())
@@ -153,6 +180,30 @@ def aggregate(rows, key):
         "median": float(np.median(values)),
         "p90": float(np.percentile(values, 90)),
         "worst": float(values.max()),
+    }
+
+
+def aggregate_ate_error(rows):
+    """Absolute ATE error, per metric_policy.md's exact (non-substitutable)
+    definition: average predicted and true client ATEs *across clients*
+    first, then take one absolute difference -- not the mean of each
+    client's already-absolute error (that quantity is reported separately,
+    below, purely as a per-client distribution diagnostic).
+    """
+    pred_ate = np.array([r["pred_ate"] for r in rows])
+    true_ate = np.array([r["true_ate"] for r in rows])
+    counts = np.array([r["n"] for r in rows])
+    equal_client = abs(float(pred_ate.mean()) - float(true_ate.mean()))
+    sample_weighted = abs(
+        float(np.average(pred_ate, weights=counts)) - float(np.average(true_ate, weights=counts))
+    )
+    per_client_abs = np.array([r["per_client_abs_ate_error"] for r in rows])
+    return {
+        "equal_client": equal_client,
+        "sample_weighted": sample_weighted,
+        "median": float(np.median(per_client_abs)),
+        "p90": float(np.percentile(per_client_abs, 90)),
+        "worst": float(per_client_abs.max()),
     }
 
 
@@ -169,21 +220,32 @@ def render_report(checkpoint_path, scenario_path, split, rows, checkpoint):
     add("## Aggregate metrics\n")
     add("| metric | equal-client | sample-weighted | median | p90 | worst client |")
     add("|---|---|---|---|---|---|")
-    for key, label in (("mse", "structural MSE"), ("ate_error_abs", "|ATE error|"), ("moment_violation", "moment violation")):
+    for key, label in (("mse", "structural MSE"), ("individual_effect_mae", "individual-effect MAE"), ("moment_violation", "moment violation")):
         agg = aggregate(rows, key)
         add(
             f"| {label} | {agg['equal_client']:.4g} | {agg['sample_weighted']:.4g} | "
             f"{agg['median']:.4g} | {agg['p90']:.4g} | {agg['worst']:.4g} |"
         )
+    ate_agg = aggregate_ate_error(rows)
+    add(
+        f"| absolute ATE error | {ate_agg['equal_client']:.4g} | {ate_agg['sample_weighted']:.4g} | "
+        f"{ate_agg['median']:.4g} | {ate_agg['p90']:.4g} | {ate_agg['worst']:.4g} |"
+    )
     add("")
+    add(
+        "Absolute ATE error is not individual-effect MAE: the former can be small "
+        "because positive and negative per-client errors cancel; the latter cannot "
+        "(metric_policy.md).\n"
+    )
 
     add("## Per-client detail\n")
-    add("| hospital_id | n | MSE | \\|ATE error\\| | pred ATE | moment violation |")
-    add("|---|---|---|---|---|---|")
+    add("| hospital_id | n | MSE | true ATE | pred ATE | \\|ATE error\\| | individual-effect MAE | moment violation |")
+    add("|---|---|---|---|---|---|---|---|")
     for row in rows:
         add(
             f"| {row['hospital_id']} | {row['n']} | {row['mse']:.4g} | "
-            f"{row['ate_error_abs']:.4g} | {row['pred_ate']:.4g} | {row['moment_violation']:.4g} |"
+            f"{row['true_ate']:.4g} | {row['pred_ate']:.4g} | {row['per_client_abs_ate_error']:.4g} | "
+            f"{row['individual_effect_mae']:.4g} | {row['moment_violation']:.4g} |"
         )
     add("")
     return "\n".join(lines)
@@ -239,7 +301,8 @@ def main(argv=None):
         "round": checkpoint.get("round"),
         "n_clients": len(rows),
         "aggregates": {
-            key: aggregate(rows, key) for key in ("mse", "ate_error_abs", "moment_violation")
+            **{key: aggregate(rows, key) for key in ("mse", "individual_effect_mae", "moment_violation")},
+            "absolute_ate_error": aggregate_ate_error(rows),
         },
     }
     summary_path = os.path.join(out_dir, f"per_client_eval_{checkpoint_type}_{args.split}_summary.json")

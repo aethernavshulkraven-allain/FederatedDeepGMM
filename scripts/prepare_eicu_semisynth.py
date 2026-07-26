@@ -25,7 +25,7 @@ changes are needed:
 
 Usage:
     python scripts/prepare_eicu_semisynth.py --cohort experiments/eicu_v1_demo/cohort.csv \\
-        --g0 linear --seed 0
+        --g0 linear --scenario-seed 0
 """
 
 import argparse
@@ -53,6 +53,9 @@ from eicu_iv_diagnostics import first_stage_diagnostics  # noqa: E402
 EXAMPLE_ROOT = os.path.join(REPO_ROOT, "fedgmm", "sp_decentralized_mnist_lr_example")
 
 G0_CHOICES = ("linear", "interaction", "mlp")
+# protocol_v1.md S4.1: "The displayed label frozen_random_mlp maps to
+# implementation label mlp only if metadata records that mapping."
+G0_DISPLAY_LABEL = {"linear": "linear", "interaction": "interaction", "mlp": "frozen_random_mlp"}
 
 DEFAULT_SPLIT = (0.6, 0.2, 0.2)
 
@@ -173,9 +176,20 @@ def make_g0(kind, n_features, rng):
 # threshold audit_eicu_clients.py uses for the same reason.
 MIN_STRUCTURAL_Z_SD = 0.01
 
+# protocol_v1.md S3.2 ("Eligibility must be frozen before scenario
+# generation"): which hospitals pass the real-Z structural-variation filter
+# must be a fixed, cohort-level decision, not something that can drift with
+# whichever scenario_seed a caller happens to pass. Passing scenario_seed
+# straight through to build_instrument's cross-fitting fold assignment would
+# let fold noise silently change the eligible client set between otherwise
+# identical confirmatory seed pairs. A dedicated, fixed seed used only for
+# this determination decouples "who is eligible" from "which DGP draw this
+# replicate uses."
+ELIGIBILITY_SEED = 20260101
+
 
 def filter_clients_by_real_z_variation(
-    cohort, client_col="hospitalid", min_structural_sd=MIN_STRUCTURAL_Z_SD, seed=0
+    cohort, client_col="hospitalid", min_structural_sd=MIN_STRUCTURAL_Z_SD, seed=ELIGIBILITY_SEED
 ):
     """Drop hospitals with no genuine real-data ward-preference variation.
 
@@ -185,6 +199,9 @@ def filter_clients_by_real_z_variation(
     reporting; here it is enforced, not just reported, because a hospital
     whose instrument is constant contributes a simulated D that Z cannot
     possibly predict, regardless of instrument_strength.
+
+    ``seed`` defaults to the frozen ``ELIGIBILITY_SEED``, not a caller's
+    scenario_seed -- see the module-level comment above.
     """
     z, _, _ = build_instrument(cohort, construction=PREFERENCE_WARD, client_col=client_col, seed=seed)
     probe = cohort.assign(_z=z.values)
@@ -194,23 +211,33 @@ def filter_clients_by_real_z_variation(
     dropped = int(cohort[client_col].nunique() - len(eligible))
     return kept, {
         "min_structural_z_sd": min_structural_sd,
+        "eligibility_seed": int(seed),
         "n_hospitals_before": int(cohort[client_col].nunique()),
         "n_hospitals_after": int(len(eligible)),
         "n_hospitals_dropped_for_no_z_variation": dropped,
+        "eligible_hospital_ids": sorted(int(h) for h in eligible),
     }
 
 
-def certify_simulated_first_stage(cohort, treatment, z_scaled, client_codes, client_code_to_hospital):
-    """Per-client first-stage strength on the *simulated* treatment.
+def certify_simulated_first_stage(
+    treatment, z_scaled, client_codes, client_code_to_hospital, non_test_mask
+):
+    """Per-client first-stage strength on the *simulated* treatment,
+    restricted to non-Test rows.
 
-    Answers the second relevance question: "does Z predict the newly simulated
-    D within each hospital?" A real-data F-statistic computed before D exists
-    (filter_clients_by_real_z_variation, above) is necessary but not the final
-    word -- this checks the thing that is actually used for training.
+    Answers the second relevance question: "does Z predict the newly
+    simulated D within each hospital?" A real-data F-statistic computed
+    before D exists (filter_clients_by_real_z_variation, above) is necessary
+    but not the final word -- this checks the thing that is actually used
+    for training. protocol_v1.md S3.2/S8.1: any per-client relevance
+    diagnostic that could influence configuration or eligibility must be
+    computed only from non-Test rows (train + dev here), never Test, even
+    though it is currently recorded as informational rather than an
+    enforced gate.
     """
     certification = {}
     for code in np.unique(client_codes):
-        mask = client_codes == code
+        mask = (client_codes == code) & non_test_mask
         if mask.sum() < 5:  # too few rows for a meaningful within-client regression
             continue
         diag = first_stage_diagnostics(z_scaled[mask], treatment[mask])
@@ -221,9 +248,14 @@ def certify_simulated_first_stage(cohort, treatment, z_scaled, client_codes, cli
             "weak_instrument_warning": diag["weak_instrument_warning"],
         }
     n_weak = sum(1 for v in certification.values() if v["weak_instrument_warning"])
+    weak_hospital_ids = sorted(
+        hospital_id for hospital_id, v in certification.items() if v["weak_instrument_warning"]
+    )
     return certification, {
         "n_clients_certified": len(certification),
         "n_clients_weak_simulated_first_stage": n_weak,
+        "weak_simulated_first_stage_hospital_ids": weak_hospital_ids,
+        "diagnostic_rows": "non_test",
     }
 
 
@@ -291,13 +323,14 @@ def generate(
     client_heterogeneity=0.5,
     client_col="hospitalid",
     min_structural_z_sd=MIN_STRUCTURAL_Z_SD,
+    scenario_scope="demo",
 ):
     import pandas as pd
 
     rng = np.random.default_rng(seed)
 
     cohort, client_filter_report = filter_clients_by_real_z_variation(
-        cohort, client_col=client_col, min_structural_sd=min_structural_z_sd, seed=seed
+        cohort, client_col=client_col, min_structural_sd=min_structural_z_sd, seed=ELIGIBILITY_SEED
     )
 
     assignment = split_by_admission(cohort, client_col, rng)
@@ -356,8 +389,10 @@ def generate(
     # Second relevance checkpoint: does Z predict the treatment that was
     # actually simulated, within each hospital? (The first checkpoint, above,
     # already confirmed real ward-preference variation before D existed.)
+    # Restricted to non-Test rows -- see certify_simulated_first_stage's docstring.
+    non_test_mask = (assignment != "test").to_numpy()
     first_stage_certification, first_stage_summary = certify_simulated_first_stage(
-        cohort, treatment, z_scaled, client_codes, client_code_to_hospital
+        treatment, z_scaled, client_codes, client_code_to_hospital, non_test_mask
     )
 
     g0, g0_meta = make_g0(g0_kind, n_features, rng)
@@ -406,14 +441,37 @@ def generate(
 
     metadata = {
         "g0": g0_meta,
-        "seed": seed,
+        "g0_display_label": G0_DISPLAY_LABEL[g0_kind],
+        # protocol_v1.md S7.1: this is the scenario/DGP seed. It never
+        # controls model init/minibatch/optimizer randomness (this script
+        # generates only the scenario NPZ; no training happens here) --
+        # named scenario_seed, not the ambiguous "seed", so a downstream
+        # consumer reading this metadata alongside a run's optimizer_seed
+        # cannot mistake one for the other.
+        "scenario_seed": seed,
         "n_total": int(n),
         "n_features_x": int(x.shape[1]),
         "n_features_z": int(z.shape[1]),
+        # default_contract.json's canonical dimension field names, alongside
+        # the n_features_x/z aliases above (kept for backward compatibility).
+        "input_dim": int(x.shape[1]),
+        "instrument_dim": int(z.shape[1]),
+        "outcome_dim": int(outcome.reshape(-1, 1).shape[1]),
         "n_covariates": int(n_features),
         "n_clients": int(len(np.unique(client_codes))),
         "covariate_names": names,
         "client_code_to_hospital": client_code_to_hospital,
+        # protocol_v1.md S3.2: eligibility is a frozen, cohort-level decision
+        # (see ELIGIBILITY_SEED) -- this is the exact client set every
+        # scenario_seed for this cohort/g0 combination will share.
+        "eligible_client_ids": sorted(client_code_to_hospital.values()),
+        "eligible_client_provenance": {
+            "method": "structural_instrument_variation_then_simulated_first_stage",
+            "real_z_filter": client_filter_report,
+            "simulated_first_stage": first_stage_summary,
+        },
+        "scenario_scope": scenario_scope,
+        "is_demo": scenario_scope == "demo",
         "instrument_strength": instrument_strength,
         "confounding": confounding,
         "rho": rho,
@@ -476,7 +534,10 @@ def parse_args(argv=None):
         default=os.path.join(REPO_ROOT, "experiments", "eicu_v1_demo", "cohort.csv"),
     )
     parser.add_argument("--g0", choices=G0_CHOICES, default="linear")
-    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument(
+        "--scenario-seed", "--seed", dest="scenario_seed", type=int, default=0,
+        help="DGP/split seed (protocol_v1.md scenario_seed). --seed is a deprecated alias.",
+    )
     parser.add_argument("--instrument-strength", type=float, default=2.0)
     parser.add_argument("--confounding", type=float, default=1.0)
     parser.add_argument("--rho", type=float, default=1.0)
@@ -485,9 +546,20 @@ def parse_args(argv=None):
     parser.add_argument(
         "--out",
         default=None,
-        help="target .npz (default data/eicu_semisynth/<g0>_seed<seed>.npz)",
+        help="target .npz (default data/eicu_semisynth/<g0>_scenario_seed<scenario_seed>.npz)",
+    )
+    parser.add_argument(
+        "--scenario-scope", choices=("demo", "full_eicu"), default=None,
+        help=(
+            "protocol_v1.md: full-eICU only for final/reportable results, demo=smoke "
+            "only. Defaults to inferring from --cohort's path (contains 'demo')."
+        ),
     )
     return parser.parse_args(argv)
+
+
+def infer_scenario_scope(cohort_path):
+    return "demo" if "demo" in str(cohort_path).lower() else "full_eicu"
 
 
 def main(argv=None):
@@ -495,26 +567,31 @@ def main(argv=None):
 
     args = parse_args(argv)
     cohort = pd.read_csv(args.cohort).reset_index(drop=True)
+    scenario_scope = args.scenario_scope or infer_scenario_scope(args.cohort)
 
     splits, metadata = generate(
         cohort,
         g0_kind=args.g0,
-        seed=args.seed,
+        seed=args.scenario_seed,
         instrument_strength=args.instrument_strength,
         confounding=args.confounding,
         rho=args.rho,
         noise=args.noise,
         client_heterogeneity=args.client_heterogeneity,
+        scenario_scope=scenario_scope,
     )
 
     out = args.out or os.path.join(
-        EXAMPLE_ROOT, "data", "eicu_semisynth", f"{args.g0}_seed{args.seed}.npz"
+        EXAMPLE_ROOT, "data", "eicu_semisynth", f"{args.g0}_scenario_seed{args.scenario_seed}.npz"
     )
     write_scenario(splits, out)
 
     metadata["scenario_path"] = out
-    metadata["scenario_checksum_sha256"] = file_checksum(out)
+    checksum = file_checksum(out)
+    metadata["scenario_checksum_sha256"] = checksum
+    metadata["scenario_checksum"] = checksum
     metadata["cohort"] = os.path.abspath(args.cohort)
+    metadata["cohort_checksum"] = file_checksum(args.cohort) if os.path.exists(args.cohort) else None
     meta_path = os.path.splitext(out)[0] + "_metadata.json"
     with open(meta_path, "w") as handle:
         json.dump(metadata, handle, indent=2, sort_keys=True)
