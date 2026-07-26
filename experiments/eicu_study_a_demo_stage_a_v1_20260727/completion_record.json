@@ -1,0 +1,35 @@
+{
+  "campaign_id": "eicu_study_a_demo_stage_a_v1_20260727",
+  "campaign_scope": "demo",
+  "claim_status": "pipeline_campaign_only_not_a_scientific_or_paper_result",
+  "completed_on": "2026-07-27",
+  "execution": {
+    "aggregation_ablation_completed": 30,
+    "centralized_baseline_completed": 45,
+    "confirmatory_completed": 30,
+    "diverged_runs": 0,
+    "failed_runs": 0,
+    "total_completed": 105
+  },
+  "frozen_training_source_commit": "a76922856b29be8c6fc270d49870d139d856cb0a",
+  "manifest": {
+    "path": "experiments/eicu_study_a_demo_stage_a_v1_20260727/manifest.csv",
+    "sha256": "972b504bbf91ec9d1e6062c3207a15e6ea04b72e5994f4135ae9040e9463cf24"
+  },
+  "postrun_artifact_reconciliation": {
+    "archived_original_json_files": 120,
+    "code_commit": "1fd0fc5cde0df4ff97463a25371e36d054d3a041",
+    "learned_artifacts_changed": false,
+    "runs_reconciled": 60
+  },
+  "postrun_validation": {
+    "allow_demo": true,
+    "blocking_errors": 0,
+    "path": "experiments/eicu_study_a_demo_stage_a_v1_20260727/postrun_validation/eicu_study_a_validation.json",
+    "reportable_under_demo_override": true,
+    "sha256": "3e9855b9a8dba9c30fde250ef5831a900f4fccea86704be094a1be1390393ffe",
+    "valid_completed_results": 105,
+    "warnings": 0
+  },
+  "results_root": "results/eicu_study_a_demo_stage_a_v1_20260727"
+}

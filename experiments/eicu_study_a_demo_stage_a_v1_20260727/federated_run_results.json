@@ -1,0 +1,482 @@
+[
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 80.57300376396465,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1101/confirmatory_linear_fedgda_confirmatory_01",
+    "run_id": "confirmatory_linear_fedgda_confirmatory_01",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 80.57300376396465
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.391340674592191,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1102/confirmatory_linear_fedgda_confirmatory_02",
+    "run_id": "confirmatory_linear_fedgda_confirmatory_02",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 1.7310488952166843
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.691947546354369,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1103/confirmatory_linear_fedgda_confirmatory_03",
+    "run_id": "confirmatory_linear_fedgda_confirmatory_03",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 2.656981386534028
+  },
+  {
+    "best_validation_round": 20,
+    "final_test_mse": 5.660994661930517,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1104/confirmatory_linear_fedgda_confirmatory_04",
+    "run_id": "confirmatory_linear_fedgda_confirmatory_04",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 5.128858445168812
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.329284230077959,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1105/confirmatory_linear_fedgda_confirmatory_05",
+    "run_id": "confirmatory_linear_fedgda_confirmatory_05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 3.178356889017762
+  },
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 80.72098303401654,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1101/confirmatory_linear_fedogda_confirmatory_01",
+    "run_id": "confirmatory_linear_fedogda_confirmatory_01",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 80.72098303401654
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.394474176613321,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1102/confirmatory_linear_fedogda_confirmatory_02",
+    "run_id": "confirmatory_linear_fedogda_confirmatory_02",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 1.7310488952166843
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.680276656309933,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1103/confirmatory_linear_fedogda_confirmatory_03",
+    "run_id": "confirmatory_linear_fedogda_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 2.656981386534028
+  },
+  {
+    "best_validation_round": 19,
+    "final_test_mse": 5.65946033385953,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1104/confirmatory_linear_fedogda_confirmatory_04",
+    "run_id": "confirmatory_linear_fedogda_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.127990589064187
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.328206175274616,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1105/confirmatory_linear_fedogda_confirmatory_05",
+    "run_id": "confirmatory_linear_fedogda_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.178356889017762
+  },
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 107.87395891357056,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1101/confirmatory_interaction_fedgda_confirmatory_01",
+    "run_id": "confirmatory_interaction_fedgda_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 107.87395891357056
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.000296322065086,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1102/confirmatory_interaction_fedgda_confirmatory_02",
+    "run_id": "confirmatory_interaction_fedgda_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8745694526646859
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 4.568546771115038,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1103/confirmatory_interaction_fedgda_confirmatory_03",
+    "run_id": "confirmatory_interaction_fedgda_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.025260735652573
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 6.5066240649703095,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1104/confirmatory_interaction_fedgda_confirmatory_04",
+    "run_id": "confirmatory_interaction_fedgda_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.856892781129055
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.5506943077577433,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1105/confirmatory_interaction_fedgda_confirmatory_05",
+    "run_id": "confirmatory_interaction_fedgda_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.3359146039842256
+  },
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 108.04775426887518,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1101/confirmatory_interaction_fedogda_confirmatory_01",
+    "run_id": "confirmatory_interaction_fedogda_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 108.04775426887518
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.011303609209594,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1102/confirmatory_interaction_fedogda_confirmatory_02",
+    "run_id": "confirmatory_interaction_fedogda_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8745694526646859
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 4.5508310030472146,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1103/confirmatory_interaction_fedogda_confirmatory_03",
+    "run_id": "confirmatory_interaction_fedogda_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.025260735652573
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 6.47487574651115,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1104/confirmatory_interaction_fedogda_confirmatory_04",
+    "run_id": "confirmatory_interaction_fedogda_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.856892781129055
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.5506772334423062,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1105/confirmatory_interaction_fedogda_confirmatory_05",
+    "run_id": "confirmatory_interaction_fedogda_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.3359146039842256
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 5.193556271701911,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1101/confirmatory_mlp_fedgda_confirmatory_01",
+    "run_id": "confirmatory_mlp_fedgda_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 12.208590437378357
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 8.190335485456634,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1102/confirmatory_mlp_fedgda_confirmatory_02",
+    "run_id": "confirmatory_mlp_fedgda_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 2.3905903337495835
+  },
+  {
+    "best_validation_round": 54,
+    "final_test_mse": 0.10356846824404746,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1103/confirmatory_mlp_fedgda_confirmatory_03",
+    "run_id": "confirmatory_mlp_fedgda_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.1249087420072122
+  },
+  {
+    "best_validation_round": 477,
+    "final_test_mse": 0.6593772470075545,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1104/confirmatory_mlp_fedgda_confirmatory_04",
+    "run_id": "confirmatory_mlp_fedgda_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.6488249859296936
+  },
+  {
+    "best_validation_round": 374,
+    "final_test_mse": 0.23941239302758863,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1105/confirmatory_mlp_fedgda_confirmatory_05",
+    "run_id": "confirmatory_mlp_fedgda_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2539522688667124
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 5.155790661273261,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1101/confirmatory_mlp_fedogda_confirmatory_01",
+    "run_id": "confirmatory_mlp_fedogda_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 12.208590437378357
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 8.15660967588688,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1102/confirmatory_mlp_fedogda_confirmatory_02",
+    "run_id": "confirmatory_mlp_fedogda_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 2.3905903337495835
+  },
+  {
+    "best_validation_round": 54,
+    "final_test_mse": 0.1045036680951111,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1103/confirmatory_mlp_fedogda_confirmatory_03",
+    "run_id": "confirmatory_mlp_fedogda_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.12248822436921232
+  },
+  {
+    "best_validation_round": 468,
+    "final_test_mse": 0.6662986528458097,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1104/confirmatory_mlp_fedogda_confirmatory_04",
+    "run_id": "confirmatory_mlp_fedogda_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.6502241010898029
+  },
+  {
+    "best_validation_round": 367,
+    "final_test_mse": 0.24173622320114171,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1105/confirmatory_mlp_fedogda_confirmatory_05",
+    "run_id": "confirmatory_mlp_fedogda_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2589722714694444
+  },
+  {
+    "best_validation_round": 16,
+    "final_test_mse": 109.0727401462317,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1101/ablation_linear_fedgda_sample_size_confirmatory_01",
+    "run_id": "ablation_linear_fedgda_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 66.4555909495433
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.371961075703485,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1102/ablation_linear_fedgda_sample_size_confirmatory_02",
+    "run_id": "ablation_linear_fedgda_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 1.731406676724136
+  },
+  {
+    "best_validation_round": 383,
+    "final_test_mse": 1.1206223796097263,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1103/ablation_linear_fedgda_sample_size_confirmatory_03",
+    "run_id": "ablation_linear_fedgda_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 1.438756276418353
+  },
+  {
+    "best_validation_round": 21,
+    "final_test_mse": 5.871133890423121,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1104/ablation_linear_fedgda_sample_size_confirmatory_04",
+    "run_id": "ablation_linear_fedgda_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.146437625780106
+  },
+  {
+    "best_validation_round": 1,
+    "final_test_mse": 1.2581613399985665,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1105/ablation_linear_fedgda_sample_size_confirmatory_05",
+    "run_id": "ablation_linear_fedgda_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.1799958836571243
+  },
+  {
+    "best_validation_round": 15,
+    "final_test_mse": 109.51204197684147,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1101/ablation_linear_fedogda_sample_size_confirmatory_01",
+    "run_id": "ablation_linear_fedogda_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 66.54645658614263
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.3616485003713605,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1102/ablation_linear_fedogda_sample_size_confirmatory_02",
+    "run_id": "ablation_linear_fedogda_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 1.731406676724136
+  },
+  {
+    "best_validation_round": 377,
+    "final_test_mse": 1.1110055714300495,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1103/ablation_linear_fedogda_sample_size_confirmatory_03",
+    "run_id": "ablation_linear_fedogda_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 1.4455099089790817
+  },
+  {
+    "best_validation_round": 21,
+    "final_test_mse": 5.866113214216623,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1104/ablation_linear_fedogda_sample_size_confirmatory_04",
+    "run_id": "ablation_linear_fedogda_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.149172108381462
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 1.2547015778729715,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1105/ablation_linear_fedogda_sample_size_confirmatory_05",
+    "run_id": "ablation_linear_fedogda_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.180130508585718
+  },
+  {
+    "best_validation_round": 14,
+    "final_test_mse": 137.74512159257912,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1101/ablation_interaction_fedgda_sample_size_confirmatory_01",
+    "run_id": "ablation_interaction_fedgda_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 82.13603458384802
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.9092085370799765,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1102/ablation_interaction_fedgda_sample_size_confirmatory_02",
+    "run_id": "ablation_interaction_fedgda_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8747456266661198
+  },
+  {
+    "best_validation_round": 346,
+    "final_test_mse": 2.438018611013257,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1103/ablation_interaction_fedgda_sample_size_confirmatory_03",
+    "run_id": "ablation_interaction_fedgda_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.2232049171107158
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 6.075090813597176,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1104/ablation_interaction_fedgda_sample_size_confirmatory_04",
+    "run_id": "ablation_interaction_fedgda_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.857086806583905
+  },
+  {
+    "best_validation_round": 1,
+    "final_test_mse": 1.4515788000403929,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1105/ablation_interaction_fedgda_sample_size_confirmatory_05",
+    "run_id": "ablation_interaction_fedgda_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.337555901744111
+  },
+  {
+    "best_validation_round": 13,
+    "final_test_mse": 137.92727041196343,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1101/ablation_interaction_fedogda_sample_size_confirmatory_01",
+    "run_id": "ablation_interaction_fedogda_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 82.23893108908662
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 2.925242698718336,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1102/ablation_interaction_fedogda_sample_size_confirmatory_02",
+    "run_id": "ablation_interaction_fedogda_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8747456266661198
+  },
+  {
+    "best_validation_round": 341,
+    "final_test_mse": 2.421666370191469,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1103/ablation_interaction_fedogda_sample_size_confirmatory_03",
+    "run_id": "ablation_interaction_fedogda_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.2320616250908034
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 6.0531825147455445,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1104/ablation_interaction_fedogda_sample_size_confirmatory_04",
+    "run_id": "ablation_interaction_fedogda_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.857086806583905
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 1.4504285992481567,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1105/ablation_interaction_fedogda_sample_size_confirmatory_05",
+    "run_id": "ablation_interaction_fedogda_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.3377286849156196
+  },
+  {
+    "best_validation_round": 462,
+    "final_test_mse": 0.8721047781204166,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1101/ablation_mlp_fedgda_sample_size_confirmatory_01",
+    "run_id": "ablation_mlp_fedgda_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 1.2296848388740351
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 12.290060777321235,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1102/ablation_mlp_fedgda_sample_size_confirmatory_02",
+    "run_id": "ablation_mlp_fedgda_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 2.3907105200177075
+  },
+  {
+    "best_validation_round": 34,
+    "final_test_mse": 0.01728977520223801,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1103/ablation_mlp_fedgda_sample_size_confirmatory_03",
+    "run_id": "ablation_mlp_fedgda_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.09884335488930063
+  },
+  {
+    "best_validation_round": 328,
+    "final_test_mse": 0.7583522167044654,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1104/ablation_mlp_fedgda_sample_size_confirmatory_04",
+    "run_id": "ablation_mlp_fedgda_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.6069390353412629
+  },
+  {
+    "best_validation_round": 2,
+    "final_test_mse": 0.43411456705293244,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1105/ablation_mlp_fedgda_sample_size_confirmatory_05",
+    "run_id": "ablation_mlp_fedgda_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5105128320462302
+  },
+  {
+    "best_validation_round": 459,
+    "final_test_mse": 0.8539837348855249,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1101/ablation_mlp_fedogda_sample_size_confirmatory_01",
+    "run_id": "ablation_mlp_fedogda_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 1.237705226503279
+  },
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 12.302743266704505,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1102/ablation_mlp_fedogda_sample_size_confirmatory_02",
+    "run_id": "ablation_mlp_fedogda_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 2.3907105200177075
+  },
+  {
+    "best_validation_round": 32,
+    "final_test_mse": 0.01820826852542699,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1103/ablation_mlp_fedogda_sample_size_confirmatory_03",
+    "run_id": "ablation_mlp_fedogda_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.09774671551887786
+  },
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 0.7285686293970586,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1104/ablation_mlp_fedogda_sample_size_confirmatory_04",
+    "run_id": "ablation_mlp_fedogda_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.7285686293970586
+  },
+  {
+    "best_validation_round": 1,
+    "final_test_mse": 0.4262882959480974,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedogda_s/seed_1105/ablation_mlp_fedogda_sample_size_confirmatory_05",
+    "run_id": "ablation_mlp_fedogda_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5105379287776718
+  }
+]

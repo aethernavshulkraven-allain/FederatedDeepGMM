@@ -1,0 +1,10 @@
+[
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 80.57300376396465,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727/eicu_semisynth/fedgda_s/seed_1101/confirmatory_linear_fedgda_confirmatory_01",
+    "run_id": "confirmatory_linear_fedgda_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 80.57300376396465
+  }
+]

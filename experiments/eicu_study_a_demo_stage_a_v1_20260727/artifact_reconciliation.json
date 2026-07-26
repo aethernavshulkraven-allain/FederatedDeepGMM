@@ -1,0 +1,13 @@
+{
+  "artifacts_archived": 120,
+  "backup_root": "/home/arnav22103/FederatedDeepGMM/results/_failed/20260727-demo-study-a-provenance-reconciliation",
+  "dry_run": false,
+  "federated_rows_checked": 60,
+  "fields_added_to_effective_config": 480,
+  "fields_added_to_metrics": 120,
+  "manifest": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_study_a_demo_stage_a_v1_20260727/manifest.csv",
+  "manifest_rows": 105,
+  "results_root": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_demo_stage_a_v1_20260727",
+  "runs_already_consistent": 0,
+  "runs_changed": 60
+}
