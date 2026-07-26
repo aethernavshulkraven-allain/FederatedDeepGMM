@@ -383,9 +383,12 @@ def load_synthetic_data(args):
     # if dataset_name == "zoo":
     # if dataset_name == "zoo" or dataset_name == "mnist":
     zoo_datasets = ['linear', 'abs', 'sin', 'step']
+    # eICU scenarios reuse the same .npz contract; the scenario file name selects
+    # which g0/seed variant to load (set via scenario_name in the run config).
+    is_eicu = str(dataset_name).startswith("eicu")
     if not hasattr(args, "scenario_name") or args.scenario_name is None:
         args.scenario_name = "main"
-    if dataset_name == "zoo" or dataset_name == "mnist" or dataset_name in zoo_datasets:
+    if dataset_name == "zoo" or dataset_name == "mnist" or dataset_name in zoo_datasets or is_eicu:
         logging.info("load_data. dataset_name = %s" % dataset_name)
         if dataset_name in zoo_datasets:
             args.scenario_name = dataset_name
@@ -409,7 +412,7 @@ def load_synthetic_data(args):
             args.batch_size
         )
         # Convert DataLoaders to lists of batches for zoo datasets to enable combine_batches
-        if dataset_name in zoo_datasets:
+        if dataset_name in zoo_datasets or is_eicu:
             train_data_local_dict = {
                 cid: list(train_data_local_dict[cid]) for cid in train_data_local_dict.keys()
             }

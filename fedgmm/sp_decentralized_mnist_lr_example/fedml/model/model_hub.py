@@ -24,21 +24,36 @@ def create(args, output_dim):
     model_name = args.model
     logging.info("create_model. model_name = %s, output_dim = %s, dataset = %s" % (model_name, output_dim, args.dataset))
     zoo_datasets = ['linear', 'abs', 'sin', 'step', 'zoo']
-    if args.dataset in zoo_datasets:
-        logging.info("MLPModel + DeepGMM for Zoo dataset: %s" % args.dataset)
-        input_dim_g = 1
-        input_dim_f = 2
-        
+    is_eicu = str(args.dataset).startswith("eicu")
+    if args.dataset in zoo_datasets or is_eicu:
+        logging.info("MLPModel + DeepGMM for tabular dataset: %s" % args.dataset)
+        if is_eicu:
+            # eICU packs covariates alongside treatment and instrument
+            # (x = [D, X], z = [Z, X]), so the widths depend on the cohort and
+            # cannot be hardcoded. The run config carries them from the scenario.
+            input_dim_g = int(getattr(args, "input_dim_g", 0))
+            input_dim_f = int(getattr(args, "input_dim_f", 0))
+            if input_dim_g <= 0 or input_dim_f <= 0:
+                raise ValueError(
+                    "eICU models need input_dim_g and input_dim_f in the run config; "
+                    "read them from the scenario's *_metadata.json"
+                )
+            layer_widths = [64, 64]
+        else:
+            input_dim_g = 1
+            input_dim_f = 2  # the two instruments in the zoo design
+            layer_widths = [20, 20]
+
         g_models = [
-            MLPModel(input_dim=input_dim_g, layer_widths=[20, 20],
+            MLPModel(input_dim=input_dim_g, layer_widths=layer_widths,
                      activation=nn.LeakyReLU).double(),
         ]
         f_models = [
-            MLPModel(input_dim=input_dim_f, layer_widths=[20, 20],
+            MLPModel(input_dim=input_dim_f, layer_widths=layer_widths,
                      activation=nn.LeakyReLU).double(),
         ]
         reg_models = [
-            MLPModel(input_dim=input_dim_g, layer_widths=[20, 20],
+            MLPModel(input_dim=input_dim_g, layer_widths=layer_widths,
                      activation=nn.LeakyReLU).double(),
         ]
         
@@ -63,13 +78,13 @@ def create(args, output_dim):
         ]
     elif args.dataset in ['mnist_xz', 'femnist_xz']:
         g_models = [
-            DefaultCNN(cuda=True),
+            DefaultCNN(cuda=torch.cuda.is_available()),
         ]
         f_models = [
-            DefaultCNN(cuda=True),
+            DefaultCNN(cuda=torch.cuda.is_available()),
         ]
         reg_models = [
-            DefaultCNN(cuda=True),
+            DefaultCNN(cuda=torch.cuda.is_available()),
         ]
         if torch.cuda.is_available():
             for i, g in enumerate(g_models):
@@ -81,14 +96,14 @@ def create(args, output_dim):
         return [g_models, f_models, reg_models]
     elif args.dataset in ["mnist_x", "femnist_x"]:
         g_models = [
-            DefaultCNN(cuda=True),
+            DefaultCNN(cuda=torch.cuda.is_available()),
         ]
         f_models = [
              MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
         reg_models = [
-            DefaultCNN(cuda=True),
+            DefaultCNN(cuda=torch.cuda.is_available()),
         ]
         if torch.cuda.is_available():
             for i, g in enumerate(g_models):
@@ -104,7 +119,7 @@ def create(args, output_dim):
                      activation=nn.LeakyReLU).double(),
         ]
         f_models = [
-            DefaultCNN(cuda=True),
+            DefaultCNN(cuda=torch.cuda.is_available()),
         ]
         reg_models = [
            MLPModel(input_dim=1, layer_widths=[20],

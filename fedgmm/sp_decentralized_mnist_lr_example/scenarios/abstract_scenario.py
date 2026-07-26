@@ -4,12 +4,17 @@ import os
 import torch
 
 class Dataset(object):
-    def __init__(self, x, z, y, g, w):
+    def __init__(self, x, z, y, g, w, client_id=None):
         self.x = x
-        self.z = z 
+        self.z = z
         self.y = y
         self.g = g
         self.w = w
+        # Optional natural client assignment (e.g. eICU hospitalid). Left as a
+        # plain integer array: it is a partition key, not a model input, so it is
+        # deliberately excluded from as_tuple()/to_tensor()/to_cuda() and never
+        # reaches g or f.
+        self.client_id = client_id
         self.size = None
     
     def to_tensor(self):
@@ -37,6 +42,8 @@ class Dataset(object):
     
     def as_dict(self, prefix = ""):
         d = {"x": self.x, "z": self.z, "y": self.y, "g": self.g, "w": self.w}
+        if self.client_id is not None:
+            d["client_id"] = self.client_id
         return {prefix + k: v for k, v in d.items()}
     
     def to_numpy(self):
@@ -108,8 +115,15 @@ class AbstractScenario(object):
     def from_file(self, filename):
         data = np.load(filename)
         for split in data["splits"].tolist():
-            self.splits[split] = Dataset(*(data[split + "_" + var] for var in ["x", "z", "y", "g", "w"]))
-        self.initialized = True     
+            # client_id is optional so existing zoo/femnist/cifar10 .npz files,
+            # which predate it, still load unchanged.
+            client_key = split + "_client_id"
+            client_id = data[client_key] if client_key in data.files else None
+            self.splits[split] = Dataset(
+                *(data[split + "_" + var] for var in ["x", "z", "y", "g", "w"]),
+                client_id=client_id,
+            )
+        self.initialized = True
 
     def info(self):
         for split, dataset in self.splits.items():

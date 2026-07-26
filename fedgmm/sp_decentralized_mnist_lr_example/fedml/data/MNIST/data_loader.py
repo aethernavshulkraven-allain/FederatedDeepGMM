@@ -10,8 +10,117 @@ import logging
 from scenarios.abstract_scenario import AbstractScenario
 import torch
 from torch.utils.data import DataLoader, TensorDataset, Subset
+from experiment_utils import exact_sample_count
 
 cwd = os.getcwd()
+
+
+def load_data_natural(args, train, test, dev):
+    """Partition by the natural client key carried in the scenario.
+
+    Used for eICU, where a client is a real hospital rather than a Dirichlet draw.
+    Two differences from :func:`load_data` matter scientifically:
+
+    * All three splits are keyed off the *same* ``client_id``, so client k's train
+      and validation rows describe the same hospital. The Dirichlet path draws the
+      splits independently, which is harmless for i.i.d. synthetic data but would
+      mean a hospital was validated against other hospitals' patients.
+    * Client sizes come from the data, not from ``partition_alpha``. Real hospital
+      imbalance is the heterogeneity this study is about, so it must not be resampled.
+
+    Clients absent from a split get an empty loader rather than being dropped, so
+    client indices stay aligned across splits.
+    """
+    splits = {"train": train, "test": test, "dev": dev}
+    for name, split in splits.items():
+        if getattr(split, "client_id", None) is None:
+            raise ValueError(
+                f"partition_method='natural' requires client_id on the {name} split; "
+                "regenerate the scenario with a client_id array"
+            )
+
+    datasets = {
+        name: TensorDataset(split.g, split.w, split.x, split.y, split.z)
+        for name, split in splits.items()
+    }
+
+    # Only clients represented in *every* split are usable: a client with no
+    # training rows cannot train, and one with no validation/test rows cannot be
+    # evaluated (the trainer indexes each client's first eval batch directly).
+    # Dropping them here, loudly, is better than silently mis-indexing.
+    per_split_ids = {
+        name: set(np.asarray(split.client_id).reshape(-1).tolist())
+        for name, split in splits.items()
+    }
+    usable = set.intersection(*per_split_ids.values())
+    dropped = set.union(*per_split_ids.values()) - usable
+    if dropped:
+        logging.warning(
+            "natural partition: dropping %d of %d clients absent from at least one "
+            "split (train/dev/test coverage = %d/%d/%d)",
+            len(dropped),
+            len(usable) + len(dropped),
+            len(per_split_ids["train"]),
+            len(per_split_ids["dev"]),
+            len(per_split_ids["test"]),
+        )
+    if not usable:
+        raise ValueError(
+            "natural partition left no client present in all of train/dev/test; "
+            "the cohort is too small or too fragmented for a federated run"
+        )
+
+    unique_clients = np.array(sorted(usable))
+    n_clients = int(len(unique_clients))
+
+    # The natural partition defines the client count; a mismatched config value
+    # would silently drop hospitals or index past the end.
+    if int(getattr(args, "client_num_in_total", n_clients)) != n_clients:
+        logging.warning(
+            "overriding client_num_in_total=%s with %d natural clients",
+            getattr(args, "client_num_in_total", None),
+            n_clients,
+        )
+    args.client_num_in_total = n_clients
+    if int(getattr(args, "client_num_per_round", n_clients)) > n_clients:
+        args.client_num_per_round = n_clients
+
+    index_of = {int(c): i for i, c in enumerate(unique_clients)}
+
+    per_split = {}
+    for name, split in splits.items():
+        ids = np.asarray(split.client_id).reshape(-1)
+        buckets = {i: [] for i in range(n_clients)}
+        for row, cid in enumerate(ids):
+            target = index_of.get(int(cid))
+            if target is not None:  # rows of dropped clients are excluded
+                buckets[target].append(row)
+        per_split[name] = buckets
+
+    def build(name):
+        local, counts = {}, {}
+        for client, rows in per_split[name].items():
+            subset = Subset(datasets[name], rows)
+            batch_size = max(min(int(args.batch_size), max(len(rows), 1)), 1)
+            local[client] = DataLoader(
+                subset, batch_size=batch_size, shuffle=len(rows) > 0
+            )
+            counts[client] = len(rows)
+        return local, counts
+
+    train_local, train_counts = build("train")
+    test_local, _ = build("test")
+    val_local, _ = build("dev")
+
+    logging.info(
+        "natural partition: %d clients, train sizes min=%d median=%d max=%d",
+        n_clients,
+        min(train_counts.values()),
+        int(np.median(list(train_counts.values()))),
+        max(train_counts.values()),
+    )
+    return train_local, test_local, val_local, train_counts, {}, {}
+
 
 def load_data(args, train, test, dev):
     # Assuming args has attributes 'client_num' and 'batch_size'
@@ -71,6 +180,7 @@ def load_data(args, train, test, dev):
         subset_indices = indices_train[start:end]
         # train_data_local_dict[i] = DataLoader(Subset(train_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
         train_data_local_dict[i] = DataLoader(Subset(train_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
+        train_data_local_num_dict[i] = exact_sample_count(subset_indices)
 
         start = end
 
@@ -80,6 +190,7 @@ def load_data(args, train, test, dev):
         subset_indices = indices_test[start:end]
         # test_data_local_dict[i] = DataLoader(Subset(test_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
         test_data_local_dict[i] = DataLoader(Subset(test_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
+        test_data_local_num_dict[i] = exact_sample_count(subset_indices)
 
         start = end
 
@@ -89,6 +200,7 @@ def load_data(args, train, test, dev):
         subset_indices = indices_dev[start:end]
         # val_data_local_dict[i] = DataLoader(Subset(dev_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
         val_data_local_dict[i] = DataLoader(Subset(dev_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
+        val_data_local_num_dict[i] = exact_sample_count(subset_indices)
 
         start = end
     # Distributing the batches among clients
@@ -127,12 +239,6 @@ def load_data(args, train, test, dev):
 #       for idx in dev_indices:
 #         val_data_local_dict[i].append(all_dev_batches[idx])
 
-
-#     # Calculating the number of samples for each client
-    for user in clients_num:
-        train_data_local_num_dict[user] = len(train_data_local_dict[user]) * args.batch_size
-        test_data_local_num_dict[user] = len(test_data_local_dict[user]) * args.batch_size
-        val_data_local_num_dict[user] = len(val_data_local_dict[user]) * args.batch_size
 
     return (
         train_data_local_dict,
@@ -302,18 +408,25 @@ def load_partition_data_mnist(
     scenario = AbstractScenario(filename=path) 
     scenario.info()
     scenario.to_tensor()
-    if torch.cuda.is_available():
-        scenario.to_cuda()
+    # Keep scenario tensors on CPU during loading.
+    # The runtime layer moves tensors to FedML's resolved device.
 
     train = scenario.get_dataset("train")
     dev = scenario.get_dataset("dev")
     test = scenario.get_dataset("test")
     
+    # 'natural' keys the partition off the scenario's client_id (e.g. eICU
+    # hospitalid); anything else keeps the original Dirichlet behaviour.
+    partitioner = (
+        load_data_natural
+        if str(getattr(args, "partition_method", "")).lower() == "natural"
+        else load_data
+    )
     train_data_local_dict, test_data_local_dict,\
     val_data_local_dict, train_data_local_num_dict,\
-    test_data_local_num_dict, val_data_local_num_dict = load_data(args, train, test, dev)
+    test_data_local_num_dict, val_data_local_num_dict = partitioner(args, train, test, dev)
     zoo_datasets = ['linear', 'abs', 'sin', 'step']
-    if args.dataset in zoo_datasets:
+    if args.dataset in zoo_datasets or str(args.dataset).startswith("eicu"):
         class_num = 1
     else:
         class_num = 10 # Default for MNIST

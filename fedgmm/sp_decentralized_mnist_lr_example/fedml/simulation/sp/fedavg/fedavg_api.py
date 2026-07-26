@@ -1,8 +1,10 @@
 import copy
+import json
 import logging
 import math
 import csv
 import os
+import time
 import numpy 
 import torch
 from fedml.ml.trainer.trainer_creator import create_model_trainer
@@ -11,7 +13,10 @@ from .client import Client
 # from opacus.layers import 
 from model_selection.simple_model_eval import GradientDecentSimpleModelEval
 from model_selection_class import FHistoryModelSelectionV3
-from game_objectives.simple_moment_objective import OptimalMomentObjective
+from game_objectives.simple_moment_objective import (
+    OptimalMomentObjective,
+    PaperAlignedMomentObjective,
+)
 from optimizers.oadam import OAdam
 from optimizers.Customsgd import CustomSGD
 from optimizers.ogda import OGDA
@@ -25,6 +30,37 @@ from game_objectives.approximate_psi_objective import approx_psi_eval
 # from fedgmm.sp_decentralized_mnist_lr_example.plotting import PlotElement
 from plotting import PlotElement
 import matplotlib.pyplot as plt
+from experiment_utils import (
+    AGGREGATION_WEIGHTING_CHOICES,
+    OBJECTIVE_MODE_CHOICES,
+    PAPER_ALIGNED_LAMBDA,
+    append_aggregation_weights_by_round,
+    append_mse_by_round,
+    append_test_mse_by_round,
+    client_indices_for_round,
+    compute_client_weights,
+    default_critic_multiplier,
+    env_truthy,
+    ensure_run_dirs,
+    get_effective_config,
+    moment_violation,
+    prepare_run_dir,
+    predictions_for_split,
+    run_dir_from_config,
+    RuntimeProfiler,
+    save_predictions_npz,
+    state_is_finite,
+    structural_mse,
+    structural_mse_from_predictions,
+    now_seconds,
+    weighted_average_state_dicts,
+    write_effective_config,
+    write_aggregation_weights_by_round,
+    write_batching_summary,
+    write_metrics,
+    write_mse_by_round,
+    write_test_mse_by_round,
+)
 
 def log_results_to_csv(file_path, round_number, mse):
        if os.path.dirname(file_path):
@@ -54,6 +90,166 @@ class FedAvgAPI(object):
         for arg_name, default_value in research_args.items():
             if not hasattr(self.args, arg_name):
                 setattr(self.args, arg_name, default_value)
+        if not hasattr(self.args, "critic_multiplier"):
+            setattr(self.args, "critic_multiplier", default_critic_multiplier(args.dataset))
+        if not hasattr(self.args, "server_learning_rate"):
+            setattr(self.args, "server_learning_rate", 1.5)
+        if not hasattr(self.args, "objective_lambda_1"):
+            setattr(self.args, "objective_lambda_1", 0.1)
+        if not hasattr(self.args, "aggregation_weighting"):
+            setattr(self.args, "aggregation_weighting", "sample_size")
+        if not hasattr(self.args, "objective_mode"):
+            setattr(self.args, "objective_mode", "legacy")
+        if not hasattr(self.args, "output_dir"):
+            setattr(self.args, "output_dir", "results")
+        if not hasattr(self.args, "run_id"):
+            setattr(self.args, "run_id", "0")
+        if not hasattr(self.args, "random_seed"):
+            setattr(self.args, "random_seed", 0)
+        if not hasattr(self.args, "gradient_clip_norm"):
+            setattr(self.args, "gradient_clip_norm", 1.0)
+        if not hasattr(self.args, "simple_model_selection_epochs"):
+            setattr(self.args, "simple_model_selection_epochs", 100)
+        if not hasattr(self.args, "f_history_model_selection_epochs"):
+            setattr(self.args, "f_history_model_selection_epochs", 60)
+        if not hasattr(self.args, "model_selection_batch_size"):
+            setattr(self.args, "model_selection_batch_size", 200)
+        if not hasattr(self.args, "model_selection_max_samples"):
+            setattr(self.args, "model_selection_max_samples", 0)
+        if not hasattr(self.args, "skip_model_selection"):
+            setattr(self.args, "skip_model_selection", False)
+        if not hasattr(self.args, "skip_gmm_eval"):
+            setattr(self.args, "skip_gmm_eval", bool(getattr(self.args, "skip_model_selection", False)))
+        if not hasattr(self.args, "gmm_eval_proxy"):
+            setattr(self.args, "gmm_eval_proxy", "negative_val_mse" if bool(getattr(self.args, "skip_gmm_eval", False)) else "approx_psi")
+        if bool(getattr(self.args, "skip_model_selection", False)):
+            setattr(self.args, "skip_gmm_eval", True)
+            setattr(self.args, "gmm_eval_proxy", "negative_val_mse")
+        if not hasattr(self.args, "auxiliary_regression"):
+            setattr(self.args, "auxiliary_regression", True)
+        if not hasattr(self.args, "auxiliary_regression_epochs"):
+            setattr(self.args, "auxiliary_regression_epochs", int(getattr(self.args, "epochs", 0)))
+        if not hasattr(self.args, "auxiliary_regression_state_device"):
+            setattr(self.args, "auxiliary_regression_state_device", "device")
+        if not hasattr(self.args, "append_round_csv"):
+            setattr(self.args, "append_round_csv", True)
+        if not hasattr(self.args, "periodic_checkpoint_interval"):
+            setattr(self.args, "periodic_checkpoint_interval", 200)
+        if not hasattr(self.args, "enable_legacy_outputs"):
+            setattr(self.args, "enable_legacy_outputs", True)
+        if not hasattr(self.args, "overwrite"):
+            setattr(self.args, "overwrite", False)
+        if not hasattr(self.args, "require_multibatch_stochastic"):
+            setattr(self.args, "require_multibatch_stochastic", False)
+        if not hasattr(self.args, "log_test_mse_by_round"):
+            setattr(self.args, "log_test_mse_by_round", False)
+        if not hasattr(self.args, "test_mse_used_for_selection"):
+            setattr(self.args, "test_mse_used_for_selection", False)
+        if not hasattr(self.args, "selection_metric_source"):
+            setattr(self.args, "selection_metric_source", "validation")
+        if bool(getattr(self.args, "test_mse_used_for_selection", False)):
+            raise ValueError("test_mse_used_for_selection must remain false")
+        if str(getattr(self.args, "selection_metric_source", "validation")).lower() != "validation":
+            raise ValueError("selection_metric_source must be validation")
+        _aggregation_weighting = str(getattr(self.args, "aggregation_weighting", "sample_size"))
+        if _aggregation_weighting not in AGGREGATION_WEIGHTING_CHOICES:
+            raise ValueError(
+                f"aggregation_weighting must be one of {AGGREGATION_WEIGHTING_CHOICES}, "
+                f"got {_aggregation_weighting!r}"
+            )
+        _objective_mode = str(getattr(self.args, "objective_mode", "legacy"))
+        if _objective_mode not in OBJECTIVE_MODE_CHOICES:
+            raise ValueError(
+                f"objective_mode must be one of {OBJECTIVE_MODE_CHOICES}, "
+                f"got {_objective_mode!r}"
+            )
+        _is_eicu_dataset = str(getattr(self.args, "dataset", "")).startswith("eicu")
+        if _is_eicu_dataset and _aggregation_weighting != "uniform_clients":
+            raise ValueError(
+                "eICU runs must set aggregation_weighting: uniform_clients to match "
+                "the paper's federated objective U(theta,tau) = (1/N) sum_i U^i(theta,tau); "
+                f"got aggregation_weighting={_aggregation_weighting!r}. The legacy "
+                "sample_size weighting lets large hospitals dominate the global model, "
+                "which is exactly the failure mode this check exists to prevent."
+            )
+        if _is_eicu_dataset and _objective_mode != "paper_aligned":
+            raise ValueError(
+                "eICU runs must set objective_mode: paper_aligned -- Study A exists to "
+                "test the paper's actual FedDeepGMM formulation (frozen theta~, "
+                f"lambda=1/4), not the legacy objective; got objective_mode={_objective_mode!r}."
+            )
+        if bool(getattr(self.args, "require_multibatch_stochastic", False)) and int(getattr(self.args, "batch_size", 0)) <= 0:
+            raise ValueError("require_multibatch_stochastic requires a positive batch_size")
+        self.effective_config = get_effective_config(self.args)
+        self.run_dir = run_dir_from_config(self.effective_config)
+        self.profiler = getattr(self.args, "_fedgmm_runtime_profiler", None)
+        if self.profiler is None:
+            self.profiler = RuntimeProfiler.from_config(self.effective_config)
+            setattr(self.args, "_fedgmm_runtime_profiler", self.profiler)
+            self.profiler.start_telemetry()
+        self.profiler.configure(self.effective_config, self.run_dir)
+        self.profiler.record_environment(self.effective_config, self.run_dir, self.device)
+        self.profile_skip_aux_reg = (
+            bool(getattr(self.profiler, "enabled", False))
+            and env_truthy("FEDGMM_PROFILE_SKIP_AUX_REG", default=False)
+        )
+        self.auxiliary_regression_enabled = bool(self.effective_config.get("auxiliary_regression", True))
+        self.skip_auxiliary_regression = self.profile_skip_aux_reg or not self.auxiliary_regression_enabled
+        self.append_round_csv = bool(self.effective_config.get("append_round_csv", True))
+        self.periodic_checkpoint_interval = int(self.effective_config.get("periodic_checkpoint_interval", 200))
+        self.skip_model_selection = bool(self.effective_config.get("skip_model_selection", False))
+        self.skip_gmm_eval = bool(self.effective_config.get("skip_gmm_eval", self.skip_model_selection))
+        self.gmm_eval_proxy = str(self.effective_config.get("gmm_eval_proxy", "negative_val_mse" if self.skip_gmm_eval else "approx_psi"))
+        if self.skip_auxiliary_regression:
+            self.profiler.record_once(
+                "skip_auxiliary_regression",
+                "skip_auxiliary_regression",
+                detail=(
+                    "Auxiliary regression train/aggregate/set disabled; "
+                    f"profile_env={self.profile_skip_aux_reg}; config_enabled={self.auxiliary_regression_enabled}"
+                ),
+            )
+        if self.skip_model_selection:
+            self.profiler.record_once(
+                "skip_model_selection",
+                "skip_model_selection",
+                detail="Fast final mode: model-selection critic history is bypassed and gmm_eval uses proxy diagnostics.",
+            )
+        with self.profiler.span("prepare_run_dir"):
+            prepare_run_dir(self.run_dir, overwrite=bool(getattr(self.args, "overwrite", False)))
+            ensure_run_dirs(self.run_dir)
+            write_effective_config(self.run_dir, self.effective_config)
+        self.server_learning_rate = float(self.effective_config["server_learning_rate"])
+        self.critic_multiplier = float(self.effective_config["critic_multiplier"])
+        self.objective_lambda_1 = float(self.effective_config["objective_lambda_1"])
+        self.aggregation_weighting = str(self.effective_config["aggregation_weighting"])
+        self.objective_mode = str(self.effective_config["objective_mode"])
+        self.mse_rows = []
+        self.test_mse_rows = []
+        self.aggregation_weight_rows = []
+        self.log_test_mse_by_round = bool(self.effective_config.get("log_test_mse_by_round", False))
+        self.best_validation_mse = float("inf")
+        self.best_validation_round = None
+        self.best_g_state = None
+        self.best_f_state = None
+        self.best_reg_state = None
+        # Second, independent checkpoint: lowest held-out moment violation.
+        # This is the g0-free selection criterion (works even without ground
+        # truth, unlike best_validation_mse above), tracked separately so both
+        # can be compared -- the two need not select the same round.
+        self.best_moment_violation = float("inf")
+        self.best_moment_violation_round = None
+        self.best_moment_state = None
+        self.final_g_state = None
+        self.final_f_state = None
+        self.final_reg_state = None
+        self.best_state = None
+        self.final_state = None
+        self.delta_g_prev = None
+        self.delta_f_prev = None
+        self.diverged = False
+        self.batching_summary_rows = []
+        self.start_time = now_seconds()
         [
         train_data_num,
         test_data_num,
@@ -71,6 +267,9 @@ class FedAvgAPI(object):
         self.train_global = train_data_global
         self.test_global = test_data_global
         self.val_global = val_data_global
+        for split_name, split in [("train", self.train_global), ("val", self.val_global), ("test", self.test_global)]:
+            if not hasattr(split, "g") or split.g is None:
+                raise ValueError(f"{split_name} split does not expose ground-truth structural g")
         self.train_data_num_in_total = train_data_num
         self.test_data_num_in_total = test_data_num
         self.val_data_num_in_total = val_data_num
@@ -87,16 +286,37 @@ class FedAvgAPI(object):
         self.device = device
 
         # Move models to device
-        if isinstance(self.model, list):
-            for model_list in self.model:
-                if isinstance(model_list, list):
-                    for m in model_list:
-                        if isinstance(m, torch.nn.Module):
-                            m.to(self.device).double()
-                elif isinstance(model_list, torch.nn.Module):
-                    model_list.to(self.device).double()
-        elif isinstance(self.model, torch.nn.Module):
-            self.model.to(self.device).double()
+        with self.profiler.span("model_to_device"):
+            if isinstance(self.model, list):
+                for model_list in self.model:
+                    if isinstance(model_list, list):
+                        for m in model_list:
+                            if isinstance(m, torch.nn.Module):
+                                m.to(self.device).double()
+                    elif isinstance(model_list, torch.nn.Module):
+                        model_list.to(self.device).double()
+            elif isinstance(self.model, torch.nn.Module):
+                self.model.to(self.device).double()
+
+        # FedML's resolved device is authoritative. Keep every global
+        # split on the same device as the models before model selection.
+        with self.profiler.span("global_tensor_to_device"):
+            for split in (self.train_global, self.val_global, self.test_global):
+                for tensor_name in ("x", "z", "y", "g", "w"):
+                    tensor = getattr(split, tensor_name, None)
+                    if torch.is_tensor(tensor):
+                        setattr(
+                            split,
+                            tensor_name,
+                            tensor.to(self.device),
+                        )
+        with self.profiler.span("eval_target_cache"):
+            self._train_y_cpu = self.train_global.y.detach().cpu()
+            self._train_g_cpu = self.train_global.g.detach().cpu()
+            self._val_y_cpu = self.val_global.y.detach().cpu()
+            self._val_g_cpu = self.val_global.g.detach().cpu()
+            self._test_g_cpu = self.test_global.g.detach().cpu()
+
         # g_learning_rates = [0.010, 0.050, 0.020]
         ##g_learning_rates =[0.01, 0.001,0.0001,0.0005]
         # g_learning_rates = [0.0005]
@@ -104,19 +324,18 @@ class FedAvgAPI(object):
         # g_learning_rates =[0.00010, 0.000050, 0.000020]
         # Use the learning rate from the YAML configuration
         g_learning_rates = [self.args.learning_rate]
-        game_objectives = [ 
-            OptimalMomentObjective(),
-        ]
+        if self.objective_mode == "paper_aligned":
+            # lambda is fixed at 1/4 for this mode -- not objective_lambda_1,
+            # which only tunes the legacy objective. See PaperAlignedMomentObjective.
+            game_objectives = [
+                PaperAlignedMomentObjective(lambda_1=PAPER_ALIGNED_LAMBDA),
+            ]
+        else:
+            game_objectives = [
+                OptimalMomentObjective(lambda_1=self.objective_lambda_1),
+            ]
         learning_setups = []
-        # Dynamically adjust Critic multiplier based on dataset complexity
-        # CNN critics (in z and xz scenarios) are very powerful and need a lower multiplier to avoid NaN
-        critic_multiplier = 20.0
-        if args.dataset in ['linear', 'abs', 'sin', 'step', 'zoo']:
-            critic_multiplier = 10.0
-        if args.dataset in ['mnist_z', 'femnist_z', 'mnist_xz', 'femnist_xz','cifar10_z', 'cifar10_xz', 'cifar_xz']:
-            critic_multiplier = 5.0  # CNN Critic is powerful enough without a high LR
-        elif args.dataset in ['mnist_x', 'femnist_x','cifar10_x', 'cifar_x']:
-            critic_multiplier = 3.0  # Balanced approach
+        critic_multiplier = self.critic_multiplier
        
         for g_lr in g_learning_rates:
             for game_objective in game_objectives:
@@ -133,8 +352,7 @@ class FedAvgAPI(object):
                         "g_optimizer_factory": OptimizerFactory(
                             OGDA, lr=float(g_lr)),
                         "f_optimizer_factory": OptimizerFactory(
-                            # OGDA, lr=20.0*float(g_lr)),
-                            OGDA, lr=critic_multiplier*float(g_lr)), # Adjusted
+                            OGDA, lr=critic_multiplier*float(g_lr)),
                         "game_objective": game_objective
                     }
                 else:
@@ -142,7 +360,6 @@ class FedAvgAPI(object):
                         "g_optimizer_factory": OptimizerFactory(
                             CustomSGD, lr=float(g_lr), momentum=0.0),
                         "f_optimizer_factory": OptimizerFactory(
-                            # CustomSGD, lr=20.0*float(g_lr), momentum=0.0),
                             CustomSGD, lr=critic_multiplier*float(g_lr), momentum=0.0),
                         "game_objective": game_objective
                     }
@@ -175,11 +392,23 @@ class FedAvgAPI(object):
         # g_simple_model_eval = GradientDecentSimpleModelEval(
         #     max_num_iter=100, max_no_progress=10, eval_freq=1)      
         g_simple_model_eval = SGDSimpleModelEval(
-            max_num_epoch=100, max_no_progress=10, batch_size=200, eval_freq=1)
+            max_num_epoch=int(self.args.simple_model_selection_epochs),
+            max_no_progress=10,
+            batch_size=int(self.args.model_selection_batch_size),
+            eval_freq=1)
         f_simple_model_eval = SGDSimpleModelEval(
-            max_num_epoch=100, max_no_progress=10, batch_size=200, eval_freq=1)
+            max_num_epoch=int(self.args.simple_model_selection_epochs),
+            max_no_progress=10,
+            batch_size=int(self.args.model_selection_batch_size),
+            eval_freq=1)
         learning_eval = FHistoryLearningEvalSGDNoStop(
-            num_epochs=60, eval_freq=1, batch_size=200)
+            num_epochs=int(self.args.f_history_model_selection_epochs),
+            eval_freq=1,
+            batch_size=int(self.args.model_selection_batch_size))
+        psi_eval_burn_in = min(
+            30,
+            max(0, int(self.args.f_history_model_selection_epochs) - 1),
+        )
         self.model_selection = FHistoryModelSelectionV3(
             g_model_list=model[0],
             f_model_list=model[1],
@@ -189,7 +418,18 @@ class FedAvgAPI(object):
             g_simple_model_eval=g_simple_model_eval,
             f_simple_model_eval=f_simple_model_eval,
             learning_eval=learning_eval,
-            psi_eval_max_no_progress=10, psi_eval_burn_in=30,
+            psi_eval_max_no_progress=10, psi_eval_burn_in=psi_eval_burn_in,
+            failure_context={
+                "dataset": self.args.dataset,
+                "random_seed": self.args.random_seed,
+                "simple_model_selection_epochs": self.args.simple_model_selection_epochs,
+                "f_history_model_selection_epochs": self.args.f_history_model_selection_epochs,
+                "model_selection_batch_size": self.args.model_selection_batch_size,
+                "learning_rate": self.args.learning_rate,
+                "critic_multiplier": self.critic_multiplier,
+                "f_learning_rate": self.critic_multiplier * float(self.args.learning_rate),
+                "client_optimizer": self.args.client_optimizer,
+            },
         )
         self.default_g_opt_factory = default_g_opt_factory
         # g_simple_model_eval = SGDSimpleModelEval()
@@ -210,10 +450,54 @@ class FedAvgAPI(object):
         # fedavg_sgd = model_linear_sgd_fedavg(self.test_global.x)
         # sgd_plain = model_linear_sgd_plain(self.test_global.x)
         # mse = float(((fedavg_sgd - self.test_global.g) ** 2).mean())
-        g_global, f_global, learning_args, dev_f_collection, e_dev_tilde = \
-            self.model_selection.do_model_selection(
-                x_train=train_data_global.x, z_train=train_data_global.z, y_train=train_data_global.y,
-                x_dev=val_data_global.x, z_dev=val_data_global.z, y_dev=val_data_global.y, verbose=True)
+        model_selection_max_samples = int(self.args.model_selection_max_samples)
+        if model_selection_max_samples > 0:
+            train_limit = min(model_selection_max_samples, int(train_data_global.y.shape[0]))
+            dev_limit = min(model_selection_max_samples, int(val_data_global.y.shape[0]))
+            # A capped model-selection critic history has ``dev_limit`` rows.
+            # Keep the smoke-only validation view aligned with that history so
+            # downstream approximate-psi evaluation compares like-sized data.
+            for tensor_name in ("x", "z", "y", "g", "w"):
+                tensor = getattr(val_data_global, tensor_name, None)
+                if torch.is_tensor(tensor):
+                    setattr(val_data_global, tensor_name, tensor[:dev_limit])
+            self.val_global = val_data_global
+            self.val_data_num_in_total = dev_limit
+            x_train_selection = train_data_global.x[:train_limit]
+            z_train_selection = train_data_global.z[:train_limit]
+            y_train_selection = train_data_global.y[:train_limit]
+            x_dev_selection = val_data_global.x
+            z_dev_selection = val_data_global.z
+            y_dev_selection = val_data_global.y
+        else:
+            x_train_selection = train_data_global.x
+            z_train_selection = train_data_global.z
+            y_train_selection = train_data_global.y
+            x_dev_selection = val_data_global.x
+            z_dev_selection = val_data_global.z
+            y_dev_selection = val_data_global.y
+        if self.skip_model_selection:
+            if len(model[0]) != 1 or len(model[1]) != 1 or len(learning_setups) != 1:
+                raise ValueError(
+                    "skip_model_selection is only valid when the generated config has exactly "
+                    "one g model, one f model, and one learning setup"
+                )
+            with self.profiler.span("model_selection_fast_init"):
+                g_global = model[0][0]
+                f_global = model[1][0]
+                g_global.initialize()
+                f_global.initialize()
+                learning_args = learning_setups[0]
+                dev_f_collection = []
+                e_dev_tilde = torch.zeros_like(y_dev_selection.detach().reshape(-1))
+            self.skip_gmm_eval = True
+            self.gmm_eval_proxy = "negative_val_mse"
+        else:
+            with self.profiler.span("model_selection"):
+                g_global, f_global, learning_args, dev_f_collection, e_dev_tilde = \
+                    self.model_selection.do_model_selection(
+                        x_train=x_train_selection, z_train=z_train_selection, y_train=y_train_selection,
+                        x_dev=x_dev_selection, z_dev=z_dev_selection, y_dev=y_dev_selection, verbose=True)
         
         self.eval_history = []
         self.g_state_history = []
@@ -228,11 +512,13 @@ class FedAvgAPI(object):
         self.dev_f_collection = dev_f_collection
         self.e_dev_tilde = e_dev_tilde
         
-        self.model_trainer = create_model_trainer([g_global, f_global, model[2][0]], learning_args, args)
+        with self.profiler.span("create_model_trainer"):
+            self.model_trainer = create_model_trainer([g_global, f_global, model[2][0]], learning_args, args)
 
-        self._setup_clients(
-            train_data_local_num_dict, train_data_local_dict, test_data_local_dict, self.model_trainer,
-        )
+        with self.profiler.span("setup_clients"):
+            self._setup_clients(
+                train_data_local_num_dict, train_data_local_dict, test_data_local_dict, self.model_trainer,
+            )
 
     def _setup_clients(
         self, train_data_local_num_dict, train_data_local_dict, test_data_local_dict, model_trainer,
@@ -263,8 +549,8 @@ class FedAvgAPI(object):
         # print("Round"+" "+"mse")
         g_global = self.model_trainer.get_g_model_params()
         f_global = self.model_trainer.get_f_model_params()
-        reg_global = self.model_trainer.get_model_params() 
-        fedAvg=[] 
+        reg_global = None if self.skip_auxiliary_regression else self.model_trainer.get_model_params()
+        fedAvg=[]
         # mlops.log_training_status(mlops.ClientConstants.MSG_MLOPS_CLIENT_STATUS_TRAINING)
         # mlops.log_aggregation_status(mlops.ServerConstants.MSG_MLOPS_SERVER_STATUS_RUNNING)
         # mlops.log_round_info(self.args.comm_round, -1)
@@ -291,7 +577,11 @@ class FedAvgAPI(object):
             else:
                 logging.error(f"=> no checkpoint found at '{self.args.resume}'")
 
+        training_profile_wall = time.perf_counter()
+        training_profile_cpu = time.process_time()
         for round_idx in range(start_round, self.args.comm_round):
+            round_profile_wall = time.perf_counter()
+            round_profile_cpu = time.process_time()
 
             # logging.info("################Communication round : {}".format(round_idx))
 
@@ -303,109 +593,228 @@ class FedAvgAPI(object):
             for scalability: following the original FedAvg algorithm, we uniformly sample a fraction of clients in each round.
             Instead of changing the 'Client' instances, our implementation keeps the 'Client' instances and then updates their local dataset 
             """
-            client_indexes = self._client_sampling(
-                round_idx, self.args.client_num_in_total, self.args.client_num_per_round
-            )
+            with self.profiler.span("client_sampling", round_idx=round_idx):
+                client_indexes = self._client_sampling(
+                    round_idx, self.args.client_num_in_total, self.args.client_num_per_round
+                )
             # logging.info("client_indexes = " + str(client_indexes))
+            with self.profiler.span("record_stochastic_batching", round_idx=round_idx):
+                self._record_stochastic_batching(round_idx, client_indexes)
 
             for idx, client in enumerate(self.client_list):
                 # update dataset
                 client_idx = client_indexes[idx]
-                client.update_local_dataset(
-                    client_idx,
-                    self.train_data_local_dict[client_idx],
-                    self.test_data_local_dict[client_idx],
-                    self.train_data_local_num_dict[client_idx],
-                )
+                with self.profiler.span("client_update_dataset", round_idx=round_idx, client_id=client_idx):
+                    client.update_local_dataset(
+                        client_idx,
+                        self.train_data_local_dict[client_idx],
+                        self.test_data_local_dict[client_idx],
+                        self.train_data_local_num_dict[client_idx],
+                    )
                 # mlops.event("train", event_started=True, event_value="{}_{}".format(str(round_idx), str(idx)))
                 # w = client.train(copy.deepcopy(g_global), copy.deepcopy(f_global),copy.deepcopy(w_locals_prev))
                 # optimizer_g = CustomSGD(self.model_trainer.g.parameters(), lr=0.3)
                 # optimizer_f = CustomSGD(self.model_trainer.f.parameters(), lr=0.3)
                 # scheduler_g = CosineAnnealingLR(optimizer_g, T_max=6000)
                 # scheduler_f = CosineAnnealingLR(optimizer_f, T_max=6000)
-                w = client.train(copy.deepcopy(g_global), copy.deepcopy(f_global))
+                with self.profiler.span("client_train_gmm", round_idx=round_idx, client_id=client_idx):
+                    w = client.train(g_global, f_global)
 
                 # w = client.train()
                 # w=client.train(copy.deepcopy(g_global),copy.deepcopy(f_global))
                 # t=[w[0],w[1]]
-                w_reg = client.train_reg(copy.deepcopy(reg_global))
+                w_reg = None
+                if self.skip_auxiliary_regression:
+                    self.profiler.record(
+                        "client_train_reg_skipped",
+                        round_idx=round_idx,
+                        client_id=client_idx,
+                        detail="auxiliary_regression=false",
+                    )
+                else:
+                    with self.profiler.span("client_train_reg", round_idx=round_idx, client_id=client_idx):
+                        w_reg = client.train_reg(reg_global)
                 # mlops.event("train", event_started=False, event_value="{}_{}".format(str(round_idx), str(idx)))
                 # self.logging.info("local weights = " + str(w))
-                w_locals.append((client.get_sample_number(), copy.deepcopy(w)))
-                w_locals_reg.append((client.get_sample_number(), copy.deepcopy(w_reg)))
+                with self.profiler.span("client_collect_state", round_idx=round_idx, client_id=client_idx):
+                    w_locals.append((client.get_sample_number(), w))
+                    if not self.skip_auxiliary_regression:
+                        w_locals_reg.append((client.get_sample_number(), w_reg))
                 # w_locals_prev = t
+            with self.profiler.span("record_aggregation_weights", round_idx=round_idx):
+                self._record_aggregation_weights(round_idx, client_indexes, w_locals)
             # update global weights
-            w_agg = self._aggregate(w_locals)
-            
-            if self.args.client_optimizer == "ogda":
-                # Suitable beta (Server LR). 1.0 is standard for FedAvg. 
-                # Can be lowered (e.g., 0.5) for more stability.
-                server_lr = 1.5 
+            with self.profiler.span("aggregate_gmm", round_idx=round_idx):
+                w_agg = self._aggregate(w_locals)
 
-                # Current weights (theta_t)
-                g_old = self.model_trainer.get_g_model_params()
-                f_old = self.model_trainer.get_f_model_params()
-                
-                # Current updates (delta_t = w_agg - theta_t)
-                delta_g = {k: w_agg[0][k] - g_old[k] for k in g_old.keys()}
-                delta_f = {k: w_agg[1][k] - f_old[k] for k in f_old.keys()}
-                
-                if round_idx == start_round or self.delta_g_prev is None:
-                    # Round 1: theta_{t+1} = theta_t + beta * delta_t
+            with self.profiler.span("server_update_gmm", round_idx=round_idx):
+                if self.args.client_optimizer == "ogda":
+                    server_lr = self.server_learning_rate
+
+                    # Current weights (theta_t)
+                    g_old = self.model_trainer.get_g_model_params()
+                    f_old = self.model_trainer.get_f_model_params()
+
+                    # Current updates (delta_t = w_agg - theta_t)
+                    delta_g = {k: w_agg[0][k] - g_old[k] for k in g_old.keys()}
+                    delta_f = {k: w_agg[1][k] - f_old[k] for k in f_old.keys()}
+
+                    if round_idx == start_round or self.delta_g_prev is None:
+                        # Round 1: theta_{t+1} = theta_t + beta * delta_t
+                        g_new = {k: g_old[k] + server_lr * delta_g[k] for k in g_old.keys()}
+                        f_new = {k: f_old[k] + server_lr * delta_f[k] for k in f_old.keys()}
+                    else:
+                        # Round t > 1: Optimistic Update
+                        # theta_{t+1} = theta_t + beta * (2*delta_t - delta_{t-1})
+                        g_new = {k: g_old[k] + server_lr * (2.0 * delta_g[k] - self.delta_g_prev[k]) for k in g_old.keys()}
+                        f_new = {k: f_old[k] + server_lr * (2.0 * delta_f[k] - self.delta_f_prev[k]) for k in f_old.keys()}
+
+                    # Store deltas for the next round
+                    self.delta_g_prev = delta_g
+                    self.delta_f_prev = delta_f
+                    w_global = [g_new, f_new]
+                else:
+                    # w_global = w_agg
+                    server_lr = self.server_learning_rate
+
+                    # Current weights (theta_t)
+                    g_old = self.model_trainer.get_g_model_params()
+                    f_old = self.model_trainer.get_f_model_params()
+
+                    # Current updates (delta_t = w_agg - theta_t)
+                    delta_g = {k: w_agg[0][k] - g_old[k] for k in g_old.keys()}
+                    delta_f = {k: w_agg[1][k] - f_old[k] for k in f_old.keys()}
+
+
+                    #theta_{t+1} = theta_t + beta * delta_t
                     g_new = {k: g_old[k] + server_lr * delta_g[k] for k in g_old.keys()}
                     f_new = {k: f_old[k] + server_lr * delta_f[k] for k in f_old.keys()}
-                else:
-                    # Round t > 1: Optimistic Update
-                    # theta_{t+1} = theta_t + beta * (2*delta_t - delta_{t-1})
-                    g_new = {k: g_old[k] + server_lr * (2.0 * delta_g[k] - self.delta_g_prev[k]) for k in g_old.keys()}
-                    f_new = {k: f_old[k] + server_lr * (2.0 * delta_f[k] - self.delta_f_prev[k]) for k in f_old.keys()}
-                
-                # Store deltas for the next round
-                self.delta_g_prev = delta_g
-                self.delta_f_prev = delta_f
-                w_global = [g_new, f_new]
+
+                    w_global = [g_new, f_new]
+
+            w_global_reg = None
+            if self.skip_auxiliary_regression:
+                self.profiler.record(
+                    "aggregate_reg_skipped",
+                    round_idx=round_idx,
+                    detail="auxiliary_regression=false",
+                )
             else:
-                # w_global = w_agg
-                server_lr = 1.5 
-
-                # Current weights (theta_t)
-                g_old = self.model_trainer.get_g_model_params()
-                f_old = self.model_trainer.get_f_model_params()
-                
-                # Current updates (delta_t = w_agg - theta_t)
-                delta_g = {k: w_agg[0][k] - g_old[k] for k in g_old.keys()}
-                delta_f = {k: w_agg[1][k] - f_old[k] for k in f_old.keys()}
-                
-               
-                #theta_{t+1} = theta_t + beta * delta_t
-                g_new = {k: g_old[k] + server_lr * delta_g[k] for k in g_old.keys()}
-                f_new = {k: f_old[k] + server_lr * delta_f[k] for k in f_old.keys()}
-
-                w_global = [g_new, f_new]
-
-            w_global_reg = self._aggregate_reg(w_locals_reg)
-            self.model_trainer.set_g_model_params(w_global[0])
-            self.model_trainer.set_f_model_params(w_global[1])
-            self.model_trainer.set_model_params(w_global_reg)
+                with self.profiler.span("aggregate_reg", round_idx=round_idx):
+                    w_global_reg = self._aggregate_reg(w_locals_reg)
+            with self.profiler.span("set_global_params", round_idx=round_idx):
+                self.model_trainer.set_g_model_params(w_global[0])
+                self.model_trainer.set_f_model_params(w_global[1])
+                if not self.skip_auxiliary_regression:
+                    self.model_trainer.set_model_params(w_global_reg)
+                g_global = self.model_trainer.get_g_model_params()
+                f_global = self.model_trainer.get_f_model_params()
+                if not self.skip_auxiliary_regression:
+                    reg_global = self.model_trainer.get_model_params()
             # mlops.event("agg", event_started=False, event_value=str(round_idx))
 
             # at last round
             # if round_idx == self.args.comm_round - 1:
             #     self._local_test_on_all_clients(round_idx)
             # per {frequency_of_the_test} round
-            mse, obj_train, obj_dev, curr_eval, max_recent_eval, f_of_z_train, f_of_z_dev = self.eval_global_model()
-            log_results_to_csv(f"csv/{self.args.client_optimizer}_{self.args.dataset}newtrial.csv", round_idx, mse)
-            
-            # Save checkpoint every 200 rounds
-            if round_idx % 200 == 0:
-                checkpoint_path = f"checkpoints/{self.args.client_optimizer}_{self.args.dataset}_round_{round_idx}.pt"
-                os.makedirs("checkpoints", exist_ok=True)
-                torch.save({
-                    'round': round_idx,
-                    'g_state_dict': self.g.state_dict(),
-                    'f_state_dict': self.f.state_dict(),
-                    'mse': mse
-                }, checkpoint_path)
+            with self.profiler.span("eval_global_model", round_idx=round_idx):
+                eval_result = self.eval_global_model()
+            mse = eval_result["train_mse"]
+            obj_train = eval_result["gmm_train_objective"]
+            obj_dev = eval_result["gmm_val_objective"]
+            curr_eval = eval_result["gmm_eval"]
+            max_recent_eval = eval_result["max_recent_gmm_eval"]
+            f_of_z_train = eval_result["f_of_z_train"]
+            f_of_z_dev = eval_result["f_of_z_dev"]
+            finite = state_is_finite(self.model_trainer.get_g_model_params()) and state_is_finite(self.model_trainer.get_f_model_params())
+            diverged = not finite
+            self.diverged = self.diverged or diverged
+            mse_row = {
+                "round": round_idx,
+                "train_mse": eval_result["train_mse"],
+                "val_mse": eval_result["val_mse"],
+                "train_moment_violation": eval_result["train_moment_violation"],
+                "val_moment_violation": eval_result["val_moment_violation"],
+                "gmm_train_objective": obj_train,
+                "gmm_val_objective": obj_dev,
+                "gmm_eval": curr_eval,
+                "finite": finite,
+                "diverged": diverged,
+            }
+            self.mse_rows.append(mse_row)
+            with self.profiler.span("write_mse_by_round", round_idx=round_idx, detail=f"rows={len(self.mse_rows)}"):
+                if self.append_round_csv:
+                    append_mse_by_round(self.run_dir, mse_row)
+                else:
+                    write_mse_by_round(self.run_dir, self.mse_rows)
+            if self.log_test_mse_by_round:
+                with self.profiler.span("test_mse_by_round_eval", round_idx=round_idx):
+                    test_mse = structural_mse(self.model_trainer.g, self.test_global)
+                test_finite = math.isfinite(float(test_mse))
+                test_mse_row = {
+                    "round": round_idx,
+                    "test_mse": test_mse,
+                    "finite": test_finite,
+                    "diverged": diverged or not test_finite,
+                }
+                self.test_mse_rows.append(test_mse_row)
+                with self.profiler.span("write_test_mse_by_round", round_idx=round_idx, detail=f"rows={len(self.test_mse_rows)}"):
+                    if self.append_round_csv:
+                        append_test_mse_by_round(self.run_dir, test_mse_row)
+                    else:
+                        write_test_mse_by_round(self.run_dir, self.test_mse_rows)
+            if getattr(self.args, "enable_legacy_outputs", True):
+                with self.profiler.span("legacy_csv_write", round_idx=round_idx):
+                    log_results_to_csv(f"csv/{self.args.client_optimizer}_{self.args.dataset}newtrial.csv", round_idx, mse)
+            if eval_result["val_mse"] < self.best_validation_mse:
+                with self.profiler.span("best_validation_checkpoint", round_idx=round_idx):
+                    self.best_validation_mse = eval_result["val_mse"]
+                    self.best_validation_round = round_idx
+                    self.best_state = self._capture_training_state()
+                    self.best_g_state = copy.deepcopy(self.best_state["g_state_dict"])
+                    self.best_f_state = copy.deepcopy(self.best_state["f_state_dict"])
+                    self.best_reg_state = copy.deepcopy(self.best_state["reg_state_dict"])
+                    self._save_checkpoint(
+                        os.path.join(self.run_dir, "checkpoints", "best_validation.pt"),
+                        round_idx,
+                        self.best_state,
+                        eval_result,
+                        "best_validation",
+                    )
+            if eval_result["val_moment_violation"] < self.best_moment_violation:
+                with self.profiler.span("best_moment_violation_checkpoint", round_idx=round_idx):
+                    self.best_moment_violation = eval_result["val_moment_violation"]
+                    self.best_moment_violation_round = round_idx
+                    self.best_moment_state = self._capture_training_state()
+                    self._save_checkpoint(
+                        os.path.join(self.run_dir, "checkpoints", "best_moment_violation.pt"),
+                        round_idx,
+                        self.best_moment_state,
+                        eval_result,
+                        "best_moment_violation",
+                    )
+
+            # Save periodic checkpoints inside the unique run directory.
+            if self.periodic_checkpoint_interval > 0 and round_idx % self.periodic_checkpoint_interval == 0:
+                checkpoint_path = os.path.join(self.run_dir, "checkpoints", f"round_{round_idx}.pt")
+                with self.profiler.span("periodic_checkpoint", round_idx=round_idx):
+                    self._save_checkpoint(
+                        checkpoint_path,
+                        round_idx,
+                        self._capture_training_state(),
+                        eval_result,
+                        "periodic",
+                    )
+                if getattr(self.args, "enable_legacy_outputs", True):
+                    with self.profiler.span("legacy_checkpoint", round_idx=round_idx):
+                        legacy_checkpoint_path = f"checkpoints/{self.args.client_optimizer}_{self.args.dataset}_round_{round_idx}.pt"
+                        os.makedirs("checkpoints", exist_ok=True)
+                        torch.save({
+                            "round": round_idx,
+                            "g_state_dict": self.g.state_dict(),
+                            "f_state_dict": self.f.state_dict(),
+                            "mse": mse,
+                        }, legacy_checkpoint_path)
             # wandb.log({"round":round_idx,"MSE" :mse})
             # logging.info(f"{round_idx}: {mse:.4f}")
             # print(round_idx,end=" ")
@@ -415,8 +824,7 @@ class FedAvgAPI(object):
                 if self.args.dataset.startswith("stackoverflow"):
                     self._local_test_on_validation_set(round_idx)
                 else:
-                    # self._local_test_on_all_clients(round_idx)
-                    mse, obj_train, obj_dev, curr_eval, max_recent_eval, f_of_z_train, f_of_z_dev = self.eval_global_model()
+                    pass
                 
                 if self.args.video_plotter and round_idx % self.args.print_freq == 0:
                     frame = self.video_plotter.get_new_frame("iter = %d" % round_idx)
@@ -444,166 +852,298 @@ class FedAvgAPI(object):
                 #         % (round_idx, mse, obj_train, obj_dev, mean_eval))
                     # wandb.log({"round": round_idx, "MSE": mse, "Train-Loss": obj_train, "Test-Loss": obj_dev, "Objective": mean_eval})
 
-            # check stopping conditions if we are past burn-in
-                if round_idx % self.args.eval_freq == 0 and round_idx >= self.args.burn_in:
-                    if curr_eval > max_recent_eval:
-                        current_no_progress = 0
-                    else:
-                        current_no_progress += 1
+            self.profiler.record(
+                "round_total",
+                time.perf_counter() - round_profile_wall,
+                process_cpu_seconds=time.process_time() - round_profile_cpu,
+                round_idx=round_idx,
+            )
 
-                    if current_no_progress >= self.args.max_no_progress:
-                        break
+            # check stopping conditions if we are past burn-in
+            if round_idx % self.args.eval_freq == 0 and round_idx >= self.args.burn_in:
+                if curr_eval > max_recent_eval:
+                    current_no_progress = 0
+                else:
+                    current_no_progress += 1
+
+                if current_no_progress >= self.args.max_no_progress:
+                    break
+        self.profiler.record(
+            "training_total",
+            time.perf_counter() - training_profile_wall,
+            process_cpu_seconds=time.process_time() - training_profile_cpu,
+        )
         # plot relationship between MSE and eval
         # if self.args.video_plotter:
         #     plt.figure()
         #     data = pandas.DataFrame({"eval": self.eval_list, "mse": self.mse_list})
         #     data.plot.scatter(x="eval", y="mse")
         #     plt.savefig("eval_mse.png")
-            
+        finalization_profile_wall = time.perf_counter()
+        finalization_profile_cpu = time.process_time()
         max_i = max(range(len(self.eval_history)), key=lambda i_: self.eval_history[i_])
         if self.args.verbose:
             # print("best iteration:", self.args.eval_freq * max_i)
             pass
             # mlops.log_round_info(self.args.comm_round, round_idx)
-        self.model_trainer.set_g_model_params(self.g_state_history[max_i])
-        g_final = self.g
-        # torch.save(g_final,'/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_step_fedsgd')
-        reg_model_final = self.reg_model
-        g_final.load_state_dict(self.model_trainer.get_g_model_params())
-        reg_model_final.load_state_dict(self.model_trainer.get_model_params())
-        g_pred = g_final(self.test_global.x)
-        reg_model_final.to(self.device)
-        reg_pred = reg_model_final(self.test_global.x)
-        # model_linear = torch.load('/home/somya/final/model_oldabs')
-        # model_linear_sgd = torch.load('/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_abs')
-        # model_linear_sgd_fedavg = torch.load('/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_abs_fedsgd')
-        # model_linear_sgd_plain = torch.load('/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_abs_plain')
+        best_gmm_eval_round = self.args.eval_freq * max_i
+        final_round = round_idx if "round_idx" in locals() else -1
+        with self.profiler.span("final_capture_state"):
+            self.final_state = self._capture_training_state()
+            self.final_g_state = copy.deepcopy(self.final_state["g_state_dict"])
+            self.final_f_state = copy.deepcopy(self.final_state["f_state_dict"])
+            self.final_reg_state = copy.deepcopy(self.final_state["reg_state_dict"])
+            self._load_training_state(self.final_state)
+        with self.profiler.span("final_validation_test_eval"):
+            final_validation_mse = structural_mse(self.model_trainer.g, self.val_global)
+            final_test_mse = structural_mse(self.model_trainer.g, self.test_global)
+            final_prediction = predictions_for_split(self.model_trainer.g, self.test_global)
+            final_train_mse = structural_mse(self.model_trainer.g, self.train_global)
+            final_val_g_prediction = predictions_for_split(self.model_trainer.g, self.val_global)
+            self.model_trainer.f.eval()
+            with torch.no_grad():
+                final_val_f_prediction = self.model_trainer.f(self.val_global.z)
+            self.model_trainer.f.train()
+            final_moment_violation = moment_violation(
+                final_val_f_prediction, self._val_y_cpu, final_val_g_prediction
+            )
+        with self.profiler.span("final_checkpoint"):
+            self._save_checkpoint(
+                os.path.join(self.run_dir, "checkpoints", "final.pt"),
+                final_round,
+                self.final_state,
+                {
+                    "train_mse": final_train_mse,
+                    "val_mse": final_validation_mse,
+                    "test_mse": final_test_mse,
+                },
+                "final",
+            )
+        if self.best_state is None:
+            self.best_validation_round = final_round
+            self.best_validation_mse = final_validation_mse
+            self.best_state = copy.deepcopy(self.final_state)
+            self.best_g_state = copy.deepcopy(self.final_g_state)
+            self.best_f_state = copy.deepcopy(self.final_f_state)
+            self.best_reg_state = copy.deepcopy(self.final_reg_state)
+        if self.best_moment_state is None:
+            self.best_moment_violation_round = final_round
+            self.best_moment_violation = final_moment_violation
+            self.best_moment_state = copy.deepcopy(self.final_state)
 
-        # model_linear.to(self.device)
-        # model_linear_sgd_fedavg.to(self.device)
-        # model_linear_sgd.to(self.device)
-        # model_linear_sgd_plain.to(self.device)
-        # gmm_pred = model_linear(self.test_global.x)
-        # gmm_pred_sgd = model_linear_sgd(self.test_global.x)
-        # fedavg_sgd = model_linear_sgd_fedavg(self.test_global.x)
-        # sgd_plain = model_linear_sgd_plain(self.test_global.x)
-        
-        # mse = float(((fedavg_sgd - self.test_global.g) ** 2).mean())
-        mse = float(((g_pred - self.test_global.g) ** 2).mean())
-        # print("---------------")
-        # print("finished running methodology on scenario %s" % self.args.scenario_name)
-        print("MSE on test ------------------------------>>>>>>>>>>>>>>>>>>", mse)
-        # print("")
-        # print("saving results...")
-        x = self.test_global.x.detach().cpu().numpy()
-        g_pred = g_pred.detach().cpu().numpy()
-        g_true = self.test_global.g.detach().cpu().numpy()
-        # gmm_pred = gmm_pred.detach().cpu().numpy()
-        reg_pred = reg_pred.detach().cpu().numpy()
-        # sgd_plain = sgd_plain.detach().cpu().numpy()
-        # gmm_pred_sgd = gmm_pred_sgd.detach().cpu().numpy()
-        # fedavg_sgd = fedavg_sgd.detach().cpu().numpy()
+        with self.profiler.span("best_validation_test_eval"):
+            self._load_training_state(self.best_state)
+            best_prediction = predictions_for_split(self.model_trainer.g, self.test_global)
+            best_test_mse = structural_mse_from_predictions(best_prediction, self._test_g_cpu)
+        print("MSE on test ------------------------------>>>>>>>>>>>>>>>>>>", best_test_mse)
 
-        indices = numpy.argsort(x, axis = 0).flatten() 
-        x_sort = x[indices]
-        x_label =[]
-        for i in range(20):
-            x_label.append(i)
-        g_pred_sort = g_pred[indices]
-        g_true_sort = g_true[indices]
-        
-        # Save the data for later plotting
-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_x.npy", x_sort)
-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_prednewtrial.npy", g_pred_sort)
-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_true.npy", g_true_sort)
-        # gmm_true_sort = gmm_pred[indices]
-        # gmm_sgd_sort = gmm_pred_sgd[indices]
-        # fedavg_sgd_sort = fedavg_sgd[indices]
-        # sgd_plain_sort = sgd_plain[indices]
-        # for i in range(len(x_sort)):
-        #     log_results_to_csv("/home/somya/thesis/new_FedDeepGMM-SGDA.csv", x_sort[i][0], g_pred_sort[i][0])
-        #     log_results_to_csv("/home/somya/thesis/new_Actual Causal Effect.csv", x_sort[i][0], g_true_sort[i][0])
-        #     log_results_to_csv("/home/somya/thesis/new_DeepGMM-OAdam.csv", x_sort[i][0], gmm_true_sort[i][0])
-        #     log_results_to_csv("/home/somya/thesis/new_DeepGMM-SMDA.csv", x_sort[i][0], gmm_sgd_sort[i][0])
-        #     log_results_to_csv("/home/somya/thesis/new_FedDeepGMM-SMDA.csv", x_sort[i][0], fedavg_sgd_sort[i][0])
-        #     log_results_to_csv("/home/somya/thesis/new_DeepGMM-SGDA.csv", x_sort[i][0], sgd_plain_sort[i][0])
-        reg_pred_sort = reg_pred[indices]
-        pred_plot = PlotElement(x_sort, g_pred_sort, "FedDeepGMM-SGDA")
-        true_plot = PlotElement(x_sort, g_true_sort, "Actual Causal Effect")
-        # gmm_plot = PlotElement(x_sort, gmm_true_sort, "DeepGMM-OAdam")
-        # gmm_sgd_plot = PlotElement(x_sort, gmm_sgd_sort, "DeepGMM-SMDA")
-        # fedavg_sgd_plot = PlotElement(x_sort,fedavg_sgd_sort,"FedDeepGMM-SMDA")
-        # sgd_plain_plot = PlotElement(x_sort,sgd_plain_sort,"DeepGMM-SGDA")
+        with self.profiler.span("best_moment_violation_test_eval"):
+            self._load_training_state(self.best_moment_state)
+            best_moment_prediction = predictions_for_split(self.model_trainer.g, self.test_global)
+            test_mse_at_best_moment_violation = structural_mse_from_predictions(
+                best_moment_prediction, self._test_g_cpu
+            )
+        # Restore the val-MSE-selected state as "the" checkpoint used for
+        # save_predictions_npz below, matching the field names' existing meaning.
+        self._load_training_state(self.best_state)
 
-        # plot_Avg = PlotElement(x_label,fedAvg,"FedAvg")
-        # reg_NN_plot = PlotElement(x_sort, reg_pred_sort, "Direct predictions from Neural Network")
-        
-        os.makedirs("plots", exist_ok=True)
-        fig, ax = plt.subplots()
-        # ax = sgd_plain_plot.plot(ax=ax)
-        ax = true_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
-        # ax = gmm_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
-        # ax = gmm_sgd_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
-        # ax = fedavg_sgd_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
-        ax = pred_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
+        with self.profiler.span("save_predictions_npz"):
+            save_predictions_npz(
+                self.run_dir,
+                self.test_global,
+                best_prediction,
+                final_prediction,
+                self.effective_config,
+            )
+        metrics = {
+            "best_validation_round": self.best_validation_round,
+            "best_validation_mse": self.best_validation_mse,
+            "test_mse_at_best_validation": best_test_mse,
+            "best_moment_violation_round": self.best_moment_violation_round,
+            "best_moment_violation": self.best_moment_violation,
+            "test_mse_at_best_moment_violation": test_mse_at_best_moment_violation,
+            "final_moment_violation": final_moment_violation,
+            "final_validation_mse": final_validation_mse,
+            "final_test_mse": final_test_mse,
+            "best_gmm_eval_round": best_gmm_eval_round,
+            "best_gmm_eval": self.eval_history[max_i],
+            "diverged": self.diverged,
+            "runtime_seconds": now_seconds() - self.start_time,
+            "test_mse_logged_by_round": self.log_test_mse_by_round,
+            "test_mse_used_for_selection": False,
+            "selection_metric_source": "validation",
+            "skip_model_selection": self.skip_model_selection,
+            "skip_gmm_eval": self.skip_gmm_eval,
+            "gmm_eval_proxy": self.gmm_eval_proxy,
+            "auxiliary_regression": not self.skip_auxiliary_regression,
+            "auxiliary_regression_epochs": int(getattr(self.args, "auxiliary_regression_epochs", 0)),
+            "append_round_csv": self.append_round_csv,
+            "periodic_checkpoint_interval": self.periodic_checkpoint_interval,
+            "aggregation_weighting": self.aggregation_weighting,
+            "objective_mode": self.objective_mode,
+        }
+        with self.profiler.span("write_metrics"):
+            write_metrics(self.run_dir, metrics)
+
+        if getattr(self.args, "enable_legacy_outputs", True) or getattr(self.args, "enable_legacy_plot", False):
+            with self.profiler.span("legacy_plot"):
+                x = self.test_global.x.detach().cpu().numpy()
+                best_pred_np = best_prediction.detach().cpu().numpy()
+                g_true = self.test_global.g.detach().cpu().numpy()
+                indices = numpy.argsort(x, axis=0).flatten()
+                x_sort = x[indices]
+                pred_plot = PlotElement(x_sort, best_pred_np[indices], "FedDeepGMM-SGDA")
+                true_plot = PlotElement(x_sort, g_true[indices], "Actual Causal Effect")
+                plot_dir = "plots" if getattr(self.args, "enable_legacy_outputs", True) else os.path.join(self.run_dir, "plots")
+                os.makedirs(plot_dir, exist_ok=True)
+                fig, ax = plt.subplots()
+                ax = true_plot.plot(ax=ax, save_path=os.path.join(plot_dir, f'aaaa_{self.args.run_name}_.png'))
+                ax = pred_plot.plot(ax=ax, save_path=os.path.join(plot_dir, f'aaaa_{self.args.run_name}_.png'))
         # ax = reg_NN_plot.plot(ax=ax, save_path=f'plots/aaaacomparison_{self.args.run_name}_.png')
+        self.profiler.record(
+            "finalization",
+            time.perf_counter() - finalization_profile_wall,
+            process_cpu_seconds=time.process_time() - finalization_profile_cpu,
+        )
         
         # mlops.log_training_finished_status()
         # mlops.log_aggregation_finished_status()
         
     def _client_sampling(self, round_idx, client_num_in_total, client_num_per_round):
-        if client_num_in_total == client_num_per_round:
-            client_indexes = [client_index for client_index in range(client_num_in_total)]
-        else:
-            num_clients = min(client_num_per_round, client_num_in_total)
-            numpy.random.seed(round_idx)  # make sure for each comparison, we are selecting the same clients each round
-            client_indexes = numpy.random.choice(range(client_num_in_total), num_clients, replace=False)
+        client_indexes = client_indices_for_round(
+            getattr(self.args, "random_seed", 0),
+            round_idx,
+            client_num_in_total,
+            client_num_per_round,
+        )
         # logging.info("client_indexes = %s" % str(client_indexes))
         return client_indexes
+
+    def _record_stochastic_batching(self, round_idx, client_indexes):
+        if not bool(getattr(self.args, "require_multibatch_stochastic", False)):
+            return
+        batch_size = int(getattr(self.args, "batch_size", 0))
+        if batch_size <= 0:
+            raise ValueError("require_multibatch_stochastic requires a positive batch_size")
+        variant = self.effective_config.get("variant", "unknown")
+        for client_idx in client_indexes:
+            local_loader = self.train_data_local_dict[client_idx]
+            sample_count = int(self.train_data_local_num_dict[client_idx])
+            try:
+                num_batches = int(len(local_loader))
+            except TypeError:
+                num_batches = int(math.ceil(sample_count * 1.0 / batch_size))
+            first_actual_batch_size = min(sample_count, batch_size) if sample_count > 0 else 0
+            row = {
+                "variant": variant,
+                "round": int(round_idx),
+                "client_id": int(client_idx),
+                "sample_count": sample_count,
+                "configured_batch_size": batch_size,
+                "num_batches": num_batches,
+                "first_actual_batch_size": first_actual_batch_size,
+            }
+            self.batching_summary_rows.append(row)
+            if num_batches < 2:
+                write_batching_summary(self.run_dir, self.batching_summary_rows)
+                raise ValueError(
+                    "Stochastic smoke multibatch guard failed: "
+                    f"variant={variant}, round={round_idx}, client_id={client_idx}, "
+                    f"sample_count={sample_count}, configured_batch_size={batch_size}, "
+                    f"num_batches={num_batches}"
+                )
+        write_batching_summary(self.run_dir, self.batching_summary_rows)
+
+    def _record_aggregation_weights(self, round_idx, client_indexes, w_locals):
+        """Persist the resolved aggregation mode and the actual per-client
+        weights used this round, so ``uniform_clients`` vs ``sample_size`` is
+        independently auditable from the run directory rather than only from
+        ``effective_config.json``'s static mode string. One row per round,
+        matching every other ``*_by_round.csv`` artifact's granularity.
+        """
+        weights = self._client_weights(w_locals)
+        client_weights = {
+            int(client_idx): float(weight)
+            for client_idx, weight in zip(client_indexes, weights)
+        }
+        row = {
+            "round": int(round_idx),
+            "aggregation_weighting": self.aggregation_weighting,
+            "k_participating": len(client_weights),
+            "weight_sum": float(sum(client_weights.values())),
+            "client_weights_json": json.dumps(client_weights, sort_keys=True),
+        }
+        self.aggregation_weight_rows.append(row)
+        if self.append_round_csv:
+            append_aggregation_weights_by_round(self.run_dir, row)
+        else:
+            write_aggregation_weights_by_round(self.run_dir, self.aggregation_weight_rows)
+
+    def _capture_training_state(self):
+        return {
+            "g_state_dict": copy.deepcopy(self.model_trainer.get_g_model_params()),
+            "f_state_dict": copy.deepcopy(self.model_trainer.get_f_model_params()),
+            "reg_state_dict": (
+                None
+                if self.skip_auxiliary_regression
+                else copy.deepcopy(self.model_trainer.get_model_params())
+            ),
+        }
+
+    def _load_training_state(self, state):
+        self.model_trainer.set_g_model_params(copy.deepcopy(state["g_state_dict"]))
+        self.model_trainer.set_f_model_params(copy.deepcopy(state["f_state_dict"]))
+        if state.get("reg_state_dict") is not None:
+            self.model_trainer.set_model_params(copy.deepcopy(state["reg_state_dict"]))
+        self.g = self.model_trainer.g
+        self.f = self.model_trainer.f
+        self.reg_model = self.model_trainer.reg_model
+
     def _aggregate_t(self,obj_sum):
         total_sum=0
         for i in obj_sum:
             total_sum+=i
         return total_sum/10
+    def _client_weights(self, w_locals):
+        """Per-client weights for this round, per ``self.aggregation_weighting``.
+
+        Shared by ``_aggregate`` and ``_aggregate_reg`` so FedGDA's direct
+        update and FedOGDA's pseudogradient/delta (which is derived as
+        ``weighted_average(w_locals) - theta_t``, see ``train()``) always use
+        the identical, consistent weighting for both g and f.
+        """
+        sample_counts = [num for num, _ in w_locals]
+        return compute_client_weights(sample_counts, self.aggregation_weighting)
+
     def _aggregate_reg(self, w_locals):
-        training_num = 0
-        for idx in range(len(w_locals)):
-            (sample_num, averaged_params) = w_locals[idx]
-            training_num += sample_num
+        weights = self._client_weights(w_locals)
+        state_dicts = [params for _, params in w_locals]
+        return weighted_average_state_dicts(state_dicts, weights)
 
-        (sample_num, averaged_params) = w_locals[0]
-        for k in averaged_params.keys():
-            for i in range(0, len(w_locals)):
-                local_sample_number, local_model_params = w_locals[i]
-                w = local_sample_number / training_num
-                if i == 0:
-                    averaged_params[k] = local_model_params[k] * w
-                else:
-                    averaged_params[k] += local_model_params[k] * w
-        return averaged_params
-    
     def _aggregate(self, w_locals):
-        training_num = sum([num for num, (_) in w_locals])
-
-        (sample_num, (g, f)) = w_locals[0]
-        for k in g.keys():
-            for i in range(0, len(w_locals)):
-                local_sample_number, (local_g, _) = w_locals[i]
-                w = local_sample_number / training_num
-                if i == 0:
-                    g[k] = local_g[k] * w
-                else:
-                    g[k] += local_g[k] * w
-        
-        for k in f.keys():
-            for i in range(0, len(w_locals)):
-                local_sample_number, (_, local_f) = w_locals[i]
-                w = local_sample_number / training_num
-                if i == 0:
-                    f[k] = local_f[k] * w
-                else:
-                    f[k] += local_f[k] * w
+        weights = self._client_weights(w_locals)
+        g_dicts = [gf[0] for _, gf in w_locals]
+        f_dicts = [gf[1] for _, gf in w_locals]
+        g = weighted_average_state_dicts(g_dicts, weights)
+        f = weighted_average_state_dicts(f_dicts, weights)
         return [g, f]
+
+    def _save_checkpoint(self, path, round_idx, state, metrics, checkpoint_type):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        torch.save({
+            "round": round_idx,
+            "checkpoint_type": checkpoint_type,
+            "state": {
+                "g": state["g_state_dict"],
+                "f": state["f_state_dict"],
+                "regression": state.get("reg_state_dict"),
+            },
+            "g_state_dict": state["g_state_dict"],
+            "f_state_dict": state["f_state_dict"],
+            "reg_state_dict": state.get("reg_state_dict"),
+            "metrics": metrics,
+            "effective_config": self.effective_config,
+        }, path)
 
     def _effective_batch_size(self, num_data):
         if not hasattr(self.args, "batch_size") or self.args.batch_size is None or self.args.batch_size <= 0:
@@ -617,54 +1157,78 @@ class FedAvgAPI(object):
         num_data = x.shape[0]
         batch_size = self._effective_batch_size(num_data)
         num_batch = math.ceil(num_data * 1.0 / batch_size)
-        g_of_x = None
-        f_of_z = None
+        g_of_x_batches = []
+        f_of_z_batches = []
         obj_total = 0
-        for b in range(num_batch):
-            if b < num_batch - 1:
-                batch_idx = list(range(b*batch_size, (b+1)*batch_size))
-            else:
-                batch_idx = list(range(b*batch_size, num_data))
-            x_batch = x[batch_idx]
-            z_batch = z[batch_idx]
-            y_batch = y[batch_idx]
-            g_obj, _ = self.model_trainer.game_objective.calc_objective(self.model_trainer.g, self.model_trainer.f, x_batch, z_batch, y_batch)
-            g_of_x_batch = self.model_trainer.g(x_batch).detach().cpu()
-            f_of_z_batch = self.model_trainer.f(z_batch).detach().cpu()
-            if b == 0:
-                g_of_x = g_of_x_batch
-                f_of_z = f_of_z_batch
-            else:
-                g_of_x = torch.cat([g_of_x, g_of_x_batch], dim=0)
-                f_of_z = torch.cat([f_of_z, f_of_z_batch], dim=0)
-            obj_total += float(g_obj.detach().cpu()) * len(batch_idx) * 1.0 / num_data
-        return g_of_x, f_of_z, float(g_obj.detach().cpu())
+        with torch.no_grad():
+            for b in range(num_batch):
+                batch_idx = slice(b * batch_size, min((b + 1) * batch_size, num_data))
+                x_batch = x[batch_idx]
+                z_batch = z[batch_idx]
+                y_batch = y[batch_idx]
+                g_obj, _ = self.model_trainer.game_objective.calc_objective(self.model_trainer.g, self.model_trainer.f, x_batch, z_batch, y_batch)
+                g_of_x_batches.append(self.model_trainer.g(x_batch).detach().cpu())
+                f_of_z_batches.append(self.model_trainer.f(z_batch).detach().cpu())
+                obj_total += float(g_obj.detach().cpu()) * int(x_batch.shape[0]) * 1.0 / num_data
+        g_of_x = torch.cat(g_of_x_batches, dim=0)
+        f_of_z = torch.cat(f_of_z_batches, dim=0)
+        return g_of_x, f_of_z, obj_total
     
         
     def eval_global_model(self):
+        # self.model_trainer is never trained directly (each client works on
+        # its own copy.deepcopy of it, see _setup_clients), so its
+        # game_objective instance never gets set_theta_tilde called on it by
+        # any client. calc_f_g_obj below only uses calc_objective for the
+        # informational gmm_train_objective/gmm_val_objective fields (the
+        # moment-violation metric is computed independently, directly from
+        # g_of_x/f_of_z/y), so any theta~ is fine here -- use the current
+        # (just-aggregated) global g.
+        if hasattr(self.model_trainer.game_objective, "set_theta_tilde"):
+            self.model_trainer.game_objective.set_theta_tilde(self.model_trainer.g)
         self.f = self.model_trainer.f.eval()
         self.g = self.model_trainer.g.eval()
         g_of_x_train, f_of_z_train, obj_train = self.calc_f_g_obj(self.train_global)
         g_of_x_dev, f_of_z_dev, obj_dev = self.calc_f_g_obj(self.val_global)
-        epsilon_dev = g_of_x_dev - self.val_global.y.cpu()
-        epsilon_train = g_of_x_train - self.train_global.y.cpu()
-        curr_eval = approx_psi_eval(epsilon_dev, self.dev_f_collection,
-                                            self.e_dev_tilde)
-        g_error = epsilon_train + self.train_global.y.cpu() - self.train_global.g.cpu()
-        mse = float((g_error ** 2).mean())
+        epsilon_dev = g_of_x_dev - self._val_y_cpu
+        epsilon_train = g_of_x_train - self._train_y_cpu
+        train_mse = structural_mse_from_predictions(g_of_x_train, self._train_g_cpu)
+        val_mse = structural_mse_from_predictions(g_of_x_dev, self._val_g_cpu)
+        # Held-out moment violation: g0-free, so this is the one recovery
+        # diagnostic that also works on real (Study B) data where val_mse
+        # cannot be computed at all.
+        train_moment_violation = moment_violation(
+            f_of_z_train, self._train_y_cpu, g_of_x_train
+        )
+        val_moment_violation = moment_violation(f_of_z_dev, self._val_y_cpu, g_of_x_dev)
+        if self.skip_gmm_eval:
+            curr_eval = -float(val_mse)
+        else:
+            curr_eval = approx_psi_eval(epsilon_dev, self.dev_f_collection,
+                                                self.e_dev_tilde)
         self.eval_list.append(curr_eval)
-        self.mse_list.append(mse)
+        self.mse_list.append(train_mse)
         if self.eval_history:
             max_recent_eval = max(self.eval_history)
         else:
             max_recent_eval = float("-inf")
         self.eval_history.append(curr_eval)
-        self.epsilon_dev_history.append(epsilon_dev)
-        self.epsilon_train_history.append(epsilon_train)
-        self.g_state_history.append(copy.deepcopy(self.g.state_dict()))
+        if self.args.video_plotter:
+            self.epsilon_dev_history.append(epsilon_dev)
+            self.epsilon_train_history.append(epsilon_train)
+            self.g_state_history.append(copy.deepcopy(self.g.state_dict()))
 
         self.f = self.f.train()
         self.g = self.g.train()
-        self.model_trainer.set_f_model_params(self.f.state_dict())
-        self.model_trainer.set_g_model_params(self.g.state_dict())
-        return mse, obj_train, obj_dev, curr_eval, max_recent_eval, f_of_z_train, f_of_z_dev
+        return {
+            "train_mse": train_mse,
+            "val_mse": val_mse,
+            "train_moment_violation": train_moment_violation,
+            "val_moment_violation": val_moment_violation,
+            "gmm_train_objective": obj_train,
+            "gmm_val_objective": obj_dev,
+            "gmm_eval": curr_eval,
+            "max_recent_gmm_eval": max_recent_eval,
+            "f_of_z_train": f_of_z_train,
+            "f_of_z_dev": f_of_z_dev,
+        }
