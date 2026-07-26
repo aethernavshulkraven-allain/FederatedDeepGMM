@@ -9,25 +9,33 @@ complete:
   `experimentsrerun` as `60f708f`.
 - The protocol, full-release preflight, campaign validator, and this
   reconciliation were merged as `634f7ee`.
+- The six implementation gates were independently reviewed, tested, and
+  committed as `beef03c` (`Close Study A implementation gates`).
 - The pre-merge base remains recoverable at
   `backup/experimentsrerun-pre-study-a-merge-20260727`.
 
 Generated demo cohorts, scenarios, scratch runs, result directories, audit
 outputs, and debug plots were preserved in place but were not added to the
-source commits. The P0 scientific/protocol mismatches documented below remain
-open; source integration does not make the campaign launch-ready.
+source commits. Commit `beef03c` closes the implementation mismatches for seed
+separation, equal-client selection/reporting, the required 105-row matrix,
+paper-aligned centralized baselines, ATE/ITE metric semantics, and the
+canonical campaign schema. Full-release and protocol-freeze gates documented
+below remain open; source integration does not by itself make the campaign
+launch-ready.
 
 ## Status
 
-Study A is **not launch-ready for full-eICU tuning or confirmatory analysis**.
-The three independent worktrees landed useful, clean components, and Claude's
-implementation established that the main training path can execute on demo
-data. The components do not yet implement one common protocol contract.
+Study A is **implementation-ready but not data/protocol-ready for full-eICU
+tuning or confirmatory analysis**. The three independent worktrees and
+`beef03c` now implement one prelaunch-validating 105-row campaign contract.
+The remaining blockers are the absent full credentialed release, the
+full-cohort audit, and unresolved decisions D01-D08, D10-D15, and D18-D19.
 
 The authoritative design is `protocol_v1.md` plus `protocol_v1.json`. The
-105-row `confirmatory_matrix.csv` is descriptive and must not be treated as a
-launch manifest until the unresolved decisions in `decision_register.md` are
-closed and the implementation is brought into alignment.
+105-row `confirmatory_matrix.csv` remains descriptive. The manifest generator
+can now produce a canonical 105-row launch manifest, but a generated manifest
+must not be treated as final until full-release scenarios and legitimate
+validation-selected or explicitly preregistered fixed configurations exist.
 
 No result produced from the eICU demo release is a Study A scientific result.
 
@@ -54,10 +62,9 @@ These commits were subsequently merged into the dirty shared
 `experimentsrerun` worktree through merge commit `634f7ee`, without adding or
 deleting the unrelated local work.
 
-## Claude implementation: accepted building blocks
+## Gate-closing implementation
 
-The uncommitted implementation in the shared worktree contains useful
-building blocks that should be preserved and reviewed as a dedicated commit:
+The implementation below was reviewed and committed as `beef03c`:
 
 - paper-aligned federated moment objective with a frozen previous-global
   structural iterate and lambda `1/4`;
@@ -68,17 +75,29 @@ building blocks that should be preserved and reviewed as a dedicated commit:
 - scenario counterfactual arrays, coefficients, and byte checksums;
 - real-instrument variation filtering and simulated first-stage diagnostics;
 - a standalone per-client checkpoint evaluator; and
-- resumable manifest/centralized orchestration prototypes.
+- resumable manifest/centralized orchestration.
 
-Claude's eICU-specific and adjacent regression suites reported 202 and 64
-passing tests. Those tests establish internal behavior of the current
-implementation, not compliance with protocol v1.
+Independent verification after reconciliation produced:
 
-## Blocking implementation mismatches
+- 282 passing targeted eICU/gate/validator tests;
+- 362 passing tests in the full suite, with one pre-existing unrelated error
+  caused by missing local `results/_golden` smoke artifacts;
+- two finite real-data demo federated smokes (FedGDA-S and FedOGDA-S);
+- three finite real-data demo centralized smokes (GDA-D, SGDA-S, OAdam-S);
+- a successful post-hoc ATE/ITE evaluation of a real checkpoint; and
+- a generated 105-row manifest that passed prelaunch validation with zero
+  blocking errors.
 
-The following are P0 corrections before full-eICU tuning may start.
+These checks establish implementation and contract behavior. They do not turn
+demo outputs into scientific results or close full-release decisions.
+
+## Original implementation mismatches and current disposition
+
+The original P0 audit is retained below with its reconciled status.
 
 ### 1. Separate randomness domains
+
+**Closed in `beef03c`.**
 
 Protocol v1 requires `scenario_seed`, `optimizer_seed`, and `seed_pair_id`.
 The current scenario generator, federated manifest, launcher, centralized
@@ -96,6 +115,8 @@ from `optimizer_seed`.
 
 ### 2. Equal-client selection and reporting
 
+**Closed in `beef03c`.**
+
 The protocol primary metric is equal-client structural validation MSE for
 checkpoint selection and equal-client structural Test MSE at that already
 selected checkpoint.
@@ -112,6 +133,8 @@ MSE with earlier-round tie-breaking, and write all fields required by
 `metric_policy.md`.
 
 ### 3. Required 105-row matrix
+
+**Closed in `beef03c`.**
 
 The current orchestration generates:
 
@@ -131,6 +154,9 @@ to reject accidental sample-size weighting in primary runs.
 
 ### 4. Centralized baselines
 
+**Implementation closed in `beef03c`; centralized tuning fairness and final
+budgets remain open under D15.**
+
 The centralized runner is dimension-aware, but it still instantiates the
 legacy `OptimalMomentObjective`, selects on pooled validation MSE, and omits
 SGDA. All three centralized methods must use the frozen paper-aligned
@@ -138,6 +164,10 @@ objective/cadence, reconstruct hospital-aware validation/test metrics, and
 receive a predeclared validation-only tuning budget.
 
 ### 5. Tuning policy
+
+**Selection semantics and three-pair completeness checks are implemented;
+full-data candidate spaces, budgets, and actual validation-only tuning remain
+open under D12-D15.**
 
 The current federated tuner uses one scenario/optimizer seed and six
 learning-rate/server-rate candidates. It also uses:
@@ -156,6 +186,12 @@ pending the full-release runtime preflight.
 
 ### 6. Scenario provenance and eligibility
 
+**Partially closed in `beef03c`.** Separate eligibility randomness,
+non-Test first-stage certification, eligible-client IDs, scenario scope,
+dimensions, provenance, and checksums are implemented. Full-release thresholds,
+client flow, calibration, and mismatch-refusal policy remain open under
+D01-D08 and D19.
+
 Scenario metadata currently does not satisfy the validator contract and the
 launcher does not refuse checksum mismatches. Canonical metadata must record
 the full-eICU/demo scope, release/cohort/split provenance, eligible client IDs
@@ -169,12 +205,16 @@ failure behavior must be frozen from non-Test diagnostics before launch.
 
 ### 7. ATE and individual-effect metrics
 
+**Closed in `beef03c`.**
+
 The current post-hoc field named `ate_error_abs` is the mean absolute
 individual-effect error. That is individual-effect MAE, not absolute ATE
 error. Both must be computed and stored separately according to
 `metric_policy.md`, together with true/predicted client ATEs.
 
 ### 8. Full-data runtime assumptions
+
+**Open.** Demo timing is not a substitute for a full-release runtime audit.
 
 The current manifest sets stochastic `batch_size` from the number of clients
 (three on the demo) and marks all jobs CPU-only based on demo runtime. Batch
@@ -183,6 +223,8 @@ full-release tuning/runtime policy. Demo timing cannot determine full-eICU
 hardware or round budgets.
 
 ### 9. Campaign contract and artifact layout
+
+**Closed in `beef03c`.**
 
 The campaign validator's engine is useful, but its shipped default contract
 uses one `seed`, `mlp`, `gda`/`sgda`/`oadam`, and root-level checkpoint names.
@@ -197,11 +239,12 @@ started.
 
 ### 10. Reproducible source state
 
-The Study A implementation is now committed as `60f708f`. Future effective
-configurations must record the actual launch commit, which will include the P0
-corrections rather than treating `60f708f` as launch-ready. Generated demo
-scenarios and runtime artifacts remain outside the source commit and must be
-identified by their own checksums.
+The gate-closing Study A implementation is committed as `beef03c`. Future
+effective configurations must record the actual later launch commit, including
+the full-data freeze records, rather than treating either `60f708f` or
+`beef03c` as a scientific launch snapshot. Generated scenarios and runtime
+artifacts remain outside the source commit and must be identified by their own
+checksums.
 
 ## Demo campaign audit
 
@@ -238,7 +281,8 @@ instrument specification, DGP calibration, and scenario checksums.
 
 1. ~~Commit/isolate Claude's implementation and merge it with the clean
    integration branch.~~ Completed by `60f708f` and `634f7ee`.
-2. Implement the P0 corrections above and add protocol-level contract tests.
+2. ~~Implement the P0 corrections above and add protocol-level contract
+   tests.~~ Completed by `beef03c`.
 3. Run the full-release preflight with row counting and checksums.
 4. Build the full cohort and conduct a blinded flow/client/instrument audit.
 5. Freeze eligibility, DGP, structural-function parameters, scenario metadata,

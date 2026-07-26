@@ -14,15 +14,15 @@ or from undocumented assumptions about the full eICU cohort.
 | D06 | unresolved | scenario generation | Freeze the within-hospital split fractions at 60/20/20 if the full audit shows adequate rows in every split; otherwise amend fractions before tuning. | The demo cannot determine full-release split feasibility. Admission-level separation and train-only preprocessing remain mandatory. |
 | D07 | unresolved | scenario generation | Calibrate instrument strength, confounding, outcome-confounder coefficient, noise, and hospital-offset scale using treatment balance, first-stage diagnostics, and nontriviality checks—not recovery Test MSE. | The benchmark needs endogeneity, overlap, finite outcomes, and nondegenerate within-client relevance without tuning toward a favored method. |
 | D08 | unresolved | scenario generation | Freeze a dedicated random-MLP architecture, scaling rule, `g0_seed`, serialized weights, and checksum; keep it identical across scenario seeds. | “Frozen random MLP” must describe one reproducible target rather than a new target per optimizer comparison. |
-| D09 | unresolved | tuning launch | Extend orchestration to carry separate `scenario_seed`, `optimizer_seed`, and `seed_pair_id`. | Current read-only implementation context uses one `seed` field; that would violate the pairing policy. |
+| D09 | implemented (`beef03c`) | tuning launch | Carry separate `scenario_seed`, `optimizer_seed`, and `seed_pair_id` through scenario generation, manifests, launchers, trainers, metrics, and validators. | Contract tests verify the frozen tuning and confirmatory pairs and paired-method reuse of scenario artifacts. |
 | D10 | unresolved | tuning launch | Record the exact frozen-\(\tilde\theta\) refresh cadence for federated and centralized objectives and verify it in effective configuration. | The paper-aligned invariant fixes a frozen reference and \(\lambda=1/4\), but cadence must be operationally unambiguous. |
 | D11 | unresolved | tuning launch | Use full client participation if feasible; otherwise freeze a paired participation schedule before tuning. | Uniform aggregation is over participating clients. Partial participation can add avoidable comparison noise. |
 | D12 | proposed pending runtime preflight | tuning launch | Use the three tuning pairs in the protocol, a cheap first-pair screen, then all-three-pair evaluation of every shortlisted candidate. | This separates tuning and confirmation while controlling full-eICU cost. Shortlist size must be set from runtime evidence. |
 | D13 | proposed pending runtime preflight | tuning launch | Start from the listed learning-rate, critic-multiplier, weight-decay, server-rate, clipping, and batch-size factor levels; use a documented fractional/racing design with equal method budgets. | A full Cartesian grid may be wasteful. Runtime may change the design, but Test MSE may not. |
 | D14 | unresolved | tuning launch | Freeze training rounds/epochs, validation frequency, early-termination rules, wall-clock cap, and retry policy per method family. | Equal budgets and auditable stopping are needed; demo runtime does not predict full-eICU runtime. |
 | D15 | unresolved | tuning selection | Decide whether centralized baselines receive the same absolute compute budget or a method-appropriate equal search-count budget; document the choice. | “Fair” can mean equal wall-clock, candidate count, or gradient evaluations. The chosen rule must precede results. |
-| D16 | unresolved | confirmatory launch | Update aggregation-ablation orchestration from linear-only to all three \(g_0\) variants, yielding 30 sample-size rows. | The required protocol matrix is 30 ablation rows; current read-only implementation context schedules only 10. |
-| D17 | unresolved | confirmatory launch | Verify centralized checkpoints can be evaluated by hospital and produce equal-client validation/test metrics. | Pooling training data must not silently turn the primary metric into sample-weighted MSE. |
+| D16 | implemented (`beef03c`) | confirmatory launch | Generate the aggregation ablation across all three \(g_0\) variants and five confirmatory pairs for both federated methods, yielding 30 sample-size rows. | `campaign_role=aggregation_ablation` is the only authorization for eICU sample-size aggregation; primary rows remain locked to uniform clients. |
+| D17 | implemented (`beef03c`) | confirmatory launch | Preserve hospital IDs in centralized evaluation, select checkpoints using equal-client validation MSE, and report both equal-client and sample-weighted validation/test metrics. | Unit tests and finite GDA-D/SGDA-S/OAdam-S demo smokes verify hospital-aware evaluation and checkpoint semantics. |
 | D18 | unresolved | confirmatory launch | Freeze model architectures for \(g\) and \(f\), initialization, precision, batch handling for small clients, and gradient accumulation. | These are effective-config requirements and can materially affect stability. |
 | D19 | unresolved | confirmatory launch | Freeze scenario and configuration artifact locations plus checksum-verification behavior; refuse mismatches rather than regenerating in place. | Paired comparisons require byte-identical scenario artifacts. |
 | D20 | unresolved | analysis | Decide the exact optional exploratory uncertainty display (paired bootstrap interval, seed range, or none) before test access. | Five pairs do not support a strong significance claim; the core report remains descriptive. |
@@ -31,8 +31,9 @@ or from undocumented assumptions about the full eICU cohort.
 
 ## Coordinator sign-off checklist
 
-Before tuning, the coordinator should close D01–D15 and D18–D19 in a versioned
-amendment or freeze record. Before confirmatory launch, also close D16–D17.
+Before tuning, the coordinator should close D01–D08, D10–D15, and D18–D19 in a
+versioned amendment or freeze record. D09, D16, and D17 are implemented in
+`beef03c`.
 Before opening confirmatory test outputs, close D20. D21–D22 must close before
 registry integration or manuscript claims.
 
