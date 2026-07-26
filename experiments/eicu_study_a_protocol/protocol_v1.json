@@ -1,0 +1,689 @@
+{
+  "protocol_version": "eicu_study_a_v1",
+  "protocol_status": "specified_not_launched",
+  "protocol_type": "semi_synthetic_methods_extension",
+  "authoritative_human_document": "protocol_v1.md",
+  "status_vocabulary": {
+    "frozen": "Required for Study A v1; change only by a versioned amendment made without confirmatory test access.",
+    "proposed_pending_full_eicu_runtime_preflight": "Recommended starting choice; may change from runtime, memory, launchability, or validation-only evidence before confirmation.",
+    "unresolved_before_launch": "Must be resolved, recorded, and frozen before the applicable launch."
+  },
+  "purpose": {
+    "status": "frozen",
+    "primary_question": "Structural-function recovery and optimization stability under natural eICU hospital heterogeneity using a known simulated g0.",
+    "real_components": [
+      "hospital_partition",
+      "covariates",
+      "covariate_distributions",
+      "missingness_patterns",
+      "ward_structure",
+      "client_size_imbalance"
+    ],
+    "simulated_components": [
+      "unobserved_confounder",
+      "treatment",
+      "outcome",
+      "hospital_treatment_propensity_offset",
+      "structural_function_g0"
+    ],
+    "track": "extension",
+    "published_numerical_target_available": false
+  },
+  "claim_boundaries": {
+    "status": "frozen",
+    "permitted_after_compliant_full_eicu_campaign": [
+      "Recovery of a known simulated structural function under real eICU hospital, covariate, missingness, ward, and client-size structure.",
+      "Descriptive FedGDA-S versus FedOGDA-S optimization stability and error comparisons on the benchmark.",
+      "Centralized and sample-size aggregation comparisons under the frozen design."
+    ],
+    "prohibited": [
+      "A causal estimate of a real treatment effect on a real clinical outcome.",
+      "A claim that ward preference is clinically exogenous.",
+      "An unsupported claim about full-eICU cohort size, balance, representativeness, or first-stage strength.",
+      "A paper-reproduction or paper-match claim.",
+      "A secure, private, or multi-institution deployment claim.",
+      "Any claim or design choice selected by Test MSE."
+    ]
+  },
+  "data_scope": {
+    "status": "frozen",
+    "final_required": "full_eicu",
+    "demo_allowed_role": "smoke_only",
+    "demo_forbidden_uses": [
+      "tuning_full_eicu_campaign",
+      "confirmatory_reporting",
+      "final_tables",
+      "clinical_claims"
+    ],
+    "full_release_identity": {
+      "status": "unresolved_before_launch",
+      "required_fields": [
+        "release_name",
+        "release_version",
+        "source_inventory",
+        "source_checksums",
+        "cohort_flow"
+      ]
+    }
+  },
+  "population_and_clients": {
+    "client_unit": {
+      "status": "frozen",
+      "value": "hospital"
+    },
+    "client_pooling_primary": {
+      "status": "frozen",
+      "allowed": false
+    },
+    "cohort_definition": {
+      "status": "proposed_pending_full_eicu_runtime_preflight",
+      "proposal": [
+        "adult",
+        "first_icu_stay_within_hospital_admission",
+        "known_hospital_discharge_status",
+        "known_hospital_and_ward",
+        "sepsis_at_or_near_admission",
+        "working_infusion_interface",
+        "no_qualifying_vasopressor_before_icu_admission"
+      ],
+      "full_eicu_counts_claimed": false
+    },
+    "split": {
+      "status": "proposed_pending_full_eicu_runtime_preflight",
+      "unit": "hospital_admission",
+      "within_client": true,
+      "fractions": {
+        "train": 0.6,
+        "validation": 0.2,
+        "test": 0.2
+      },
+      "admission_cross_split_allowed": false,
+      "each_client_required_in_each_split": true
+    },
+    "preprocessing": {
+      "status": "frozen",
+      "fit_split": "train_only",
+      "continuous_imputation": "training_median",
+      "continuous_standardization": "training_mean_and_standard_deviation",
+      "missingness_indicators": true,
+      "categorical_vocabulary_source": "training_rows",
+      "hospital_id_as_feature": false,
+      "ward_id_as_feature": false
+    },
+    "eligibility_thresholds": {
+      "status": "unresolved_before_launch",
+      "must_cover": [
+        "minimum_total_rows",
+        "minimum_train_rows",
+        "minimum_validation_rows",
+        "minimum_test_rows",
+        "minimum_wards",
+        "minimum_structural_instrument_variation",
+        "minimum_simulated_first_stage_strength"
+      ]
+    }
+  },
+  "instrument": {
+    "status": "proposed_pending_full_eicu_runtime_preflight",
+    "construction": "cross_fitted_beta_binomial_shrunk_ward_preference",
+    "fit_split": "train_only",
+    "own_row_treatment_leakage_allowed": false,
+    "validation_test_scoring_source": "training_fit_only",
+    "within_hospital_variation_required": true,
+    "clinical_exogeneity_claimed": false
+  },
+  "dgp": {
+    "status": "frozen_structure_proposed_coefficients",
+    "equations": {
+      "confounder": "U_ij ~ Normal(0,1)",
+      "treatment": "D_ij ~ Bernoulli(sigmoid(a*Z_ij + b^T*W_ij + c*U_ij + xi_i))",
+      "outcome": "Y_ij = g0(D_ij,W_ij) + rho*U_ij + epsilon_ij",
+      "noise": "epsilon_ij ~ Normal(0,sigma^2)"
+    },
+    "tensor_contract": {
+      "g_input": "[D,W]",
+      "f_input": "[Z,W]"
+    },
+    "coefficient_values": {
+      "status": "unresolved_before_launch",
+      "fields": [
+        "instrument_strength_a",
+        "treatment_covariate_coefficients_b",
+        "confounding_strength_c",
+        "outcome_confounding_rho",
+        "noise_sigma",
+        "hospital_offset_distribution"
+      ]
+    },
+    "required_truth_arrays": [
+      "g0_observed_treatment",
+      "g0_treated",
+      "g0_control",
+      "true_individual_effect",
+      "per_client_true_ate",
+      "equal_client_true_ate",
+      "sample_weighted_true_ate"
+    ],
+    "scenario_artifact_checksum_required": true,
+    "regeneration_after_tuning_begins_allowed": false
+  },
+  "g0_variants": [
+    {
+      "id": "linear",
+      "status": "frozen_required_scenario",
+      "description": "Treatment main effect plus a linear covariate component."
+    },
+    {
+      "id": "interaction",
+      "status": "frozen_required_scenario",
+      "description": "Treatment main effect plus covariate-dependent treatment heterogeneity and a covariate component."
+    },
+    {
+      "id": "frozen_random_mlp",
+      "implementation_alias": "mlp",
+      "status": "frozen_required_scenario_unresolved_parameterization",
+      "description": "One fixed random MLP of [D,W], identical across scenario and optimizer seeds.",
+      "required_parameterization_fields": [
+        "architecture",
+        "activation",
+        "weight_scale",
+        "output_scale",
+        "g0_seed",
+        "weights_checksum"
+      ]
+    }
+  ],
+  "methods": {
+    "primary_federated": [
+      {
+        "id": "fedgda_s",
+        "label": "FedGDA-S",
+        "stochasticity": "stochastic"
+      },
+      {
+        "id": "fedogda_s",
+        "label": "FedOGDA-S",
+        "stochasticity": "stochastic",
+        "optimistic_correction": [
+          "client",
+          "server"
+        ]
+      }
+    ],
+    "centralized_baselines": [
+      {
+        "id": "gda_d",
+        "label": "GDA",
+        "stochasticity": "deterministic"
+      },
+      {
+        "id": "sgda_s",
+        "label": "SGDA",
+        "stochasticity": "stochastic"
+      },
+      {
+        "id": "oadam_s",
+        "label": "OAdam",
+        "stochasticity": "stochastic"
+      }
+    ],
+    "optional_deterministic_sensitivity": [
+      {
+        "id": "fedgda_d",
+        "label": "FedGDA-D"
+      },
+      {
+        "id": "fedogda_d",
+        "label": "FedOGDA-D"
+      }
+    ],
+    "superiority_assumed": false
+  },
+  "objective": {
+    "status": "frozen",
+    "objective_mode": "paper_aligned",
+    "theta_tilde": {
+      "mode": "frozen_reference",
+      "refresh_cadence": {
+        "status": "unresolved_before_launch"
+      }
+    },
+    "lambda": 0.25,
+    "primary_aggregation_mode": "uniform_clients",
+    "uniform_over": "participating_clients",
+    "full_participation": {
+      "status": "proposed_pending_full_eicu_runtime_preflight",
+      "value": true
+    }
+  },
+  "seed_policy": {
+    "status": "frozen_semantics",
+    "scenario_seed_controls": [
+      "admission_split",
+      "confounder_draws",
+      "simulated_treatment",
+      "simulated_outcome",
+      "scenario_coefficients",
+      "hospital_offsets"
+    ],
+    "optimizer_seed_controls": [
+      "model_initialization",
+      "minibatch_order",
+      "optimizer_randomness",
+      "random_participation_if_used"
+    ],
+    "one_scalar_for_both_roles_allowed": false,
+    "pairing_rule": "Pair by seed_pair_id and reuse the exact pair across every compared method, centralized baseline, and aggregation arm.",
+    "smoke_pairs": [
+      {
+        "seed_pair_id": "smoke_00",
+        "scenario_seed": 0,
+        "optimizer_seed": 0
+      }
+    ],
+    "tuning_pairs": {
+      "status": "proposed_pending_full_eicu_runtime_preflight",
+      "pairs": [
+        {
+          "seed_pair_id": "tuning_01",
+          "scenario_seed": 11,
+          "optimizer_seed": 1011
+        },
+        {
+          "seed_pair_id": "tuning_02",
+          "scenario_seed": 22,
+          "optimizer_seed": 1022
+        },
+        {
+          "seed_pair_id": "tuning_03",
+          "scenario_seed": 33,
+          "optimizer_seed": 1033
+        }
+      ],
+      "screening_pair": "tuning_01",
+      "shortlist_requires_all_pairs": true
+    },
+    "confirmatory_pairs": {
+      "status": "frozen",
+      "pairs": [
+        {
+          "seed_pair_id": "confirmatory_01",
+          "scenario_seed": 101,
+          "optimizer_seed": 1101
+        },
+        {
+          "seed_pair_id": "confirmatory_02",
+          "scenario_seed": 102,
+          "optimizer_seed": 1102
+        },
+        {
+          "seed_pair_id": "confirmatory_03",
+          "scenario_seed": 103,
+          "optimizer_seed": 1103
+        },
+        {
+          "seed_pair_id": "confirmatory_04",
+          "scenario_seed": 104,
+          "optimizer_seed": 1104
+        },
+        {
+          "seed_pair_id": "confirmatory_05",
+          "scenario_seed": 105,
+          "optimizer_seed": 1105
+        }
+      ],
+      "replacement_allowed": false
+    },
+    "tuning_confirmatory_disjoint": true
+  },
+  "roles": {
+    "smoke": {
+      "data_scope": "eicu_demo",
+      "purpose": "Pipeline and serialization checks only.",
+      "expected_scenario_count": 3,
+      "expected_method_count": 2,
+      "expected_seed_pair_count": 1,
+      "expected_row_count": 6,
+      "included_in_required_105": false,
+      "test_metric_reportable_as_final": false
+    },
+    "tuning": {
+      "data_scope": "full_eicu",
+      "purpose": "Validation-only hyperparameter and checkpoint-policy selection.",
+      "expected_scenario_count": 3,
+      "expected_method_count": 5,
+      "expected_seed_pair_count": 3,
+      "expected_row_count": null,
+      "row_count_status": "pending_full_eicu_runtime_preflight_and_fractional_grid_freeze",
+      "included_in_required_105": false,
+      "test_data_access_allowed": false
+    },
+    "confirmatory": {
+      "data_scope": "full_eicu",
+      "purpose": "Primary federated evaluation.",
+      "expected_scenario_count": 3,
+      "expected_method_count": 2,
+      "expected_seed_pair_count": 5,
+      "expected_row_count": 30,
+      "included_in_required_105": true,
+      "aggregation_mode": "uniform_clients",
+      "objective_mode": "paper_aligned"
+    },
+    "centralized_baseline": {
+      "data_scope": "full_eicu",
+      "purpose": "Centralized reference methods with hospital-aware evaluation.",
+      "expected_scenario_count": 3,
+      "expected_method_count": 3,
+      "expected_seed_pair_count": 5,
+      "expected_row_count": 45,
+      "included_in_required_105": true,
+      "aggregation_mode": "not_applicable_centralized",
+      "objective_mode": "paper_aligned"
+    },
+    "aggregation_ablation": {
+      "data_scope": "full_eicu",
+      "purpose": "Paired sample-size aggregation ablation.",
+      "expected_scenario_count": 3,
+      "expected_method_count": 2,
+      "expected_seed_pair_count": 5,
+      "expected_row_count": 30,
+      "included_in_required_105": true,
+      "aggregation_mode": "sample_size",
+      "objective_mode": "paper_aligned"
+    }
+  },
+  "required_matrix": {
+    "status": "frozen",
+    "descriptive_not_launch_manifest": true,
+    "file": "confirmatory_matrix.csv",
+    "role_counts": {
+      "confirmatory": 30,
+      "centralized_baseline": 45,
+      "aggregation_ablation": 30
+    },
+    "total_rows": 105,
+    "optional_deterministic_sensitivity_rows": 30
+  },
+  "tuning_policy": {
+    "status": "frozen_rules_proposed_grid",
+    "grouping": [
+      "g0",
+      "method"
+    ],
+    "selection_data": "validation_only",
+    "test_data_access_allowed": false,
+    "candidate_completeness_required_across_tuning_pairs": true,
+    "candidate_eligibility": "completed_all_required_tuning_pairs_without_nonfinite_parameters_or_metrics",
+    "within_run_checkpoint_selector": {
+      "metric": "equal_client_validation_structural_mse",
+      "direction": "minimize",
+      "tie_break": "earliest_round"
+    },
+    "configuration_selector_lexicographic": [
+      "mean_best_equal_client_validation_structural_mse",
+      "mean_equal_client_validation_moment_violation_at_selected_checkpoint",
+      "mean_final_vs_best_equal_client_validation_mse_gap",
+      "candidate_id"
+    ],
+    "proposed_candidate_levels": {
+      "status": "proposed_pending_full_eicu_runtime_preflight",
+      "learner_learning_rate": [
+        0.0005,
+        0.001,
+        0.002
+      ],
+      "critic_multiplier": [
+        5,
+        10,
+        20
+      ],
+      "weight_decay": [
+        0.001,
+        0.01,
+        0.03
+      ],
+      "federated_server_learning_rate": [
+        0.5,
+        1.0,
+        1.5
+      ],
+      "gradient_clip_norm": [
+        1.0,
+        5.0
+      ],
+      "stochastic_batch_size": [
+        128,
+        256
+      ],
+      "design": "staged_fractional_or_racing_not_assumed_full_cartesian"
+    },
+    "unresolved_budget_fields": [
+      "screening_rounds",
+      "shortlist_size",
+      "full_tuning_rounds",
+      "validation_frequency",
+      "wall_clock_cap",
+      "retry_policy",
+      "centralized_fairness_budget_definition"
+    ]
+  },
+  "checkpoint_policy": {
+    "status": "frozen",
+    "selection_split": "validation",
+    "selection_metric": "equal_client_validation_structural_mse",
+    "direction": "minimize",
+    "tie_break": "earliest_round",
+    "preserve": [
+      "best_validation_checkpoint",
+      "final_checkpoint"
+    ],
+    "checkpoint_required_payload": [
+      "g_state",
+      "f_state",
+      "round",
+      "effective_config",
+      "scenario_checksum",
+      "cohort_checksum",
+      "config_checksum"
+    ],
+    "test_selection_allowed": false,
+    "test_evaluation_timing": "after_best_validation_checkpoint_is_fixed"
+  },
+  "aggregation_ablation": {
+    "status": "frozen",
+    "changed_field_only": "aggregation_mode",
+    "reference_mode": "uniform_clients",
+    "ablation_mode": "sample_size",
+    "reference_rows_reused_from_confirmatory": 30,
+    "additional_rows": 30,
+    "matched_fields": [
+      "g0",
+      "scenario_artifact",
+      "scenario_seed",
+      "optimizer_seed",
+      "method",
+      "objective_mode",
+      "model_architecture",
+      "selected_hyperparameters",
+      "training_budget",
+      "participation_schedule",
+      "checkpoint_policy"
+    ],
+    "primary_estimand_remains": "equal_client"
+  },
+  "metrics_policy": {
+    "status": "frozen",
+    "authoritative_document": "metric_policy.md",
+    "primary_metric": "equal_client_test_mse_at_best_validation",
+    "compatibility_primary_field": "test_mse_at_best_validation",
+    "compatibility_field_semantics": "equal_client_structural_test_mse_at_equal_client_validation_selected_checkpoint",
+    "secondary_metrics": [
+      "sample_weighted_structural_mse",
+      "equal_client_absolute_ate_error",
+      "sample_weighted_absolute_ate_error",
+      "per_client_absolute_ate_error_distribution",
+      "equal_client_individual_effect_mae",
+      "sample_weighted_individual_effect_mae",
+      "per_client_structural_mse_distribution",
+      "equal_client_heldout_moment_violation",
+      "sample_weighted_heldout_moment_violation",
+      "per_client_heldout_moment_violation_distribution",
+      "final_vs_best_validation_gap",
+      "final_vs_best_test_gap",
+      "last_50_validation_mse_std",
+      "last_50_validation_mse_range",
+      "runtime_seconds"
+    ],
+    "test_tuning_allowed": false
+  },
+  "divergence_and_failures": {
+    "status": "frozen",
+    "diverged_true_definition": "At least one model parameter or required metric is NaN or infinite.",
+    "poor_finite_mse_is_divergence": false,
+    "separate_failure_reasons": [
+      "out_of_memory",
+      "missing_artifact",
+      "checksum_mismatch",
+      "invalid_configuration",
+      "timeout",
+      "scheduler_failure",
+      "interrupted",
+      "other"
+    ],
+    "finite_outlier_exclusion_allowed": false,
+    "oscillation_window_recorded_validation_points": 50
+  },
+  "analysis_plan": {
+    "status": "frozen",
+    "seed_summary_fields": [
+      "values",
+      "mean",
+      "population_standard_deviation",
+      "median",
+      "minimum",
+      "maximum"
+    ],
+    "paired_primary_contrast": "fedogda_s_minus_fedgda_s",
+    "aggregation_contrast": "sample_size_minus_uniform_clients",
+    "paired_by": [
+      "g0",
+      "seed_pair_id"
+    ],
+    "formal_significance_claim_planned": false,
+    "paper_match_assessment_allowed": false,
+    "failure_and_divergence_counts_required": true,
+    "per_client_distribution_required": true
+  },
+  "required_effective_config_fields": [
+    "protocol_version",
+    "experiment_id",
+    "role",
+    "data_scope",
+    "eicu_release",
+    "source_inventory_checksum",
+    "cohort_definition_id",
+    "cohort_checksum",
+    "split_definition",
+    "split_checksum",
+    "scenario_artifact",
+    "scenario_checksum",
+    "scenario_seed",
+    "optimizer_seed",
+    "seed_pair_id",
+    "g0",
+    "g0_parameterization",
+    "g0_checksum",
+    "instrument_definition",
+    "instrument_fit_split",
+    "client_unit",
+    "eligible_client_ids",
+    "per_split_client_counts",
+    "per_split_row_counts",
+    "method",
+    "training_scope",
+    "stochasticity",
+    "aggregation_mode_requested",
+    "aggregation_mode_effective",
+    "participation_policy",
+    "objective_mode_requested",
+    "objective_mode_effective",
+    "theta_tilde_mode",
+    "theta_tilde_refresh_cadence",
+    "lambda",
+    "g_model_architecture",
+    "f_model_architecture",
+    "numeric_precision",
+    "learning_rate_g",
+    "learning_rate_f_or_critic_multiplier",
+    "server_learning_rate",
+    "weight_decay",
+    "gradient_clip_norm",
+    "batch_size",
+    "local_epochs_or_steps",
+    "communication_rounds_or_outer_iterations",
+    "validation_frequency",
+    "checkpoint_selection_metric",
+    "checkpoint_tie_break",
+    "selected_hyperparameter_record",
+    "config_checksum",
+    "code_commit",
+    "hardware"
+  ],
+  "required_metrics_fields": [
+    "protocol_version",
+    "experiment_id",
+    "role",
+    "run_status",
+    "failure_reason",
+    "diverged",
+    "nonfinite_first_round",
+    "best_validation_round",
+    "best_validation_mse",
+    "equal_client_best_validation_structural_mse",
+    "sample_weighted_validation_mse_at_best_validation",
+    "final_validation_mse",
+    "equal_client_final_validation_structural_mse",
+    "sample_weighted_final_validation_structural_mse",
+    "test_mse_at_best_validation",
+    "equal_client_test_mse_at_best_validation",
+    "sample_weighted_test_mse_at_best_validation",
+    "final_test_mse",
+    "equal_client_final_test_structural_mse",
+    "sample_weighted_final_test_structural_mse",
+    "equal_client_absolute_ate_error_at_best_validation",
+    "sample_weighted_absolute_ate_error_at_best_validation",
+    "equal_client_individual_effect_mae_at_best_validation",
+    "sample_weighted_individual_effect_mae_at_best_validation",
+    "equal_client_validation_moment_violation_at_best_validation",
+    "sample_weighted_validation_moment_violation_at_best_validation",
+    "equal_client_test_moment_violation_at_best_validation",
+    "sample_weighted_test_moment_violation_at_best_validation",
+    "final_vs_best_validation_gap",
+    "final_vs_best_test_gap",
+    "last_50_validation_mse_std",
+    "last_50_validation_mse_range",
+    "runtime_seconds",
+    "rounds_completed",
+    "per_client_metrics_artifact",
+    "curve_artifact",
+    "best_checkpoint_artifact",
+    "final_checkpoint_artifact",
+    "effective_config_artifact",
+    "scenario_checksum",
+    "config_checksum",
+    "selection_metric_source"
+  ],
+  "required_metric_invariants": {
+    "selection_metric_source": "validation",
+    "best_validation_mse_semantics": "equal_client_validation_structural_mse",
+    "test_mse_at_best_validation_semantics": "equal_client_structural_test_mse",
+    "test_metrics_may_select_configuration": false,
+    "test_metrics_may_select_checkpoint": false
+  },
+  "unresolved_decisions_document": "decision_register.md",
+  "proposed_registry_rows_file": "proposed_registry_rows.csv",
+  "validation": {
+    "json_command": "/home/arnav22103/miniconda3/envs/fedgmm/bin/python -m json.tool experiments/eicu_study_a_protocol/protocol_v1.json",
+    "matrix_validator": "validate_protocol.py"
+  }
+}
