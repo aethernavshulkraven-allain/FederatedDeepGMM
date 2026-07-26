@@ -1,0 +1,517 @@
+{
+  "contract_version": "1.0.0",
+  "study": {
+    "name": "eICU Study A",
+    "claim": "extension_no_published_target",
+    "published_numeric_target": false,
+    "forbidden_claim_patterns": [
+      "paper[_ -]?match",
+      "paper[_ -]?numeric[_ -]?reproduction",
+      "reproduces?[_ -]?published"
+    ]
+  },
+  "manifest": {
+    "fields": {
+      "run_id": "run_id",
+      "role": "role",
+      "dataset": "dataset",
+      "scenario": "scenario",
+      "g0": "g0",
+      "method": "method",
+      "seed": "seed",
+      "aggregation_weighting": "aggregation_weighting",
+      "objective_mode": "objective_mode",
+      "alignment_label": "alignment_label",
+      "primary_selection_metric": "primary_selection_metric",
+      "test_mse_used_for_selection": "test_mse_used_for_selection",
+      "selection_source": "selection_source",
+      "scenario_checksum": "scenario_checksum",
+      "scenario_scope": "scenario_scope",
+      "study_claim": "study_claim",
+      "config_path": "config_path",
+      "scenario_metadata_path": "scenario_metadata_path",
+      "result_path": "result_path",
+      "output_root": "output_root",
+      "input_dim": "input_dim",
+      "instrument_dim": "instrument_dim"
+    },
+    "required_fields": [
+      "run_id",
+      "role",
+      "dataset",
+      "scenario",
+      "g0",
+      "method",
+      "seed",
+      "aggregation_weighting",
+      "objective_mode",
+      "alignment_label",
+      "primary_selection_metric",
+      "test_mse_used_for_selection",
+      "selection_source",
+      "scenario_checksum",
+      "scenario_scope",
+      "study_claim",
+      "config_path",
+      "scenario_metadata_path",
+      "result_path",
+      "input_dim",
+      "instrument_dim"
+    ],
+    "integer_fields": [
+      "seed",
+      "input_dim",
+      "instrument_dim"
+    ],
+    "boolean_fields": [
+      "test_mse_used_for_selection"
+    ],
+    "ablation_allowed_differences": [
+      "run_id",
+      "role",
+      "aggregation_weighting",
+      "alignment_label",
+      "config_path",
+      "result_path"
+    ],
+    "config_ablation_allowed_differences": [
+      "run_id",
+      "role",
+      "campaign_role",
+      "aggregation_weighting",
+      "federated.aggregation_weighting",
+      "alignment_label"
+    ]
+  },
+  "global_rules": {
+    "dataset": "eicu",
+    "primary_selection_metric": "equal_client_validation_mse",
+    "selection_source": "validation_only",
+    "test_mse_used_for_selection": false,
+    "sample_size_allowed_roles": [
+      "aggregation_ablation"
+    ],
+    "unresolved_placeholder_patterns": [
+      "\\{\\{[^}]+\\}\\}",
+      "<(?:TUNE|TODO|TBD|UNRESOLVED)[^>]*>",
+      "\\$\\{[^}]+\\}",
+      "^(?:TUNE|TODO|TBD|UNRESOLVED)$"
+    ]
+  },
+  "roles": {
+    "confirmatory": {
+      "required": true,
+      "fixed_row_count": 30,
+      "g0": [
+        "linear",
+        "interaction",
+        "mlp"
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "methods": [
+        "fedgda_s",
+        "fedogda_s"
+      ],
+      "aggregation_weighting": [
+        "uniform_clients"
+      ],
+      "objective_mode": [
+        "paper_aligned"
+      ],
+      "alignment_label": [
+        "primary_extension"
+      ],
+      "scenario_scope": [
+        "full_eicu"
+      ],
+      "federated": true,
+      "primary": true,
+      "reject_demo": true,
+      "require_frozen_config": true,
+      "require_per_client_artifact": true
+    },
+    "centralized_baseline": {
+      "required": true,
+      "fixed_row_count": 45,
+      "g0": [
+        "linear",
+        "interaction",
+        "mlp"
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "methods": [
+        "gda",
+        "sgda",
+        "oadam"
+      ],
+      "aggregation_weighting": [
+        "none"
+      ],
+      "objective_mode": [
+        "paper_aligned"
+      ],
+      "alignment_label": [
+        "centralized_reference"
+      ],
+      "scenario_scope": [
+        "full_eicu"
+      ],
+      "federated": false,
+      "primary": false,
+      "reject_demo": true,
+      "require_frozen_config": true,
+      "require_per_client_artifact": false
+    },
+    "aggregation_ablation": {
+      "required": true,
+      "fixed_row_count": 30,
+      "g0": [
+        "linear",
+        "interaction",
+        "mlp"
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "methods": [
+        "fedgda_s",
+        "fedogda_s"
+      ],
+      "aggregation_weighting": [
+        "sample_size"
+      ],
+      "objective_mode": [
+        "paper_aligned"
+      ],
+      "alignment_label": [
+        "non_paper_aligned_aggregation_ablation"
+      ],
+      "scenario_scope": [
+        "full_eicu"
+      ],
+      "federated": true,
+      "primary": false,
+      "reject_demo": true,
+      "require_frozen_config": true,
+      "require_per_client_artifact": false,
+      "compare_to_role": "confirmatory"
+    },
+    "tuning": {
+      "required": false,
+      "fixed_row_count": null,
+      "aggregation_weighting": [
+        "uniform_clients",
+        "none"
+      ],
+      "alignment_label": [
+        "validation_only_tuning"
+      ],
+      "primary": false,
+      "reject_demo": false,
+      "require_frozen_config": false,
+      "require_per_client_artifact": false
+    },
+    "smoke": {
+      "required": false,
+      "fixed_row_count": null,
+      "aggregation_weighting": [
+        "uniform_clients",
+        "none"
+      ],
+      "alignment_label": [
+        "non_primary_smoke"
+      ],
+      "primary": false,
+      "reject_demo": false,
+      "require_frozen_config": false,
+      "require_per_client_artifact": false
+    }
+  },
+  "pairing": {
+    "key_fields": [
+      "g0",
+      "seed"
+    ],
+    "scenario_identity_fields": [
+      "dataset",
+      "scenario",
+      "scenario_checksum",
+      "input_dim",
+      "instrument_dim"
+    ],
+    "federated_pair": {
+      "role": "confirmatory",
+      "methods": [
+        "fedgda_s",
+        "fedogda_s"
+      ]
+    },
+    "same_scenario_roles": [
+      "confirmatory",
+      "centralized_baseline",
+      "aggregation_ablation"
+    ]
+  },
+  "json_paths": {
+    "config": {
+      "run_id": [
+        "run_id"
+      ],
+      "role": [
+        "role",
+        "campaign_role"
+      ],
+      "dataset": [
+        "dataset",
+        "data.dataset"
+      ],
+      "scenario": [
+        "scenario",
+        "data.scenario"
+      ],
+      "g0": [
+        "g0",
+        "scenario.g0"
+      ],
+      "method": [
+        "method",
+        "training.method"
+      ],
+      "seed": [
+        "seed",
+        "training.seed"
+      ],
+      "aggregation_weighting": [
+        "aggregation_weighting",
+        "federated.aggregation_weighting"
+      ],
+      "objective_mode": [
+        "objective_mode",
+        "objective.mode"
+      ],
+      "alignment_label": [
+        "alignment_label"
+      ],
+      "primary_selection_metric": [
+        "primary_selection_metric",
+        "selection.primary_metric"
+      ],
+      "test_mse_used_for_selection": [
+        "test_mse_used_for_selection",
+        "selection.test_mse_used"
+      ],
+      "selection_source": [
+        "selection_source",
+        "selection.source"
+      ],
+      "scenario_checksum": [
+        "scenario_checksum",
+        "data.scenario_checksum"
+      ],
+      "scenario_scope": [
+        "scenario_scope",
+        "data.scenario_scope"
+      ],
+      "input_dim": [
+        "input_dim",
+        "model.input_dim"
+      ],
+      "instrument_dim": [
+        "instrument_dim",
+        "model.instrument_dim"
+      ]
+    },
+    "scenario": {
+      "scenario_checksum": [
+        "scenario_checksum",
+        "checksum"
+      ],
+      "eligible_client_provenance": [
+        "eligible_client_provenance"
+      ],
+      "g0": [
+        "g0"
+      ],
+      "seed": [
+        "seed"
+      ],
+      "input_dim": [
+        "dimensions.input_dim",
+        "input_dim"
+      ],
+      "instrument_dim": [
+        "dimensions.instrument_dim",
+        "instrument_dim"
+      ],
+      "outcome_dim": [
+        "dimensions.outcome_dim",
+        "outcome_dim"
+      ],
+      "is_demo": [
+        "is_demo"
+      ],
+      "scenario_scope": [
+        "scenario_scope"
+      ],
+      "artifact_path": [
+        "artifact_path",
+        "scenario_artifact"
+      ]
+    },
+    "metrics": {
+      "run_id": [
+        "run_id"
+      ],
+      "method": [
+        "method"
+      ],
+      "seed": [
+        "seed"
+      ],
+      "scenario_checksum": [
+        "scenario_checksum"
+      ],
+      "selection_metric": [
+        "selection_metric",
+        "selection.primary_metric"
+      ],
+      "selection_source": [
+        "selection_source",
+        "selection.source"
+      ],
+      "best_validation_round": [
+        "best_validation_round",
+        "selection.best_validation_round"
+      ],
+      "selected_round": [
+        "selected_round",
+        "selection.selected_round"
+      ],
+      "test_mse_at_best_validation": [
+        "test_mse_at_best_validation",
+        "metrics.test_mse_at_best_validation"
+      ],
+      "test_mse_reported_after_selection": [
+        "test_mse_reported_after_selection",
+        "selection.test_mse_reported_after_selection"
+      ],
+      "primary_equal_client_validation_mse": [
+        "primary_equal_client_validation_mse",
+        "metrics.equal_client.validation_mse"
+      ],
+      "primary_equal_client_test_mse": [
+        "primary_equal_client_test_mse",
+        "metrics.equal_client.test_mse"
+      ],
+      "secondary_sample_weighted_validation_mse": [
+        "secondary_sample_weighted_validation_mse",
+        "metrics.sample_weighted.validation_mse"
+      ],
+      "secondary_sample_weighted_test_mse": [
+        "secondary_sample_weighted_test_mse",
+        "metrics.sample_weighted.test_mse"
+      ],
+      "diverged": [
+        "diverged"
+      ],
+      "nonfinite_parameters": [
+        "divergence_evidence.nonfinite_parameters"
+      ],
+      "nonfinite_metrics": [
+        "divergence_evidence.nonfinite_metrics"
+      ],
+      "is_primary": [
+        "is_primary"
+      ],
+      "alignment_label": [
+        "alignment_label"
+      ]
+    }
+  },
+  "scenario_rules": {
+    "required_metadata_fields": [
+      "eligible_client_provenance",
+      "g0",
+      "seed",
+      "input_dim",
+      "instrument_dim",
+      "outcome_dim",
+      "scenario_checksum",
+      "is_demo",
+      "scenario_scope"
+    ],
+    "checksum_algorithm": "sha256"
+  },
+  "postrun": {
+    "required_files": [
+      "effective_config.json",
+      "metrics.json",
+      "mse_by_round.csv",
+      "predictions.npz"
+    ],
+    "required_file_alternatives": [
+      [
+        "best_checkpoint.pt",
+        "best_model.pt",
+        "checkpoint_best.pt"
+      ],
+      [
+        "final_checkpoint.pt",
+        "last_checkpoint.pt",
+        "checkpoint_final.pt"
+      ]
+    ],
+    "per_client_artifact_alternatives": [
+      "per_client_metrics.csv",
+      "per_client_evaluation.json"
+    ],
+    "effective_config_compare_fields": [
+      "run_id",
+      "role",
+      "dataset",
+      "scenario",
+      "g0",
+      "method",
+      "seed",
+      "aggregation_weighting",
+      "objective_mode",
+      "alignment_label",
+      "primary_selection_metric",
+      "test_mse_used_for_selection",
+      "selection_source",
+      "scenario_checksum",
+      "scenario_scope",
+      "input_dim",
+      "instrument_dim"
+    ],
+    "required_primary_metric_fields": [
+      "primary_equal_client_validation_mse",
+      "primary_equal_client_test_mse",
+      "test_mse_at_best_validation"
+    ],
+    "required_secondary_metric_fields": [
+      "secondary_sample_weighted_validation_mse",
+      "secondary_sample_weighted_test_mse"
+    ],
+    "round_curve_columns": {
+      "round": "round",
+      "primary_validation_metric": "equal_client_validation_mse"
+    }
+  }
+}
