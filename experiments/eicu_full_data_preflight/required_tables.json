@@ -1,0 +1,124 @@
+{
+  "cohort_builder_reference": "scripts/prepare_eicu_cohort.py",
+  "optional_tables": [
+    {
+      "columns": [
+        "hospitalid",
+        "numbedscategory",
+        "region",
+        "teachingstatus"
+      ],
+      "name": "hospital",
+      "purpose": "Hospital-level bed category, teaching status, and region covariates."
+    },
+    {
+      "columns": [
+        "admitdxpath",
+        "patientunitstayid"
+      ],
+      "name": "admissionDx",
+      "purpose": "Additional admission-diagnosis evidence for sepsis cohort membership."
+    },
+    {
+      "columns": [
+        "noninvasivemean",
+        "noninvasivesystolic",
+        "observationoffset",
+        "patientunitstayid"
+      ],
+      "name": "vitalAperiodic",
+      "purpose": "Non-invasive blood pressure fallback when arterial readings are unavailable."
+    },
+    {
+      "columns": [
+        "pasthistorypath",
+        "pasthistoryvalue",
+        "patientunitstayid"
+      ],
+      "name": "pastHistory",
+      "purpose": "Comorbidity covariates."
+    }
+  ],
+  "required_tables": [
+    {
+      "columns": [
+        "age",
+        "apacheadmissiondx",
+        "hospitaladmitoffset",
+        "hospitaldischargestatus",
+        "hospitalid",
+        "patienthealthsystemstayid",
+        "patientunitstayid",
+        "unitvisitnumber",
+        "wardid"
+      ],
+      "name": "patient",
+      "optional_columns": [
+        "admissionweight",
+        "ethnicity",
+        "gender",
+        "hospitaladmitsource",
+        "unitadmitsource",
+        "unitstaytype",
+        "unittype"
+      ],
+      "purpose": "Base adult first-stay population, mortality outcome, client/ward keys, and admission covariates."
+    },
+    {
+      "columns": [
+        "diagnosisoffset",
+        "diagnosisstring",
+        "icd9code",
+        "patientunitstayid"
+      ],
+      "name": "diagnosis",
+      "purpose": "Sepsis cohort identification near ICU admission."
+    },
+    {
+      "columns": [
+        "drugname",
+        "infusionoffset",
+        "patientunitstayid"
+      ],
+      "name": "infusiondrug",
+      "purpose": "Vasopressor treatment assignment and infusion-interface coverage."
+    },
+    {
+      "columns": [
+        "labname",
+        "labresult",
+        "labresultoffset",
+        "patientunitstayid"
+      ],
+      "name": "lab",
+      "purpose": "Pre-treatment laboratory covariates."
+    },
+    {
+      "columns": [
+        "heartrate",
+        "observationoffset",
+        "patientunitstayid",
+        "respiration",
+        "sao2",
+        "systemicmean",
+        "systemicsystolic",
+        "temperature"
+      ],
+      "name": "vitalPeriodic",
+      "purpose": "Pre-treatment monitored vital-sign covariates."
+    }
+  ],
+  "schema_version": 1,
+  "sensitivity_tables": [
+    {
+      "columns": [
+        "patientunitstayid"
+      ],
+      "name": "apacheApsVar",
+      "optional_columns": [
+        "apacheapsvarid"
+      ],
+      "purpose": "APACHE APS covariates used only by the explicitly requested post-treatment sensitivity arm."
+    }
+  ]
+}
