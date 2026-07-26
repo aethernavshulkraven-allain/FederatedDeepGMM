@@ -278,6 +278,19 @@ def build_effective_config(
         "campaign_role": str(getattr(args, "campaign_role", "") or ""),
         "scenario_checksum": str(getattr(args, "scenario_checksum", "") or ""),
         "protocol_version": str(getattr(args, "protocol_version", "") or ""),
+        "role": str(getattr(args, "role", "") or ""),
+        "scenario_name": str(getattr(args, "scenario_name", "") or ""),
+        "g0": str(getattr(args, "g0", "") or ""),
+        "alignment_label": str(getattr(args, "alignment_label", "") or ""),
+        "primary_selection_metric": str(
+            getattr(args, "primary_selection_metric", "equal_client_validation_mse")
+            or "equal_client_validation_mse"
+        ),
+        "selection_source": str(
+            getattr(args, "selection_source", "validation_only") or "validation_only"
+        ),
+        "scenario_scope": str(getattr(args, "scenario_scope", "") or ""),
+        "study_claim": str(getattr(args, "study_claim", "") or ""),
         "campaign_method_label": CANONICAL_METHOD_LABEL.get(method, method),
         "iterations": int(args.iterations),
         "batch_size": int(batch_size),
@@ -577,10 +590,14 @@ def run(args: argparse.Namespace) -> Path:
         "best_validation_mse": float(best_validation_mse),
         "test_mse_at_best_validation": primary_test_mse_at_best_validation,
         "selection_metric_source": "validation",
-        "selection_source": "validation_only",
+        "selection_metric": effective_config.get(
+            "primary_selection_metric", "equal_client_validation_mse"
+        ),
+        "selection_source": effective_config.get("selection_source", "validation_only"),
         "selected_round": int(best_validation_round),
         "test_mse_reported_after_selection": True,
         "is_primary": False,
+        "alignment_label": effective_config.get("alignment_label", ""),
         "test_mse_used_for_selection": False,
         "test_mse_logged_by_round": bool(args.log_test_mse_by_round),
         "diverged": bool(diverged),
@@ -657,6 +674,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--campaign-role", default=None)
     parser.add_argument("--scenario-checksum", default=None)
     parser.add_argument("--protocol-version", default=None)
+    parser.add_argument("--role", default=None)
+    parser.add_argument("--g0", default=None)
+    parser.add_argument("--alignment-label", default=None)
+    parser.add_argument(
+        "--primary-selection-metric", default="equal_client_validation_mse"
+    )
+    parser.add_argument("--selection-source", default="validation_only")
+    parser.add_argument("--scenario-scope", default=None)
+    parser.add_argument("--study-claim", default=None)
     return parser.parse_args()
 
 

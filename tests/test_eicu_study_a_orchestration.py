@@ -107,6 +107,25 @@ class ManifestGenerationTest(unittest.TestCase):
         rows = manifest_gen.generate_confirmatory(self.tmpdir, "/tmp/out", self._selected())
         self.assertTrue(all(r["campaign_role"] == "" for r in rows))
 
+    def test_fixed_no_tuning_status_is_preserved(self):
+        selected = self._selected()
+        for value in selected.values():
+            value["learning_rate_status"] = "preregistered_fixed_no_tuning"
+            value["selection_note"] = "demo fixed defaults; no tuning performed"
+        confirmatory = manifest_gen.generate_confirmatory(
+            self.tmpdir, "/tmp/out", selected
+        )
+        ablation = manifest_gen.generate_ablation(self.tmpdir, "/tmp/out", selected)
+        self.assertTrue(
+            all(
+                row["learning_rate_status"] == "preregistered_fixed_no_tuning"
+                for row in confirmatory + ablation
+            )
+        )
+        self.assertTrue(
+            all("no tuning performed" in row["notes"] for row in confirmatory + ablation)
+        )
+
     def test_ablation_has_30_rows_across_all_g0(self):
         """protocol_v1.md S6.4/decision_register.md D16: all three g0
         variants, not linear only -- 3 g0 x 5 seed pairs x 2 methods = 30.

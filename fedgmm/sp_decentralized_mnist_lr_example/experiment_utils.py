@@ -117,6 +117,14 @@ EFFECTIVE_CONFIG_FIELDS = (
     "campaign_role",
     "scenario_checksum",
     "protocol_version",
+    "role",
+    "scenario_name",
+    "g0",
+    "alignment_label",
+    "primary_selection_metric",
+    "selection_source",
+    "scenario_scope",
+    "study_claim",
 )
 
 

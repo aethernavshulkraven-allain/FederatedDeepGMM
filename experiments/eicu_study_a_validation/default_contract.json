@@ -309,6 +309,7 @@
         "scenario.g0"
       ],
       "method": [
+        "campaign_method_label",
         "method",
         "variant",
         "training.method"
@@ -481,8 +482,8 @@
         "diverged"
       ],
       "nonfinite_parameters": [
-        "nonfinite_first_round",
-        "divergence_evidence.nonfinite_parameters"
+        "divergence_evidence.nonfinite_parameters",
+        "nonfinite_parameters"
       ],
       "nonfinite_metrics": [
         "divergence_evidence.nonfinite_metrics"

@@ -393,6 +393,16 @@ class ValidatorTestCase(unittest.TestCase):
         self.campaign.write_json(path, metadata)
         report = self.validate()
         self.assertIn("demo_confirmatory_violation", self.codes(report))
+        allowed = VALIDATOR.validate_campaign(
+            manifest=self.campaign.manifest,
+            contract=CONTRACT_PATH,
+            config_dir=self.campaign.config_dir,
+            scenario_root=self.campaign.scenario_root,
+            results_root=self.campaign.results_root,
+            phase="prelaunch",
+            allow_demo=True,
+        )
+        self.assertTrue(allowed["launchable"], allowed["blocking_errors"][:3])
 
     def test_missing_result_artifact(self) -> None:
         self.campaign.materialize_results()

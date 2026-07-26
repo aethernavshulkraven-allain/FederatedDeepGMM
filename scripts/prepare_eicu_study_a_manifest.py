@@ -9,14 +9,13 @@ duplicating it.
 
 Three stages, matching the frozen Study A protocol:
 
-* ``tuning``       -- seed 0 only, 3 g0 x 2 methods x 6 LR/server-LR
-                      candidates = 36 rows, ~100-150 rounds each.
+* ``tuning``       -- selected tuning seed pairs, 3 g0 x 2 methods x 6
+                      LR/server-LR candidates per pair.
 * ``confirmatory`` -- 3 g0 x 5 seeds x 2 methods = 30 rows, frozen
-                      hyperparameters (from the tuning selection), 500 rounds.
-* ``ablation``     -- linear g0 only, 5 seeds x 2 methods x sample_size
-                      weighting = 10 *additional* rows (the uniform_clients
-                      arm is already covered by the confirmatory stage, so it
-                      is not duplicated here).
+                      hyperparameters, 500 rounds.
+* ``ablation``     -- all 3 g0 variants x 5 seeds x 2 methods x sample_size
+                      weighting = 30 *additional* rows (the uniform_clients
+                      arm is already covered by the confirmatory stage).
 
 Every row uses: client_optimizer sgd/ogda (batch_size>0 -> the *_s variants,
 matching how every other manifest in this repo derives fedgda_s/fedogda_s),
@@ -284,9 +283,13 @@ def generate_confirmatory(scenario_dir, output_root, selected_hyperparameters):
                     scenario_dir=scenario_dir,
                 )
                 row["learning_rate"] = selected["learning_rate"]
-                row["learning_rate_status"] = "frozen_from_tuning"
+                row["learning_rate_status"] = selected.get(
+                    "learning_rate_status", "frozen_from_tuning"
+                )
                 row["weight_decay"] = BASE_WEIGHT_DECAY
                 row["server_learning_rate"] = selected["server_learning_rate"]
+                if selected.get("selection_note"):
+                    row["notes"] = str(selected["selection_note"])
                 rows.append(row)
     return rows
 
@@ -319,11 +322,16 @@ def generate_ablation(scenario_dir, output_root, selected_hyperparameters):
                     scenario_dir=scenario_dir,
                 )
                 row["learning_rate"] = selected["learning_rate"]
-                row["learning_rate_status"] = "frozen_from_tuning"
+                row["learning_rate_status"] = selected.get(
+                    "learning_rate_status", "frozen_from_tuning"
+                )
                 row["weight_decay"] = BASE_WEIGHT_DECAY
                 row["server_learning_rate"] = selected["server_learning_rate"]
                 row["aggregation_weighting"] = "sample_size"
-                row["notes"] = "aggregation ablation: sample_size arm"
+                note = "aggregation ablation: sample_size arm"
+                if selected.get("selection_note"):
+                    note += f"; {selected['selection_note']}"
+                row["notes"] = note
                 rows.append(row)
     return rows
 

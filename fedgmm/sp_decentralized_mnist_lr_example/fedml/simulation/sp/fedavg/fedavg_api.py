@@ -1098,10 +1098,16 @@ class FedAvgAPI(object):
             "test_mse_logged_by_round": self.log_test_mse_by_round,
             "test_mse_used_for_selection": False,
             "selection_metric_source": "validation",
-            "selection_source": "validation_only",
+            "selection_metric": self.effective_config.get(
+                "primary_selection_metric", "equal_client_validation_mse"
+            ),
+            "selection_source": self.effective_config.get(
+                "selection_source", "validation_only"
+            ),
             "selected_round": self.best_validation_round,
             "test_mse_reported_after_selection": True,
             "is_primary": str(getattr(self.args, "campaign_role", "")) != "aggregation_ablation",
+            "alignment_label": self.effective_config.get("alignment_label", ""),
             "skip_model_selection": self.skip_model_selection,
             "skip_gmm_eval": self.skip_gmm_eval,
             "gmm_eval_proxy": self.gmm_eval_proxy,

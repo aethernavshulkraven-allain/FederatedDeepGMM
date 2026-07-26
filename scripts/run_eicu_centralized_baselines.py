@@ -30,6 +30,7 @@ DEFAULT_SCENARIO_DIR = os.path.join(
 
 G0_VARIANTS = ("linear", "interaction", "mlp")
 METHODS = ("gda", "sgda", "oadam")
+CANONICAL_METHOD_LABEL = {"gda": "gda_d", "sgda": "sgda_s", "oadam": "oadam_s"}
 
 # protocol_v1.md S7.3: frozen confirmatory seed pairs -- centralized baselines
 # use the identical scenario artifacts as the federated confirmatory/ablation
@@ -56,7 +57,10 @@ BATCH_SIZE = {"gda": 0, "sgda": 256, "oadam": 256}
 
 def run_dir_for(output_root, g0, seed_pair_id, optimizer_seed, method):
     return os.path.join(
-        output_root, f"{g0}_{seed_pair_id}", method, f"seed_{optimizer_seed}"
+        output_root,
+        f"{g0}_{seed_pair_id}",
+        CANONICAL_METHOD_LABEL[method],
+        f"seed_{optimizer_seed}",
     )
 
 
@@ -67,6 +71,16 @@ def already_complete(run_dir):
 def build_command(python_bin, g0, seed_pair_id, scenario_seed, optimizer_seed, method, scenario_dir, output_root, args):
     run_dir = run_dir_for(output_root, g0, seed_pair_id, optimizer_seed, method)
     batch_size = BATCH_SIZE[method]
+    metadata_path = os.path.join(
+        scenario_dir, f"{g0}_scenario_seed{scenario_seed}_metadata.json"
+    )
+    metadata = {}
+    if os.path.exists(metadata_path):
+        with open(metadata_path) as handle:
+            metadata = json.load(handle)
+    scenario_checksum = metadata.get("scenario_checksum_sha256", "")
+    scenario_scope = metadata.get("scenario_scope", "")
+    canonical_method = CANONICAL_METHOD_LABEL[method]
     cmd = [
         python_bin,
         os.path.join(REPO_ROOT, "scripts", "run_centralized_lowdim.py"),
@@ -77,6 +91,13 @@ def build_command(python_bin, g0, seed_pair_id, scenario_seed, optimizer_seed, m
         "--scenario-seed", str(scenario_seed),
         "--seed-pair-id", seed_pair_id,
         "--protocol-version", PROTOCOL_VERSION,
+        "--role", "centralized_baseline",
+        "--g0", g0,
+        "--alignment-label", "centralized_reference",
+        "--primary-selection-metric", "equal_client_validation_mse",
+        "--selection-source", "validation_only",
+        "--scenario-scope", scenario_scope,
+        "--study-claim", "extension_no_published_target",
         "--objective-mode", "paper_aligned",
         "--output-dir", run_dir,
         "--iterations", str(args.iterations),
@@ -85,9 +106,11 @@ def build_command(python_bin, g0, seed_pair_id, scenario_seed, optimizer_seed, m
         "--f-lr", str(args.f_lr),
         "--weight-decay", str(args.weight_decay),
         "--data-dir", os.path.dirname(scenario_dir),
-        "--run-id", f"{g0}_{method}_{seed_pair_id}",
+        "--run-id", f"centralized_{g0}_{canonical_method}_{seed_pair_id}",
         "--no-cuda",
     ]
+    if scenario_checksum:
+        cmd.extend(["--scenario-checksum", scenario_checksum])
     if args.overwrite:
         cmd.append("--overwrite")
     return cmd, run_dir
@@ -126,7 +149,7 @@ def main(argv=None):
             args.python, g0, seed_pair_id, scenario_seed, optimizer_seed, method,
             args.scenario_dir, args.output_root, args,
         )
-        run_id = f"{g0}_{method}_{seed_pair_id}"
+        run_id = f"centralized_{g0}_{CANONICAL_METHOD_LABEL[method]}_{seed_pair_id}"
 
         if not args.overwrite and already_complete(run_dir):
             print(f"SKIP  {run_id} (already complete)")

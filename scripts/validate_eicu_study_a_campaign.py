@@ -152,6 +152,7 @@ class CampaignValidator:
         scenario_root: Path | None = None,
         results_root: Path | None = None,
         phase: str = "prelaunch",
+        allow_demo: bool = False,
     ) -> None:
         self.manifest_path = manifest_path.resolve()
         self.contract_path = contract_path.resolve()
@@ -159,6 +160,7 @@ class CampaignValidator:
         self.scenario_root = scenario_root.resolve() if scenario_root else None
         self.results_root = results_root.resolve() if results_root else None
         self.phase = phase
+        self.allow_demo = bool(allow_demo)
         self.contract: dict[str, Any] = {}
         self.rows: list[dict[str, Any]] = []
         self.raw_rows: list[dict[str, str]] = []
@@ -251,6 +253,12 @@ class CampaignValidator:
                 path=self.contract_path,
             )
             return
+        if self.allow_demo:
+            for rules in contract["roles"].values():
+                scopes = rules.get("scenario_scope")
+                if isinstance(scopes, list) and "demo" not in scopes:
+                    scopes.append("demo")
+                rules["reject_demo"] = False
         self.contract = contract
 
         if not self.manifest_path.is_file():
@@ -1297,6 +1305,7 @@ class CampaignValidator:
             else None,
             "manifest": str(self.manifest_path),
             "contract": str(self.contract_path),
+            "allow_demo": self.allow_demo,
             "counts": {
                 "manifest_rows": len(self.rows),
                 "fixed_rows_expected": fixed_expected,
@@ -1333,6 +1342,7 @@ def validate_campaign(
     scenario_root: Path | None = None,
     results_root: Path | None = None,
     phase: str = "prelaunch",
+    allow_demo: bool = False,
 ) -> dict[str, Any]:
     """Validate without writing or mutating any campaign artifact."""
     return CampaignValidator(
@@ -1342,6 +1352,7 @@ def validate_campaign(
         scenario_root=scenario_root,
         results_root=results_root,
         phase=phase,
+        allow_demo=allow_demo,
     ).run()
 
 
@@ -1432,6 +1443,14 @@ def _parser() -> argparse.ArgumentParser:
         "--phase", choices=("prelaunch", "postrun"), default="prelaunch"
     )
     parser.add_argument(
+        "--allow-demo",
+        action="store_true",
+        help=(
+            "Allow demo-scoped artifacts for an explicitly non-reportable pipeline "
+            "campaign; the default full-eICU rejection remains unchanged."
+        ),
+    )
+    parser.add_argument(
         "--out",
         type=Path,
         help="Optional report directory. If omitted, no files are written.",
@@ -1448,6 +1467,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         scenario_root=args.scenario_root,
         results_root=args.results_root,
         phase=args.phase,
+        allow_demo=args.allow_demo,
     )
     if args.out is not None:
         _write_report(report, args.out)

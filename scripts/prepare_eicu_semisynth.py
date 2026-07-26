@@ -588,7 +588,10 @@ def main(argv=None):
 
     metadata["scenario_path"] = out
     checksum = file_checksum(out)
-    metadata["scenario_checksum_sha256"] = checksum
+    # Keep the algorithm-qualified checksum for human-facing provenance while
+    # exposing the canonical 64-hex SHA-256 value under the algorithm-specific
+    # field consumed by manifests and the campaign validator.
+    metadata["scenario_checksum_sha256"] = checksum.split(":", 1)[1]
     metadata["scenario_checksum"] = checksum
     metadata["cohort"] = os.path.abspath(args.cohort)
     metadata["cohort_checksum"] = file_checksum(args.cohort) if os.path.exists(args.cohort) else None

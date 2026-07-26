@@ -79,12 +79,17 @@ class BuildCommandTest(unittest.TestCase):
             self.assertEqual(cmd[cmd.index("--batch-size") + 1], "256")
 
     def test_run_dir_keyed_by_seed_pair_id_not_bare_seed(self):
-        _, run_dir = runner.build_command(
+        cmd, run_dir = runner.build_command(
             "python", "linear", "confirmatory_01", 101, 1101, "gda",
             runner.DEFAULT_SCENARIO_DIR, "/tmp/out", self._args(),
         )
         self.assertIn("confirmatory_01", run_dir)
         self.assertIn("seed_1101", run_dir)
+        self.assertIn("gda_d", run_dir)
+        self.assertEqual(
+            cmd[cmd.index("--run-id") + 1],
+            "centralized_linear_gda_d_confirmatory_01",
+        )
 
 
 if __name__ == "__main__":

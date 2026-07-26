@@ -346,6 +346,15 @@ def build_config(
         "campaign_role": _config_value(row, "campaign_role", ""),
         "scenario_checksum": _config_value(row, "scenario_checksum", ""),
         "protocol_version": _config_value(row, "protocol_version", ""),
+        "role": _config_value(row, "role", ""),
+        "g0": _config_value(row, "g0", ""),
+        "alignment_label": _config_value(row, "alignment_label", ""),
+        "primary_selection_metric": _config_value(
+            row, "primary_selection_metric", "equal_client_validation_mse"
+        ),
+        "selection_source": _config_value(row, "selection_source", "validation_only"),
+        "scenario_scope": _config_value(row, "scenario_scope", ""),
+        "study_claim": _config_value(row, "study_claim", ""),
     }
 
 
@@ -361,6 +370,9 @@ def write_config(path: Path, config: dict[str, Any]) -> None:
             "output_dir": config["output_dir"],
             "overwrite": config.get("overwrite", False),
             **({"protocol_version": config["protocol_version"]} if config.get("protocol_version") else {}),
+            **({"role": config["role"]} if config.get("role") else {}),
+            **({"alignment_label": config["alignment_label"]} if config.get("alignment_label") else {}),
+            **({"study_claim": config["study_claim"]} if config.get("study_claim") else {}),
         },
         "data_args": {
             "dataset": config["dataset"],
@@ -371,6 +383,8 @@ def write_config(path: Path, config: dict[str, Any]) -> None:
             "dataloader_pin_memory": config["dataloader_pin_memory"],
             **({"scenario_name": config["scenario_name"]} if config.get("scenario_name") else {}),
             **({"scenario_checksum": config["scenario_checksum"]} if config.get("scenario_checksum") else {}),
+            **({"scenario_scope": config["scenario_scope"]} if config.get("scenario_scope") else {}),
+            **({"g0": config["g0"]} if config.get("g0") else {}),
         },
         "model_args": {
             "model": config["model"],
@@ -401,6 +415,8 @@ def write_config(path: Path, config: dict[str, Any]) -> None:
             "log_test_mse_by_round": config["log_test_mse_by_round"],
             "test_mse_used_for_selection": config["test_mse_used_for_selection"],
             "selection_metric_source": config["selection_metric_source"],
+            "primary_selection_metric": config["primary_selection_metric"],
+            "selection_source": config["selection_source"],
             "skip_model_selection": config["skip_model_selection"],
             "skip_gmm_eval": config["skip_gmm_eval"],
             "gmm_eval_proxy": config["gmm_eval_proxy"],
