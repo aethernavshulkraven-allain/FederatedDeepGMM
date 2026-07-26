@@ -351,6 +351,16 @@ def get_effective_config(args):
         "campaign_role": str(getattr(args, "campaign_role", "")),
         "scenario_checksum": str(getattr(args, "scenario_checksum", "")),
         "protocol_version": str(getattr(args, "protocol_version", "")),
+        "role": str(getattr(args, "role", "")),
+        "scenario_name": str(getattr(args, "scenario_name", "")),
+        "g0": str(getattr(args, "g0", "")),
+        "alignment_label": str(getattr(args, "alignment_label", "")),
+        "primary_selection_metric": str(
+            getattr(args, "primary_selection_metric", "")
+        ),
+        "selection_source": str(getattr(args, "selection_source", "")),
+        "scenario_scope": str(getattr(args, "scenario_scope", "")),
+        "study_claim": str(getattr(args, "study_claim", "")),
         "run_id": run_id,
         "output_dir": output_dir,
         "partition_method": getattr(args, "partition_method", ""),
