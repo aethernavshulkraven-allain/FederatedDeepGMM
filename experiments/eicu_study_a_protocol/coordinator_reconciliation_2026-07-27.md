@@ -277,6 +277,24 @@ the exact release/version, inventory and checksums, cohort flow, cohort
 checksum, client eligibility report and IDs, split definition/checksum,
 instrument specification, DGP calibration, and scenario checksums.
 
+### 2026-07-27 release discovery
+
+A filesystem search of the accessible home, data, datasets, mount, and scratch
+roots found only:
+
+`physionet.org/files/eicu-crd-demo/2.0.1`
+
+A fresh preflight was run with `--require-full --count-patient-rows
+--checksum`. It counted 2,520 patient-table rows, classified the release as
+`demo`, set `launchable_for_full_cohort_build=false`, and exited 1 as required.
+The machine-readable and review reports are preserved under
+`experiments/eicu_full_data_preflight/audits/2026-07-27-discovered-release/`.
+
+Consequently, D01-D08 cannot be closed and no full cohort, full scenarios, or
+final launch manifest can be materialized in this environment yet. Mounting a
+credentialed release is an external data-access action; the repository neither
+contains the release nor credentials to obtain it.
+
 ## Required execution order
 
 1. ~~Commit/isolate Claude's implementation and merge it with the clean

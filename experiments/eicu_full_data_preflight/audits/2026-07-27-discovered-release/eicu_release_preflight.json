@@ -1,0 +1,322 @@
+{
+  "blocking_reasons": [
+    "Full eICU was required, but this root is not a validated likely-full release ready for cohort construction."
+  ],
+  "detected": {
+    "classification_basis": "path contains an explicit eICU demo marker",
+    "eicu_root": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1",
+    "version": "2.0.1"
+  },
+  "launchable_for_demo_smoke": true,
+  "launchable_for_full_cohort_build": false,
+  "patient_table_rows": 2520,
+  "release_classification": "demo",
+  "require_full_requested": true,
+  "require_full_satisfied": false,
+  "root_status": {
+    "exists": true,
+    "is_directory": true,
+    "readable": true
+  },
+  "schema": {
+    "cohort_builder_reference": "scripts/prepare_eicu_cohort.py",
+    "required_tables_spec": "experiments/eicu_full_data_preflight/required_tables.json",
+    "version": 1
+  },
+  "storage": {
+    "available_bytes_on_output_filesystem": 11358458384384,
+    "known_table_on_disk_bytes": 28949087,
+    "output_filesystem_probe_path": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_full_data_preflight",
+    "output_target": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_full_data_preflight/audits/2026-07-27-discovered-release",
+    "total_bytes_on_output_filesystem": 22677499006976
+  },
+  "tables": [
+    {
+      "category": "optional",
+      "column_count": 6,
+      "exists": true,
+      "header_status": "ok",
+      "missing_required_columns": [],
+      "mtime_utc": "2021-05-07T00:39:11+00:00",
+      "name": "admissionDx",
+      "optional_columns": [],
+      "path": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1/admissionDx.csv.gz",
+      "present_optional_columns": [],
+      "purpose": "Additional admission-diagnosis evidence for sepsis cohort membership.",
+      "required_columns": [
+        "admitdxpath",
+        "patientunitstayid"
+      ],
+      "resolved_filename": "admissionDx.csv.gz",
+      "sha256": "607020180f1c7fbbc994a23552d6a4fdc70b86d4abc8e1b36f3ee28e96f15c42",
+      "size": {
+        "compressed_bytes": 95877,
+        "on_disk_bytes": 95877,
+        "uncompressed_bytes": null
+      }
+    },
+    {
+      "category": "optional",
+      "column_count": 4,
+      "exists": true,
+      "header_status": "ok",
+      "missing_required_columns": [],
+      "mtime_utc": "2019-05-23T20:35:49+00:00",
+      "name": "hospital",
+      "optional_columns": [],
+      "path": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1/hospital.csv.gz",
+      "present_optional_columns": [],
+      "purpose": "Hospital-level bed category, teaching status, and region covariates.",
+      "required_columns": [
+        "hospitalid",
+        "numbedscategory",
+        "region",
+        "teachingstatus"
+      ],
+      "resolved_filename": "hospital.csv.gz",
+      "sha256": "4ed356f9c4e7c8ce80e89241697e94b77f21c2f325cd6ad126794b1e92805ef4",
+      "size": {
+        "compressed_bytes": 759,
+        "on_disk_bytes": 759,
+        "uncompressed_bytes": null
+      }
+    },
+    {
+      "category": "optional",
+      "column_count": 8,
+      "exists": true,
+      "header_status": "ok",
+      "missing_required_columns": [],
+      "mtime_utc": "2019-05-23T20:35:49+00:00",
+      "name": "pastHistory",
+      "optional_columns": [],
+      "path": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1/pastHistory.csv.gz",
+      "present_optional_columns": [],
+      "purpose": "Comorbidity covariates.",
+      "required_columns": [
+        "pasthistorypath",
+        "pasthistoryvalue",
+        "patientunitstayid"
+      ],
+      "resolved_filename": "pastHistory.csv.gz",
+      "sha256": "3af6e3101c037347365d81daf73ea487ba12e14a6a10f0b2ed53beed2e30c7d5",
+      "size": {
+        "compressed_bytes": 142402,
+        "on_disk_bytes": 142402,
+        "uncompressed_bytes": null
+      }
+    },
+    {
+      "category": "optional",
+      "column_count": 13,
+      "exists": true,
+      "header_status": "ok",
+      "missing_required_columns": [],
+      "mtime_utc": "2019-05-23T20:35:49+00:00",
+      "name": "vitalAperiodic",
+      "optional_columns": [],
+      "path": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1/vitalAperiodic.csv.gz",
+      "present_optional_columns": [],
+      "purpose": "Non-invasive blood pressure fallback when arterial readings are unavailable.",
+      "required_columns": [
+        "noninvasivemean",
+        "noninvasivesystolic",
+        "observationoffset",
+        "patientunitstayid"
+      ],
+      "resolved_filename": "vitalAperiodic.csv.gz",
+      "sha256": "c294f46647990cb648b3ebfa589e83f330bdc0c2c922b5e8f23aa0ef99954635",
+      "size": {
+        "compressed_bytes": 2619980,
+        "on_disk_bytes": 2619980,
+        "uncompressed_bytes": null
+      }
+    },
+    {
+      "category": "required",
+      "column_count": 7,
+      "exists": true,
+      "header_status": "ok",
+      "missing_required_columns": [],
+      "mtime_utc": "2019-05-23T20:35:49+00:00",
+      "name": "diagnosis",
+      "optional_columns": [],
+      "path": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1/diagnosis.csv.gz",
+      "present_optional_columns": [],
+      "purpose": "Sepsis cohort identification near ICU admission.",
+      "required_columns": [
+        "diagnosisoffset",
+        "diagnosisstring",
+        "icd9code",
+        "patientunitstayid"
+      ],
+      "resolved_filename": "diagnosis.csv.gz",
+      "sha256": "c99770c25fdeaee1eb34e490f982bd17459bc8902f951a2ae23adef65e7b1b52",
+      "size": {
+        "compressed_bytes": 360548,
+        "on_disk_bytes": 360548,
+        "uncompressed_bytes": null
+      }
+    },
+    {
+      "category": "required",
+      "column_count": 9,
+      "exists": true,
+      "header_status": "ok",
+      "missing_required_columns": [],
+      "mtime_utc": "2019-05-23T20:35:49+00:00",
+      "name": "infusiondrug",
+      "optional_columns": [],
+      "path": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1/infusiondrug.csv.gz",
+      "present_optional_columns": [],
+      "purpose": "Vasopressor treatment assignment and infusion-interface coverage.",
+      "required_columns": [
+        "drugname",
+        "infusionoffset",
+        "patientunitstayid"
+      ],
+      "resolved_filename": "infusiondrug.csv.gz",
+      "sha256": "3b9f024d28682884a820763ac516ae68b247ebf17903fee4f38240c04886d527",
+      "size": {
+        "compressed_bytes": 403703,
+        "on_disk_bytes": 403703,
+        "uncompressed_bytes": null
+      }
+    },
+    {
+      "category": "required",
+      "column_count": 10,
+      "exists": true,
+      "header_status": "ok",
+      "missing_required_columns": [],
+      "mtime_utc": "2019-05-23T20:35:49+00:00",
+      "name": "lab",
+      "optional_columns": [],
+      "path": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1/lab.csv.gz",
+      "present_optional_columns": [],
+      "purpose": "Pre-treatment laboratory covariates.",
+      "required_columns": [
+        "labname",
+        "labresult",
+        "labresultoffset",
+        "patientunitstayid"
+      ],
+      "resolved_filename": "lab.csv.gz",
+      "sha256": "e06852850abeb65211bc22ac43f17121ba41b14656fac862396449af84d8273a",
+      "size": {
+        "compressed_bytes": 5729763,
+        "on_disk_bytes": 5729763,
+        "uncompressed_bytes": null
+      }
+    },
+    {
+      "category": "required",
+      "column_count": 29,
+      "exists": true,
+      "header_status": "ok",
+      "missing_required_columns": [],
+      "mtime_utc": "2019-05-23T20:35:49+00:00",
+      "name": "patient",
+      "optional_columns": [
+        "admissionweight",
+        "ethnicity",
+        "gender",
+        "hospitaladmitsource",
+        "unitadmitsource",
+        "unitstaytype",
+        "unittype"
+      ],
+      "path": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1/patient.csv.gz",
+      "present_optional_columns": [
+        "admissionweight",
+        "ethnicity",
+        "gender",
+        "hospitaladmitsource",
+        "unitadmitsource",
+        "unitstaytype",
+        "unittype"
+      ],
+      "purpose": "Base adult first-stay population, mortality outcome, client/ward keys, and admission covariates.",
+      "required_columns": [
+        "age",
+        "apacheadmissiondx",
+        "hospitaladmitoffset",
+        "hospitaldischargestatus",
+        "hospitalid",
+        "patienthealthsystemstayid",
+        "patientunitstayid",
+        "unitvisitnumber",
+        "wardid"
+      ],
+      "resolved_filename": "patient.csv.gz",
+      "sha256": "15e1eb52169828e3cfff3b67132a087298de4d0365bbb31bb294f6043bffd474",
+      "size": {
+        "compressed_bytes": 136791,
+        "on_disk_bytes": 136791,
+        "uncompressed_bytes": null
+      }
+    },
+    {
+      "category": "required",
+      "column_count": 19,
+      "exists": true,
+      "header_status": "ok",
+      "missing_required_columns": [],
+      "mtime_utc": "2019-05-23T20:35:49+00:00",
+      "name": "vitalPeriodic",
+      "optional_columns": [],
+      "path": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1/vitalPeriodic.csv.gz",
+      "present_optional_columns": [],
+      "purpose": "Pre-treatment monitored vital-sign covariates.",
+      "required_columns": [
+        "heartrate",
+        "observationoffset",
+        "patientunitstayid",
+        "respiration",
+        "sao2",
+        "systemicmean",
+        "systemicsystolic",
+        "temperature"
+      ],
+      "resolved_filename": "vitalPeriodic.csv.gz",
+      "sha256": "04dc093a2e77cd4c52ac7f2a47a8356fbb7456c7f15deb20d5abb1ca4303231d",
+      "size": {
+        "compressed_bytes": 19391070,
+        "on_disk_bytes": 19391070,
+        "uncompressed_bytes": null
+      }
+    },
+    {
+      "category": "sensitivity",
+      "column_count": 26,
+      "exists": true,
+      "header_status": "ok",
+      "missing_required_columns": [],
+      "mtime_utc": "2019-05-23T20:35:49+00:00",
+      "name": "apacheApsVar",
+      "optional_columns": [
+        "apacheapsvarid"
+      ],
+      "path": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1/apacheApsVar.csv.gz",
+      "present_optional_columns": [
+        "apacheapsvarid"
+      ],
+      "purpose": "APACHE APS covariates used only by the explicitly requested post-treatment sensitivity arm.",
+      "required_columns": [
+        "patientunitstayid"
+      ],
+      "resolved_filename": "apacheApsVar.csv.gz",
+      "sha256": "2dc6d63f9807c7e663ffa253998691605d527b702ac1db8cc5dda92308061e78",
+      "size": {
+        "compressed_bytes": 68194,
+        "on_disk_bytes": 68194,
+        "uncompressed_bytes": null
+      }
+    }
+  ],
+  "warnings": [
+    "Exact uncompressed byte sizes are not reported for gzip files because obtaining them safely can require a full decompression pass.",
+    "This is a demo release: it is suitable only for pipeline smoke testing.",
+    "This preflight checks data readiness for cohort construction only; it does not establish scientific validity or paper alignment."
+  ]
+}
