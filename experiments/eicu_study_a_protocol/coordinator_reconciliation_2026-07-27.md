@@ -1,5 +1,22 @@
 # Study A coordinator reconciliation — 2026-07-27
 
+## Integration update
+
+The source-integration step described as pending in the original audit is now
+complete:
+
+- Claude's handoff-listed Study A source and tests were committed on
+  `experimentsrerun` as `60f708f`.
+- The protocol, full-release preflight, campaign validator, and this
+  reconciliation were merged as `634f7ee`.
+- The pre-merge base remains recoverable at
+  `backup/experimentsrerun-pre-study-a-merge-20260727`.
+
+Generated demo cohorts, scenarios, scratch runs, result directories, audit
+outputs, and debug plots were preserved in place but were not added to the
+source commits. The P0 scientific/protocol mismatches documented below remain
+open; source integration does not make the campaign launch-ready.
+
 ## Status
 
 Study A is **not launch-ready for full-eICU tuning or confirmatory analysis**.
@@ -33,8 +50,9 @@ Combined verification on the integration branch:
   rows.
 - `git diff --check` passed.
 
-These commits have deliberately not been merged into the dirty shared
-`experimentsrerun` worktree.
+These commits were subsequently merged into the dirty shared
+`experimentsrerun` worktree through merge commit `634f7ee`, without adding or
+deleting the unrelated local work.
 
 ## Claude implementation: accepted building blocks
 
@@ -179,11 +197,11 @@ started.
 
 ### 10. Reproducible source state
 
-Claude's Study A implementation and its generated demo scenarios are
-uncommitted in a heavily dirty worktree. Before integration, isolate the exact
-Study A source changes from unrelated user work, commit them intentionally,
-and record that commit in every effective configuration. Do not commit or
-delete existing scientific artifacts as collateral.
+The Study A implementation is now committed as `60f708f`. Future effective
+configurations must record the actual launch commit, which will include the P0
+corrections rather than treating `60f708f` as launch-ready. Generated demo
+scenarios and runtime artifacts remain outside the source commit and must be
+identified by their own checksums.
 
 ## Demo campaign audit
 
@@ -218,8 +236,8 @@ instrument specification, DGP calibration, and scenario checksums.
 
 ## Required execution order
 
-1. Commit/isolate Claude's implementation and merge it with the clean
-   integration branch.
+1. ~~Commit/isolate Claude's implementation and merge it with the clean
+   integration branch.~~ Completed by `60f708f` and `634f7ee`.
 2. Implement the P0 corrections above and add protocol-level contract tests.
 3. Run the full-release preflight with row counting and checksums.
 4. Build the full cohort and conduct a blinded flow/client/instrument audit.
