@@ -1,0 +1,38 @@
+{
+  "interaction:fedgda_s": {
+    "learning_rate": 0.001,
+    "learning_rate_status": "preregistered_fixed_no_tuning",
+    "selection_note": "demo campaign fixed defaults; no tuning performed",
+    "server_learning_rate": 1.0
+  },
+  "interaction:fedogda_s": {
+    "learning_rate": 0.001,
+    "learning_rate_status": "preregistered_fixed_no_tuning",
+    "selection_note": "demo campaign fixed defaults; no tuning performed",
+    "server_learning_rate": 1.0
+  },
+  "linear:fedgda_s": {
+    "learning_rate": 0.001,
+    "learning_rate_status": "preregistered_fixed_no_tuning",
+    "selection_note": "demo campaign fixed defaults; no tuning performed",
+    "server_learning_rate": 1.0
+  },
+  "linear:fedogda_s": {
+    "learning_rate": 0.001,
+    "learning_rate_status": "preregistered_fixed_no_tuning",
+    "selection_note": "demo campaign fixed defaults; no tuning performed",
+    "server_learning_rate": 1.0
+  },
+  "mlp:fedgda_s": {
+    "learning_rate": 0.001,
+    "learning_rate_status": "preregistered_fixed_no_tuning",
+    "selection_note": "demo campaign fixed defaults; no tuning performed",
+    "server_learning_rate": 1.0
+  },
+  "mlp:fedogda_s": {
+    "learning_rate": 0.001,
+    "learning_rate_status": "preregistered_fixed_no_tuning",
+    "selection_note": "demo campaign fixed defaults; no tuning performed",
+    "server_learning_rate": 1.0
+  }
+}

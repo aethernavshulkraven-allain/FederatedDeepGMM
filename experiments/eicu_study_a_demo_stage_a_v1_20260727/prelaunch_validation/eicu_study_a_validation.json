@@ -1,0 +1,126 @@
+{
+  "allow_demo": true,
+  "blocking_errors": [],
+  "contract": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_study_a_validation/default_contract.json",
+  "contract_version": "2.0.0",
+  "counts": {
+    "blocking_errors": 0,
+    "fixed_rows_expected": 105,
+    "fixed_rows_observed": 105,
+    "manifest_rows": 105,
+    "result_directories_found": 0,
+    "results_validated": 0,
+    "valid_completed_results": 0,
+    "warnings": 0
+  },
+  "coverage": {
+    "aggregation_ablation": {
+      "complete": true,
+      "duplicate_combinations": [],
+      "expected_rows": 30,
+      "extra_combinations": [],
+      "g0": [
+        "interaction",
+        "linear",
+        "mlp"
+      ],
+      "methods": [
+        "fedgda_s",
+        "fedogda_s"
+      ],
+      "missing_combinations": [],
+      "observed_rows": 30,
+      "seeds": [
+        101,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    "centralized_baseline": {
+      "complete": true,
+      "duplicate_combinations": [],
+      "expected_rows": 45,
+      "extra_combinations": [],
+      "g0": [
+        "interaction",
+        "linear",
+        "mlp"
+      ],
+      "methods": [
+        "gda_d",
+        "oadam_s",
+        "sgda_s"
+      ],
+      "missing_combinations": [],
+      "observed_rows": 45,
+      "seeds": [
+        101,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    "confirmatory": {
+      "complete": true,
+      "duplicate_combinations": [],
+      "expected_rows": 30,
+      "extra_combinations": [],
+      "g0": [
+        "interaction",
+        "linear",
+        "mlp"
+      ],
+      "methods": [
+        "fedgda_s",
+        "fedogda_s"
+      ],
+      "missing_combinations": [],
+      "observed_rows": 30,
+      "seeds": [
+        101,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    "smoke": {
+      "complete": true,
+      "expected_rows": null,
+      "g0": [],
+      "methods": [],
+      "observed_rows": 0,
+      "seeds": []
+    },
+    "tuning": {
+      "complete": true,
+      "expected_rows": null,
+      "g0": [],
+      "methods": [],
+      "observed_rows": 0,
+      "seeds": []
+    }
+  },
+  "generated_at_utc": "2026-07-26T21:34:18.657137+00:00",
+  "launchable": true,
+  "manifest": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_study_a_demo_stage_a_v1_20260727/manifest.csv",
+  "pairing_audit": {
+    "groups_checked": 30,
+    "violations": 0
+  },
+  "phase": "prelaunch",
+  "provenance_audit": {
+    "artifact_checksums_recomputed": 105,
+    "configs_checked": 0,
+    "scenarios_checked": 105,
+    "violations": 0
+  },
+  "selection_policy_audit": {
+    "rows_checked": 105,
+    "violations": 0
+  },
+  "warnings": []
+}

@@ -1,0 +1,117 @@
+{
+  "campaign_id": "eicu_study_a_demo_stage_a_v1_20260727",
+  "campaign_scope": "demo",
+  "claim_status": "pipeline_campaign_only_not_a_scientific_or_paper_result",
+  "cohort": {
+    "path": "experiments/eicu_v1_demo/cohort.csv",
+    "rows": 201,
+    "hospitals_before_structural_instrument_filter": 89,
+    "sha256": "169ea7a7b044964cd47d70530e1b55fb9f216597f415f6a4461c48d1d23fe6a2"
+  },
+  "eligibility": {
+    "eligibility_seed": 20260101,
+    "hospital_is_client": true,
+    "minimum_structural_instrument_sd": 0.01,
+    "real_death_threshold_applied": false,
+    "simulated_first_stage_diagnostics_split": "non_test",
+    "expected_eligible_hospital_ids": [
+      184,
+      243,
+      407
+    ]
+  },
+  "scenario": {
+    "scenario_seeds": [
+      101,
+      102,
+      103,
+      104,
+      105
+    ],
+    "split": {
+      "fractions": {
+        "train": 0.6,
+        "validation": 0.2,
+        "test": 0.2
+      },
+      "unit": "hospital_admission",
+      "within_hospital": true
+    },
+    "dgp": {
+      "client_heterogeneity": 0.5,
+      "confounding": 1.0,
+      "instrument_strength": 2.0,
+      "noise": 0.5,
+      "rho": 1.0
+    },
+    "g0": [
+      "linear",
+      "interaction",
+      "frozen_random_mlp"
+    ],
+    "frozen_random_mlp": {
+      "activation": "tanh",
+      "g0_seed": 20260725,
+      "hidden_width": 32
+    }
+  },
+  "federated_training": {
+    "architecture": {
+      "activation": "LeakyReLU",
+      "critic_hidden_widths": [
+        64,
+        64
+      ],
+      "precision": "float64",
+      "structural_hidden_widths": [
+        64,
+        64
+      ]
+    },
+    "batch_size": 3,
+    "client_participation": "all_eligible_clients_every_round",
+    "communication_rounds": 500,
+    "critic_multiplier": 10.0,
+    "gradient_clip_norm": 1.0,
+    "learning_rate": 0.001,
+    "local_epochs": 1,
+    "objective_lambda": 0.25,
+    "objective_mode": "paper_aligned",
+    "primary_aggregation": "uniform_clients",
+    "sample_size_aggregation_role": "aggregation_ablation_only",
+    "server_learning_rate": 1.0,
+    "theta_tilde_refresh": "once_per_communication_round_before_local_training",
+    "weight_decay": 0.01
+  },
+  "centralized_training": {
+    "architecture_and_precision": "same_as_federated",
+    "batch_size": {
+      "gda_d": 0,
+      "oadam_s": 256,
+      "sgda_s": 256
+    },
+    "critic_learning_rate": 0.01,
+    "iterations": 500,
+    "learner_learning_rate": 0.001,
+    "methods": [
+      "gda_d",
+      "sgda_s",
+      "oadam_s"
+    ],
+    "theta_tilde_refresh": "once_per_centralized_iteration",
+    "weight_decay": 0.01
+  },
+  "configuration_policy": {
+    "hyperparameter_file": "fixed_hyperparameters.json",
+    "source": "preregistered_fixed_defaults_no_tuning",
+    "test_mse_used_for_configuration": false,
+    "within_run_checkpoint_selection": "minimum_equal_client_validation_mse"
+  },
+  "execution": {
+    "required_rows": 105,
+    "results_root": "results/eicu_study_a_demo_stage_a_v1_20260727",
+    "source_code_commit": "a769228",
+    "tuning_run": false,
+    "validator_demo_override_required": true
+  }
+}
