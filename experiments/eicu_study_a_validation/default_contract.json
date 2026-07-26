@@ -374,8 +374,8 @@
     },
     "scenario": {
       "scenario_checksum": [
-        "scenario_checksum",
         "scenario_checksum_sha256",
+        "scenario_checksum",
         "checksum"
       ],
       "eligible_client_provenance": [

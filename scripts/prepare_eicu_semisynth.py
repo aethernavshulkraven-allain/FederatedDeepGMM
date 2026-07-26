@@ -584,6 +584,7 @@ def main(argv=None):
     out = args.out or os.path.join(
         EXAMPLE_ROOT, "data", "eicu_semisynth", f"{args.g0}_scenario_seed{args.scenario_seed}.npz"
     )
+    out = os.path.abspath(out)
     write_scenario(splits, out)
 
     metadata["scenario_path"] = out
