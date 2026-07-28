@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(gpurun --status)",
-      "Bash(timeout * gpurun --status)"
-    ]
-  }
-}
