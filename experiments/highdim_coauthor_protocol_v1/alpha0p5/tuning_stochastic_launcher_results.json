@@ -1,0 +1,194 @@
+[
+  {
+    "best_validation_round": 33,
+    "final_test_mse": 0.3423683742640113,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_x/fedgda_s/seed_0/tune_cifar10_x_fedgda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_x_fedgda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.15197626588264704
+  },
+  {
+    "best_validation_round": 15,
+    "final_test_mse": 1.2087774367198596,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_x/fedgda_s/seed_0/tune_cifar10_x_fedgda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_x_fedgda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.15406663910246784
+  },
+  {
+    "best_validation_round": 30,
+    "final_test_mse": 0.3152035816358595,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_x/fedogda_s/seed_0/tune_cifar10_x_fedogda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_x_fedogda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.15907116416854397
+  },
+  {
+    "best_validation_round": 20,
+    "final_test_mse": 1.576387415859398,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_x/fedogda_s/seed_0/tune_cifar10_x_fedogda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_x_fedogda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.15062454025566932
+  },
+  {
+    "best_validation_round": 105,
+    "final_test_mse": 0.25372462335053897,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_xz/fedgda_s/seed_0/tune_cifar10_xz_fedgda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_xz_fedgda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.21673889469310956
+  },
+  {
+    "best_validation_round": 17,
+    "final_test_mse": 0.30812412383655075,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_xz/fedgda_s/seed_0/tune_cifar10_xz_fedgda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_xz_fedgda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.20466307598736908
+  },
+  {
+    "best_validation_round": 19,
+    "final_test_mse": 0.23055353568765077,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_xz/fedogda_s/seed_0/tune_cifar10_xz_fedogda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_xz_fedogda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.2008948091358011
+  },
+  {
+    "best_validation_round": 19,
+    "final_test_mse": 0.3676387685694368,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_xz/fedogda_s/seed_0/tune_cifar10_xz_fedogda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_xz_fedogda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.17590978105426322
+  },
+  {
+    "best_validation_round": 30,
+    "final_test_mse": 0.24481533581692844,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_z/fedgda_s/seed_0/tune_cifar10_z_fedgda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_z_fedgda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.2340796782671418
+  },
+  {
+    "best_validation_round": 147,
+    "final_test_mse": 0.24758566848382701,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_z/fedgda_s/seed_0/tune_cifar10_z_fedgda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_z_fedgda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.21405381369439802
+  },
+  {
+    "best_validation_round": 24,
+    "final_test_mse": 0.2773433507575286,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_z/fedogda_s/seed_0/tune_cifar10_z_fedogda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_z_fedogda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.2351633809116438
+  },
+  {
+    "best_validation_round": 14,
+    "final_test_mse": 0.2519140452544824,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/cifar10_z/fedogda_s/seed_0/tune_cifar10_z_fedogda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_z_fedogda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.23555954141422072
+  },
+  {
+    "best_validation_round": 19,
+    "final_test_mse": 0.539299984598036,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_x/fedgda_s/seed_0/tune_femnist_x_fedgda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_femnist_x_fedgda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.16092314338301347
+  },
+  {
+    "best_validation_round": 14,
+    "final_test_mse": 1.4730913424634737,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_x/fedgda_s/seed_0/tune_femnist_x_fedgda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_femnist_x_fedgda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.14017913026044265
+  },
+  {
+    "best_validation_round": 29,
+    "final_test_mse": 0.5780449508335463,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_x/fedogda_s/seed_0/tune_femnist_x_fedogda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_femnist_x_fedogda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.1532023352020027
+  },
+  {
+    "best_validation_round": 23,
+    "final_test_mse": 1.7569068099511758,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_x/fedogda_s/seed_0/tune_femnist_x_fedogda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_femnist_x_fedogda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.13709393525244573
+  },
+  {
+    "best_validation_round": 73,
+    "final_test_mse": 0.18817020781095314,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_xz/fedgda_s/seed_0/tune_femnist_xz_fedgda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_femnist_xz_fedgda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.14837989376293217
+  },
+  {
+    "best_validation_round": 76,
+    "final_test_mse": 0.3513272306586308,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_xz/fedgda_s/seed_0/tune_femnist_xz_fedgda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_femnist_xz_fedgda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.1401272778641526
+  },
+  {
+    "best_validation_round": 76,
+    "final_test_mse": 1.341847050475214,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_xz/fedogda_s/seed_0/tune_femnist_xz_fedogda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_femnist_xz_fedogda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.14233733607545443
+  },
+  {
+    "best_validation_round": 36,
+    "final_test_mse": 1.8600630544292769,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_xz/fedogda_s/seed_0/tune_femnist_xz_fedogda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_femnist_xz_fedogda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.14293629252328321
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 0.21934262718155634,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_z/fedgda_s/seed_0/tune_femnist_z_fedgda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_femnist_z_fedgda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.21934262718155634
+  },
+  {
+    "best_validation_round": 147,
+    "final_test_mse": 0.16782638328478153,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_z/fedgda_s/seed_0/tune_femnist_z_fedgda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_femnist_z_fedgda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.1632724416942902
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 0.22189007692911294,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_z/fedogda_s/seed_0/tune_femnist_z_fedogda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_femnist_z_fedogda_s_seed0_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.22189007692911294
+  },
+  {
+    "best_validation_round": 146,
+    "final_test_mse": 0.17648663026004388,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_z/fedogda_s/seed_0/tune_femnist_z_fedogda_s_seed0_lr0p01_wd0p05",
+    "run_id": "tune_femnist_z_fedogda_s_seed0_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.1761424489576811
+  }
+]

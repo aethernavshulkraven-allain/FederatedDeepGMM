@@ -19,6 +19,36 @@ from fedml.model.linear.lr_cifar10 import LogisticRegression_Cifar10
 from fedml.model.nlp.rnn import RNN_OriginalFedAvg, RNN_StackOverFlow, RNN_FedShakespeare
 from models.mlp_model import MLPModel
 
+
+def _eicu_hidden_widths(value):
+    """Parse a YAML list or a compact manifest value such as ``32,32``."""
+    if value is None or value == "":
+        return [64, 64]
+    if isinstance(value, (list, tuple)):
+        widths = [int(item) for item in value]
+    else:
+        text = str(value).strip().strip("[]")
+        widths = [int(item.strip()) for item in text.split(",") if item.strip()]
+    if not widths or any(width <= 0 for width in widths):
+        raise ValueError(f"eICU hidden_widths must contain positive integers, got {value!r}")
+    return widths
+
+
+def _eicu_activation(value):
+    name = str(value or "leaky_relu").strip().lower()
+    choices = {
+        "relu": nn.ReLU,
+        "leaky_relu": nn.LeakyReLU,
+        "leakyrelu": nn.LeakyReLU,
+        "tanh": nn.Tanh,
+    }
+    if name not in choices:
+        raise ValueError(
+            f"eICU model_activation must be one of {sorted(choices)}, got {value!r}"
+        )
+    return choices[name]
+
+
 def create(args, output_dim):
     global model
     model_name = args.model
@@ -38,23 +68,29 @@ def create(args, output_dim):
                     "eICU models need input_dim_g and input_dim_f in the run config; "
                     "read them from the scenario's *_metadata.json"
                 )
-            layer_widths = [64, 64]
+            layer_widths = _eicu_hidden_widths(
+                getattr(args, "hidden_widths", "64,64")
+            )
+            activation = _eicu_activation(
+                getattr(args, "model_activation", "leaky_relu")
+            )
         else:
             input_dim_g = 1
             input_dim_f = 2  # the two instruments in the zoo design
             layer_widths = [20, 20]
+            activation = nn.LeakyReLU
 
         g_models = [
             MLPModel(input_dim=input_dim_g, layer_widths=layer_widths,
-                     activation=nn.LeakyReLU).double(),
+                     activation=activation).double(),
         ]
         f_models = [
             MLPModel(input_dim=input_dim_f, layer_widths=layer_widths,
-                     activation=nn.LeakyReLU).double(),
+                     activation=activation).double(),
         ]
         reg_models = [
             MLPModel(input_dim=input_dim_g, layer_widths=layer_widths,
-                     activation=nn.LeakyReLU).double(),
+                     activation=activation).double(),
         ]
         
         if torch.cuda.is_available():

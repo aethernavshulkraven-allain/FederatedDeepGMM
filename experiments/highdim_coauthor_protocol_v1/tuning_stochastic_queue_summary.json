@@ -1,0 +1,23 @@
+[
+  {
+    "alpha_dir": "alpha0p5",
+    "manifest": "experiments/highdim_coauthor_protocol_v1/alpha0p5/tuning_manifest_stochastic.csv",
+    "output_root": "results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning",
+    "regime": "stochastic",
+    "returncode": 0
+  },
+  {
+    "alpha_dir": "alpha0p1",
+    "manifest": "experiments/highdim_coauthor_protocol_v1/alpha0p1/tuning_manifest_stochastic.csv",
+    "output_root": "results/rerun_protocol_v1_real_images_abs_alpha0p1_tuning",
+    "regime": "stochastic",
+    "returncode": 0
+  },
+  {
+    "alpha_dir": "alpha1",
+    "manifest": "experiments/highdim_coauthor_protocol_v1/alpha1/tuning_manifest_stochastic.csv",
+    "output_root": "results/rerun_protocol_v1_real_images_abs_alpha1_tuning",
+    "regime": "stochastic",
+    "returncode": 120
+  }
+]

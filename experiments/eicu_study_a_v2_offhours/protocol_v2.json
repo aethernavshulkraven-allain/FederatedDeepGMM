@@ -1,0 +1,201 @@
+{
+  "protocol_version": "eicu_study_a_v2_offhours",
+  "study_label": "Study A v2",
+  "claim": "semi_synthetic_benchmark_no_clinical_claim",
+  "client": {
+    "id_column": "hospitalid",
+    "full_participation": true,
+    "minimum_rows": 7,
+    "wardid_used_as_client": false
+  },
+  "cohort": {
+    "adult": true,
+    "first_icu_stay_per_hospital_admission": true,
+    "requires_sepsis": false,
+    "requires_mortality": false,
+    "requires_observed_vasopressor": false,
+    "requires_infusion_interface": false,
+    "split_fractions": {
+      "train": 0.7,
+      "dev": 0.15,
+      "test": 0.15
+    },
+    "split_seed": 20260727,
+    "split_unit": "patient"
+  },
+  "instrument": {
+    "name": "off_hours_admission",
+    "source_column": "hospitaladmittime24",
+    "regular_hours_half_open": [
+      "07:00",
+      "19:00"
+    ],
+    "weekend_included": false
+  },
+  "dgp": {
+    "treatment_type": "continuous",
+    "instrument_strength": 2.0,
+    "rho_x": 1.0,
+    "rho_y": 1.0,
+    "treatment_noise_sd": 0.5,
+    "outcome_noise_sd": 0.5,
+    "client_heterogeneity_sd": 0.5,
+    "g0": [
+      "linear",
+      "interaction",
+      "mlp"
+    ]
+  },
+  "certification": {
+    "selection_rows": "train_plus_dev",
+    "test_used": false,
+    "max_global_regeneration_attempts": 25,
+    "individual_client_simulated_first_stage_filtering": false,
+    "minimum_global_partial_f": 10.0,
+    "maximum_abs_corr_u_z": 0.1,
+    "minimum_abs_u_coefficient": 0.2,
+    "minimum_naive_linear_bias": 0.05,
+    "maximum_abs_true_moment": 0.2,
+    "linear_2sls_must_improve_over_naive": true
+  },
+  "model": {
+    "hidden_widths": [
+      32,
+      32
+    ],
+    "activation": "relu",
+    "batch_norm": false,
+    "dropout": false
+  },
+  "training": {
+    "objective_mode": "paper_aligned",
+    "paper_lambda": 0.25,
+    "primary_aggregation_weighting": "uniform_clients",
+    "ablation_aggregation_weighting": "sample_size",
+    "batch_size": 4,
+    "weight_decay": 0.01,
+    "critic_multiplier": 10.0,
+    "tuning_rounds": 4000,
+    "final_rounds": 4000
+  },
+  "tuning": {
+    "scenario_seed": 11,
+    "optimizer_seed": 1011,
+    "base_learning_rate": 0.001,
+    "local_lr_multipliers": [
+      1.0,
+      2.0,
+      4.0,
+      8.0
+    ],
+    "server_learning_rates": [
+      1.0,
+      1.5,
+      2.0
+    ],
+    "selection_metric": "equal_client_validation_mse",
+    "tie_breaker": "equal_client_validation_moment_violation_at_best_validation",
+    "test_used": false
+  },
+  "final": {
+    "scenario_seeds": [
+      101,
+      102,
+      103,
+      104,
+      105
+    ],
+    "optimizer_seeds": [
+      1101,
+      1102,
+      1103,
+      1104,
+      1105
+    ],
+    "primary_federated_runs": 30,
+    "centralized_runs": 45,
+    "aggregation_ablation_runs": 30,
+    "total_runs": 105
+  },
+  "amendments": [
+    {
+      "amendment_id": 1,
+      "date": "2026-07-27",
+      "title": "Shared training horizon, widened tuning grid, pre-finals gates",
+      "trigger": "First Study A v2 final campaign launched under the pre-amendment values below, stopped after 47 of 105 rows, and quarantined.",
+      "quarantined_artifacts": "results/_failed/20260727-study-a-v2-superseded-finals-unconverged-horizon/",
+      "scope_note": "Changes training.tuning_rounds, training.final_rounds, tuning.local_lr_multipliers, and tuning.server_learning_rates only. Does not change cohort, client, instrument, dgp, certification, model, primary_aggregation_weighting, selection_metric, tie_breaker, test_used, or final blocks, and does not modify checksummed data artifacts (cohort_metadata.json, frozen_client_list.json, cohort.csv).",
+      "previous_values": {
+        "training.tuning_rounds": 150,
+        "training.final_rounds": 500,
+        "tuning.local_lr_multipliers": [0.5, 1.0, 2.0],
+        "tuning.effective_learning_rate_grid": [0.0005, 0.001, 0.002],
+        "tuning.server_learning_rates": [1.0, 1.5]
+      },
+      "new_values": {
+        "training.tuning_rounds": 4000,
+        "training.final_rounds": 4000,
+        "tuning.local_lr_multipliers": [1.0, 2.0, 4.0, 8.0],
+        "tuning.effective_learning_rate_grid": [0.001, 0.002, 0.004, 0.008],
+        "tuning.server_learning_rates": [1.0, 1.5, 2.0]
+      },
+      "reasons": [
+        "Tuning/final horizon mismatch: hyperparameters selected at a 150-round budget were used unverified for a 500-round campaign.",
+        "Grid-edge selection: all six (g0, method) tuning groups selected the ceiling of both tuned axes (learning_rate=0.002, server_learning_rate=1.5), with validation MSE decreasing monotonically across the whole grid and no interior optimum.",
+        "Non-convergence: at 150 tuning rounds, 29 of 36 runs peaked at round 149 (the final round); the 500-round horizon-confirmation runs then peaked at round 499 in 6 of 6 cases."
+      ],
+      "prefinals_gates": {
+        "convergence_gate": "If best_validation_round falls within the last 5% of comm_round for more than 20% of runs in any (g0, method) group, the horizon is insufficient: extend it and re-tune. Do not proceed to finals.",
+        "grid_edge_gate": "The at_grid_edge flag computed by scripts/select_eicu_study_a_v2_tuning.py must be False for all six (g0, method) groups. An edge selection means the search did not find an interior optimum and the grid must be widened again."
+      },
+      "evidence": {
+        "measurement_conditions": "equal_client_val_mse metric, seed 1011, learning_rate=0.002, server_learning_rate=1.5. All probe runs were validation-only diagnostics, never used for hyperparameter selection; the test split was never read.",
+        "grid_edge_evidence": "All six (g0, method) tuning groups selected learning_rate=0.002 and server_learning_rate=1.5, the ceiling of both grids, with monotonically decreasing validation MSE across all 36 candidates.",
+        "non_convergence_evidence": "29 of 36 runs peaked at round 149 of 150; 30 of 36 peaked within the final 10 rounds. All 6 horizon-confirmation runs at 500 rounds peaked at round 499.",
+        "horizon_probe_2000_rounds": [
+          {
+            "g0": "mlp",
+            "fedogda_lead_peak_round": 3,
+            "fedogda_lead_peak_value": -0.0022,
+            "crossover_round": 45,
+            "round_499_fedgda": 0.1514,
+            "round_499_fedogda": 0.2137,
+            "round_1999_fedgda": 0.1208,
+            "round_1999_fedogda": 0.1976
+          },
+          {
+            "g0": "linear",
+            "fedogda_lead_peak_round": 487,
+            "fedogda_lead_peak_value": -0.1178,
+            "crossover_round": 680,
+            "round_499_fedgda": 1.3480,
+            "round_499_fedogda": 1.2308,
+            "round_1999_fedgda": 0.3396,
+            "round_1999_fedogda": 0.4613
+          },
+          {
+            "g0": "interaction",
+            "fedogda_lead_peak_round": 547,
+            "fedogda_lead_peak_value": -0.1178,
+            "crossover_round": 734,
+            "round_499_fedgda": 3.0934,
+            "round_499_fedogda": 2.9793,
+            "round_1999_fedgda": 0.7203,
+            "round_1999_fedogda": 0.8184
+          }
+        ],
+        "horizon_probe_consequence": "The 500-round horizon captured essentially 100% of the maximum advantage FedOGDA ever holds on linear (peak at round 487), and the sign of the FedGDA-vs-FedOGDA difference reverses by round 700. At 500 rounds the campaign would have reported FedOGDA ahead on 2 of 3 structural functions; at 2000 rounds FedGDA is ahead on 3 of 3.",
+        "why_4000_not_2000": "interaction had not converged at 2000 rounds -- still improving 6.7% per 250 rounds at round 1750, with best_validation_round=1999. mlp converges fastest and begins overfitting after round 1184. The protocol selects the best-validation checkpoint, so a longer shared horizon is safe for fast-converging families.",
+        "why_drop_lr_0p0005": "At 2000 rounds lr=0.0005 reached only 1.348 (linear/FedGDA) versus 0.340 at lr=0.002 -- four times worse, and still descending 40.5% over the final 500 rounds. Not a distinct optimum, only a slower path to the same place."
+      },
+      "unchanged": [
+        "cohort (2031 admissions, 179 hospital clients, 1420/306/305 splits)",
+        "primary_endpoint",
+        "selection_metric",
+        "tie_breaker",
+        "test_blindness_discipline",
+        "decision_rule (favored at >=4/5 wins per g0 and >=12/15 pooled with sign agreement; otherwise inconclusive)"
+      ]
+    }
+  ]
+}

@@ -23,6 +23,7 @@ import GPUtil
 from fedml.computing.scheduler.slave.client_constants import ClientConstants
 
 FETAL_ERROR_START_CODE = 128
+FEDML_TRACE_DIR_ENV = "FEDGMM_FEDML_TRACE_DIR"
 
 SYS_ERR_CODE_MAP = {"0": "Successful exit without errors.",
                     "1": "One or more generic errors encountered upon exit.",
@@ -920,7 +921,10 @@ def do_upgrade(config_version, upgrade_version, show_local_console=False):
 
 
 def is_runner_finished_normally(process_id):
-    log_runner_result_file = os.path.join(expanduser("~"), ".fedml", "fedml_trace", str(process_id))
+    log_runner_result_dir = os.getenv(FEDML_TRACE_DIR_ENV)
+    if log_runner_result_dir is None or log_runner_result_dir == "":
+        log_runner_result_dir = os.path.join(expanduser("~"), ".fedml", "fedml_trace")
+    log_runner_result_file = os.path.join(log_runner_result_dir, str(process_id))
     if os.path.exists(log_runner_result_file):
         os.remove(log_runner_result_file)
         return True

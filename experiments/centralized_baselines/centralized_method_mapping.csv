@@ -1,0 +1,5 @@
+paper_name,manifest_method,verified_code_variant,implementation_status,meaning,notes
+DeepGMM-GDA,gda_d,,not_implemented,"Deterministic centralized GDA on pooled train data","Manifest rows exist, but are blocked placeholders. Current implemented GDA-style low-dimensional path is federated fedgda_d via FedAvgAPI, not true centralized."
+DeepGMM-SGDA / SGD(C),sgda_s,,not_implemented,"Stochastic/minibatch centralized GDA or SGD(C) on pooled train data","Manifest rows exist, but are blocked placeholders. Current fedgda_s is stochastic federated partial-client/minibatch behavior, not true centralized."
+DeepGMM-OAdam,oadam_s,,not_implemented,"Centralized OAdam baseline, likely the paper-reported OAdam method","An OAdam optimizer class exists, but the active low-dimensional DeepGMM runner does not dispatch to it. oadam_s should be the primary OAdam mapping if implemented."
+DeepGMM-OAdam deterministic extension,oadam_d,,not_implemented,"Deterministic/full-batch OAdam extension if the project chooses to report it","Manifest rows exist, but this is not verified as a paper-required baseline and is not wired to a true centralized runner."

@@ -1,0 +1,577 @@
+{
+  "contract_version": "2.1.0-study-a-v2-offhours",
+  "global_rules": {
+    "dataset": "eicu_semisynth_offhours_v2_demo",
+    "primary_selection_metric": "equal_client_validation_mse",
+    "sample_size_allowed_roles": [
+      "aggregation_ablation"
+    ],
+    "selection_source": "validation_only",
+    "test_mse_used_for_selection": false,
+    "unresolved_placeholder_patterns": [
+      "\\{\\{[^}]+\\}\\}",
+      "<(?:TUNE|TODO|TBD|UNRESOLVED)[^>]*>",
+      "\\$\\{[^}]+\\}",
+      "^(?:TUNE|TODO|TBD|UNRESOLVED)$"
+    ]
+  },
+  "json_paths": {
+    "config": {
+      "aggregation_weighting": [
+        "aggregation_weighting",
+        "federated.aggregation_weighting"
+      ],
+      "alignment_label": [
+        "alignment_label"
+      ],
+      "campaign_role": [
+        "campaign_role"
+      ],
+      "dataset": [
+        "dataset",
+        "data.dataset"
+      ],
+      "g0": [
+        "g0",
+        "scenario.g0"
+      ],
+      "input_dim": [
+        "input_dim_g",
+        "model.input_dim"
+      ],
+      "instrument_dim": [
+        "input_dim_f",
+        "model.instrument_dim"
+      ],
+      "method": [
+        "campaign_method_label",
+        "method",
+        "variant",
+        "training.method"
+      ],
+      "objective_mode": [
+        "objective_mode",
+        "objective.mode"
+      ],
+      "optimizer_seed": [
+        "optimizer_seed",
+        "random_seed"
+      ],
+      "primary_selection_metric": [
+        "primary_selection_metric",
+        "selection.primary_metric"
+      ],
+      "role": [
+        "role",
+        "campaign_role"
+      ],
+      "run_id": [
+        "run_id"
+      ],
+      "scenario": [
+        "scenario_name",
+        "data.scenario_name"
+      ],
+      "scenario_checksum": [
+        "scenario_checksum",
+        "data.scenario_checksum"
+      ],
+      "scenario_scope": [
+        "scenario_scope",
+        "data.scenario_scope"
+      ],
+      "scenario_seed": [
+        "scenario_seed"
+      ],
+      "seed": [
+        "scenario_seed",
+        "training.seed"
+      ],
+      "seed_pair_id": [
+        "seed_pair_id"
+      ],
+      "selection_source": [
+        "selection_source",
+        "selection_metric_source",
+        "selection.source"
+      ],
+      "test_mse_used_for_selection": [
+        "test_mse_used_for_selection",
+        "selection.test_mse_used"
+      ]
+    },
+    "metrics": {
+      "alignment_label": [
+        "alignment_label"
+      ],
+      "best_validation_round": [
+        "best_validation_round",
+        "selection.best_validation_round"
+      ],
+      "diverged": [
+        "diverged"
+      ],
+      "is_primary": [
+        "is_primary"
+      ],
+      "method": [
+        "method"
+      ],
+      "nonfinite_metrics": [
+        "divergence_evidence.nonfinite_metrics"
+      ],
+      "nonfinite_parameters": [
+        "divergence_evidence.nonfinite_parameters",
+        "nonfinite_parameters"
+      ],
+      "primary_equal_client_test_mse": [
+        "primary_equal_client_test_mse",
+        "equal_client_test_mse_at_best_validation",
+        "metrics.equal_client.test_mse"
+      ],
+      "primary_equal_client_validation_mse": [
+        "primary_equal_client_validation_mse",
+        "equal_client_best_validation_structural_mse",
+        "metrics.equal_client.validation_mse"
+      ],
+      "run_id": [
+        "run_id"
+      ],
+      "scenario_checksum": [
+        "scenario_checksum"
+      ],
+      "secondary_sample_weighted_test_mse": [
+        "secondary_sample_weighted_test_mse",
+        "sample_weighted_test_mse_at_best_validation",
+        "metrics.sample_weighted.test_mse"
+      ],
+      "secondary_sample_weighted_validation_mse": [
+        "secondary_sample_weighted_validation_mse",
+        "sample_weighted_validation_mse_at_best_validation",
+        "metrics.sample_weighted.validation_mse"
+      ],
+      "seed": [
+        "scenario_seed",
+        "seed"
+      ],
+      "selected_round": [
+        "selected_round",
+        "best_validation_round",
+        "selection.selected_round"
+      ],
+      "selection_metric": [
+        "selection_metric",
+        "selection.primary_metric"
+      ],
+      "selection_source": [
+        "selection_source",
+        "selection_metric_source",
+        "selection.source"
+      ],
+      "test_mse_at_best_validation": [
+        "test_mse_at_best_validation",
+        "metrics.test_mse_at_best_validation"
+      ],
+      "test_mse_reported_after_selection": [
+        "test_mse_reported_after_selection",
+        "selection.test_mse_reported_after_selection"
+      ]
+    },
+    "scenario": {
+      "artifact_path": [
+        "scenario_path",
+        "artifact_path"
+      ],
+      "eligible_client_provenance": [
+        "eligible_client_provenance"
+      ],
+      "g0": [
+        "g0.kind",
+        "g0"
+      ],
+      "input_dim": [
+        "input_dim",
+        "n_features_x",
+        "dimensions.input_dim"
+      ],
+      "instrument_dim": [
+        "instrument_dim",
+        "n_features_z",
+        "dimensions.instrument_dim"
+      ],
+      "is_demo": [
+        "is_demo"
+      ],
+      "outcome_dim": [
+        "outcome_dim",
+        "dimensions.outcome_dim"
+      ],
+      "scenario_checksum": [
+        "scenario_checksum_sha256",
+        "scenario_checksum",
+        "checksum"
+      ],
+      "scenario_scope": [
+        "scenario_scope"
+      ],
+      "scenario_seed": [
+        "scenario_seed",
+        "seed"
+      ],
+      "seed": [
+        "scenario_seed",
+        "seed"
+      ]
+    }
+  },
+  "manifest": {
+    "ablation_allowed_differences": [
+      "run_id",
+      "role",
+      "campaign_role",
+      "aggregation_weighting",
+      "alignment_label",
+      "result_path",
+      "config_path",
+      "run_group",
+      "notes"
+    ],
+    "boolean_fields": [
+      "test_mse_used_for_selection"
+    ],
+    "config_ablation_allowed_differences": [
+      "run_id",
+      "role",
+      "campaign_role",
+      "aggregation_weighting",
+      "alignment_label"
+    ],
+    "fields": {
+      "aggregation_weighting": "aggregation_weighting",
+      "alignment_label": "alignment_label",
+      "campaign_role": "campaign_role",
+      "config_path": "config_path",
+      "dataset": "dataset",
+      "g0": "g0",
+      "input_dim": "input_dim_g",
+      "instrument_dim": "input_dim_f",
+      "method": "method",
+      "objective_mode": "objective_mode",
+      "optimizer_seed": "optimizer_seed",
+      "output_root": "output_root",
+      "primary_selection_metric": "primary_selection_metric",
+      "result_path": "result_path",
+      "role": "role",
+      "run_id": "run_id",
+      "scenario": "scenario_name",
+      "scenario_checksum": "scenario_checksum",
+      "scenario_metadata_path": "scenario_metadata_path",
+      "scenario_scope": "scenario_scope",
+      "scenario_seed": "scenario_seed",
+      "seed": "scenario_seed",
+      "seed_pair_id": "seed_pair_id",
+      "selection_source": "selection_source",
+      "study_claim": "study_claim",
+      "test_mse_used_for_selection": "test_mse_used_for_selection"
+    },
+    "integer_fields": [
+      "seed",
+      "scenario_seed",
+      "optimizer_seed",
+      "input_dim",
+      "instrument_dim"
+    ],
+    "required_fields": [
+      "run_id",
+      "role",
+      "dataset",
+      "scenario",
+      "g0",
+      "method",
+      "seed",
+      "scenario_seed",
+      "optimizer_seed",
+      "seed_pair_id",
+      "aggregation_weighting",
+      "objective_mode",
+      "alignment_label",
+      "primary_selection_metric",
+      "test_mse_used_for_selection",
+      "selection_source",
+      "scenario_checksum",
+      "scenario_scope",
+      "study_claim",
+      "scenario_metadata_path",
+      "result_path",
+      "input_dim",
+      "instrument_dim"
+    ]
+  },
+  "pairing": {
+    "federated_pair": {
+      "methods": [
+        "fedgda_s",
+        "fedogda_s"
+      ],
+      "role": "confirmatory"
+    },
+    "key_fields": [
+      "g0",
+      "seed_pair_id"
+    ],
+    "same_scenario_roles": [
+      "confirmatory",
+      "centralized_baseline",
+      "aggregation_ablation"
+    ],
+    "scenario_identity_fields": [
+      "dataset",
+      "scenario",
+      "scenario_checksum",
+      "input_dim",
+      "instrument_dim"
+    ]
+  },
+  "postrun": {
+    "effective_config_compare_fields": [
+      "run_id",
+      "role",
+      "dataset",
+      "scenario",
+      "g0",
+      "method",
+      "seed",
+      "aggregation_weighting",
+      "objective_mode",
+      "alignment_label",
+      "primary_selection_metric",
+      "test_mse_used_for_selection",
+      "selection_source",
+      "scenario_checksum",
+      "scenario_scope",
+      "input_dim",
+      "instrument_dim"
+    ],
+    "per_client_artifact_alternatives": [
+      "per_client_metrics.csv",
+      "per_client_eval_best_validation_test.csv",
+      "per_client_evaluation.json"
+    ],
+    "required_file_alternatives": [
+      [
+        "checkpoints/best_validation.pt",
+        "best_validation.pt",
+        "best_checkpoint.pt",
+        "best_model.pt",
+        "checkpoint_best.pt"
+      ],
+      [
+        "checkpoints/final.pt",
+        "final.pt",
+        "final_checkpoint.pt",
+        "last_checkpoint.pt",
+        "checkpoint_final.pt"
+      ]
+    ],
+    "required_files": [
+      "effective_config.json",
+      "mse_by_round.csv",
+      "metrics.json",
+      "predictions.npz"
+    ],
+    "required_primary_metric_fields": [
+      "primary_equal_client_validation_mse",
+      "primary_equal_client_test_mse",
+      "test_mse_at_best_validation"
+    ],
+    "required_secondary_metric_fields": [
+      "secondary_sample_weighted_validation_mse",
+      "secondary_sample_weighted_test_mse"
+    ],
+    "round_curve_columns": {
+      "primary_validation_metric": "primary_val_mse",
+      "round": "round"
+    }
+  },
+  "roles": {
+    "aggregation_ablation": {
+      "aggregation_weighting": [
+        "sample_size"
+      ],
+      "alignment_label": [
+        "non_paper_aligned_aggregation_ablation"
+      ],
+      "compare_to_role": "confirmatory",
+      "federated": true,
+      "fixed_row_count": 30,
+      "g0": [
+        "linear",
+        "interaction",
+        "mlp"
+      ],
+      "methods": [
+        "fedgda_s",
+        "fedogda_s"
+      ],
+      "objective_mode": [
+        "paper_aligned"
+      ],
+      "primary": false,
+      "reject_demo": true,
+      "require_frozen_config": false,
+      "require_per_client_artifact": false,
+      "required": true,
+      "scenario_scope": [
+        "full_eicu"
+      ],
+      "seeds": [
+        101,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    "centralized_baseline": {
+      "aggregation_weighting": [
+        "none"
+      ],
+      "alignment_label": [
+        "centralized_reference"
+      ],
+      "federated": false,
+      "fixed_row_count": 45,
+      "g0": [
+        "linear",
+        "interaction",
+        "mlp"
+      ],
+      "methods": [
+        "gda_d",
+        "sgda_s",
+        "oadam_s"
+      ],
+      "objective_mode": [
+        "paper_aligned"
+      ],
+      "primary": false,
+      "reject_demo": true,
+      "require_frozen_config": false,
+      "require_per_client_artifact": false,
+      "required": true,
+      "scenario_scope": [
+        "full_eicu"
+      ],
+      "seeds": [
+        101,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    "confirmatory": {
+      "aggregation_weighting": [
+        "uniform_clients"
+      ],
+      "alignment_label": [
+        "primary_extension"
+      ],
+      "federated": true,
+      "fixed_row_count": 30,
+      "g0": [
+        "linear",
+        "interaction",
+        "mlp"
+      ],
+      "methods": [
+        "fedgda_s",
+        "fedogda_s"
+      ],
+      "objective_mode": [
+        "paper_aligned"
+      ],
+      "primary": true,
+      "reject_demo": true,
+      "require_frozen_config": false,
+      "require_per_client_artifact": true,
+      "required": true,
+      "scenario_scope": [
+        "full_eicu"
+      ],
+      "seeds": [
+        101,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    "smoke": {
+      "aggregation_weighting": [
+        "uniform_clients",
+        "none"
+      ],
+      "alignment_label": [
+        "non_primary_smoke"
+      ],
+      "federated": true,
+      "fixed_row_count": null,
+      "primary": false,
+      "reject_demo": false,
+      "require_frozen_config": false,
+      "require_per_client_artifact": false,
+      "required": false,
+      "scenario_scope": [
+        "full_eicu",
+        "demo"
+      ]
+    },
+    "tuning": {
+      "aggregation_weighting": [
+        "uniform_clients"
+      ],
+      "alignment_label": [
+        "validation_only_tuning"
+      ],
+      "federated": true,
+      "fixed_row_count": null,
+      "primary": false,
+      "reject_demo": false,
+      "require_frozen_config": false,
+      "require_per_client_artifact": false,
+      "required": false,
+      "scenario_scope": [
+        "full_eicu",
+        "demo"
+      ]
+    }
+  },
+  "scenario_rules": {
+    "checksum_algorithm": "sha256",
+    "required_metadata_fields": [
+      "eligible_client_provenance",
+      "g0",
+      "scenario_seed",
+      "input_dim",
+      "instrument_dim",
+      "outcome_dim",
+      "scenario_checksum",
+      "is_demo",
+      "scenario_scope",
+      "certification_passed",
+      "client_id_column",
+      "wardid_used_as_client"
+    ]
+  },
+  "study": {
+    "claim": "semi_synthetic_benchmark_no_clinical_claim",
+    "forbidden_claim_patterns": [
+      "paper[_ -]?match",
+      "paper[_ -]?numeric[_ -]?reproduction",
+      "reproduces?[_ -]?published"
+    ],
+    "name": "eICU Study A v2 off-hours",
+    "published_numeric_target": false
+  }
+}

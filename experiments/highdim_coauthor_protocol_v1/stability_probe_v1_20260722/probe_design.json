@@ -1,0 +1,35 @@
+{
+  "manifest": "experiments/highdim_coauthor_protocol_v1/stability_probe_v1_20260722/probe_manifest.csv",
+  "output_root": "results/stability_probe_v1_20260722",
+  "runs": 16,
+  "cells": [
+    "cifar10_x/fedgda_s",
+    "cifar10_xz/fedogda_s"
+  ],
+  "grid": {
+    "learning_rate": [
+      0.001,
+      0.003
+    ],
+    "critic_multiplier": [
+      1.0,
+      3.0
+    ],
+    "server_learning_rate": [
+      1.0,
+      1.5
+    ]
+  },
+  "fixed": {
+    "alpha": 0.1,
+    "seed": 0,
+    "comm_round": 1500,
+    "weight_decay": 0.05,
+    "gradient_clip_norm": 1.0
+  },
+  "baseline_reference": {
+    "cifar10_x/fedgda_s": "final matrix run at lr=0.01, cm=10, slr=1.5",
+    "cifar10_xz/fedogda_s": "final matrix run at lr=0.01, cm=10, slr=1.5"
+  },
+  "success_criterion": "final-vs-best validation gap <= 1.5x and best round > 500"
+}

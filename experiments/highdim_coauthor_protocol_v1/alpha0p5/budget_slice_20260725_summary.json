@@ -1,0 +1,43 @@
+{
+  "budget_hours": 17.0,
+  "cells_selected": [
+    {
+      "already_done": 8,
+      "cell": "cifar10_x",
+      "to_run": 2
+    },
+    {
+      "already_done": 0,
+      "cell": "cifar10_xz",
+      "to_run": 10
+    },
+    {
+      "already_done": 0,
+      "cell": "cifar10_z",
+      "to_run": 10
+    }
+  ],
+  "cells_skipped_over_budget": [
+    {
+      "cell": "femnist_x",
+      "to_run": 10,
+      "would_cost_h": 7.7
+    },
+    {
+      "cell": "femnist_xz",
+      "to_run": 10,
+      "would_cost_h": 7.7
+    },
+    {
+      "cell": "femnist_z",
+      "to_run": 10,
+      "would_cost_h": 7.7
+    }
+  ],
+  "estimated_hours": 16.94,
+  "hours_per_run_assumed": 0.77,
+  "n_runs_selected": 22,
+  "output_manifest": "experiments/highdim_coauthor_protocol_v1/alpha0p5/budget_slice_20260725.csv",
+  "output_root": "results/rerun_protocol_v1_real_images_abs_alpha0p5",
+  "source_manifest": "experiments/highdim_coauthor_protocol_v1/alpha0p5/final_manifest_stochastic.csv"
+}

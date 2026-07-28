@@ -1,0 +1,18 @@
+{
+  "alpha": 0.5,
+  "manifest": "experiments/curve_fitting_tuning/sine_alpha0p5_paired_v1/stage_a_manifest.csv",
+  "methods": [
+    "fedgda_s",
+    "fedogda_s"
+  ],
+  "output_root": "results/curve_fitting_tuning/sine_alpha0p5_paired_v1",
+  "screen_name": "sine_alpha0p5_paired_v1",
+  "selection_rule": "validation-only: lowest best_validation_mse; tie lower last_50_val_mse_std; tie lower final_vs_best_validation_gap",
+  "stage_a_configs_per_method": 16,
+  "stage_a_rows": 32,
+  "stage_plan": {
+    "stage_a": "16 matched seed-0 configurations/method, 500 rounds",
+    "stage_b": "top 2/method, server learning-rate refinement, 500 rounds",
+    "stage_c": "top 2/method, seeds 0-2, 1000 rounds"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "alpha": 0.5,
+  "centralized_rows": 0,
+  "data_generation_command": "/home/arnav22103/miniconda3/envs/fedgmm/bin/python scripts/prepare_real_image_abs_data.py",
+  "datasets": [
+    "femnist_x",
+    "femnist_z",
+    "femnist_xz",
+    "cifar10_x",
+    "cifar10_z",
+    "cifar10_xz"
+  ],
+  "dry_run_command_template": "/home/arnav22103/miniconda3/envs/fedgmm/bin/python scripts/run_manifest.py --manifest experiments/rerun_protocol_v1_real_images_abs_alpha0p5/manifest.csv --config-dir experiments/rerun_protocol_v1_real_images_abs_alpha0p5/generated_configs --output-root results/rerun_protocol_v1_real_images_abs_alpha0p5 --default-learning-rate <LR> --default-weight-decay <WD> --dry-run",
+  "federated_rows": 120,
+  "femnist_only_digits": true,
+  "g_function": "abs",
+  "methods": [
+    "fedgda_d",
+    "fedgda_s",
+    "fedogda_d",
+    "fedogda_s"
+  ],
+  "protocol_version": "rerun_protocol_v1_real_images_abs_alpha0p5",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "total_rows": 120
+}

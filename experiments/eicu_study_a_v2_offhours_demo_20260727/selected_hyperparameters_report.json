@@ -1,0 +1,211 @@
+{
+  "_campaign_warnings": {
+    "grid_edge": [
+      "interaction:fedgda_s: winning candidate is at the grid edge on learning_rate=high, server_learning_rate=high -- it may only be winning because the grid did not extend further in that direction.",
+      "interaction:fedogda_s: winning candidate is at the grid edge on learning_rate=high, server_learning_rate=high -- it may only be winning because the grid did not extend further in that direction.",
+      "linear:fedgda_s: winning candidate is at the grid edge on learning_rate=high, server_learning_rate=high -- it may only be winning because the grid did not extend further in that direction.",
+      "linear:fedogda_s: winning candidate is at the grid edge on learning_rate=high, server_learning_rate=high -- it may only be winning because the grid did not extend further in that direction.",
+      "mlp:fedgda_s: winning candidate is at the grid edge on learning_rate=high, server_learning_rate=high -- it may only be winning because the grid did not extend further in that direction.",
+      "mlp:fedogda_s: winning candidate is at the grid edge on learning_rate=high, server_learning_rate=high -- it may only be winning because the grid did not extend further in that direction."
+    ],
+    "horizon_mismatch": "tuning_rounds=150 vs final_rounds=500: the selected (learning_rate, server_learning_rate) pairs have not been verified to remain optimal at the final horizon. Use --emit-horizon-confirmation-manifest to generate (never launch) a validation-only re-run at rounds=500 before trusting these picks for the final campaign."
+  },
+  "interaction:fedgda_s": {
+    "n_candidates": 6,
+    "n_diverged": 0,
+    "selected": {
+      "at_grid_edge": true,
+      "at_grid_edge_parameters": {
+        "learning_rate": "high",
+        "server_learning_rate": "high"
+      },
+      "equal_client_validation_moment_violation": 0.5007443496793395,
+      "equal_client_validation_mse": 5.183691506210298,
+      "final_rounds": 500,
+      "grid_learning_rate_candidates": [
+        0.0005,
+        0.001,
+        0.002
+      ],
+      "grid_server_learning_rate_candidates": [
+        1.0,
+        1.5
+      ],
+      "horizon_mismatch_warning": "selected using rounds=150; NOT verified to remain optimal at the final campaign's rounds=500. Run this module with --emit-horizon-confirmation-manifest to generate (never launch) a validation-only re-run of this exact (learning_rate, server_learning_rate) at rounds=500 before trusting this pick for the final campaign.",
+      "learning_rate": 0.002,
+      "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr1p5",
+      "selection_rule": [
+        "equal_client_validation_mse",
+        "equal_client_validation_moment_violation_at_best_validation"
+      ],
+      "server_learning_rate": 1.5,
+      "test_fields_read": [],
+      "tuning_rounds": 150
+    }
+  },
+  "interaction:fedogda_s": {
+    "n_candidates": 6,
+    "n_diverged": 0,
+    "selected": {
+      "at_grid_edge": true,
+      "at_grid_edge_parameters": {
+        "learning_rate": "high",
+        "server_learning_rate": "high"
+      },
+      "equal_client_validation_moment_violation": 0.42676020110078755,
+      "equal_client_validation_mse": 5.167045091025052,
+      "final_rounds": 500,
+      "grid_learning_rate_candidates": [
+        0.0005,
+        0.001,
+        0.002
+      ],
+      "grid_server_learning_rate_candidates": [
+        1.0,
+        1.5
+      ],
+      "horizon_mismatch_warning": "selected using rounds=150; NOT verified to remain optimal at the final campaign's rounds=500. Run this module with --emit-horizon-confirmation-manifest to generate (never launch) a validation-only re-run of this exact (learning_rate, server_learning_rate) at rounds=500 before trusting this pick for the final campaign.",
+      "learning_rate": 0.002,
+      "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr1p5",
+      "selection_rule": [
+        "equal_client_validation_mse",
+        "equal_client_validation_moment_violation_at_best_validation"
+      ],
+      "server_learning_rate": 1.5,
+      "test_fields_read": [],
+      "tuning_rounds": 150
+    }
+  },
+  "linear:fedgda_s": {
+    "n_candidates": 6,
+    "n_diverged": 0,
+    "selected": {
+      "at_grid_edge": true,
+      "at_grid_edge_parameters": {
+        "learning_rate": "high",
+        "server_learning_rate": "high"
+      },
+      "equal_client_validation_moment_violation": 0.410479522749071,
+      "equal_client_validation_mse": 3.4957426939951475,
+      "final_rounds": 500,
+      "grid_learning_rate_candidates": [
+        0.0005,
+        0.001,
+        0.002
+      ],
+      "grid_server_learning_rate_candidates": [
+        1.0,
+        1.5
+      ],
+      "horizon_mismatch_warning": "selected using rounds=150; NOT verified to remain optimal at the final campaign's rounds=500. Run this module with --emit-horizon-confirmation-manifest to generate (never launch) a validation-only re-run of this exact (learning_rate, server_learning_rate) at rounds=500 before trusting this pick for the final campaign.",
+      "learning_rate": 0.002,
+      "run_id": "tuning_linear_fedgda_s_tuning_01_lrm2p0_slr1p5",
+      "selection_rule": [
+        "equal_client_validation_mse",
+        "equal_client_validation_moment_violation_at_best_validation"
+      ],
+      "server_learning_rate": 1.5,
+      "test_fields_read": [],
+      "tuning_rounds": 150
+    }
+  },
+  "linear:fedogda_s": {
+    "n_candidates": 6,
+    "n_diverged": 0,
+    "selected": {
+      "at_grid_edge": true,
+      "at_grid_edge_parameters": {
+        "learning_rate": "high",
+        "server_learning_rate": "high"
+      },
+      "equal_client_validation_moment_violation": 0.4291396976310117,
+      "equal_client_validation_mse": 3.435907821784038,
+      "final_rounds": 500,
+      "grid_learning_rate_candidates": [
+        0.0005,
+        0.001,
+        0.002
+      ],
+      "grid_server_learning_rate_candidates": [
+        1.0,
+        1.5
+      ],
+      "horizon_mismatch_warning": "selected using rounds=150; NOT verified to remain optimal at the final campaign's rounds=500. Run this module with --emit-horizon-confirmation-manifest to generate (never launch) a validation-only re-run of this exact (learning_rate, server_learning_rate) at rounds=500 before trusting this pick for the final campaign.",
+      "learning_rate": 0.002,
+      "run_id": "tuning_linear_fedogda_s_tuning_01_lrm2p0_slr1p5",
+      "selection_rule": [
+        "equal_client_validation_mse",
+        "equal_client_validation_moment_violation_at_best_validation"
+      ],
+      "server_learning_rate": 1.5,
+      "test_fields_read": [],
+      "tuning_rounds": 150
+    }
+  },
+  "mlp:fedgda_s": {
+    "n_candidates": 6,
+    "n_diverged": 0,
+    "selected": {
+      "at_grid_edge": true,
+      "at_grid_edge_parameters": {
+        "learning_rate": "high",
+        "server_learning_rate": "high"
+      },
+      "equal_client_validation_moment_violation": 0.0989571697195251,
+      "equal_client_validation_mse": 0.25043524303135767,
+      "final_rounds": 500,
+      "grid_learning_rate_candidates": [
+        0.0005,
+        0.001,
+        0.002
+      ],
+      "grid_server_learning_rate_candidates": [
+        1.0,
+        1.5
+      ],
+      "horizon_mismatch_warning": "selected using rounds=150; NOT verified to remain optimal at the final campaign's rounds=500. Run this module with --emit-horizon-confirmation-manifest to generate (never launch) a validation-only re-run of this exact (learning_rate, server_learning_rate) at rounds=500 before trusting this pick for the final campaign.",
+      "learning_rate": 0.002,
+      "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr1p5",
+      "selection_rule": [
+        "equal_client_validation_mse",
+        "equal_client_validation_moment_violation_at_best_validation"
+      ],
+      "server_learning_rate": 1.5,
+      "test_fields_read": [],
+      "tuning_rounds": 150
+    }
+  },
+  "mlp:fedogda_s": {
+    "n_candidates": 6,
+    "n_diverged": 0,
+    "selected": {
+      "at_grid_edge": true,
+      "at_grid_edge_parameters": {
+        "learning_rate": "high",
+        "server_learning_rate": "high"
+      },
+      "equal_client_validation_moment_violation": 0.06637719724244194,
+      "equal_client_validation_mse": 0.2698421709257896,
+      "final_rounds": 500,
+      "grid_learning_rate_candidates": [
+        0.0005,
+        0.001,
+        0.002
+      ],
+      "grid_server_learning_rate_candidates": [
+        1.0,
+        1.5
+      ],
+      "horizon_mismatch_warning": "selected using rounds=150; NOT verified to remain optimal at the final campaign's rounds=500. Run this module with --emit-horizon-confirmation-manifest to generate (never launch) a validation-only re-run of this exact (learning_rate, server_learning_rate) at rounds=500 before trusting this pick for the final campaign.",
+      "learning_rate": 0.002,
+      "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr1p5",
+      "selection_rule": [
+        "equal_client_validation_mse",
+        "equal_client_validation_moment_violation_at_best_validation"
+      ],
+      "server_learning_rate": 1.5,
+      "test_fields_read": [],
+      "tuning_rounds": 150
+    }
+  }
+}

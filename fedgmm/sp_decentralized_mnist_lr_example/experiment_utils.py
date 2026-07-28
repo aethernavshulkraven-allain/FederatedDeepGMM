@@ -108,6 +108,8 @@ EFFECTIVE_CONFIG_FIELDS = (
     "objective_mode",
     "input_dim_g",
     "input_dim_f",
+    "hidden_widths",
+    "model_activation",
     "enable_legacy_outputs",
     "enable_legacy_plot",
     "overwrite",
@@ -344,6 +346,10 @@ def get_effective_config(args):
         "objective_mode": objective_mode,
         "input_dim_g": int(getattr(args, "input_dim_g", 0)),
         "input_dim_f": int(getattr(args, "input_dim_f", 0)),
+        "hidden_widths": str(getattr(args, "hidden_widths", "64,64")),
+        "model_activation": str(
+            getattr(args, "model_activation", "leaky_relu")
+        ),
         "random_seed": seed,
         "scenario_seed": scenario_seed,
         "optimizer_seed": optimizer_seed,
@@ -1107,7 +1113,79 @@ def config_checksum(config):
     return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
 
 
+# protocol_v1.md campaign provenance fields. A prior Study A campaign ran all
+# 105 confirmatory runs before anyone noticed the federated serializer had
+# silently omitted these 8 fields from every effective_config.json; 60 runs
+# then needed post-hoc repair via scripts/reconcile_eicu_study_a_artifacts.py
+# (120 files archived). The root cause -- these fields not being threaded
+# through -- is already fixed (see EFFECTIVE_CONFIG_FIELDS above,
+# get_effective_config, and run_manifest.py's write_config), but nothing
+# previously rejected an EMPTY value for them, so the same silent failure
+# could recur from any future refactor. Keep this tuple's contents identical
+# to scripts/reconcile_eicu_study_a_artifacts.py's PROVENANCE_FIELDS.
+CAMPAIGN_PROVENANCE_FIELDS = (
+    "role",
+    "scenario_name",
+    "g0",
+    "alignment_label",
+    "primary_selection_metric",
+    "selection_source",
+    "scenario_scope",
+    "study_claim",
+)
+
+
 def write_effective_config(run_dir, config):
+    """Write ``effective_config.json``, the run's serialized configuration.
+
+    Campaign provenance guard: a run needs ``CAMPAIGN_PROVENANCE_FIELDS``
+    populated exactly when it is an eICU Study A style campaign run --
+    ``config["dataset"]`` starts with ``"eicu"`` (matching the exact gate
+    already used by ``check_eicu_aggregation_weighting`` /
+    ``check_eicu_objective_mode`` above for this same "Study A discipline
+    applies" question) *and* ``config["protocol_version"]`` is a non-empty
+    string.
+
+    Note this is deliberately narrower than "protocol_version is set":
+    ``protocol_version`` is a generic field used by many non-eICU campaign
+    families in this repo (rerun_protocol_v1, highdim_coauthor_protocol_v1,
+    sine_fedogda_tuning, curve_fitting_tuning, real-image ABS, GPU-util
+    profiling, ...) that never populate ``CAMPAIGN_PROVENANCE_FIELDS`` and
+    were never expected to -- gating on ``protocol_version`` alone would
+    make every one of those families' still-resumable manifests (e.g. the
+    FedOGDA-S tuning pilot documented in AGENTS.md) start raising on their
+    very first future run, which is exactly the "must not break" case this
+    guard is required to avoid. Every eICU-dataset manifest actually in this
+    repo already populates all 8 fields, so this narrower gate loses no
+    real coverage of the incident this guard exists to prevent.
+
+    For eICU campaign runs, every field in ``CAMPAIGN_PROVENANCE_FIELDS``
+    must be present and non-empty (``None`` and ``""`` both count as
+    missing), or this raises ``ValueError`` naming exactly which fields are
+    missing and which run directory hit the problem. Every other run --
+    non-eICU, or eICU with an empty ``protocol_version`` -- is completely
+    unaffected and keeps working exactly as today.
+    """
+    dataset = str(config.get("dataset") or "")
+    protocol_version = str(config.get("protocol_version") or "").strip()
+    if dataset.startswith("eicu") and protocol_version:
+        missing = [
+            field
+            for field in CAMPAIGN_PROVENANCE_FIELDS
+            if not str(config.get(field) or "").strip()
+        ]
+        if missing:
+            raise ValueError(
+                "write_effective_config: eICU campaign run (dataset="
+                f"{dataset!r}, protocol_version={protocol_version!r}) for "
+                f"run_dir={run_dir!r} is missing required non-empty "
+                f"provenance field(s): {missing}. This guard exists because "
+                "a prior Study A campaign silently dropped these fields for "
+                "60/105 runs before anyone noticed (see "
+                "scripts/reconcile_eicu_study_a_artifacts.py); check that "
+                "both the manifest row and get_effective_config() set every "
+                f"field in {list(CAMPAIGN_PROVENANCE_FIELDS)}."
+            )
     ensure_run_dirs(run_dir)
     path = os.path.join(run_dir, "effective_config.json")
     with open(path, "w") as f:

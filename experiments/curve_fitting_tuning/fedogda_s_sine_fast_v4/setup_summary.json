@@ -1,0 +1,23 @@
+{
+  "baseline_to_beat": {
+    "amp_ratio": 0.619,
+    "best_validation_mse": 0.02964276923734608,
+    "critic_multiplier": 8.0,
+    "curve_mae": 0.13467988046524487,
+    "learning_rate": 0.01,
+    "objective_lambda_1": 0.01,
+    "server_learning_rate": 1.5,
+    "test_mse_at_best_validation": 0.030104425463267824
+  },
+  "manifest": "experiments/curve_fitting_tuning/fedogda_s_sine_fast_v4/stage_a_manifest.csv",
+  "output_root": "results/curve_fitting_tuning/fedogda_s_sine_fast_v4",
+  "rows": 24,
+  "screen_name": "fedogda_s_sine_fast_v4",
+  "selection_rule": "validation-only: finite/non-diverged; lowest best_validation_mse; tie lower last_50_val_mse_std; tie lower final_vs_best_validation_gap",
+  "speed_policy": {
+    "log_test_mse_by_round": false,
+    "periodic_checkpoint_interval": 0,
+    "weight_decay": 0.0
+  },
+  "stage_a_rows": 24
+}

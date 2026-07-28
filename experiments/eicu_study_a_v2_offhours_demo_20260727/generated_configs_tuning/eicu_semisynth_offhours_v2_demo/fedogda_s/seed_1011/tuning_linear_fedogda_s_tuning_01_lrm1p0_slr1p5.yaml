@@ -1,0 +1,87 @@
+common_args:
+  training_type: "simulation"
+  using_mlops: false
+  random_seed: 1011
+  run_id: "tuning_linear_fedogda_s_tuning_01_lrm1p0_slr1p5"
+  config_version: "release"
+  output_dir: "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo"
+  overwrite: false
+  protocol_version: "eicu_study_a_v2_offhours"
+  role: "tuning"
+  alignment_label: "validation_only_tuning"
+  study_claim: "semi_synthetic_benchmark_no_clinical_claim"
+
+data_args:
+  dataset: "eicu_semisynth_offhours_v2_demo"
+  data_cache_dir: "/home/arnav22103/FederatedDeepGMM/fedgmm/sp_decentralized_mnist_lr_example/data"
+  partition_method: "natural"
+  partition_alpha: 0.0
+  dataloader_num_workers: 0
+  dataloader_pin_memory: false
+  scenario_name: "linear_scenario_seed11"
+  scenario_checksum: "89aab5df8d3818ea635f557af8a5a9b91a6f86ba63c253865ed9cc848618b1a1"
+  scenario_scope: "demo"
+  g0: "linear"
+
+model_args:
+  model: "lr"
+  input_dim_g: 47
+  input_dim_f: 47
+  hidden_widths: "32,32"
+  model_activation: "relu"
+
+train_args:
+  federated_optimizer: "FedAvg"
+  client_id_list: "[]"
+  client_num_in_total: 179
+  client_num_per_round: 179
+  comm_round: 150
+  epochs: 1
+  batch_size: 4
+  client_optimizer: "ogda"
+  learning_rate: 0.001
+  weight_decay: 0.01
+  critic_multiplier: 10.0
+  server_learning_rate: 1.5
+  objective_lambda_1: 0.1
+  gradient_clip_norm: 1.0
+  simple_model_selection_epochs: 100
+  f_history_model_selection_epochs: 60
+  model_selection_batch_size: 200
+  model_selection_max_samples: 0
+  enable_legacy_outputs: false
+  require_multibatch_stochastic: true
+  log_test_mse_by_round: false
+  test_mse_used_for_selection: false
+  selection_metric_source: "validation"
+  primary_selection_metric: "equal_client_validation_mse"
+  selection_source: "validation_only"
+  skip_model_selection: true
+  skip_gmm_eval: true
+  gmm_eval_proxy: "negative_val_mse"
+  auxiliary_regression: true
+  auxiliary_regression_epochs: 1
+  auxiliary_regression_state_device: "device"
+  append_round_csv: true
+  periodic_checkpoint_interval: 200
+  objective_mode: "paper_aligned"
+  aggregation_weighting: "uniform_clients"
+  scenario_seed: 11
+  optimizer_seed: 1011
+  seed_pair_id: "tuning_01"
+
+validation_args:
+  frequency_of_the_test: 1
+
+device_args:
+  using_gpu: false
+  gpu_id: 0
+
+comm_args:
+  backend: "sp"
+
+tracking_args:
+  enable_tracking: false
+  enable_wandb: false
+  run_name: "eicu_semisynth_offhours_v2_demo_fedogda_s_seed_1011_tuning_linear_fedogda_s_tuning_01_lrm1p0_slr1p5"
+

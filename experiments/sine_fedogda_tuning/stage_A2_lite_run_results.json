@@ -1,0 +1,18 @@
+[
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 0.07464631151131235,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_1/stage_A2_from_A1_mini_sin_fedogda_d_seed1_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed1_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.07464631151131235
+  },
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 0.08217807288456339,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_2/stage_A2_from_A1_mini_sin_fedogda_d_seed2_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed2_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.08217807288456339
+  }
+]

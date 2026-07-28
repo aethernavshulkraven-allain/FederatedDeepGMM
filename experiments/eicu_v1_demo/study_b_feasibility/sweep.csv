@@ -1,0 +1,31 @@
+pop,trt,n,treated,deaths,hosp,usable,big5,big20
+A. dx offset <= 0 (old Study B),vaso 0-6h,6,0,1,6,0,0,0
+A. dx offset <= 0 (old Study B),vaso 0-24h,6,0,1,6,0,0,0
+A. dx offset <= 0 (old Study B),vaso any,6,0,1,6,0,0,0
+A. dx offset <= 0 (old Study B),vent day1,13,1,2,11,0,0,0
+A. dx offset <= 0 (old Study B),dialysis day1,13,0,2,11,0,0,0
+B. admissionDx only (corrected),vaso 0-6h,173,28,27,81,2,0,0
+B. admissionDx only (corrected),vaso 0-24h,173,42,27,81,2,0,0
+B. admissionDx only (corrected),vaso any,173,48,27,81,2,0,0
+B. admissionDx only (corrected),vent day1,259,50,43,127,3,0,0
+B. admissionDx only (corrected),dialysis day1,259,9,43,127,2,0,0
+C. admissionDx or apacheAdmitDx,vaso 0-6h,173,28,27,81,2,0,0
+C. admissionDx or apacheAdmitDx,vaso 0-24h,173,42,27,81,2,0,0
+C. admissionDx or apacheAdmitDx,vaso any,173,48,27,81,2,0,0
+C. admissionDx or apacheAdmitDx,vent day1,259,50,43,127,3,0,0
+C. admissionDx or apacheAdmitDx,dialysis day1,259,9,43,127,2,0,0
+D. dx +/-360min or admitDx (v1),vaso 0-6h,201,32,33,89,3,0,0
+D. dx +/-360min or admitDx (v1),vaso 0-24h,201,46,33,89,3,0,0
+D. dx +/-360min or admitDx (v1),vaso any,201,54,33,89,3,0,0
+D. dx +/-360min or admitDx (v1),vent day1,304,62,49,139,4,0,0
+D. dx +/-360min or admitDx (v1),dialysis day1,304,10,49,139,2,0,0
+E. sepsis ANY time (maximal),vaso 0-6h,223,37,41,93,4,0,0
+E. sepsis ANY time (maximal),vaso 0-24h,223,53,41,93,4,0,0
+E. sepsis ANY time (maximal),vaso any,223,62,41,93,4,0,0
+E. sepsis ANY time (maximal),vent day1,334,74,58,143,5,0,0
+E. sepsis ANY time (maximal),dialysis day1,334,11,58,143,2,0,0
+F. no sepsis filter (all adult ICU),vaso 0-6h,1359,95,112,123,19,0,0
+F. no sepsis filter (all adult ICU),vaso 0-24h,1359,141,112,123,25,2,0
+F. no sepsis filter (all adult ICU),vaso any,1359,168,112,123,25,2,0
+F. no sepsis filter (all adult ICU),vent day1,2086,393,175,186,45,15,0
+F. no sepsis filter (all adult ICU),dialysis day1,2086,65,175,186,16,2,0

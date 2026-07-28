@@ -1,0 +1,15 @@
+{
+  "launched_at": "2026-07-21T21:14:45+05:30",
+  "tmux_session": "stability_probe_v1_20260722",
+  "gpurun_job_id": "344",
+  "gpu_request": 1,
+  "manifest": "experiments/highdim_coauthor_protocol_v1/stability_probe_v1_20260722/probe_manifest.csv",
+  "config_dir": "experiments/highdim_coauthor_protocol_v1/stability_probe_v1_20260722/generated_configs",
+  "output_root": "results/stability_probe_v1_20260722",
+  "results_json": "experiments/highdim_coauthor_protocol_v1/stability_probe_v1_20260722/launcher_results.json",
+  "console_log": "experiments/highdim_coauthor_protocol_v1/stability_probe_v1_20260722/launcher_console.log",
+  "runs": 16,
+  "smoke_test": "2 configs x 5 rounds passed before launch (scratchpad output root, not preserved)",
+  "estimated_gpu_hours": 5,
+  "quota_remaining_before_launch_gpu_hours": 30.9
+}

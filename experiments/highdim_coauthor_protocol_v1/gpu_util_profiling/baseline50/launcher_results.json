@@ -1,0 +1,50 @@
+[
+  {
+    "best_validation_round": 11,
+    "final_test_mse": 0.5173624018112595,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/_profiling/highdim_stochastic_gpu_util/baseline50/cifar10_x/fedgda_s/seed_0/baseline50_highdim_abs_cifar10_x_fedgda_s_seed0_alpha1_rounds50",
+    "run_id": "baseline50_highdim_abs_cifar10_x_fedgda_s_seed0_alpha1_rounds50",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.14916229510146842
+  },
+  {
+    "best_validation_round": 33,
+    "final_test_mse": 0.16941004273612376,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/_profiling/highdim_stochastic_gpu_util/baseline50/cifar10_x/fedogda_s/seed_0/baseline50_highdim_abs_cifar10_x_fedogda_s_seed0_alpha1_rounds50",
+    "run_id": "baseline50_highdim_abs_cifar10_x_fedogda_s_seed0_alpha1_rounds50",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.15510351310079767
+  },
+  {
+    "best_validation_round": 9,
+    "final_test_mse": 0.297070500472849,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/_profiling/highdim_stochastic_gpu_util/baseline50/cifar10_xz/fedgda_s/seed_0/baseline50_highdim_abs_cifar10_xz_fedgda_s_seed0_alpha1_rounds50",
+    "run_id": "baseline50_highdim_abs_cifar10_xz_fedgda_s_seed0_alpha1_rounds50",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.20767078364902555
+  },
+  {
+    "best_validation_round": 24,
+    "final_test_mse": 0.5087901518353003,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/_profiling/highdim_stochastic_gpu_util/baseline50/cifar10_xz/fedogda_s/seed_0/baseline50_highdim_abs_cifar10_xz_fedogda_s_seed0_alpha1_rounds50",
+    "run_id": "baseline50_highdim_abs_cifar10_xz_fedogda_s_seed0_alpha1_rounds50",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.1755991347155598
+  },
+  {
+    "best_validation_round": 7,
+    "final_test_mse": 0.4067862930546052,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/_profiling/highdim_stochastic_gpu_util/baseline50/cifar10_z/fedgda_s/seed_0/baseline50_highdim_abs_cifar10_z_fedgda_s_seed0_alpha1_rounds50",
+    "run_id": "baseline50_highdim_abs_cifar10_z_fedgda_s_seed0_alpha1_rounds50",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.23477064760008137
+  },
+  {
+    "best_validation_round": 27,
+    "final_test_mse": 0.28582686194632934,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/_profiling/highdim_stochastic_gpu_util/baseline50/cifar10_z/fedogda_s/seed_0/baseline50_highdim_abs_cifar10_z_fedogda_s_seed0_alpha1_rounds50",
+    "run_id": "baseline50_highdim_abs_cifar10_z_fedogda_s_seed0_alpha1_rounds50",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.23456297947758836
+  }
+]

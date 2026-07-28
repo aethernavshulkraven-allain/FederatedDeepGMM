@@ -1,0 +1,14 @@
+{
+  "config_dir": "experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_123539/generated_configs",
+  "gpu_request": 2,
+  "gpurun_job_id": "319",
+  "launched_at": "2026-07-19T12:36:45+05:30",
+  "manifest": "experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_123539/remaining_pending_manifest_stochastic_safe_speedup_v1.csv",
+  "output_root": "results/rerun_protocol_v1_real_images_abs_remaining_safe_speedup_v1_20260719_123539",
+  "pending_rows_at_launch": 161,
+  "preserved_completed_old_runs": 19,
+  "preserved_partial_old_runs": 0,
+  "results_json": "experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_123539/launcher_results.json",
+  "scheduler_status_after_launch": "User: arnav22103   quota: 48.0 GPU-h/weekly   remaining: 10.5 GPU-h\nGPU  state         user          class         runtime   \n0    job 319       arnav22103    guaranteed    0.01h\n1    job 319       arnav22103    guaranteed    0.01h\n\nQueue: empty\n",
+  "tmux_session": "hd_stoch_safe_speedup_v1_20260719_123539"
+}

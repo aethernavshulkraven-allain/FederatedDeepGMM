@@ -1,0 +1,27 @@
+{
+  "budget_hours": 12.0,
+  "cells_selected": [
+    {
+      "already_done": 0,
+      "cell": "femnist_x",
+      "to_run": 10
+    },
+    {
+      "already_done": 0,
+      "cell": "femnist_xz",
+      "to_run": 10
+    },
+    {
+      "already_done": 0,
+      "cell": "femnist_z",
+      "to_run": 10
+    }
+  ],
+  "cells_skipped_over_budget": [],
+  "estimated_hours": 11.1,
+  "hours_per_run_assumed": 0.37,
+  "n_runs_selected": 30,
+  "output_manifest": "experiments/highdim_coauthor_protocol_v1/alpha0p5/budget_slice_femnist_20260725.csv",
+  "output_root": "results/rerun_protocol_v1_real_images_abs_alpha0p5",
+  "source_manifest": "experiments/highdim_coauthor_protocol_v1/alpha0p5/final_manifest_stochastic.csv"
+}

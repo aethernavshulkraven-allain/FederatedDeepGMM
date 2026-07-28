@@ -1,0 +1,172 @@
+{
+  "alpha": 0.5,
+  "data_certified": true,
+  "data_scenarios": 6,
+  "data_split_isolation_pass": true,
+  "deterministic_preflights": [
+    {
+      "name": "full_gradient_cifar10_x_fedgda_d",
+      "passed": 3,
+      "runs": 3,
+      "sample_count_sums": [
+        20000
+      ],
+      "seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "name": "full_gradient_cifar10_x_fedogda_d",
+      "passed": 3,
+      "runs": 3,
+      "sample_count_sums": [
+        20000
+      ],
+      "seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "name": "full_gradient_femnist_x_fedgda_d",
+      "passed": 3,
+      "runs": 3,
+      "sample_count_sums": [
+        20000
+      ],
+      "seeds": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "name": "full_gradient_femnist_x_fedogda_d",
+      "passed": 3,
+      "runs": 3,
+      "sample_count_sums": [
+        20000
+      ],
+      "seeds": [
+        0,
+        1,
+        2
+      ]
+    }
+  ],
+  "deterministic_runs_expected": 12,
+  "deterministic_runs_passed": 12,
+  "g_function": "abs",
+  "preflight_pass": true,
+  "stochastic_smokes": [
+    {
+      "name": "cifar10_x_fedgda_s_results",
+      "prediction_shapes": {
+        "best_validation_prediction": [
+          10000,
+          1
+        ],
+        "final_prediction": [
+          10000,
+          1
+        ],
+        "true_g": [
+          10000,
+          1
+        ],
+        "x": [
+          10000,
+          3,
+          32,
+          32
+        ]
+      },
+      "run_dir": "results/_smoke/real_image_abs/cifar10_x_fedgda_s/cifar10_x/fedgda_s/seed_0/tune_cifar10_x_fedgda_s_seed0_lr0p003_wd0p05",
+      "run_id": "tune_cifar10_x_fedgda_s_seed0_lr0p003_wd0p05",
+      "status": "passed"
+    },
+    {
+      "name": "cifar10_x_fedogda_s_results",
+      "prediction_shapes": {
+        "best_validation_prediction": [
+          10000,
+          1
+        ],
+        "final_prediction": [
+          10000,
+          1
+        ],
+        "true_g": [
+          10000,
+          1
+        ],
+        "x": [
+          10000,
+          3,
+          32,
+          32
+        ]
+      },
+      "run_dir": "results/_smoke/real_image_abs/cifar10_x_fedogda_s/cifar10_x/fedogda_s/seed_0/tune_cifar10_x_fedogda_s_seed0_lr0p003_wd0p05",
+      "run_id": "tune_cifar10_x_fedogda_s_seed0_lr0p003_wd0p05",
+      "status": "passed"
+    },
+    {
+      "name": "femnist_x_fedgda_s_results",
+      "prediction_shapes": {
+        "best_validation_prediction": [
+          10000,
+          1
+        ],
+        "final_prediction": [
+          10000,
+          1
+        ],
+        "true_g": [
+          10000,
+          1
+        ],
+        "x": [
+          10000,
+          1,
+          28,
+          28
+        ]
+      },
+      "run_dir": "results/_smoke/real_image_abs/femnist_x_fedgda_s/femnist_x/fedgda_s/seed_0/tune_femnist_x_fedgda_s_seed0_lr0p003_wd0p05",
+      "run_id": "tune_femnist_x_fedgda_s_seed0_lr0p003_wd0p05",
+      "status": "passed"
+    },
+    {
+      "name": "femnist_x_fedogda_s_results",
+      "prediction_shapes": {
+        "best_validation_prediction": [
+          10000,
+          1
+        ],
+        "final_prediction": [
+          10000,
+          1
+        ],
+        "true_g": [
+          10000,
+          1
+        ],
+        "x": [
+          10000,
+          1,
+          28,
+          28
+        ]
+      },
+      "run_dir": "results/_smoke/real_image_abs/femnist_x_fedogda_s/femnist_x/fedogda_s/seed_0/tune_femnist_x_fedogda_s_seed0_lr0p003_wd0p05",
+      "run_id": "tune_femnist_x_fedogda_s_seed0_lr0p003_wd0p05",
+      "status": "passed"
+    }
+  ],
+  "stochastic_smokes_expected": 4,
+  "stochastic_smokes_passed": 4
+}

@@ -1,0 +1,32 @@
+{
+  "alphas": [
+    0.5,
+    1.0
+  ],
+  "critic_multiplier": [
+    10.0,
+    15.0
+  ],
+  "current_g_lr": 0.001,
+  "epochs_R": [
+    2,
+    3
+  ],
+  "estimated_fallback_48_hours_on_two_gpus": 25.728525561368023,
+  "estimated_full_144_hours_on_two_gpus": 77.18557668410406,
+  "estimated_seconds_per_200_round_run_from_existing_sine_fedogda_d": 3859.2788342052036,
+  "grid_kind": "fallback_48",
+  "learning_rate": [
+    0.0005,
+    0.001,
+    0.002
+  ],
+  "rows": 48,
+  "selected_without_test": true,
+  "selection_metric": "validation_only",
+  "server_learning_rate": [
+    1.5,
+    2.0
+  ],
+  "test_mse_used_for_selection": false
+}

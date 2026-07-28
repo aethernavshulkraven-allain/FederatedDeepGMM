@@ -1,0 +1,52 @@
+{
+  "a1_validation_ranking_source": "experiments/sine_fedogda_tuning/stage_A1_mini_top_candidates.md",
+  "a2_lite_manifest": "experiments/sine_fedogda_tuning/stage_A2_lite_selected_manifest.csv",
+  "data_recipe": {
+    "data_cache_dir": "data",
+    "dataset": "sin",
+    "partition_alpha": 1.0,
+    "partition_method": "hetero",
+    "seed_specific_data": true
+  },
+  "full_a2_manifest_source": "experiments/sine_fedogda_tuning/stage_A2_from_A1_mini_manifest.csv",
+  "locked_recipe_source": "experiments/sine_fedogda_tuning/stage_A2_lite_decision.md",
+  "metric_policy": "experiments/sine_fedogda_tuning/metric_policy.md",
+  "recipe": {
+    "R": 3,
+    "T": 500,
+    "alpha": 1.0,
+    "batch_size": 0,
+    "client_num_in_total": 1000,
+    "client_num_per_round": 1000,
+    "critic_multiplier": 15.0,
+    "data_cache_dir": "data",
+    "dataset": "sin",
+    "f_lr": 0.03,
+    "g_lr": 0.002,
+    "mode": "deterministic",
+    "model": "lr",
+    "partition_method": "hetero",
+    "server_lr": 1.5,
+    "variant": "fedogda_d",
+    "weight_decay": 0.1
+  },
+  "result_dirs": {
+    "0": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_0/stage_A2_from_A1_mini_sin_fedogda_d_seed0_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "1": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_1/stage_A2_from_A1_mini_sin_fedogda_d_seed1_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "2": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_2/stage_A2_from_A1_mini_sin_fedogda_d_seed2_alpha1p0_R3_cm15_slr1.5_glr0p002"
+  },
+  "run_ids": {
+    "0": "stage_A2_from_A1_mini_sin_fedogda_d_seed0_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "1": "stage_A2_from_A1_mini_sin_fedogda_d_seed1_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "2": "stage_A2_from_A1_mini_sin_fedogda_d_seed2_alpha1p0_R3_cm15_slr1.5_glr0p002"
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "selected_without_test": true,
+  "selection_metric": "validation_only_last50_validation_mse_mean",
+  "selection_metric_source": "validation",
+  "test_mse_used_for_selection": false
+}

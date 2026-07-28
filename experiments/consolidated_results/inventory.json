@@ -1,0 +1,31 @@
+{
+  "generated_at_utc": "2026-07-11T05:09:20.189922+00:00",
+  "results_dir": "results",
+  "metrics_files": 426,
+  "exact_config_aggregates": 192,
+  "supplementary_result_files": 62,
+  "counts_by_artifact_status": {
+    "archived_failure": 4,
+    "golden_reference": 1,
+    "primary": 192,
+    "smoke": 14,
+    "tuning": 215
+  },
+  "counts_by_family": {
+    "_failed": 4,
+    "_golden": 1,
+    "_smoke": 4,
+    "abs": 13,
+    "centralized_lowdim_v1": 36,
+    "centralized_lowdim_v1_smoke": 3,
+    "centralized_lowdim_v1_smoke_tiny": 3,
+    "centralized_lowdim_v1_tuning": 56,
+    "rerun_protocol_v1": 144,
+    "rerun_protocol_v1_smoke": 1,
+    "rerun_protocol_v1_tuning": 144,
+    "sine_fedogda_tuning": 15,
+    "step": 2
+  },
+  "missing_effective_config": 0,
+  "diverged_true": 0
+}

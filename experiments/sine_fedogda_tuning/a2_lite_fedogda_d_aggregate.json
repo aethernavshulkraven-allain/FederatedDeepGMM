@@ -1,0 +1,42 @@
+{
+  "metrics": {
+    "best_validation_mse": {
+      "max": 0.08107361413428762,
+      "mean": 0.07794625308544244,
+      "min": 0.07270591745587794,
+      "num_seeds": 3,
+      "std": 0.003728546017734128
+    },
+    "final_test_mse": {
+      "max": 0.08321021932625397,
+      "mean": 0.08001153457404324,
+      "min": 0.07464631151131235,
+      "num_seeds": 3,
+      "std": 0.003817114569402582
+    },
+    "last50_test_mse_mean": {
+      "max": 0.08390051439266659,
+      "mean": 0.08074587411263777,
+      "min": 0.07579931721566079,
+      "num_seeds": 3,
+      "std": 0.003541710772753088
+    },
+    "last50_validation_mse_mean": {
+      "max": 0.08174772477114323,
+      "mean": 0.07864477621304054,
+      "min": 0.07381611629505361,
+      "num_seeds": 3,
+      "std": 0.0034603625077650763
+    },
+    "test_mse_at_best_validation": {
+      "max": 0.08321021932625397,
+      "mean": 0.08001153457404324,
+      "min": 0.07464631151131235,
+      "num_seeds": 3,
+      "std": 0.003817114569402582
+    }
+  },
+  "selection_metric_source": "validation",
+  "std_definition": "population",
+  "test_metrics_used_post_selection_only": true
+}

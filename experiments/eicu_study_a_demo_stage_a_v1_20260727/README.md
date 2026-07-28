@@ -4,6 +4,13 @@ This is the complete 105-row Study A engineering campaign on the credential-free
 eICU demo release. It is intentionally limited to pipeline verification and is
 not a paper result, full-eICU result, or clinical-effect analysis.
 
+**Status: archived.** `superseded_by`: Study A v2,
+`experiments/eicu_study_a_v2_offhours/protocol_v2.md`. v2 supersedes this
+campaign's cohort and instrument for new runs; it does not alter or invalidate
+the archived pipeline-validation artifacts recorded here. This campaign cannot
+rank FedGDA against FedOGDA — see "Why this campaign cannot rank methods"
+below.
+
 The campaign uses the five frozen confirmatory seed pairs and all required roles:
 
 - 30 uniform-client federated confirmation runs;
@@ -51,3 +58,25 @@ non-Test client has the five rows needed for adjusted first-stage certification.
 Accordingly, these outputs validate orchestration and artifact contracts only.
 They must not be reported as Study A scientific results or used for clinical
 claims.
+
+## Why this campaign cannot rank methods
+
+Beyond the cohort collapse above, two further reasons independently prevent
+this campaign from ranking FedGDA against FedOGDA at any sample size:
+
+- **No hyperparameter tuning was performed.** Every entry in
+  `fixed_hyperparameters.json` carries `learning_rate_status:
+  "preregistered_fixed_no_tuning"`, and all six method/scenario combinations
+  are pinned at `learning_rate: 0.001` (`server_learning_rate: 1.0`). A
+  comparison of untuned methods run at identical, arbitrarily chosen learning
+  rates is not a method ranking — a different fixed rate could reverse it.
+- **Only 30 of the 105 runs were federated confirmations.** Per
+  `completion_record.json`'s `execution` block, the 105 completed runs split
+  into `confirmatory_completed: 30`, `centralized_baseline_completed: 45`, and
+  `aggregation_ablation_completed: 30`. The centralized-baseline and
+  aggregation-ablation runs exercise other parts of the pipeline; they are not
+  additional FedGDA-vs-FedOGDA comparisons, so the federated method comparison
+  this campaign can speak to rests on 30 runs, not 105.
+
+Either limitation alone would rule out a method ranking; together with the
+cohort collapse, this campaign is pipeline verification, not a paper result.

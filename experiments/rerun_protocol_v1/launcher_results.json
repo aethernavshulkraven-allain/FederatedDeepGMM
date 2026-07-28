@@ -1,0 +1,10 @@
+[
+  {
+    "best_validation_round": 216,
+    "final_test_mse": 0.5484687602697422,
+    "run_dir": "/tmp/claude-1015/-home-arnav22103-FederatedDeepGMM/4f1cf368-1f28-482e-95fe-8e87e0796f00/scratchpad/profile_investigation/out/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm0p5_slr1p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm0p5_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5368975562025817
+  }
+]

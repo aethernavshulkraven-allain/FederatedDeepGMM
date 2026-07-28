@@ -1,0 +1,39 @@
+{
+  "construction": "insufficient_data",
+  "hospital_probe": {
+    "available": true,
+    "n_clients": 21,
+    "n_clients_with_variation": 14,
+    "raw_within_client_sd_mean": 0.02578430737622411,
+    "within_client_sd_mean": 0.015599319585916134,
+    "within_client_sd_median": 0.016447410376153295,
+    "z_mean": 0.1565127442048805,
+    "z_sd_overall": 0.0374397487342127
+  },
+  "n_eligible_groups": 0,
+  "n_group_clients_with_variation": 14,
+  "n_ward_clients_with_variation": 3,
+  "n_ward_eligible_hospitals": 0,
+  "reasons": [
+    "ward-eligible hospitals: 0 (need >= 5); eligible hospital groups: 0 (need >= 5)",
+    "no construction has enough clients with within-client instrument variation; this release cannot support the federated IV analysis"
+  ],
+  "thresholds": {
+    "min_deaths": 0,
+    "min_patients": 200,
+    "min_per_ward": 50,
+    "min_treated": 20,
+    "min_untreated": 20,
+    "min_wards": 2
+  },
+  "ward_probe": {
+    "available": true,
+    "n_clients": 89,
+    "n_clients_with_variation": 3,
+    "raw_within_client_sd_mean": 0.06347901872167659,
+    "within_client_sd_mean": 0.00921196988612719,
+    "within_client_sd_median": 0.0,
+    "z_mean": 0.1609540867950313,
+    "z_sd_overall": 0.2649937058127376
+  }
+}

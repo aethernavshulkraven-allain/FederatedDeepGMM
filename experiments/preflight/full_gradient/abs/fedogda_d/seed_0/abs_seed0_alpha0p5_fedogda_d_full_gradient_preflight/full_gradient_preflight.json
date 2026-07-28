@@ -1,0 +1,164 @@
+{
+  "checked_client_count": 1000,
+  "client_detail_limit": 20,
+  "client_details": [
+    {
+      "actual_batch_size": 13,
+      "client_id": 0,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 13
+    },
+    {
+      "actual_batch_size": 16,
+      "client_id": 1,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 16
+    },
+    {
+      "actual_batch_size": 10,
+      "client_id": 2,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 10
+    },
+    {
+      "actual_batch_size": 10,
+      "client_id": 3,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 10
+    },
+    {
+      "actual_batch_size": 31,
+      "client_id": 4,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 31
+    },
+    {
+      "actual_batch_size": 14,
+      "client_id": 5,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 14
+    },
+    {
+      "actual_batch_size": 5,
+      "client_id": 6,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 5
+    },
+    {
+      "actual_batch_size": 5,
+      "client_id": 7,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 5
+    },
+    {
+      "actual_batch_size": 29,
+      "client_id": 8,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 29
+    },
+    {
+      "actual_batch_size": 132,
+      "client_id": 9,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 132
+    },
+    {
+      "actual_batch_size": 11,
+      "client_id": 10,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 11
+    },
+    {
+      "actual_batch_size": 5,
+      "client_id": 11,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 5
+    },
+    {
+      "actual_batch_size": 5,
+      "client_id": 12,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 5
+    },
+    {
+      "actual_batch_size": 13,
+      "client_id": 13,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 13
+    },
+    {
+      "actual_batch_size": 7,
+      "client_id": 14,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 7
+    },
+    {
+      "actual_batch_size": 11,
+      "client_id": 15,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 11
+    },
+    {
+      "actual_batch_size": 5,
+      "client_id": 16,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 5
+    },
+    {
+      "actual_batch_size": 16,
+      "client_id": 17,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 16
+    },
+    {
+      "actual_batch_size": 80,
+      "client_id": 18,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 80
+    },
+    {
+      "actual_batch_size": 8,
+      "client_id": 19,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 8
+    }
+  ],
+  "client_num_in_total": 1000,
+  "client_num_per_round": 1000,
+  "configured_batch_size": 0,
+  "dataset": "abs",
+  "effective_config_batch_size": 0,
+  "effective_config_mode": "deterministic",
+  "effective_config_path": "experiments/preflight/full_gradient/abs/fedogda_d/seed_0/abs_seed0_alpha0p5_fedogda_d_full_gradient_preflight/effective_config.json",
+  "errors": [],
+  "failed_clients": [],
+  "partition_alpha": 0.5,
+  "rounds_checked": 1,
+  "run_dir": "experiments/preflight/full_gradient/abs/fedogda_d/seed_0/abs_seed0_alpha0p5_fedogda_d_full_gradient_preflight",
+  "sample_count_max": 478,
+  "sample_count_min": 5,
+  "sample_count_sum": 20000,
+  "seed": 0,
+  "selected_client_count": 1000,
+  "status": "passed"
+}

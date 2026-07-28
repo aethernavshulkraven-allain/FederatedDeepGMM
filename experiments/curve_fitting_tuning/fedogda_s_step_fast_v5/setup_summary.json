@@ -1,0 +1,25 @@
+{
+  "fedgda_s_reference": {
+    "best_validation_mse": 0.006003955305925284,
+    "test_mse_at_best_validation": 0.006126142455462217
+  },
+  "incumbent": {
+    "best_validation_mse": 0.010456710930982103,
+    "critic_multiplier": 15.0,
+    "learning_rate": 0.005,
+    "objective_lambda_1": 0.1,
+    "server_learning_rate": 1.5,
+    "test_mse_at_best_validation": 0.010636225967950308
+  },
+  "manifest": "experiments/curve_fitting_tuning/fedogda_s_step_fast_v5/stage_a_manifest.csv",
+  "output_root": "results/curve_fitting_tuning/fedogda_s_step_fast_v5",
+  "rows": 13,
+  "screen_name": "fedogda_s_step_fast_v5",
+  "selection_rule": "validation-only: finite/non-diverged; lowest mean best_validation_mse; tie lower mean last_50_val_mse_std; tie lower mean final_vs_best_validation_gap",
+  "speed_policy": {
+    "log_test_mse_by_round": false,
+    "periodic_checkpoint_interval": 0,
+    "weight_decay": 0.0
+  },
+  "stage_a_rows": 13
+}

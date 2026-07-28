@@ -1,0 +1,26 @@
+{
+  "datasets": [
+    "cifar10_x"
+  ],
+  "manifest": "experiments/highdim_coauthor_protocol_v1/gpu_util_profiling/optimized5_smoke/manifest.csv",
+  "methods": [
+    "fedgda_s"
+  ],
+  "output_root": "results/_profiling/highdim_stochastic_gpu_util/optimized5_smoke",
+  "phase": "optimized5_smoke",
+  "rounds": 5,
+  "rows": 1,
+  "runtime_overrides": {
+    "append_round_csv": true,
+    "aux_reg_epochs": null,
+    "dataloader_num_workers": null,
+    "dataloader_pin_memory": false,
+    "disable_aux_reg": true,
+    "disable_periodic_checkpoints": true,
+    "legacy_reg_state_cpu": false,
+    "periodic_checkpoint_interval": null,
+    "skip_model_selection": true
+  },
+  "seed": 0,
+  "source_manifest": "experiments/highdim_coauthor_protocol_v1/alpha1/final_manifest_stochastic.csv"
+}

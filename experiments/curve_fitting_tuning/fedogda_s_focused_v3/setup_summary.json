@@ -1,0 +1,27 @@
+{
+  "fixed_fields": {
+    "weight_decay": 0.0
+  },
+  "manifest": "experiments/curve_fitting_tuning/fedogda_s_focused_v3/manifest.csv",
+  "output_root": "results/curve_fitting_tuning/fedogda_s_focused_v3",
+  "post_selection_only": [
+    "test_mse_at_best_validation",
+    "curve_mse",
+    "curve_mae",
+    "curve_corr",
+    "visual curve"
+  ],
+  "rows": 118,
+  "screen_name": "fedogda_s_focused_v3",
+  "selection_rule": "validation-only: finite/non-diverged; lowest best_validation_mse; tie lower last_50_val_mse_std; tie lower final_vs_best_validation_gap",
+  "stages": {
+    "screen_sine": 64,
+    "screen_step_proxy": 54
+  },
+  "tuned_fields": [
+    "learning_rate",
+    "critic_multiplier",
+    "objective_lambda_1",
+    "server_learning_rate"
+  ]
+}

@@ -1,0 +1,68 @@
+common_args:
+  training_type: "simulation"
+  using_mlops: false
+  random_seed: 1
+  run_id: "highdim_abs_cifar10_z_fedgda_s_seed1_alpha0p5"
+  config_version: "release"
+  output_dir: "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_remaining_safe_speedup_v1_20260719_123539"
+  overwrite: false
+
+data_args:
+  dataset: "cifar10_z"
+  data_cache_dir: "data"
+  partition_method: "hetero"
+  partition_alpha: 0.5
+  dataloader_num_workers: 0
+  dataloader_pin_memory: false
+
+model_args:
+  model: "lr"
+
+train_args:
+  federated_optimizer: "FedAvg"
+  client_id_list: "[]"
+  client_num_in_total: 1000
+  client_num_per_round: 10
+  comm_round: 1500
+  epochs: 3
+  batch_size: 256
+  client_optimizer: "sgd"
+  learning_rate: 0.01
+  weight_decay: 0.05
+  critic_multiplier: 10.0
+  server_learning_rate: 1.5
+  objective_lambda_1: 0.1
+  gradient_clip_norm: 1.0
+  simple_model_selection_epochs: 100
+  f_history_model_selection_epochs: 60
+  model_selection_batch_size: 200
+  model_selection_max_samples: 0
+  enable_legacy_outputs: false
+  require_multibatch_stochastic: false
+  log_test_mse_by_round: false
+  test_mse_used_for_selection: false
+  selection_metric_source: "validation"
+  skip_model_selection: false
+  skip_gmm_eval: false
+  gmm_eval_proxy: "approx_psi"
+  auxiliary_regression: true
+  auxiliary_regression_epochs: 3
+  auxiliary_regression_state_device: "device"
+  append_round_csv: true
+  periodic_checkpoint_interval: 200
+
+validation_args:
+  frequency_of_the_test: 1
+
+device_args:
+  using_gpu: true
+  gpu_id: 1
+
+comm_args:
+  backend: "sp"
+
+tracking_args:
+  enable_tracking: false
+  enable_wandb: false
+  run_name: "cifar10_z_fedgda_s_seed_1_highdim_abs_cifar10_z_fedgda_s_seed1_alpha0p5"
+

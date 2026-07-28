@@ -1,0 +1,13 @@
+plot_family,status,count
+all_methods_original,created,36
+all_methods_original_aggregate,created,12
+centralized,created,4
+centralized_aggregate,created,4
+coauthor_summary,created,4
+coauthor_summary_2x2,created,1
+fedogda_s_tuning_pilot,created,9
+fedogda_s_tuning_pilot_aggregate,created,3
+main_pairwise,created,36
+main_pairwise_aggregate,created,12
+tuned_sine_a2_lite,created,3
+tuned_sine_a2_lite_aggregate,created,1

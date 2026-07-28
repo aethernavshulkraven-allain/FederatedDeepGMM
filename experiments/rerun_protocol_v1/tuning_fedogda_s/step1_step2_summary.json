@@ -1,0 +1,37 @@
+{
+  "baseline_methods": [
+    "fedgda_s",
+    "fedogda_s"
+  ],
+  "baseline_run_count": 72,
+  "fedogda_s_lower_last_50_val_mse_std_pairs": 29,
+  "fedogda_s_lower_test_mse_pairs": 2,
+  "fedogda_s_not_lower_last_50_val_mse_std_pairs": 7,
+  "fedogda_s_not_lower_test_mse_pairs": 34,
+  "manifest": "experiments/rerun_protocol_v1/manifest.csv",
+  "missing_baseline_runs": [],
+  "outputs": {
+    "baseline_aggregates_csv": "experiments/rerun_protocol_v1/tuning_fedogda_s/baseline_stochastic_aggregates.csv",
+    "baseline_pairs_csv": "experiments/rerun_protocol_v1/tuning_fedogda_s/baseline_stochastic_pairs.csv",
+    "baseline_runs_csv": "experiments/rerun_protocol_v1/tuning_fedogda_s/baseline_stochastic_runs.csv",
+    "summary_json": "experiments/rerun_protocol_v1/tuning_fedogda_s/step1_step2_summary.json",
+    "tuning_grid_csv": "experiments/rerun_protocol_v1/tuning_fedogda_s/critic_weight_decay_grid.csv"
+  },
+  "pair_count": 36,
+  "step": "freeze_baseline_and_define_grid",
+  "tuning_grid": {
+    "critic_multiplier": [
+      2,
+      5,
+      10,
+      20
+    ],
+    "num_configs": 16,
+    "weight_decay": [
+      0.001,
+      0.01,
+      0.03,
+      0.1
+    ]
+  }
+}

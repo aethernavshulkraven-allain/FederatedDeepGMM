@@ -1,0 +1,10 @@
+[
+  {
+    "best_validation_round": 1,
+    "final_test_mse": 5.8643349770110484,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_canary_20260727/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.8643349770110484
+  }
+]

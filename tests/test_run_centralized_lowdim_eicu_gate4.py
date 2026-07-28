@@ -95,6 +95,21 @@ class GateFourCentralizedEicuTest(unittest.TestCase):
             campaign_role=None,
             scenario_checksum=None,
             protocol_version="eicu_study_a_v1",
+            # Campaign-provenance identity fields. A real centralized
+            # campaign row always supplies these via CLI (see
+            # scripts/run_eicu_centralized_baselines.py's build_command and
+            # scripts/run_eicu_study_a_v2_centralized.py, which pass
+            # --role/--g0/--alignment-label/--scenario-scope/--study-claim
+            # for every launched row) -- write_effective_config's provenance
+            # guard (experiment_utils.py CAMPAIGN_PROVENANCE_FIELDS) requires
+            # them whenever protocol_version is set on an eICU run, so this
+            # fixture must supply realistic values too, the same way a real
+            # campaign invocation would, rather than leaving them empty.
+            role="centralized_baseline",
+            g0="linear",
+            alignment_label="centralized_reference",
+            scenario_scope="demo",
+            study_claim="semi_synthetic_benchmark_no_clinical_claim",
         )
         defaults.update(overrides)
         return SimpleNamespace(**defaults)

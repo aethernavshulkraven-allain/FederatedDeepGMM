@@ -6,3 +6,23 @@ fedgmm/sp_decentralized_mnist_lr_example/checkpoints/
 checkpoints/
 datasets/
 *.npy
+
+# large/generated experiment artifacts
+results/
+logs/
+nohup.out
+
+# external data under PhysioNet Data Use Agreement - do not redistribute
+physionet.org/
+
+# paper source, kept out of this repo
+latex/
+sections/
+
+# personal scratch notes
+handoff-*.md
+high_dim_doe_2.md
+high_dim_exp.md
+paper_ctxt.md
+todo-arnav.md
+worklog-*.md

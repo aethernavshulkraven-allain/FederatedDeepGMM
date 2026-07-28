@@ -1,0 +1,482 @@
+[
+  {
+    "best_validation_round": 1101,
+    "final_test_mse": 0.79361173436557,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1103/confirmatory_interaction_fedgda_s_confirmatory_03",
+    "run_id": "confirmatory_interaction_fedgda_s_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5210382724320212
+  },
+  {
+    "best_validation_round": 2820,
+    "final_test_mse": 0.4527701598774048,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1103/confirmatory_linear_fedgda_s_confirmatory_03",
+    "run_id": "confirmatory_linear_fedgda_s_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3322471744554044
+  },
+  {
+    "best_validation_round": 2897,
+    "final_test_mse": 0.318867084773612,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1101/confirmatory_linear_fedgda_s_confirmatory_01",
+    "run_id": "confirmatory_linear_fedgda_s_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3089894159478948
+  },
+  {
+    "best_validation_round": 819,
+    "final_test_mse": 0.578089559832402,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1102/confirmatory_interaction_fedgda_s_confirmatory_02",
+    "run_id": "confirmatory_interaction_fedgda_s_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.379090857939426
+  },
+  {
+    "best_validation_round": 221,
+    "final_test_mse": 0.5362656193716653,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1102/confirmatory_mlp_fedgda_s_confirmatory_02",
+    "run_id": "confirmatory_mlp_fedgda_s_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.14750794023866487
+  },
+  {
+    "best_validation_round": 355,
+    "final_test_mse": 0.3486590605959533,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1105/confirmatory_mlp_fedgda_s_confirmatory_05",
+    "run_id": "confirmatory_mlp_fedgda_s_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.19847385936284628
+  },
+  {
+    "best_validation_round": 325,
+    "final_test_mse": 0.7805345290957483,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1103/confirmatory_mlp_fedgda_s_confirmatory_03",
+    "run_id": "confirmatory_mlp_fedgda_s_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.31150788554892217
+  },
+  {
+    "best_validation_round": 1100,
+    "final_test_mse": 0.40392168074682006,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1105/confirmatory_linear_fedgda_s_confirmatory_05",
+    "run_id": "confirmatory_linear_fedgda_s_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.24515238630290342
+  },
+  {
+    "best_validation_round": 1270,
+    "final_test_mse": 0.6185789696379106,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1102/confirmatory_linear_fedgda_s_confirmatory_02",
+    "run_id": "confirmatory_linear_fedgda_s_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.1708383712967019
+  },
+  {
+    "best_validation_round": 1856,
+    "final_test_mse": 0.6048460165820153,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1105/confirmatory_interaction_fedgda_s_confirmatory_05",
+    "run_id": "confirmatory_interaction_fedgda_s_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.49822623004992633
+  },
+  {
+    "best_validation_round": 1593,
+    "final_test_mse": 0.6035297265610786,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1101/confirmatory_interaction_fedgda_s_confirmatory_01",
+    "run_id": "confirmatory_interaction_fedgda_s_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.374697748832053
+  },
+  {
+    "best_validation_round": 537,
+    "final_test_mse": 0.4691221280491464,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1101/confirmatory_mlp_fedgda_s_confirmatory_01",
+    "run_id": "confirmatory_mlp_fedgda_s_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.25053733488221147
+  },
+  {
+    "best_validation_round": 1632,
+    "final_test_mse": 0.4287377189871298,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1104/confirmatory_linear_fedgda_s_confirmatory_04",
+    "run_id": "confirmatory_linear_fedgda_s_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2905002146314596
+  },
+  {
+    "best_validation_round": 170,
+    "final_test_mse": 0.4071072990024237,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1104/confirmatory_mlp_fedgda_s_confirmatory_04",
+    "run_id": "confirmatory_mlp_fedgda_s_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2202532894128155
+  },
+  {
+    "best_validation_round": 1067,
+    "final_test_mse": 0.4509217139862614,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1104/confirmatory_interaction_fedgda_s_confirmatory_04",
+    "run_id": "confirmatory_interaction_fedgda_s_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3360381109838406
+  },
+  {
+    "best_validation_round": 1582,
+    "final_test_mse": 0.3339313294015077,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1105/confirmatory_mlp_fedogda_s_confirmatory_05",
+    "run_id": "confirmatory_mlp_fedogda_s_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.24850144346717307
+  },
+  {
+    "best_validation_round": 1630,
+    "final_test_mse": 0.41723043241322433,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1105/confirmatory_linear_fedogda_s_confirmatory_05",
+    "run_id": "confirmatory_linear_fedogda_s_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3229556033732533
+  },
+  {
+    "best_validation_round": 1932,
+    "final_test_mse": 0.5978492766674646,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1102/confirmatory_interaction_fedogda_s_confirmatory_02",
+    "run_id": "confirmatory_interaction_fedogda_s_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5975781838323281
+  },
+  {
+    "best_validation_round": 497,
+    "final_test_mse": 0.38449313730566237,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1102/confirmatory_mlp_fedogda_s_confirmatory_02",
+    "run_id": "confirmatory_mlp_fedogda_s_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.18773766912458542
+  },
+  {
+    "best_validation_round": 986,
+    "final_test_mse": 0.5610970257984155,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1103/confirmatory_mlp_fedogda_s_confirmatory_03",
+    "run_id": "confirmatory_mlp_fedogda_s_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3631409549600342
+  },
+  {
+    "best_validation_round": 2572,
+    "final_test_mse": 0.651717182665055,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1104/confirmatory_interaction_fedogda_s_confirmatory_04",
+    "run_id": "confirmatory_interaction_fedogda_s_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.45978525103868056
+  },
+  {
+    "best_validation_round": 3299,
+    "final_test_mse": 0.6652386377185843,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1105/confirmatory_interaction_fedogda_s_confirmatory_05",
+    "run_id": "confirmatory_interaction_fedogda_s_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5635111015143193
+  },
+  {
+    "best_validation_round": 871,
+    "final_test_mse": 0.40745460225628916,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1104/confirmatory_mlp_fedogda_s_confirmatory_04",
+    "run_id": "confirmatory_mlp_fedogda_s_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2781009646927399
+  },
+  {
+    "best_validation_round": 2946,
+    "final_test_mse": 0.2266911108809278,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1101/confirmatory_mlp_fedogda_s_confirmatory_01",
+    "run_id": "confirmatory_mlp_fedogda_s_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3548659619517307
+  },
+  {
+    "best_validation_round": 3365,
+    "final_test_mse": 0.6557262689102515,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1101/confirmatory_interaction_fedogda_s_confirmatory_01",
+    "run_id": "confirmatory_interaction_fedogda_s_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.6305303331596058
+  },
+  {
+    "best_validation_round": 1474,
+    "final_test_mse": 0.4624316947702397,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1101/confirmatory_linear_fedogda_s_confirmatory_01",
+    "run_id": "confirmatory_linear_fedogda_s_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.35733465470926074
+  },
+  {
+    "best_validation_round": 1342,
+    "final_test_mse": 0.9154772675712018,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1103/confirmatory_interaction_fedogda_s_confirmatory_03",
+    "run_id": "confirmatory_interaction_fedogda_s_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.783067979619736
+  },
+  {
+    "best_validation_round": 940,
+    "final_test_mse": 0.7435262866715461,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1102/confirmatory_linear_fedogda_s_confirmatory_02",
+    "run_id": "confirmatory_linear_fedogda_s_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3168060902298308
+  },
+  {
+    "best_validation_round": 1293,
+    "final_test_mse": 0.7564784941824044,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1103/confirmatory_linear_fedogda_s_confirmatory_03",
+    "run_id": "confirmatory_linear_fedogda_s_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.4406051081791729
+  },
+  {
+    "best_validation_round": 1361,
+    "final_test_mse": 0.5025319550581628,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1104/confirmatory_linear_fedogda_s_confirmatory_04",
+    "run_id": "confirmatory_linear_fedogda_s_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.36571729962314664
+  },
+  {
+    "best_validation_round": 910,
+    "final_test_mse": 0.5675990177546215,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1103/ablation_linear_fedgda_s_sample_size_confirmatory_03",
+    "run_id": "ablation_linear_fedgda_s_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.4337078728960207
+  },
+  {
+    "best_validation_round": 2759,
+    "final_test_mse": 0.35864473204501063,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1101/ablation_linear_fedgda_s_sample_size_confirmatory_01",
+    "run_id": "ablation_linear_fedgda_s_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.35581756251570346
+  },
+  {
+    "best_validation_round": 1110,
+    "final_test_mse": 0.49860317392007714,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1102/ablation_linear_fedgda_s_sample_size_confirmatory_02",
+    "run_id": "ablation_linear_fedgda_s_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.18271916829549886
+  },
+  {
+    "best_validation_round": 1460,
+    "final_test_mse": 0.413044865938128,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1104/ablation_linear_fedgda_s_sample_size_confirmatory_04",
+    "run_id": "ablation_linear_fedgda_s_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.29394620058022497
+  },
+  {
+    "best_validation_round": 1445,
+    "final_test_mse": 0.6771105845679761,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1102/ablation_interaction_fedgda_s_sample_size_confirmatory_02",
+    "run_id": "ablation_interaction_fedgda_s_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.49227944476601493
+  },
+  {
+    "best_validation_round": 1142,
+    "final_test_mse": 0.4162126620747119,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1105/ablation_linear_fedgda_s_sample_size_confirmatory_05",
+    "run_id": "ablation_linear_fedgda_s_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.23804168660067174
+  },
+  {
+    "best_validation_round": 1870,
+    "final_test_mse": 0.5084284634678236,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1101/ablation_interaction_fedgda_s_sample_size_confirmatory_01",
+    "run_id": "ablation_interaction_fedgda_s_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3738420167804551
+  },
+  {
+    "best_validation_round": 1245,
+    "final_test_mse": 0.827738430681755,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1103/ablation_interaction_fedgda_s_sample_size_confirmatory_03",
+    "run_id": "ablation_interaction_fedgda_s_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5502221459251243
+  },
+  {
+    "best_validation_round": 1078,
+    "final_test_mse": 0.5458449327136607,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1104/ablation_interaction_fedgda_s_sample_size_confirmatory_04",
+    "run_id": "ablation_interaction_fedgda_s_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.35239453407636273
+  },
+  {
+    "best_validation_round": 1996,
+    "final_test_mse": 0.5975032589384511,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1105/ablation_interaction_fedgda_s_sample_size_confirmatory_05",
+    "run_id": "ablation_interaction_fedgda_s_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.500800347160389
+  },
+  {
+    "best_validation_round": 1220,
+    "final_test_mse": 0.5336026092951016,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1101/ablation_linear_fedogda_s_sample_size_confirmatory_01",
+    "run_id": "ablation_linear_fedogda_s_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.37896053351391173
+  },
+  {
+    "best_validation_round": 689,
+    "final_test_mse": 0.755190651510895,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1103/ablation_linear_fedogda_s_sample_size_confirmatory_03",
+    "run_id": "ablation_linear_fedogda_s_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.48230131657267866
+  },
+  {
+    "best_validation_round": 1141,
+    "final_test_mse": 0.7338314816889038,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1102/ablation_linear_fedogda_s_sample_size_confirmatory_02",
+    "run_id": "ablation_linear_fedogda_s_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.34039918704541827
+  },
+  {
+    "best_validation_round": 1394,
+    "final_test_mse": 0.41726197506143764,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1104/ablation_linear_fedogda_s_sample_size_confirmatory_04",
+    "run_id": "ablation_linear_fedogda_s_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3406782760477013
+  },
+  {
+    "best_validation_round": 155,
+    "final_test_mse": 0.4388700638796239,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1104/ablation_mlp_fedgda_s_sample_size_confirmatory_04",
+    "run_id": "ablation_mlp_fedgda_s_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.23639640551322155
+  },
+  {
+    "best_validation_round": 2577,
+    "final_test_mse": 0.7246215630443138,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1101/ablation_interaction_fedogda_s_sample_size_confirmatory_01",
+    "run_id": "ablation_interaction_fedogda_s_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.6849983042113967
+  },
+  {
+    "best_validation_round": 535,
+    "final_test_mse": 0.41638924344479583,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1101/ablation_mlp_fedgda_s_sample_size_confirmatory_01",
+    "run_id": "ablation_mlp_fedgda_s_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.21204792571930076
+  },
+  {
+    "best_validation_round": 369,
+    "final_test_mse": 0.4529684484384378,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1105/ablation_mlp_fedgda_s_sample_size_confirmatory_05",
+    "run_id": "ablation_mlp_fedgda_s_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.18581224105906524
+  },
+  {
+    "best_validation_round": 248,
+    "final_test_mse": 0.609623163571598,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1102/ablation_mlp_fedgda_s_sample_size_confirmatory_02",
+    "run_id": "ablation_mlp_fedgda_s_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.1391938416824452
+  },
+  {
+    "best_validation_round": 1485,
+    "final_test_mse": 0.36307384266977644,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1105/ablation_linear_fedogda_s_sample_size_confirmatory_05",
+    "run_id": "ablation_linear_fedogda_s_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.30394979068590905
+  },
+  {
+    "best_validation_round": 339,
+    "final_test_mse": 0.6872472804317356,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1103/ablation_mlp_fedgda_s_sample_size_confirmatory_03",
+    "run_id": "ablation_mlp_fedgda_s_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3037260364074749
+  },
+  {
+    "best_validation_round": 1803,
+    "final_test_mse": 0.6227805588396128,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1102/ablation_interaction_fedogda_s_sample_size_confirmatory_02",
+    "run_id": "ablation_interaction_fedogda_s_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.46932147406200075
+  },
+  {
+    "best_validation_round": 1555,
+    "final_test_mse": 1.0164856073211035,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1103/ablation_interaction_fedogda_s_sample_size_confirmatory_03",
+    "run_id": "ablation_interaction_fedogda_s_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8053237850623971
+  },
+  {
+    "best_validation_round": 3043,
+    "final_test_mse": 0.543728163456123,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1104/ablation_interaction_fedogda_s_sample_size_confirmatory_04",
+    "run_id": "ablation_interaction_fedogda_s_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.47736747342955405
+  },
+  {
+    "best_validation_round": 3176,
+    "final_test_mse": 0.23812524131205529,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1101/ablation_mlp_fedogda_s_sample_size_confirmatory_01",
+    "run_id": "ablation_mlp_fedogda_s_sample_size_confirmatory_01",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2808374881610169
+  },
+  {
+    "best_validation_round": 892,
+    "final_test_mse": 0.33970931595126286,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1104/ablation_mlp_fedogda_s_sample_size_confirmatory_04",
+    "run_id": "ablation_mlp_fedogda_s_sample_size_confirmatory_04",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2903098467889685
+  },
+  {
+    "best_validation_round": 3810,
+    "final_test_mse": 0.7241930041407878,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1105/ablation_interaction_fedogda_s_sample_size_confirmatory_05",
+    "run_id": "ablation_interaction_fedogda_s_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.6809250509790095
+  },
+  {
+    "best_validation_round": 1379,
+    "final_test_mse": 0.35986834027160225,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1102/ablation_mlp_fedogda_s_sample_size_confirmatory_02",
+    "run_id": "ablation_mlp_fedogda_s_sample_size_confirmatory_02",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.18209108913704705
+  },
+  {
+    "best_validation_round": 1015,
+    "final_test_mse": 0.5211821411077403,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1103/ablation_mlp_fedogda_s_sample_size_confirmatory_03",
+    "run_id": "ablation_mlp_fedogda_s_sample_size_confirmatory_03",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.34415070120718866
+  },
+  {
+    "best_validation_round": 1716,
+    "final_test_mse": 0.29660132300893205,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_finals/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1105/ablation_mlp_fedogda_s_sample_size_confirmatory_05",
+    "run_id": "ablation_mlp_fedogda_s_sample_size_confirmatory_05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.28606382475450237
+  }
+]

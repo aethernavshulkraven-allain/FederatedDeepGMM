@@ -1,0 +1,53 @@
+common_args:
+  training_type: "simulation"
+  using_mlops: false
+  random_seed: 1
+  run_id: "tune_fedogda_s_linear_seed1_alpha0p5_cm2_wd0p03"
+  config_version: "release"
+  output_dir: "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_tuning/fedogda_s_pilot_alpha0p5"
+  overwrite: false
+
+data_args:
+  dataset: "linear"
+  data_cache_dir: "data"
+  partition_method: "hetero"
+  partition_alpha: 0.5
+
+model_args:
+  model: "lr"
+
+train_args:
+  federated_optimizer: "FedAvg"
+  client_id_list: "[]"
+  client_num_in_total: 1000
+  client_num_per_round: 10
+  comm_round: 500
+  epochs: 3
+  batch_size: 256
+  client_optimizer: "ogda"
+  learning_rate: 0.001
+  weight_decay: 0.03
+  critic_multiplier: 2.0
+  server_learning_rate: 1.5
+  gradient_clip_norm: 1.0
+  simple_model_selection_epochs: 100
+  f_history_model_selection_epochs: 60
+  model_selection_batch_size: 200
+  enable_legacy_outputs: false
+  require_multibatch_stochastic: false
+
+validation_args:
+  frequency_of_the_test: 1
+
+device_args:
+  using_gpu: true
+  gpu_id: 0
+
+comm_args:
+  backend: "sp"
+
+tracking_args:
+  enable_tracking: false
+  enable_wandb: false
+  run_name: "linear_fedogda_s_seed_1_tune_fedogda_s_linear_seed1_alpha0p5_cm2_wd0p03"
+

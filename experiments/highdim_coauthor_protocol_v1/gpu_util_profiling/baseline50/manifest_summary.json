@@ -1,0 +1,18 @@
+{
+  "datasets": [
+    "cifar10_x",
+    "cifar10_xz",
+    "cifar10_z"
+  ],
+  "manifest": "experiments/highdim_coauthor_protocol_v1/gpu_util_profiling/baseline50/manifest.csv",
+  "methods": [
+    "fedgda_s",
+    "fedogda_s"
+  ],
+  "output_root": "results/_profiling/highdim_stochastic_gpu_util/baseline50",
+  "phase": "baseline50",
+  "rounds": 50,
+  "rows": 6,
+  "seed": 0,
+  "source_manifest": "experiments/highdim_coauthor_protocol_v1/alpha1/final_manifest_stochastic.csv"
+}

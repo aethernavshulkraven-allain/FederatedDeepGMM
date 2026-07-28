@@ -1,0 +1,92 @@
+# eICU semi-synthetic Stage-0 smoke config (CPU).
+#
+# Verifies the whole eICU training path end to end: natural hospital partitioning,
+# covariates packed into both networks (x = [D, X], z = [Z, X]), and structural MSE
+# against the known g0. It is a pipeline check, not a result -- the demo release has
+# no client meeting the audit's eligibility thresholds.
+#
+# Regenerate the scenario first:
+#   python scripts/prepare_eicu_cohort.py --out experiments/eicu_v1_demo
+#   python scripts/prepare_eicu_semisynth.py --g0 linear --seed 0
+#
+# Run. NOTE: main.py chdirs into its own directory at import, so --cf must be an
+# ABSOLUTE path; a repo-relative one silently resolves to nothing and fedml then
+# fails with "no such setting: training_type = None".
+#   python fedgmm/sp_decentralized_mnist_lr_example/main.py \
+#       --cf $PWD/experiments/eicu_v1_demo/smoke_config.yaml
+#
+# Output lands under fedgmm/sp_decentralized_mnist_lr_example/results/_smoke_eicu/
+# for the same reason (output_dir is relative to the chdir target).
+#
+# input_dim_g / input_dim_f must match n_features_x / n_features_z in the scenario's
+# *_metadata.json; they depend on the cohort's covariate count and are not hardcoded.
+
+common_args:
+  training_type: "simulation"
+  using_mlops: false
+  random_seed: 0
+  config_version: "release"
+
+data_args:
+  dataset: "eicu_semisynth"
+  scenario_name: "linear_seed0"
+  data_cache_dir: "data"
+  partition_method: "natural"   # partition by hospitalid, not Dirichlet
+  partition_alpha: 0.5          # unused under 'natural'; kept for config schema parity
+
+model_args:
+  model: "lr"
+  # Must match n_features_x / n_features_z in the scenario's *_metadata.json.
+  # These shrink after the P0 client-relevance filter is applied (see
+  # client_filter_report in the metadata) -- on the demo cohort, only 3 of 89
+  # hospitals have genuine real-data ward-preference variation, and the
+  # covariate one-hot encoding is fit on that much smaller filtered
+  # population, so the width is not the same number as before the fix.
+  input_dim_g: 43
+  input_dim_f: 43
+
+train_args:
+  federated_optimizer: "FedAvg"
+  client_id_list: "[]"
+  # Only 3 of 89 demo hospitals pass the client-relevance filter (real
+  # ward-preference variation, see client_filter_report in the scenario
+  # metadata) -- this is the honest, expected consequence of that fix on this
+  # tiny demo cohort, not a bug. This is a pipeline-wiring smoke test only.
+  client_num_in_total: 3
+  client_num_per_round: 3       # full participation
+  comm_round: 20
+  epochs: 1
+  batch_size: 32
+  client_optimizer: sgd
+  learning_rate: 0.001
+  weight_decay: 0.01
+  # Required for eicu*: matches the paper's federated objective
+  # U(theta,tau) = (1/N) sum_i U^i(theta,tau) -- equal weight per client,
+  # regardless of hospital size. The default ("sample_size") is legacy
+  # FedAvg-style weighting and is refused for eicu* datasets.
+  aggregation_weighting: uniform_clients
+  # Required for eicu*: frozen theta~ (previous global iterate) + lambda=1/4,
+  # matching the paper's client-local objective exactly. The default
+  # ("legacy") reuses the live model for theta~ and a tunable lambda, and is
+  # refused for eicu* datasets.
+  objective_mode: paper_aligned
+  skip_model_selection: true
+  skip_gmm_eval: true
+  output_dir: "results/_smoke_eicu"
+  run_id: "smoke"
+  overwrite: true
+
+validation_args:
+  frequency_of_the_test: 1
+
+device_args:
+  using_gpu: false
+  gpu_id: 0
+
+comm_args:
+  backend: "sp"
+
+tracking_args:
+  enable_tracking: false
+  enable_wandb: false
+  run_name: eicu_semisynth_smoke

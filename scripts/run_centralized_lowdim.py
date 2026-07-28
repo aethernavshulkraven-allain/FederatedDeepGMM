@@ -75,7 +75,7 @@ LOWDIM_DATASETS = {"abs", "step", "linear", "sin"}
 # eicu_semisynth is not a single scenario file (unlike the zoo datasets): the
 # actual file is data/eicu_semisynth/<scenario_name>.npz, so which scenario to
 # load is a separate --scenario-name argument, not encoded in --dataset.
-EICU_DATASETS = {"eicu_semisynth"}
+EICU_DATASETS = {"eicu_semisynth", "eicu_semisynth_offhours_v2_demo"}
 METHODS = {"gda", "sgda", "oadam"}
 # protocol_v1.md S6.2: the canonical campaign method label suffixes
 # deterministic/stochastic exactly like the federated fedgda_s/fedogda_s
@@ -93,7 +93,7 @@ ZOO_HIDDEN_WIDTHS = [20, 20]
 
 def canonical_dataset(dataset: str) -> str:
     value = DATASET_ALIASES.get(dataset.lower(), dataset.lower())
-    if value not in LOWDIM_DATASETS and value not in EICU_DATASETS:
+    if value not in LOWDIM_DATASETS and not value.startswith("eicu"):
         raise ValueError(f"Unsupported dataset {dataset!r}")
     return value
 
@@ -127,7 +127,7 @@ def move_split(split: Any, device: torch.device) -> Any:
 def load_pooled_splits(
     dataset: str, data_dir: Path, device: torch.device, scenario_name: str | None = None
 ) -> tuple[Any, Any, Any, Path]:
-    if dataset in EICU_DATASETS:
+    if dataset.startswith("eicu"):
         if not scenario_name:
             raise ValueError(f"--scenario-name is required for --dataset {dataset!r}")
         scenario_path = data_dir / dataset / f"{scenario_name}.npz"
@@ -144,15 +144,19 @@ def load_pooled_splits(
 
 
 def build_models(
-    device: torch.device, input_dim_g: int, input_dim_f: int, hidden_widths: list[int]
+    device: torch.device,
+    input_dim_g: int,
+    input_dim_f: int,
+    hidden_widths: list[int],
+    activation: type[torch.nn.Module] = nn.LeakyReLU,
 ) -> tuple[torch.nn.Module, torch.nn.Module]:
     """Dimensions are derived from the loaded data (train.x/.z widths), not
     hardcoded -- the zoo scenarios are always 1-D treatment / 2-D instrument,
     but eicu_semisynth packs [D, W] / [Z, W] and its width depends on the
     cohort's covariate count.
     """
-    g = MLPModel(input_dim=input_dim_g, layer_widths=hidden_widths, activation=nn.LeakyReLU).double()
-    f = MLPModel(input_dim=input_dim_f, layer_widths=hidden_widths, activation=nn.LeakyReLU).double()
+    g = MLPModel(input_dim=input_dim_g, layer_widths=hidden_widths, activation=activation).double()
+    f = MLPModel(input_dim=input_dim_f, layer_widths=hidden_widths, activation=activation).double()
     g.initialize()
     f.initialize()
     return g.to(device), f.to(device)
@@ -310,6 +314,10 @@ def build_effective_config(
         "objective": objective_name,
         "input_dim_g": int(input_dim_g),
         "input_dim_f": int(input_dim_f),
+        "hidden_widths": list(hidden_widths),
+        "model_activation": str(
+            getattr(args, "model_activation", "leaky_relu")
+        ),
         "model": f"MLPModel(g:{input_dim_g}->{hidden_widths}, f:{input_dim_f}->{hidden_widths})",
         "data_path": str(scenario_path.relative_to(REPO_ROOT) if scenario_path.is_relative_to(REPO_ROOT) else scenario_path),
         "output_dir": str(output_dir),
@@ -356,8 +364,33 @@ def run(args: argparse.Namespace) -> Path:
     test_client_id = getattr(test, "client_id", None)
     input_dim_g = int(train.x.shape[1])
     input_dim_f = int(train.z.shape[1])
-    hidden_widths = EICU_HIDDEN_WIDTHS if dataset in EICU_DATASETS else ZOO_HIDDEN_WIDTHS
-    g, f = build_models(device, input_dim_g, input_dim_f, hidden_widths)
+    if dataset.startswith("eicu"):
+        hidden_widths = [
+            int(piece.strip())
+            for piece in str(getattr(args, "hidden_widths", "64,64")).strip("[]").split(",")
+            if piece.strip()
+        ]
+        if not hidden_widths or any(width <= 0 for width in hidden_widths):
+            raise ValueError("--hidden-widths must contain positive integers")
+        activation_choices = {
+            "relu": nn.ReLU,
+            "leaky_relu": nn.LeakyReLU,
+            "tanh": nn.Tanh,
+        }
+        model_activation = str(
+            getattr(args, "model_activation", "leaky_relu")
+        )
+        if model_activation not in activation_choices:
+            raise ValueError(
+                f"--model-activation must be one of {sorted(activation_choices)}"
+            )
+        activation = activation_choices[model_activation]
+    else:
+        hidden_widths = ZOO_HIDDEN_WIDTHS
+        activation = nn.LeakyReLU
+    g, f = build_models(
+        device, input_dim_g, input_dim_f, hidden_widths, activation=activation
+    )
     objective = (
         PaperAlignedMomentObjective(lambda_1=PAPER_ALIGNED_LAMBDA)
         if objective_mode == "paper_aligned"
@@ -655,6 +688,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--f-lr", type=float, default=0.01)
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--gradient-clip-norm", type=float, default=1.0)
+    parser.add_argument(
+        "--hidden-widths",
+        default="64,64",
+        help="Comma-separated eICU hidden widths (Study A v2 uses 32,32).",
+    )
+    parser.add_argument(
+        "--model-activation",
+        choices=("relu", "leaky_relu", "tanh"),
+        default="leaky_relu",
+    )
     parser.add_argument("--data-dir", default=str(EXAMPLE_ROOT / "data"))
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--gpu-id", type=int, default=None)

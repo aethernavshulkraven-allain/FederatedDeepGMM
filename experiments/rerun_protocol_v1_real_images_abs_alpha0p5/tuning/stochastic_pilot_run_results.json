@@ -1,0 +1,10 @@
+[
+  {
+    "best_validation_round": 19,
+    "final_test_mse": 0.539299984598036,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_x/fedgda_s/seed_0/tune_femnist_x_fedgda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_femnist_x_fedgda_s_seed0_lr0p003_wd0p05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.16092314338301347
+  }
+]

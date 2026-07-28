@@ -1,0 +1,290 @@
+[
+  {
+    "best_validation_round": 423,
+    "final_test_mse": 0.0027008256542297247,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/abs/fedgda_s/seed_0/rerun_protocol_v1_abs_fedgda_s_seed0_alpha0p1",
+    "run_id": "rerun_protocol_v1_abs_fedgda_s_seed0_alpha0p1",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.0007014676955070171
+  },
+  {
+    "best_validation_round": 391,
+    "final_test_mse": 0.00770980698874209,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/abs/fedgda_s/seed_1/rerun_protocol_v1_abs_fedgda_s_seed1_alpha0p1",
+    "run_id": "rerun_protocol_v1_abs_fedgda_s_seed1_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.006399854504840437
+  },
+  {
+    "best_validation_round": 228,
+    "final_test_mse": 0.00608580013347739,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/abs/fedgda_s/seed_2/rerun_protocol_v1_abs_fedgda_s_seed2_alpha0p1",
+    "run_id": "rerun_protocol_v1_abs_fedgda_s_seed2_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.001397470631696574
+  },
+  {
+    "best_validation_round": 222,
+    "final_test_mse": 0.001118432342798487,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/abs/fedgda_s/seed_0/rerun_protocol_v1_abs_fedgda_s_seed0_alpha0p5",
+    "run_id": "rerun_protocol_v1_abs_fedgda_s_seed0_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.0005328621876962478
+  },
+  {
+    "best_validation_round": 150,
+    "final_test_mse": 0.008641235246094971,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/abs/fedgda_s/seed_1/rerun_protocol_v1_abs_fedgda_s_seed1_alpha0p5",
+    "run_id": "rerun_protocol_v1_abs_fedgda_s_seed1_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.006562232470117874
+  },
+  {
+    "best_validation_round": 270,
+    "final_test_mse": 0.005477743217867364,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/abs/fedgda_s/seed_2/rerun_protocol_v1_abs_fedgda_s_seed2_alpha0p5",
+    "run_id": "rerun_protocol_v1_abs_fedgda_s_seed2_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.0010346327801986487
+  },
+  {
+    "best_validation_round": 488,
+    "final_test_mse": 0.005223435684973628,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/abs/fedgda_s/seed_0/rerun_protocol_v1_abs_fedgda_s_seed0_alpha1p0",
+    "run_id": "rerun_protocol_v1_abs_fedgda_s_seed0_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.0006057864695677811
+  },
+  {
+    "best_validation_round": 406,
+    "final_test_mse": 0.006998887150620184,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/abs/fedgda_s/seed_1/rerun_protocol_v1_abs_fedgda_s_seed1_alpha1p0",
+    "run_id": "rerun_protocol_v1_abs_fedgda_s_seed1_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.006905123990474533
+  },
+  {
+    "best_validation_round": 255,
+    "final_test_mse": 0.005282472171527157,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/abs/fedgda_s/seed_2/rerun_protocol_v1_abs_fedgda_s_seed2_alpha1p0",
+    "run_id": "rerun_protocol_v1_abs_fedgda_s_seed2_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.0010968679157301287
+  },
+  {
+    "best_validation_round": 484,
+    "final_test_mse": 0.030328771864915057,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/step/fedgda_s/seed_0/rerun_protocol_v1_step_fedgda_s_seed0_alpha0p1",
+    "run_id": "rerun_protocol_v1_step_fedgda_s_seed0_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.028218572987749786
+  },
+  {
+    "best_validation_round": 487,
+    "final_test_mse": 0.027310156296552653,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/step/fedgda_s/seed_1/rerun_protocol_v1_step_fedgda_s_seed1_alpha0p1",
+    "run_id": "rerun_protocol_v1_step_fedgda_s_seed1_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.025218379926375142
+  },
+  {
+    "best_validation_round": 486,
+    "final_test_mse": 0.028457605743916845,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/step/fedgda_s/seed_2/rerun_protocol_v1_step_fedgda_s_seed2_alpha0p1",
+    "run_id": "rerun_protocol_v1_step_fedgda_s_seed2_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.028442072541331992
+  },
+  {
+    "best_validation_round": 479,
+    "final_test_mse": 0.026855397342953426,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/step/fedgda_s/seed_0/rerun_protocol_v1_step_fedgda_s_seed0_alpha0p5",
+    "run_id": "rerun_protocol_v1_step_fedgda_s_seed0_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.026161904214876575
+  },
+  {
+    "best_validation_round": 489,
+    "final_test_mse": 0.024744867783718958,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/step/fedgda_s/seed_1/rerun_protocol_v1_step_fedgda_s_seed1_alpha0p5",
+    "run_id": "rerun_protocol_v1_step_fedgda_s_seed1_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.024000679608566614
+  },
+  {
+    "best_validation_round": 341,
+    "final_test_mse": 0.030501320158263172,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/step/fedgda_s/seed_2/rerun_protocol_v1_step_fedgda_s_seed2_alpha0p5",
+    "run_id": "rerun_protocol_v1_step_fedgda_s_seed2_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.028639580672589676
+  },
+  {
+    "best_validation_round": 466,
+    "final_test_mse": 0.029632832198242733,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/step/fedgda_s/seed_0/rerun_protocol_v1_step_fedgda_s_seed0_alpha1p0",
+    "run_id": "rerun_protocol_v1_step_fedgda_s_seed0_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.02846987321520255
+  },
+  {
+    "best_validation_round": 452,
+    "final_test_mse": 0.040949814212533756,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/step/fedgda_s/seed_1/rerun_protocol_v1_step_fedgda_s_seed1_alpha1p0",
+    "run_id": "rerun_protocol_v1_step_fedgda_s_seed1_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.024930481480437517
+  },
+  {
+    "best_validation_round": 463,
+    "final_test_mse": 0.030141683911365305,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/step/fedgda_s/seed_2/rerun_protocol_v1_step_fedgda_s_seed2_alpha1p0",
+    "run_id": "rerun_protocol_v1_step_fedgda_s_seed2_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.028364487861014483
+  },
+  {
+    "best_validation_round": 481,
+    "final_test_mse": 0.0008994462719826203,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/linear/fedgda_s/seed_0/rerun_protocol_v1_linear_fedgda_s_seed0_alpha0p1",
+    "run_id": "rerun_protocol_v1_linear_fedgda_s_seed0_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 6.552064568177548e-05
+  },
+  {
+    "best_validation_round": 299,
+    "final_test_mse": 0.024390739309934524,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/linear/fedgda_s/seed_1/rerun_protocol_v1_linear_fedgda_s_seed1_alpha0p1",
+    "run_id": "rerun_protocol_v1_linear_fedgda_s_seed1_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.0007707277504424529
+  },
+  {
+    "best_validation_round": 295,
+    "final_test_mse": 0.004911374762764521,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/linear/fedgda_s/seed_2/rerun_protocol_v1_linear_fedgda_s_seed2_alpha0p1",
+    "run_id": "rerun_protocol_v1_linear_fedgda_s_seed2_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.00031834185054889806
+  },
+  {
+    "best_validation_round": 425,
+    "final_test_mse": 0.0023926975756404342,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/linear/fedgda_s/seed_0/rerun_protocol_v1_linear_fedgda_s_seed0_alpha0p5",
+    "run_id": "rerun_protocol_v1_linear_fedgda_s_seed0_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.00016656732111549775
+  },
+  {
+    "best_validation_round": 330,
+    "final_test_mse": 0.01733318059226154,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/linear/fedgda_s/seed_1/rerun_protocol_v1_linear_fedgda_s_seed1_alpha0p5",
+    "run_id": "rerun_protocol_v1_linear_fedgda_s_seed1_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.0005069194132579995
+  },
+  {
+    "best_validation_round": 343,
+    "final_test_mse": 0.006809634968664257,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/linear/fedgda_s/seed_2/rerun_protocol_v1_linear_fedgda_s_seed2_alpha0p5",
+    "run_id": "rerun_protocol_v1_linear_fedgda_s_seed2_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.00039595862624269005
+  },
+  {
+    "best_validation_round": 430,
+    "final_test_mse": 0.00484590422526663,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/linear/fedgda_s/seed_0/rerun_protocol_v1_linear_fedgda_s_seed0_alpha1p0",
+    "run_id": "rerun_protocol_v1_linear_fedgda_s_seed0_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 8.424079270976279e-05
+  },
+  {
+    "best_validation_round": 496,
+    "final_test_mse": 0.011980264239393437,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/linear/fedgda_s/seed_1/rerun_protocol_v1_linear_fedgda_s_seed1_alpha1p0",
+    "run_id": "rerun_protocol_v1_linear_fedgda_s_seed1_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.0006129201898141918
+  },
+  {
+    "best_validation_round": 300,
+    "final_test_mse": 0.005193749711193318,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/linear/fedgda_s/seed_2/rerun_protocol_v1_linear_fedgda_s_seed2_alpha1p0",
+    "run_id": "rerun_protocol_v1_linear_fedgda_s_seed2_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.0005595686814700478
+  },
+  {
+    "best_validation_round": 469,
+    "final_test_mse": 0.08456007782288795,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/sin/fedgda_s/seed_0/rerun_protocol_v1_sin_fedgda_s_seed0_alpha0p1",
+    "run_id": "rerun_protocol_v1_sin_fedgda_s_seed0_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.0837320533183688
+  },
+  {
+    "best_validation_round": 486,
+    "final_test_mse": 0.07427679011235436,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/sin/fedgda_s/seed_1/rerun_protocol_v1_sin_fedgda_s_seed1_alpha0p1",
+    "run_id": "rerun_protocol_v1_sin_fedgda_s_seed1_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.07252873976572619
+  },
+  {
+    "best_validation_round": 485,
+    "final_test_mse": 0.08260777252388152,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/sin/fedgda_s/seed_2/rerun_protocol_v1_sin_fedgda_s_seed2_alpha0p1",
+    "run_id": "rerun_protocol_v1_sin_fedgda_s_seed2_alpha0p1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.08011009984218251
+  },
+  {
+    "best_validation_round": 487,
+    "final_test_mse": 0.0816933093903071,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/sin/fedgda_s/seed_0/rerun_protocol_v1_sin_fedgda_s_seed0_alpha0p5",
+    "run_id": "rerun_protocol_v1_sin_fedgda_s_seed0_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.08084465012555463
+  },
+  {
+    "best_validation_round": 486,
+    "final_test_mse": 0.0797272999799262,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/sin/fedgda_s/seed_1/rerun_protocol_v1_sin_fedgda_s_seed1_alpha0p5",
+    "run_id": "rerun_protocol_v1_sin_fedgda_s_seed1_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.07087975474326494
+  },
+  {
+    "best_validation_round": 328,
+    "final_test_mse": 0.0834791484525208,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/sin/fedgda_s/seed_2/rerun_protocol_v1_sin_fedgda_s_seed2_alpha0p5",
+    "run_id": "rerun_protocol_v1_sin_fedgda_s_seed2_alpha0p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.08237799902299964
+  },
+  {
+    "best_validation_round": 496,
+    "final_test_mse": 0.08108717190987186,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/sin/fedgda_s/seed_0/rerun_protocol_v1_sin_fedgda_s_seed0_alpha1p0",
+    "run_id": "rerun_protocol_v1_sin_fedgda_s_seed0_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.07978549290839898
+  },
+  {
+    "best_validation_round": 440,
+    "final_test_mse": 0.08038967788338648,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/sin/fedgda_s/seed_1/rerun_protocol_v1_sin_fedgda_s_seed1_alpha1p0",
+    "run_id": "rerun_protocol_v1_sin_fedgda_s_seed1_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.0756283265223583
+  },
+  {
+    "best_validation_round": 463,
+    "final_test_mse": 0.0834056959803923,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1/sin/fedgda_s/seed_2/rerun_protocol_v1_sin_fedgda_s_seed2_alpha1p0",
+    "run_id": "rerun_protocol_v1_sin_fedgda_s_seed2_alpha1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.08051380406543718
+  }
+]

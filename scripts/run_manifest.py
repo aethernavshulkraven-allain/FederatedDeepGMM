@@ -324,7 +324,9 @@ def build_config(
         "gpu_id": int(gpu_id),
         "enable_legacy_outputs": False,
         "overwrite": False,
-        "require_multibatch_stochastic": False,
+        "require_multibatch_stochastic": _truthy(
+            _config_value(row, "require_multibatch_stochastic", False)
+        ),
         "variant": row["method"],
         # eicu_semisynth-specific; absent/default for every other row, so this
         # is a pure addition with no effect on existing (non-eicu) manifests.
@@ -333,6 +335,10 @@ def build_config(
         "aggregation_weighting": _config_value(row, "aggregation_weighting", "sample_size"),
         "input_dim_g": _as_int(_config_value(row, "input_dim_g", 0), "input_dim_g"),
         "input_dim_f": _as_int(_config_value(row, "input_dim_f", 0), "input_dim_f"),
+        "hidden_widths": str(_config_value(row, "hidden_widths", "64,64")),
+        "model_activation": str(
+            _config_value(row, "model_activation", "leaky_relu")
+        ),
         # protocol_v1.md S7.1: scenario_seed (which DGP/scenario artifact) and
         # optimizer_seed (this run's random_seed) must be recorded separately
         # even though row["seed"] continues to mean "optimizer seed" for path
@@ -390,6 +396,8 @@ def write_config(path: Path, config: dict[str, Any]) -> None:
             "model": config["model"],
             **({"input_dim_g": config["input_dim_g"]} if config.get("input_dim_g") else {}),
             **({"input_dim_f": config["input_dim_f"]} if config.get("input_dim_f") else {}),
+            "hidden_widths": config["hidden_widths"],
+            "model_activation": config["model_activation"],
         },
         "train_args": {
             "federated_optimizer": config["federated_optimizer"],

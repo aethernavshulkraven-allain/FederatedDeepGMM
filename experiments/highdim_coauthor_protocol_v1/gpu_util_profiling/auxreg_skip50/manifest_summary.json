@@ -1,0 +1,15 @@
+{
+  "datasets": [
+    "cifar10_x"
+  ],
+  "manifest": "experiments/highdim_coauthor_protocol_v1/gpu_util_profiling/auxreg_skip50/manifest.csv",
+  "methods": [
+    "fedgda_s"
+  ],
+  "output_root": "results/_profiling/highdim_stochastic_gpu_util/auxreg_skip50",
+  "phase": "auxreg_skip50",
+  "rounds": 50,
+  "rows": 1,
+  "seed": 0,
+  "source_manifest": "experiments/highdim_coauthor_protocol_v1/alpha1/final_manifest_stochastic.csv"
+}

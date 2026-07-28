@@ -1,0 +1,1 @@
+run_id,scope,dataset,seed,paper_method,manifest_method,mode,output_dir,iterations_or_rounds,epochs,batch_size,learning_rate,critic_learning_rate,selection_metric_source,selected_without_test,notes

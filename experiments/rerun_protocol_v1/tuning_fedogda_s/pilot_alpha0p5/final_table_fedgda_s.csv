@@ -1,0 +1,4 @@
+method,dataset,alpha,selected_critic_multiplier,selected_weight_decay,mean_validation_mse,mean_test_mse,test_std,oscillation_score,win_loss_vs_fedgda_s,test_ratio_vs_fedgda_s,diverged_count
+FedGDA-S baseline,abs,0.5,10.0,0.03,0.0026495178539163466,0.002709909146004257,0.0027316954048121097,0.0017326038759320024,reference,1.0,0
+FedGDA-S baseline,linear,0.5,10.0,0.03,0.00035298375979572906,0.0003564817868720624,0.00014172438579032015,0.004006257077271833,reference,1.0,0
+FedGDA-S baseline,step,0.5,10.0,0.03,0.025922972833077443,0.026267388165344286,0.001895291695808903,0.002988180032230676,reference,1.0,0

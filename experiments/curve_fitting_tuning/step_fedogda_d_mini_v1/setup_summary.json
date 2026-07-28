@@ -1,0 +1,62 @@
+{
+  "step": "Step 3 prepared only; no training launched.",
+  "manifest": "experiments/curve_fitting_tuning/step_fedogda_d_mini_v1/manifest.csv",
+  "run_group": "curvefit_step_fedogda_d_mini_v1",
+  "output_root": "results/curve_fitting_tuning/step_fedogda_d_mini_v1",
+  "total_rows": 12,
+  "grid": {
+    "dataset": [
+      "step"
+    ],
+    "method": [
+      "fedogda_d"
+    ],
+    "seed": [
+      0
+    ],
+    "alpha": [
+      0.1
+    ],
+    "comm_round": [
+      200
+    ],
+    "epochs_R": [
+      3,
+      5,
+      10
+    ],
+    "critic_multiplier": [
+      15,
+      20
+    ],
+    "server_learning_rate": [
+      1.5
+    ],
+    "learning_rate_g_lr": [
+      0.002,
+      0.005
+    ],
+    "f_learning_rate_note": [
+      "derived as critic_multiplier * learning_rate in the federated runner; it is not an independent manifest knob"
+    ],
+    "derived_f_learning_rate_values": [
+      0.03,
+      0.04,
+      0.075,
+      0.1
+    ],
+    "weight_decay": [
+      0.1
+    ]
+  },
+  "selection_rule": [
+    "Use validation metrics only.",
+    "Primary: lowest best_validation_mse.",
+    "Tie-break: lower last50_validation_mse_mean if computed.",
+    "Tie-break: lower last50_validation_mse_cv/range and no divergence.",
+    "Do not select by Test MSE or curve/Test grid metrics."
+  ],
+  "existing_output_dirs_count": 0,
+  "existing_output_dirs": [],
+  "safe_to_launch_without_overwrite": true
+}

@@ -1,0 +1,1100 @@
+{
+  "certification_scope": "fixed_abs_high_dimensional_federated_data",
+  "core_invariants_pass": true,
+  "datasets": [
+    {
+      "all_finite": true,
+      "all_shapes_valid": true,
+      "core_invariants_pass": true,
+      "dataset": "femnist_x",
+      "family": "femnist",
+      "image_split_overlap": {
+        "x": {
+          "exact_unique_image_overlap": {
+            "dev_test": 0,
+            "train_dev": 0,
+            "train_test": 0
+          },
+          "no_cross_split_exact_image_reuse": true,
+          "unique_images_by_split": {
+            "dev": 9271,
+            "test": 8852,
+            "train": 19271
+          }
+        }
+      },
+      "inferred_standardizer_mean": 1.6754088541383054,
+      "inferred_standardizer_std": 2.28517691469527,
+      "key_set_valid": true,
+      "keys": [
+        "dev_g",
+        "dev_w",
+        "dev_x",
+        "dev_y",
+        "dev_z",
+        "splits",
+        "test_g",
+        "test_w",
+        "test_x",
+        "test_y",
+        "test_z",
+        "train_g",
+        "train_w",
+        "train_x",
+        "train_y",
+        "train_z"
+      ],
+      "max_abs_response_error": 2.220446049250313e-15,
+      "mode": "x",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_x/main.npz",
+      "recorded_splits": [
+        "test",
+        "train",
+        "dev"
+      ],
+      "response_error_by_split": {
+        "dev": 2.220446049250313e-15,
+        "test": 2.220446049250313e-15,
+        "train": 2.220446049250313e-15
+      },
+      "response_function": "abs",
+      "response_semantics_valid": true,
+      "sha256": "1f88d17b29d3e4cf4ec0951a7fab53e0c27f2207cdfd158df855835858992b44",
+      "sha256_matches_manifest": true,
+      "size_bytes": 126723986,
+      "size_matches_manifest": true,
+      "split_isolation_pass": true,
+      "split_names_valid": true,
+      "split_results": {
+        "dev": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              1,
+              28,
+              28
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              1
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": 0.012130231976278617,
+          "y_std": 0.9898394452275202
+        },
+        "test": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              1,
+              28,
+              28
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              1
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": -0.021280705688144504,
+          "y_std": 0.9938193687900689
+        },
+        "train": {
+          "all_finite": true,
+          "expected_size": 20000,
+          "shapes": {
+            "g": [
+              20000,
+              1
+            ],
+            "w": [
+              20000,
+              1
+            ],
+            "x": [
+              20000,
+              1,
+              28,
+              28
+            ],
+            "y": [
+              20000,
+              1
+            ],
+            "z": [
+              20000,
+              1
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": true,
+          "y_mean": 9.414691248821328e-18,
+          "y_std": 1.0
+        }
+      },
+      "train_y_standardized": true
+    },
+    {
+      "all_finite": true,
+      "all_shapes_valid": true,
+      "core_invariants_pass": true,
+      "dataset": "femnist_z",
+      "family": "femnist",
+      "image_split_overlap": {
+        "z": {
+          "exact_unique_image_overlap": {
+            "dev_test": 0,
+            "train_dev": 0,
+            "train_test": 0
+          },
+          "no_cross_split_exact_image_reuse": true,
+          "unique_images_by_split": {
+            "dev": 9206,
+            "test": 8764,
+            "train": 19188
+          }
+        }
+      },
+      "inferred_standardizer_mean": 1.6754088541383074,
+      "inferred_standardizer_std": 2.2851769146952656,
+      "key_set_valid": true,
+      "keys": [
+        "dev_g",
+        "dev_w",
+        "dev_x",
+        "dev_y",
+        "dev_z",
+        "splits",
+        "test_g",
+        "test_w",
+        "test_x",
+        "test_y",
+        "test_z",
+        "train_g",
+        "train_w",
+        "train_x",
+        "train_y",
+        "train_z"
+      ],
+      "max_abs_response_error": 1.1102230246251565e-15,
+      "mode": "z",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_z/main.npz",
+      "recorded_splits": [
+        "test",
+        "train",
+        "dev"
+      ],
+      "response_error_by_split": {
+        "dev": 1.1102230246251565e-15,
+        "test": 1.1102230246251565e-15,
+        "train": 1.1102230246251565e-15
+      },
+      "response_function": "abs",
+      "response_semantics_valid": true,
+      "sha256": "582b49c9c64186a4660817a816312e214e51f897053cb560b517b89cb35da5c4",
+      "sha256_matches_manifest": true,
+      "size_bytes": 126723986,
+      "size_matches_manifest": true,
+      "split_isolation_pass": true,
+      "split_names_valid": true,
+      "split_results": {
+        "dev": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              1
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              1,
+              28,
+              28
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": 0.012130231976278617,
+          "y_std": 0.9898394452275202
+        },
+        "test": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              1
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              1,
+              28,
+              28
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": -0.021280705688144504,
+          "y_std": 0.9938193687900689
+        },
+        "train": {
+          "all_finite": true,
+          "expected_size": 20000,
+          "shapes": {
+            "g": [
+              20000,
+              1
+            ],
+            "w": [
+              20000,
+              1
+            ],
+            "x": [
+              20000,
+              1
+            ],
+            "y": [
+              20000,
+              1
+            ],
+            "z": [
+              20000,
+              1,
+              28,
+              28
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": true,
+          "y_mean": 9.414691248821328e-18,
+          "y_std": 1.0
+        }
+      },
+      "train_y_standardized": true
+    },
+    {
+      "all_finite": true,
+      "all_shapes_valid": true,
+      "core_invariants_pass": true,
+      "dataset": "femnist_xz",
+      "family": "femnist",
+      "image_split_overlap": {
+        "x": {
+          "exact_unique_image_overlap": {
+            "dev_test": 0,
+            "train_dev": 0,
+            "train_test": 0
+          },
+          "no_cross_split_exact_image_reuse": true,
+          "unique_images_by_split": {
+            "dev": 9275,
+            "test": 8856,
+            "train": 19271
+          }
+        },
+        "z": {
+          "exact_unique_image_overlap": {
+            "dev_test": 0,
+            "train_dev": 0,
+            "train_test": 0
+          },
+          "no_cross_split_exact_image_reuse": true,
+          "unique_images_by_split": {
+            "dev": 9212,
+            "test": 8796,
+            "train": 19166
+          }
+        }
+      },
+      "inferred_standardizer_mean": 1.6754088541383054,
+      "inferred_standardizer_std": 2.28517691469527,
+      "key_set_valid": true,
+      "keys": [
+        "dev_g",
+        "dev_w",
+        "dev_x",
+        "dev_y",
+        "dev_z",
+        "splits",
+        "test_g",
+        "test_w",
+        "test_x",
+        "test_y",
+        "test_z",
+        "train_g",
+        "train_w",
+        "train_x",
+        "train_y",
+        "train_z"
+      ],
+      "max_abs_response_error": 2.220446049250313e-15,
+      "mode": "xz",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_xz/main.npz",
+      "recorded_splits": [
+        "test",
+        "train",
+        "dev"
+      ],
+      "response_error_by_split": {
+        "dev": 2.220446049250313e-15,
+        "test": 2.220446049250313e-15,
+        "train": 2.220446049250313e-15
+      },
+      "response_function": "abs",
+      "response_semantics_valid": true,
+      "sha256": "0cb3b5af2edc011fcf55bd1ad4cc1c3c6c58fb009333f2e62ca29832f4319b5c",
+      "sha256_matches_manifest": true,
+      "size_bytes": 251843986,
+      "size_matches_manifest": true,
+      "split_isolation_pass": true,
+      "split_names_valid": true,
+      "split_results": {
+        "dev": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              1,
+              28,
+              28
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              1,
+              28,
+              28
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": 0.012130231976278617,
+          "y_std": 0.9898394452275202
+        },
+        "test": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              1,
+              28,
+              28
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              1,
+              28,
+              28
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": -0.021280705688144504,
+          "y_std": 0.9938193687900689
+        },
+        "train": {
+          "all_finite": true,
+          "expected_size": 20000,
+          "shapes": {
+            "g": [
+              20000,
+              1
+            ],
+            "w": [
+              20000,
+              1
+            ],
+            "x": [
+              20000,
+              1,
+              28,
+              28
+            ],
+            "y": [
+              20000,
+              1
+            ],
+            "z": [
+              20000,
+              1,
+              28,
+              28
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": true,
+          "y_mean": 9.414691248821328e-18,
+          "y_std": 1.0
+        }
+      },
+      "train_y_standardized": true
+    },
+    {
+      "all_finite": true,
+      "all_shapes_valid": true,
+      "core_invariants_pass": true,
+      "dataset": "cifar10_x",
+      "family": "cifar10",
+      "image_split_overlap": {
+        "x": {
+          "exact_unique_image_overlap": {
+            "dev_test": 0,
+            "train_dev": 0,
+            "train_test": 0
+          },
+          "no_cross_split_exact_image_reuse": true,
+          "unique_images_by_split": {
+            "dev": 6240,
+            "test": 6297,
+            "train": 15616
+          }
+        }
+      },
+      "inferred_standardizer_mean": 1.6754088541383054,
+      "inferred_standardizer_std": 2.28517691469527,
+      "key_set_valid": true,
+      "keys": [
+        "dev_g",
+        "dev_w",
+        "dev_x",
+        "dev_y",
+        "dev_z",
+        "splits",
+        "test_g",
+        "test_w",
+        "test_x",
+        "test_y",
+        "test_z",
+        "train_g",
+        "train_w",
+        "train_x",
+        "train_y",
+        "train_z"
+      ],
+      "max_abs_response_error": 2.220446049250313e-15,
+      "mode": "x",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_x/main.npz",
+      "recorded_splits": [
+        "test",
+        "train",
+        "dev"
+      ],
+      "response_error_by_split": {
+        "dev": 2.220446049250313e-15,
+        "test": 2.220446049250313e-15,
+        "train": 2.220446049250313e-15
+      },
+      "response_function": "abs",
+      "response_semantics_valid": true,
+      "sha256": "ca5aea225a2e5b72545b6664c8256d794460ea5b335144cba8e7685e6d23a84e",
+      "sha256_matches_manifest": true,
+      "size_bytes": 492803986,
+      "size_matches_manifest": true,
+      "split_isolation_pass": true,
+      "split_names_valid": true,
+      "split_results": {
+        "dev": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              3,
+              32,
+              32
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              1
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": 0.012130231976278617,
+          "y_std": 0.9898394452275202
+        },
+        "test": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              3,
+              32,
+              32
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              1
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": -0.021280705688144504,
+          "y_std": 0.9938193687900689
+        },
+        "train": {
+          "all_finite": true,
+          "expected_size": 20000,
+          "shapes": {
+            "g": [
+              20000,
+              1
+            ],
+            "w": [
+              20000,
+              1
+            ],
+            "x": [
+              20000,
+              3,
+              32,
+              32
+            ],
+            "y": [
+              20000,
+              1
+            ],
+            "z": [
+              20000,
+              1
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": true,
+          "y_mean": 9.414691248821328e-18,
+          "y_std": 1.0
+        }
+      },
+      "train_y_standardized": true
+    },
+    {
+      "all_finite": true,
+      "all_shapes_valid": true,
+      "core_invariants_pass": true,
+      "dataset": "cifar10_z",
+      "family": "cifar10",
+      "image_split_overlap": {
+        "z": {
+          "exact_unique_image_overlap": {
+            "dev_test": 0,
+            "train_dev": 0,
+            "train_test": 0
+          },
+          "no_cross_split_exact_image_reuse": true,
+          "unique_images_by_split": {
+            "dev": 6017,
+            "test": 6036,
+            "train": 15357
+          }
+        }
+      },
+      "inferred_standardizer_mean": 1.6754088541383074,
+      "inferred_standardizer_std": 2.2851769146952656,
+      "key_set_valid": true,
+      "keys": [
+        "dev_g",
+        "dev_w",
+        "dev_x",
+        "dev_y",
+        "dev_z",
+        "splits",
+        "test_g",
+        "test_w",
+        "test_x",
+        "test_y",
+        "test_z",
+        "train_g",
+        "train_w",
+        "train_x",
+        "train_y",
+        "train_z"
+      ],
+      "max_abs_response_error": 1.1102230246251565e-15,
+      "mode": "z",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_z/main.npz",
+      "recorded_splits": [
+        "test",
+        "train",
+        "dev"
+      ],
+      "response_error_by_split": {
+        "dev": 1.1102230246251565e-15,
+        "test": 1.1102230246251565e-15,
+        "train": 1.1102230246251565e-15
+      },
+      "response_function": "abs",
+      "response_semantics_valid": true,
+      "sha256": "28a986f9a521b3fb8b96df72455d30bb21da66fbfc18d4949abec98466786109",
+      "sha256_matches_manifest": true,
+      "size_bytes": 492803986,
+      "size_matches_manifest": true,
+      "split_isolation_pass": true,
+      "split_names_valid": true,
+      "split_results": {
+        "dev": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              1
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              3,
+              32,
+              32
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": 0.012130231976278617,
+          "y_std": 0.9898394452275202
+        },
+        "test": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              1
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              3,
+              32,
+              32
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": -0.021280705688144504,
+          "y_std": 0.9938193687900689
+        },
+        "train": {
+          "all_finite": true,
+          "expected_size": 20000,
+          "shapes": {
+            "g": [
+              20000,
+              1
+            ],
+            "w": [
+              20000,
+              1
+            ],
+            "x": [
+              20000,
+              1
+            ],
+            "y": [
+              20000,
+              1
+            ],
+            "z": [
+              20000,
+              3,
+              32,
+              32
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": true,
+          "y_mean": 9.414691248821328e-18,
+          "y_std": 1.0
+        }
+      },
+      "train_y_standardized": true
+    },
+    {
+      "all_finite": true,
+      "all_shapes_valid": true,
+      "core_invariants_pass": true,
+      "dataset": "cifar10_xz",
+      "family": "cifar10",
+      "image_split_overlap": {
+        "x": {
+          "exact_unique_image_overlap": {
+            "dev_test": 0,
+            "train_dev": 0,
+            "train_test": 0
+          },
+          "no_cross_split_exact_image_reuse": true,
+          "unique_images_by_split": {
+            "dev": 6311,
+            "test": 6323,
+            "train": 15616
+          }
+        },
+        "z": {
+          "exact_unique_image_overlap": {
+            "dev_test": 0,
+            "train_dev": 0,
+            "train_test": 0
+          },
+          "no_cross_split_exact_image_reuse": true,
+          "unique_images_by_split": {
+            "dev": 5992,
+            "test": 6024,
+            "train": 15208
+          }
+        }
+      },
+      "inferred_standardizer_mean": 1.6754088541383054,
+      "inferred_standardizer_std": 2.28517691469527,
+      "key_set_valid": true,
+      "keys": [
+        "dev_g",
+        "dev_w",
+        "dev_x",
+        "dev_y",
+        "dev_z",
+        "splits",
+        "test_g",
+        "test_w",
+        "test_x",
+        "test_y",
+        "test_z",
+        "train_g",
+        "train_w",
+        "train_x",
+        "train_y",
+        "train_z"
+      ],
+      "max_abs_response_error": 2.220446049250313e-15,
+      "mode": "xz",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_xz/main.npz",
+      "recorded_splits": [
+        "test",
+        "train",
+        "dev"
+      ],
+      "response_error_by_split": {
+        "dev": 2.220446049250313e-15,
+        "test": 2.220446049250313e-15,
+        "train": 2.220446049250313e-15
+      },
+      "response_function": "abs",
+      "response_semantics_valid": true,
+      "sha256": "ec0033d4773125937fc1c33c97eeefa57f033cd04af603d67d4cffb52425e7fd",
+      "sha256_matches_manifest": true,
+      "size_bytes": 984003986,
+      "size_matches_manifest": true,
+      "split_isolation_pass": true,
+      "split_names_valid": true,
+      "split_results": {
+        "dev": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              3,
+              32,
+              32
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              3,
+              32,
+              32
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": 0.012130231976278617,
+          "y_std": 0.9898394452275202
+        },
+        "test": {
+          "all_finite": true,
+          "expected_size": 10000,
+          "shapes": {
+            "g": [
+              10000,
+              1
+            ],
+            "w": [
+              10000,
+              1
+            ],
+            "x": [
+              10000,
+              3,
+              32,
+              32
+            ],
+            "y": [
+              10000,
+              1
+            ],
+            "z": [
+              10000,
+              3,
+              32,
+              32
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": null,
+          "y_mean": -0.021280705688144504,
+          "y_std": 0.9938193687900689
+        },
+        "train": {
+          "all_finite": true,
+          "expected_size": 20000,
+          "shapes": {
+            "g": [
+              20000,
+              1
+            ],
+            "w": [
+              20000,
+              1
+            ],
+            "x": [
+              20000,
+              3,
+              32,
+              32
+            ],
+            "y": [
+              20000,
+              1
+            ],
+            "z": [
+              20000,
+              3,
+              32,
+              32
+            ]
+          },
+          "shapes_valid": true,
+          "train_y_zero_mean_unit_std": true,
+          "y_mean": 9.414691248821328e-18,
+          "y_std": 1.0
+        }
+      },
+      "train_y_standardized": true
+    }
+  ],
+  "decision": "certified",
+  "fairness_checks": {
+    "all_scenarios_share_exact_toy_y_by_split": true,
+    "fairness_invariants_pass": true,
+    "family_check_note": "Exact X-image equality between x and xz is diagnostic only. It is not required: sampling Z images in xz advances that scenario's independent image RNG before later splits. Method fairness comes from every method consuming the same saved scenario file; exact toy Y equality confirms the paired DGP.",
+    "family_checks": {
+      "cifar10": {
+        "paired_x_fields_exact": false,
+        "x_and_xz_share_x_g_w_y_by_split": {
+          "dev": false,
+          "test": false,
+          "train": true
+        }
+      },
+      "femnist": {
+        "paired_x_fields_exact": false,
+        "x_and_xz_share_x_g_w_y_by_split": {
+          "dev": false,
+          "test": false,
+          "train": true
+        }
+      }
+    },
+    "y_checksums": {
+      "cifar10_x": {
+        "dev": "f4bd6b776164b2d8645b5c297ce05f924c5a2098ab7da56c37fd8b3d95c841e3",
+        "test": "25cce8322232aff079ae22f3104e507770b0b9cae4e55b47055460bd45fea9d4",
+        "train": "a3f395cedd1d4f7ae283765ca9802e91f53a301cc7cbf34fb0b539375569299e"
+      },
+      "cifar10_xz": {
+        "dev": "f4bd6b776164b2d8645b5c297ce05f924c5a2098ab7da56c37fd8b3d95c841e3",
+        "test": "25cce8322232aff079ae22f3104e507770b0b9cae4e55b47055460bd45fea9d4",
+        "train": "a3f395cedd1d4f7ae283765ca9802e91f53a301cc7cbf34fb0b539375569299e"
+      },
+      "cifar10_z": {
+        "dev": "f4bd6b776164b2d8645b5c297ce05f924c5a2098ab7da56c37fd8b3d95c841e3",
+        "test": "25cce8322232aff079ae22f3104e507770b0b9cae4e55b47055460bd45fea9d4",
+        "train": "a3f395cedd1d4f7ae283765ca9802e91f53a301cc7cbf34fb0b539375569299e"
+      },
+      "femnist_x": {
+        "dev": "f4bd6b776164b2d8645b5c297ce05f924c5a2098ab7da56c37fd8b3d95c841e3",
+        "test": "25cce8322232aff079ae22f3104e507770b0b9cae4e55b47055460bd45fea9d4",
+        "train": "a3f395cedd1d4f7ae283765ca9802e91f53a301cc7cbf34fb0b539375569299e"
+      },
+      "femnist_xz": {
+        "dev": "f4bd6b776164b2d8645b5c297ce05f924c5a2098ab7da56c37fd8b3d95c841e3",
+        "test": "25cce8322232aff079ae22f3104e507770b0b9cae4e55b47055460bd45fea9d4",
+        "train": "a3f395cedd1d4f7ae283765ca9802e91f53a301cc7cbf34fb0b539375569299e"
+      },
+      "femnist_z": {
+        "dev": "f4bd6b776164b2d8645b5c297ce05f924c5a2098ab7da56c37fd8b3d95c841e3",
+        "test": "25cce8322232aff079ae22f3104e507770b0b9cae4e55b47055460bd45fea9d4",
+        "train": "a3f395cedd1d4f7ae283765ca9802e91f53a301cc7cbf34fb0b539375569299e"
+      }
+    }
+  },
+  "generation_manifest": "experiments/rerun_protocol_v1_real_images_abs_alpha0p5/data_generation_manifest.json",
+  "metadata_invariants": {
+    "g_function": "abs",
+    "protocol_version": "rerun_protocol_v1_real_images_abs_alpha0p5",
+    "seed": 527,
+    "split_sizes": {
+      "dev": 10000,
+      "test": 10000,
+      "train": 20000
+    },
+    "valid": true
+  },
+  "source_checks": {
+    "all_digit_classes_nonempty": true,
+    "cifar10_source": "torchvision.datasets.CIFAR10",
+    "content_disjoint_generated_split_policy": true,
+    "femnist_only_digits": true,
+    "femnist_source": "tensorflow_federated.simulation.datasets.emnist.load_data",
+    "source_invariants_pass": true,
+    "source_pool_note": "Generated test uses unique source-test content. Generated train/dev use a deterministic 80/20 partition of unique source-train content after excluding content also present in source test. Exact overlap is measured from saved arrays."
+  },
+  "split_isolation_pass": true
+}

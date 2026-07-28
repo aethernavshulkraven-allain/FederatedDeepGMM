@@ -1,0 +1,22 @@
+dataset,function,family,method,source,mean_test_mse_at_best_validation,std_test_mse_at_best_validation,seeds_or_pairs,notes
+abs,Absolute,federated_original,FedGDA-D,rerun_protocol_v1,0.018008147975330253,0.013269392731644594,9 alpha/seed rows,original sweep
+abs,Absolute,federated_original,FedOGDA-D,rerun_protocol_v1,0.016891833766839528,0.01238568800539271,9 alpha/seed rows,original sweep
+step,Step,federated_original,FedGDA-D,rerun_protocol_v1,0.029729612297582555,0.0025834269866612304,9 alpha/seed rows,original sweep
+step,Step,federated_original,FedOGDA-D,rerun_protocol_v1,0.029168797675244454,0.0027407506519857234,9 alpha/seed rows,original sweep
+linear,Linear,federated_original,FedGDA-D,rerun_protocol_v1,0.004226089512893182,0.004738705759421807,9 alpha/seed rows,original sweep
+linear,Linear,federated_original,FedOGDA-D,rerun_protocol_v1,0.002861597679455012,0.003196017781610515,9 alpha/seed rows,original sweep
+sin,Sine,federated_original,FedGDA-D,rerun_protocol_v1,0.08615231668824437,0.0037661536984655553,9 alpha/seed rows,original sweep
+sin,Sine,federated_original,FedOGDA-D,rerun_protocol_v1,0.08621344444851478,0.00372871498182728,9 alpha/seed rows,original sweep
+sin,Sine,federated_tuned,FedOGDA-D tuned,sine_a2_lite,0.08001153457404324,,3 seeds,validation-locked tuned recipe
+abs,Absolute,centralized_tuned,DeepGMM-GDA,C5 tuned,0.056168980506173,0.0527639749370819,3 seeds,validation-tuned GDA/SGDA
+abs,Absolute,centralized_tuned,DeepGMM-SGDA,C5 tuned,0.0562582413556839,0.0551927255781542,3 seeds,validation-tuned GDA/SGDA
+abs,Absolute,centralized_original,DeepGMM-OAdam,C3,0.001779514509401,0.0008271198204562,3 seeds,OAdam strong; not retuned
+step,Step,centralized_tuned,DeepGMM-GDA,C5 tuned,0.0321918636318558,0.0054239094783926,3 seeds,validation-tuned GDA/SGDA
+step,Step,centralized_tuned,DeepGMM-SGDA,C5 tuned,0.0319682203688549,0.0057363156547224,3 seeds,validation-tuned GDA/SGDA
+step,Step,centralized_original,DeepGMM-OAdam,C3,0.0172140141734421,0.0005727677904835,3 seeds,OAdam strong; not retuned
+linear,Linear,centralized_tuned,DeepGMM-GDA,C5 tuned,0.0095437627016982,0.0076166562327128,3 seeds,validation-tuned GDA/SGDA
+linear,Linear,centralized_tuned,DeepGMM-SGDA,C5 tuned,0.0079972981005886,0.0059314515538411,3 seeds,validation-tuned GDA/SGDA
+linear,Linear,centralized_original,DeepGMM-OAdam,C3,0.0007596637352553,0.0006194178043768,3 seeds,OAdam strong; not retuned
+sin,Sine,centralized_tuned,DeepGMM-GDA,C5 tuned,0.0871173647426747,0.006988193493012,3 seeds,validation-tuned GDA/SGDA
+sin,Sine,centralized_tuned,DeepGMM-SGDA,C5 tuned,0.0876799502972288,0.0072035325650538,3 seeds,validation-tuned GDA/SGDA
+sin,Sine,centralized_original,DeepGMM-OAdam,C3,0.0376761191738272,0.0034331735080523,3 seeds,OAdam strong; not retuned

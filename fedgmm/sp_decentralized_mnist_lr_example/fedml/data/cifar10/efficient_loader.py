@@ -1,4 +1,5 @@
 import logging
+from contextlib import nullcontext
 
 import numpy as np
 import torch
@@ -8,6 +9,29 @@ from torchvision.datasets import CIFAR10
 from scenarios.abstract_scenario import AbstractScenario
 from .without_reload import CIFAR10_truncated, CIFAR10_truncated_WO_reload
 from torch.utils.data import DataLoader, TensorDataset, Subset
+
+
+def _profile_span(args, phase, detail=""):
+    profiler = getattr(args, "_fedgmm_runtime_profiler", None)
+    if profiler is None:
+        return nullcontext()
+    return profiler.span(phase, detail=detail)
+
+
+def _client_loader_kwargs(args, shuffle=True):
+    kwargs = {
+        "batch_size": args.batch_size,
+        "shuffle": shuffle,
+    }
+    num_workers = max(0, int(getattr(args, "dataloader_num_workers", 0)))
+    if num_workers > 0:
+        kwargs["num_workers"] = num_workers
+        kwargs["persistent_workers"] = True
+        kwargs["prefetch_factor"] = 2
+    if bool(getattr(args, "dataloader_pin_memory", False)) and bool(getattr(args, "using_gpu", False)):
+        kwargs["pin_memory"] = True
+    return kwargs
+
 
 # generate the non-IID distribution for all methods
 def read_data_distribution(filename="./data_preprocessing/non-iid-distribution/CIFAR10/distribution.txt",):
@@ -166,9 +190,10 @@ def partition_data(dataset, datadir, partition, n_nets, alpha, process_id, priva
 # for centralized training
 def get_dataloader(args,train,test,dev,):
     clients_num = range(args.client_num_in_total)
-    train_dataset = TensorDataset(train.g, train.w, train.x, train.y, train.z)
-    test_dataset = TensorDataset(test.g, test.w, test.x, test.y, test.z)
-    dev_dataset = TensorDataset(dev.g, dev.w, dev.x, dev.y, dev.z)
+    with _profile_span(args, "dataloader_tensor_dataset_create"):
+        train_dataset = TensorDataset(train.g, train.w, train.x, train.y, train.z)
+        test_dataset = TensorDataset(test.g, test.w, test.x, test.y, test.z)
+        dev_dataset = TensorDataset(dev.g, dev.w, dev.x, dev.y, dev.z)
     num_train_samples = len(train_dataset)
     num_test_samples = len(test_dataset)
     num_dev_samples = len(dev_dataset)
@@ -184,46 +209,58 @@ def get_dataloader(args,train,test,dev,):
     test_data_local_num_dict = {}
     val_data_local_num_dict = {}
     # np.random.seed(int(time.time()))
-    proportions_train = np.random.dirichlet([args.partition_alpha] * args.client_num_in_total)
-    proportions_test = np.random.dirichlet([args.partition_alpha] * args.client_num_in_total)
-    proportions_dev = np.random.dirichlet([args.partition_alpha] * args.client_num_in_total)
-    train_samples_per_client = (proportions_train * available_train_samples).astype(int) + min_samples_per_client
-    test_samples_per_client = (proportions_test * available_test_samples).astype(int) + min_samples_per_client
-    dev_samples_per_client = (proportions_dev * available_dev_samples).astype(int) + min_samples_per_client
+    with _profile_span(args, "dataloader_dirichlet_partition"):
+        proportions_train = np.random.dirichlet([args.partition_alpha] * args.client_num_in_total)
+        proportions_test = np.random.dirichlet([args.partition_alpha] * args.client_num_in_total)
+        proportions_dev = np.random.dirichlet([args.partition_alpha] * args.client_num_in_total)
+        train_samples_per_client = (proportions_train * available_train_samples).astype(int) + min_samples_per_client
+        test_samples_per_client = (proportions_test * available_test_samples).astype(int) + min_samples_per_client
+        dev_samples_per_client = (proportions_dev * available_dev_samples).astype(int) + min_samples_per_client
 
-    # Re-adjust to ensure the exact number of samples is distributed
-    train_samples_per_client[-1] = num_train_samples - sum(train_samples_per_client[:-1])
-    test_samples_per_client[-1] = num_test_samples - sum(test_samples_per_client[:-1])
-    dev_samples_per_client[-1] = num_dev_samples - sum(dev_samples_per_client[:-1])
+        # Re-adjust to ensure the exact number of samples is distributed
+        train_samples_per_client[-1] = num_train_samples - sum(train_samples_per_client[:-1])
+        test_samples_per_client[-1] = num_test_samples - sum(test_samples_per_client[:-1])
+        dev_samples_per_client[-1] = num_dev_samples - sum(dev_samples_per_client[:-1])
 
     # Creating subsets and data loaders for each client
-    indices_train = np.random.permutation(num_train_samples)
-    indices_test = np.random.permutation(num_test_samples)
-    indices_dev = np.random.permutation(num_dev_samples)
-    start = 0
-    for i in clients_num:
-        end = start + train_samples_per_client[i]
-        subset_indices = indices_train[start:end]
-        train_data_local_dict[i] = DataLoader(Subset(train_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
-        start = end
+    train_loader_kwargs = _client_loader_kwargs(args, shuffle=True)
+    eval_loader_kwargs = _client_loader_kwargs(args, shuffle=True)
+    loader_detail = (
+        f"clients={args.client_num_in_total}; batch_size={args.batch_size}; "
+        f"num_workers={train_loader_kwargs.get('num_workers', 0)}; "
+        f"pin_memory={bool(train_loader_kwargs.get('pin_memory', False))}"
+    )
+    with _profile_span(args, "dataloader_create_per_client_loaders", detail=loader_detail):
+        indices_train = np.random.permutation(num_train_samples)
+        indices_test = np.random.permutation(num_test_samples)
+        indices_dev = np.random.permutation(num_dev_samples)
+        start = 0
+        for i in clients_num:
+            end = start + train_samples_per_client[i]
+            subset_indices = indices_train[start:end]
+            train_data_local_dict[i] = DataLoader(Subset(train_dataset, subset_indices), **train_loader_kwargs)
+            start = end
 
-    start = 0
-    for i in clients_num:
-        end = start + test_samples_per_client[i]
-        subset_indices = indices_test[start:end]
-        test_data_local_dict[i] = DataLoader(Subset(test_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
-        start = end
+        start = 0
+        for i in clients_num:
+            end = start + test_samples_per_client[i]
+            subset_indices = indices_test[start:end]
+            test_data_local_dict[i] = DataLoader(Subset(test_dataset, subset_indices), **eval_loader_kwargs)
+            start = end
 
-    start = 0
-    for i in clients_num:
-        end = start + dev_samples_per_client[i]
-        subset_indices = indices_dev[start:end]
-        val_data_local_dict[i] = DataLoader(Subset(dev_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
-        start = end
+        start = 0
+        for i in clients_num:
+            end = start + dev_samples_per_client[i]
+            subset_indices = indices_dev[start:end]
+            val_data_local_dict[i] = DataLoader(Subset(dev_dataset, subset_indices), **eval_loader_kwargs)
+            start = end
     for user in clients_num:
-        train_data_local_num_dict[user] = len(train_data_local_dict[user]) * args.batch_size
-        test_data_local_num_dict[user] = len(test_data_local_dict[user]) * args.batch_size
-        val_data_local_num_dict[user] = len(val_data_local_dict[user]) * args.batch_size
+        # Record real subset cardinalities. ``len(loader) * batch_size`` rounds
+        # the final partial batch up and corrupts both aggregation weights and
+        # deterministic full-gradient preflight accounting.
+        train_data_local_num_dict[user] = int(train_samples_per_client[user])
+        test_data_local_num_dict[user] = int(test_samples_per_client[user])
+        val_data_local_num_dict[user] = int(dev_samples_per_client[user])
 
     return (
         train_data_local_dict,
@@ -358,15 +395,20 @@ def load_partition_data_distributed_cifar10(
 def efficient_load_partition_data_cifar10(args):
 
     # scenario = AbstractScenario(filename="data/cifar10_x/" + args.scenario_name + ".npz")
-    scenario = AbstractScenario(filename="data/" + args.dataset + "/" + args.scenario_name + ".npz")
+    with _profile_span(args, "scenario_load", detail=f"dataset={args.dataset}; scenario={args.scenario_name}"):
+        scenario = AbstractScenario(filename="data/" + args.dataset + "/" + args.scenario_name + ".npz")
 
-    scenario.info()
-    scenario.to_tensor()
-    scenario.to_cuda()
+    with _profile_span(args, "scenario_info"):
+        scenario.info()
+    with _profile_span(args, "scenario_to_tensor"):
+        scenario.to_tensor()
+    # Keep scenario tensors on CPU during loading.
+    # The runtime layer moves batches to FedML's resolved device.
 
-    train = scenario.get_dataset("train")
-    dev = scenario.get_dataset("dev")
-    test = scenario.get_dataset("test")
+    with _profile_span(args, "scenario_split_extract"):
+        train = scenario.get_dataset("train")
+        dev = scenario.get_dataset("dev")
+        test = scenario.get_dataset("test")
     # (
     #     X_train,
     #     y_train,
@@ -381,9 +423,10 @@ def efficient_load_partition_data_cifar10(args):
     # logging.info("traindata_cls_counts = " + str(traindata_cls_counts))
     # train_data_num = sum([len(net_dataidx_map[r]) for r in range(client_number)])
 
-    train_data_local_dict, test_data_local_dict,\
-    val_data_local_dict, train_data_local_num_dict,\
-    test_data_local_num_dict, val_data_local_num_dict = get_dataloader(args,train,test,dev)
+    with _profile_span(args, "get_dataloader"):
+        train_data_local_dict, test_data_local_dict,\
+        val_data_local_dict, train_data_local_num_dict,\
+        test_data_local_num_dict, val_data_local_num_dict = get_dataloader(args,train,test,dev)
     # logging.info("train_dl_global number = " + str(len(train_data_global)))
     # logging.info("test_dl_global number = " + str(len(test_data_global)))
     # test_data_num = len(test_data_global)

@@ -1,0 +1,14 @@
+{
+  "created_at": "2026-07-19T23:36:00",
+  "invalid_v1_complete_count": 0,
+  "manifest": "experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_233531/remaining_pending_manifest_stochastic_safe_speedup_v2.csv",
+  "migration_dir": "experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_233531",
+  "new_output_root": "results/rerun_protocol_v1_real_images_abs_remaining_safe_speedup_v2_20260719_233531",
+  "pending_v1_count": 76,
+  "policy": "skip v1 completed artifacts; preserve v1 partial artifacts; launch only incomplete rows into fresh v2 root",
+  "preserved_v1_complete_count": 84,
+  "preserved_v1_partial_count": 1,
+  "quota_seen_before_launch": "negative at prior status check; launch may be rejected by gpurun",
+  "rows_to_launch": 77,
+  "source_migration": "experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_123539"
+}

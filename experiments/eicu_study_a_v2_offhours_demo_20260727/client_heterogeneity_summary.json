@@ -1,0 +1,88 @@
+{
+  "audit_csv": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_study_a_v2_offhours_demo_20260727/client_eligibility_audit.csv",
+  "available": true,
+  "client_row_counts": {
+    "max": 26,
+    "mean": 11.346,
+    "median": 11,
+    "min": 7,
+    "n_clients_in_cohort": 179,
+    "n_clients_under_10_rows": 14,
+    "total_rows": 2031
+  },
+  "cohort_csv": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_study_a_v2_offhours_demo_20260727/cohort.csv",
+  "cross_check": {
+    "consistent": true,
+    "n_clients_in_cohort_csv": 179,
+    "n_eligible_in_audit_csv": 179
+  },
+  "eligibility_funnel": {
+    "excluded_hospitals": [
+      {
+        "exclusion_reasons": [
+          "no_within_hospital_off_hours_variation",
+          "no_training_off_hours_variation"
+        ],
+        "hospitalid": "131",
+        "n_rows": "10"
+      },
+      {
+        "exclusion_reasons": [
+          "fewer_than_min_client_rows"
+        ],
+        "hospitalid": "300",
+        "n_rows": "5"
+      },
+      {
+        "exclusion_reasons": [
+          "fewer_than_min_client_rows",
+          "no_within_hospital_off_hours_variation",
+          "no_training_off_hours_variation"
+        ],
+        "hospitalid": "310",
+        "n_rows": "3"
+      },
+      {
+        "exclusion_reasons": [
+          "no_within_hospital_off_hours_variation",
+          "no_training_off_hours_variation"
+        ],
+        "hospitalid": "318",
+        "n_rows": "10"
+      },
+      {
+        "exclusion_reasons": [
+          "fewer_than_min_client_rows"
+        ],
+        "hospitalid": "331",
+        "n_rows": "6"
+      },
+      {
+        "exclusion_reasons": [
+          "fewer_than_min_client_rows"
+        ],
+        "hospitalid": "336",
+        "n_rows": "5"
+      },
+      {
+        "exclusion_reasons": [
+          "fewer_than_min_client_rows",
+          "missing_train_dev_or_test"
+        ],
+        "hospitalid": "345",
+        "n_rows": "3"
+      }
+    ],
+    "exclusion_reason_occurrences": {
+      "fewer_than_min_client_rows": 5,
+      "missing_train_dev_or_test": 1,
+      "no_training_off_hours_variation": 3,
+      "no_within_hospital_off_hours_variation": 3
+    },
+    "n_candidate_hospitals": 186,
+    "n_eligible_hospitals": 179,
+    "n_excluded_hospitals": 7,
+    "note": "occurrences can exceed n_excluded_hospitals because a hospital may fail more than one gate"
+  },
+  "generated_at_utc": "2026-07-27T00:52:22Z"
+}

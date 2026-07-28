@@ -6,6 +6,17 @@ copies the original file to a caller-supplied archival root. It refuses to
 touch a run unless the existing immutable identity fields agree with the
 manifest, and it refuses to replace any non-empty provenance value with a
 different value.
+
+The bug this script works around -- the federated result serializer omitting
+manifest provenance fields from ``effective_config.json`` -- is fixed at the
+source in ``experiment_utils.py`` and passed through by ``run_manifest.py``,
+and new campaign runs are (or will be) hard-stopped at write time if
+provenance is empty. That write-time guard is the correct fix going forward.
+This script's repair path exists only to patch already-completed campaigns
+(for example, the Study A v1 demo campaign) where re-running is not an
+option, so actually modifying artifacts requires the explicit ``--allow-repair``
+flag; ``--dry-run`` keeps working without it since a preview never modifies
+anything.
 """
 
 from __future__ import annotations
@@ -230,18 +241,50 @@ def reconcile_campaign(
     return summary
 
 
-def _parse_args() -> argparse.Namespace:
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--results-root", type=Path, required=True)
     parser.add_argument("--backup-root", type=Path, required=True)
     parser.add_argument("--report", type=Path)
     parser.add_argument("--dry-run", action="store_true")
-    return parser.parse_args()
+    parser.add_argument(
+        "--allow-repair",
+        action="store_true",
+        help=(
+            "Required to actually modify artifacts. Post-hoc repair is a "
+            "deliberate act reserved for already-completed campaigns (for "
+            "example, Study A v1); the write-time guard in "
+            "experiment_utils.py/run_manifest.py is the correct fix for new "
+            "campaign runs. Without this flag, only --dry-run is permitted."
+        ),
+    )
+    return parser.parse_args(argv)
 
 
-def main() -> int:
-    args = _parse_args()
+def _repair_refusal_message() -> str:
+    return (
+        "Refusing to modify Study A artifacts: --allow-repair was not "
+        "passed. Post-hoc metadata repair must be a deliberate, explicitly "
+        "opted-into act, not a routine step -- it is reserved for "
+        "already-completed campaigns (for example, the Study A v1 demo "
+        "campaign) where re-running is not an option. The root cause this "
+        "script works around (the federated serializer omitting provenance "
+        "fields from effective_config.json) is now fixed at the source in "
+        "experiment_utils.py and passed through by run_manifest.py, and is "
+        "enforced going forward by a write-time guard that hard-fails a "
+        "campaign run with empty provenance -- that write-time guard is the "
+        "correct fix for new runs, not this script. Pass --allow-repair to "
+        "opt in to repairing an already-completed campaign, or --dry-run to "
+        "preview without modifying anything."
+    )
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _parse_args(argv)
+    if not args.dry_run and not args.allow_repair:
+        print(json.dumps({"error": _repair_refusal_message()}, indent=2))
+        return 1
     try:
         summary = reconcile_campaign(
             args.manifest,

@@ -1,0 +1,16 @@
+{
+  "datasets": {
+    "sin": 12,
+    "step": 8
+  },
+  "manifest": "experiments/curve_fitting_tuning/optimistic_curve_screen_v1/manifest.csv",
+  "output_root": "results/curve_fitting_tuning/optimistic_curve_screen_v1",
+  "post_selection_only": [
+    "test_mse_at_best_validation",
+    "curve_mse",
+    "curve_mae",
+    "visual curve"
+  ],
+  "rows": 20,
+  "selection_rule": "validation-only: finite/non-diverged; lowest best_validation_mse; tie lower last-50 validation std from mse_by_round; tie lower final-vs-best validation gap"
+}

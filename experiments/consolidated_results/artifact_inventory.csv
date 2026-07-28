@@ -1,0 +1,28 @@
+path,exists,modified_time,purpose,paper_facing_or_internal,caveat
+experiments/consolidated_results_for_geetika.md,True,2026-07-11T10:55:22,consolidated coauthor-ready markdown report,paper-facing summary,generated from existing artifacts; no training launched
+experiments/consolidated_results/completion_matrix.csv,True,2026-07-11T10:52:05,completion/status matrix,paper-facing/supporting,
+experiments/consolidated_results/lowdim_federated_summary.csv,True,2026-07-11T10:52:05,low-dimensional federated aggregate metrics,paper-facing/supporting,legacy base runs have no per-round Test MSE
+experiments/consolidated_results/lowdim_federated_run_metrics.csv,True,2026-07-11T10:52:05,low-dimensional federated per-run diagnostics,internal/supporting,includes finite-history and saved-prediction checks
+experiments/consolidated_results/lowdim_fedogda_vs_fedgda_pairwise.csv,True,2026-07-11T10:52:05,deterministic FedOGDA-D vs FedGDA-D pairwise comparison,paper-facing/supporting,tuned Sine rows labeled separately
+experiments/consolidated_results/lowdim_fedogda_s_vs_fedgda_s_pairwise.csv,True,2026-07-11T10:50:52,stochastic FedOGDA-S vs FedGDA-S pairwise comparison,internal/supporting,FedOGDA-S lower-Test-MSE claim not supported
+experiments/consolidated_results/sine_tuned_summary.csv,True,2026-07-11T10:52:05,A2-lite tuned Sine seed-level summary,paper-facing/supporting,validation-only locked recipe
+experiments/consolidated_results/centralized_status_or_results.csv,True,2026-07-11T10:52:05,centralized C3/C5 results status,paper-facing/supporting,GDA/SGDA tuned in C5; OAdam from C3
+experiments/consolidated_results/centralized_vs_federated_lowdim_comparison.csv,True,2026-07-11T10:50:52,centralized vs federated low-dimensional comparison,paper-facing/supporting,sources labeled; tuned Sine separate
+experiments/consolidated_results/highdim_status.csv,True,2026-07-11T10:56:55,FEMNIST/CIFAR status matrix,status/supporting,pending/blocked; no full validated high-dimensional results
+experiments/consolidated_results/artifact_inventory.csv,True,2026-07-11T10:55:03,artifact inventory,internal/supporting,this file
+experiments/rerun_protocol_v1/manifest.csv,True,2026-06-25T19:15:33,base low-dimensional federated manifest,internal/source,run_status columns are stale; artifacts checked directly
+results/rerun_protocol_v1,True,2026-06-27T20:38:57,base low-dimensional federated result root,artifact root,144 validated low-dimensional federated runs
+experiments/rerun_protocol_v1/test_mse_stability_report.md,True,2026-07-06T18:47:01,legacy per-round Test-MSE audit,analysis/source,per-round Test MSE absent for old runs
+experiments/sine_fedogda_tuning/a2_lite_final_report.md,True,2026-07-09T14:37:43,tuned Sine A2-lite final report,paper-facing/source,do not merge silently into original sweep
+experiments/sine_fedogda_tuning/plots/a2_lite_sine_curve_all_seeds.png,True,2026-07-09T14:37:42,tuned Sine all-seed curve plot,paper-facing/plot,saved sorted test points
+experiments/rerun_protocol_v1/tuning_fedogda_s/pilot_alpha0p5/analysis_summary.md,True,2026-07-05T22:00:29,FedOGDA-S pilot analysis report,analysis/source,pilot does not beat FedGDA-S Test MSE
+experiments/centralized_baselines/centralized_c3_full_run_report.md,True,2026-07-10T20:46:43,centralized C3 full report,paper-facing/source,C3 GDA/SGDA under-tuned; OAdam strong
+experiments/centralized_baselines/centralized_c5b_confirm_report.md,True,2026-07-11T04:49:10,centralized C5b confirmation report,paper-facing/source,C5 tuned GDA/SGDA complete
+experiments/centralized_baselines/centralized_c5_final_gda_sgda_tuned_summary.csv,True,2026-07-11T04:49:10,centralized tuned GDA/SGDA summary,paper-facing/source,OAdam not retuned
+experiments/centralized_baselines/plots/centralized_curve_abs_seed0.png,True,2026-07-11T02:21:44,centralized abs curve plot,paper-facing/plot,seed 0
+experiments/centralized_baselines/plots/centralized_curve_step_seed0.png,True,2026-07-11T02:21:44,centralized step curve plot,paper-facing/plot,seed 0
+experiments/centralized_baselines/plots/centralized_curve_linear_seed0.png,True,2026-07-11T02:21:44,centralized linear curve plot,paper-facing/plot,seed 0
+experiments/centralized_baselines/plots/centralized_curve_sin_seed0.png,True,2026-07-11T02:21:44,centralized sine curve plot,paper-facing/plot,seed 0
+experiments/rerun_protocol_v1_real_images_abs_alpha0p5/execution_status.md,True,2026-07-11T04:30:32,high-dimensional execution status,status/source,blocked by GPU permissions; no final full result
+experiments/rerun_protocol_v1_real_images_abs_alpha0p5/manifest.csv,True,2026-07-05T15:37:47,high-dimensional federated manifest,internal/source,manifest only for full results
+results/_smoke/real_image_abs,True,2026-07-11T04:25:28,real-image smoke root,internal/smoke,not final reportable results

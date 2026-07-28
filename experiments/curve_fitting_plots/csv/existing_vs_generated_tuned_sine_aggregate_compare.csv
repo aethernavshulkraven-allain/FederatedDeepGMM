@@ -1,0 +1,3 @@
+method,old_aggregate_source,old_mean_curve_mse,new_mean_curve_mse,mean_curve_mse_diff_new_minus_old,old_mean_curve_mae,new_mean_curve_mae,mean_curve_mae_diff_new_minus_old,old_mean_curve_max_abs_error,new_mean_curve_max_abs_error,mean_curve_max_abs_diff_new_minus_old
+FedGDA-D,old_aggregate_row,0.0861068629066855,0.08610686290668552,2.7755575615628914e-17,0.2451058629740418,0.24510586297404188,8.326672684688674e-17,0.9475485708998508,0.9475485708998508,0.0
+FedOGDA-D,old_aggregate_row,0.0800115345740436,0.08001153457404353,-6.938893903907228e-17,0.2294069237334552,0.22940692373345528,8.326672684688674e-17,0.9172711530950292,0.9172711530950292,0.0

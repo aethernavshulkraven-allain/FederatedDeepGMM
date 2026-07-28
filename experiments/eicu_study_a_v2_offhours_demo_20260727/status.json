@@ -1,0 +1,375 @@
+{
+  "generated_at_utc": "2026-07-27T00:52:22Z",
+  "phase_vocabulary": [
+    "not_setup",
+    "setup_certified",
+    "tuning_in_progress",
+    "tuning_complete",
+    "final_not_started",
+    "final_in_progress",
+    "final_complete",
+    "analyzed"
+  ],
+  "studies": {
+    "v1": {
+      "claim_matches_independent_scan": true,
+      "completion_record_claim": {
+        "aggregation_ablation_completed": 30,
+        "centralized_baseline_completed": 45,
+        "confirmatory_completed": 30,
+        "diverged_runs": 0,
+        "failed_runs": 0,
+        "total_completed": 105
+      },
+      "completion_record_path": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_study_a_demo_stage_a_v1_20260727/completion_record.json",
+      "funnel": {
+        "available": true,
+        "clinical_gate_collapse": {
+          "from_n_rows": 2520,
+          "to_n_hospitals": 89,
+          "to_n_rows": 201
+        },
+        "final_split": {
+          "clients_per_split": {
+            "dev": 2,
+            "test": 3,
+            "train": 3
+          },
+          "eligible_client_ids": [
+            184,
+            243,
+            407
+          ],
+          "n_clients": 3,
+          "source": "/home/arnav22103/FederatedDeepGMM/fedgmm/sp_decentralized_mnist_lr_example/data/eicu_semisynth/linear_scenario_seed101_metadata.json",
+          "split_sizes": {
+            "dev": 2,
+            "test": 3,
+            "train": 4
+          }
+        },
+        "instrument_variation_gate_collapse": {
+          "eligible_hospital_ids": [
+            184,
+            243,
+            407
+          ],
+          "from_n_hospitals": 89,
+          "from_n_rows": 201,
+          "to_n_hospitals": 3,
+          "to_n_rows": 9
+        },
+        "stages": [
+          {
+            "detail": null,
+            "n_rows": 2520,
+            "stage_category": "clinical_gates",
+            "step": "all ICU stays"
+          },
+          {
+            "detail": null,
+            "n_rows": 2512,
+            "stage_category": "clinical_gates",
+            "step": "adults (age >= 18)"
+          },
+          {
+            "detail": null,
+            "n_rows": 2111,
+            "stage_category": "clinical_gates",
+            "step": "first unit visit (unitvisitnumber == 1)"
+          },
+          {
+            "detail": "dropped 0 repeat unit stays",
+            "n_rows": 2111,
+            "stage_category": "clinical_gates",
+            "step": "first ICU stay per hospital admission"
+          },
+          {
+            "detail": null,
+            "n_rows": 2086,
+            "stage_category": "clinical_gates",
+            "step": "known hospital discharge status"
+          },
+          {
+            "detail": null,
+            "n_rows": 2086,
+            "stage_category": "clinical_gates",
+            "step": "known hospital and ward id"
+          },
+          {
+            "detail": "diagnosisoffset window (-360, 360) min, or sepsis admitDx",
+            "n_rows": 304,
+            "stage_category": "clinical_gates",
+            "step": "sepsis at / near ICU admission"
+          },
+          {
+            "detail": null,
+            "n_rows": 205,
+            "stage_category": "clinical_gates",
+            "step": "hospital has a working infusion interface"
+          },
+          {
+            "detail": "excluded 4 stays with infusionoffset < 0",
+            "n_rows": 201,
+            "stage_category": "clinical_gates",
+            "step": "no vasopressor before ICU admission"
+          },
+          {
+            "detail": null,
+            "n_rows": 201,
+            "stage_category": "clinical_gates",
+            "step": "final cohort"
+          },
+          {
+            "detail": "minimum_structural_instrument_sd=0.01",
+            "n_hospitals_evaluated": 89,
+            "n_hospitals_with_variation": 3,
+            "n_rows": 201,
+            "stage_category": "instrument_variation_gates",
+            "step": "ward-construction within-client instrument-variation probe"
+          },
+          {
+            "detail": "split_sizes={'dev': 2, 'test': 3, 'train': 4}, clients_per_split={'dev': 2, 'test': 3, 'train': 3}",
+            "n_hospitals": 3,
+            "n_rows": 9,
+            "stage_category": "instrument_variation_gates",
+            "step": "final Study A v1 cohort (post instrument-variation gate)"
+          }
+        ]
+      },
+      "independent_results_scan": {
+        "by_role": {
+          "aggregation_ablation": {
+            "completed": 30,
+            "diverged": 0,
+            "incomplete_run_ids": [],
+            "planned": 30
+          },
+          "centralized_baseline": {
+            "completed": 45,
+            "diverged": 0,
+            "incomplete_run_ids": [],
+            "planned": 45
+          },
+          "confirmatory": {
+            "completed": 30,
+            "diverged": 0,
+            "incomplete_run_ids": [],
+            "planned": 30
+          }
+        },
+        "completed": 105,
+        "diverged": 0,
+        "manifest_path": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_study_a_demo_stage_a_v1_20260727/manifest.csv",
+        "planned": 105
+      },
+      "phase": "final_complete",
+      "study": "Study A v1 (archived pipeline validation)",
+      "tuning": {
+        "completed": 0,
+        "note": "tuning deliberately skipped for v1; preregistered fixed defaults were used",
+        "planned": 0
+      }
+    },
+    "v2": {
+      "analysis_ledger": {
+        "exists": false
+      },
+      "client_heterogeneity": {
+        "audit_csv": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_study_a_v2_offhours_demo_20260727/client_eligibility_audit.csv",
+        "available": true,
+        "client_row_counts": {
+          "max": 26,
+          "mean": 11.346,
+          "median": 11,
+          "min": 7,
+          "n_clients_in_cohort": 179,
+          "n_clients_under_10_rows": 14,
+          "total_rows": 2031
+        },
+        "cohort_csv": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_study_a_v2_offhours_demo_20260727/cohort.csv",
+        "cross_check": {
+          "consistent": true,
+          "n_clients_in_cohort_csv": 179,
+          "n_eligible_in_audit_csv": 179
+        },
+        "eligibility_funnel": {
+          "excluded_hospitals": [
+            {
+              "exclusion_reasons": [
+                "no_within_hospital_off_hours_variation",
+                "no_training_off_hours_variation"
+              ],
+              "hospitalid": "131",
+              "n_rows": "10"
+            },
+            {
+              "exclusion_reasons": [
+                "fewer_than_min_client_rows"
+              ],
+              "hospitalid": "300",
+              "n_rows": "5"
+            },
+            {
+              "exclusion_reasons": [
+                "fewer_than_min_client_rows",
+                "no_within_hospital_off_hours_variation",
+                "no_training_off_hours_variation"
+              ],
+              "hospitalid": "310",
+              "n_rows": "3"
+            },
+            {
+              "exclusion_reasons": [
+                "no_within_hospital_off_hours_variation",
+                "no_training_off_hours_variation"
+              ],
+              "hospitalid": "318",
+              "n_rows": "10"
+            },
+            {
+              "exclusion_reasons": [
+                "fewer_than_min_client_rows"
+              ],
+              "hospitalid": "331",
+              "n_rows": "6"
+            },
+            {
+              "exclusion_reasons": [
+                "fewer_than_min_client_rows"
+              ],
+              "hospitalid": "336",
+              "n_rows": "5"
+            },
+            {
+              "exclusion_reasons": [
+                "fewer_than_min_client_rows",
+                "missing_train_dev_or_test"
+              ],
+              "hospitalid": "345",
+              "n_rows": "3"
+            }
+          ],
+          "exclusion_reason_occurrences": {
+            "fewer_than_min_client_rows": 5,
+            "missing_train_dev_or_test": 1,
+            "no_training_off_hours_variation": 3,
+            "no_within_hospital_off_hours_variation": 3
+          },
+          "n_candidate_hospitals": 186,
+          "n_eligible_hospitals": 179,
+          "n_excluded_hospitals": 7,
+          "note": "occurrences can exceed n_excluded_hospitals because a hospital may fail more than one gate"
+        }
+      },
+      "cohort_numbers": {
+        "clients_per_split": {
+          "dev": 179,
+          "test": 179,
+          "train": 179
+        },
+        "middle_split_alias_note": "cohort_metadata.json and prepare_eicu_study_a_v2_cohort.py key the middle split 'dev'; some write-ups (protocol_v2.md, RUNBOOK.md) call the identical split 'Validation'. Canonical name is 'dev' (see scripts/validate_eicu_study_a_campaign.py:normalize_split_name).",
+        "n_clients": 179,
+        "n_rows": 2031,
+        "off_hours_rate": 0.5499753815854259,
+        "split_sizes": {
+          "dev": 306,
+          "test": 305,
+          "train": 1420
+        },
+        "split_sizes_canonical_names": {
+          "dev": 306,
+          "test": 305,
+          "train": 1420
+        }
+      },
+      "final": {
+        "by_role": {},
+        "completed": 0,
+        "design_by_role": {
+          "aggregation_ablation": 30,
+          "centralized_baseline": 45,
+          "confirmatory": 30
+        },
+        "design_total": 105,
+        "diverged": 0,
+        "manifest_materialized": false,
+        "manifest_path": null,
+        "planned": 105
+      },
+      "funnel": {
+        "available": true,
+        "final_n_clients": 179,
+        "final_n_rows": 2031,
+        "protocol_note": "v2 applies no clinical requirement (no sepsis / mortality / vasopressor / infusion-interface gate) by protocol design, so there is no v1-style clinical-gate collapse; the only collapse is linkage (one hospital per patient) plus the instrument / min-rows / split-eligibility gate.",
+        "stages": [
+          {
+            "detail": null,
+            "n_rows": 2520,
+            "stage_category": "clinical_or_linkage_gates",
+            "step": "all ICU stays"
+          },
+          {
+            "detail": null,
+            "n_rows": 2512,
+            "stage_category": "clinical_or_linkage_gates",
+            "step": "adults (age >= 18)"
+          },
+          {
+            "detail": null,
+            "n_rows": 2111,
+            "stage_category": "clinical_or_linkage_gates",
+            "step": "first ICU stay per hospital admission"
+          },
+          {
+            "detail": null,
+            "n_rows": 2111,
+            "stage_category": "clinical_or_linkage_gates",
+            "step": "valid hospital, stay, and patient identifiers"
+          },
+          {
+            "detail": null,
+            "n_rows": 2111,
+            "stage_category": "clinical_or_linkage_gates",
+            "step": "valid hospital admission clock time"
+          },
+          {
+            "detail": "excluded 17 cross-hospital patients",
+            "n_rows": 2073,
+            "stage_category": "clinical_or_linkage_gates",
+            "step": "patient belongs to one hospital client"
+          },
+          {
+            "detail": "179 hospitals; min rows 7; real off-hours and split gates",
+            "n_rows": 2031,
+            "stage_category": "instrument_and_eligibility_gates",
+            "step": "eligible hospital clients before simulation"
+          },
+          {
+            "detail": null,
+            "n_rows": 2031,
+            "stage_category": "instrument_and_eligibility_gates",
+            "step": "final Study A v2 cohort"
+          }
+        ]
+      },
+      "phase": "tuning_complete",
+      "setup_certified": true,
+      "study": "Study A v2 (eicu_study_a_v2_offhours)",
+      "tuning": {
+        "by_role": {
+          "tuning": {
+            "completed": 36,
+            "diverged": 0,
+            "incomplete_run_ids": [],
+            "planned": 36
+          }
+        },
+        "completed": 36,
+        "diverged": 0,
+        "manifest_path": "/home/arnav22103/FederatedDeepGMM/experiments/eicu_study_a_v2_offhours_demo_20260727/tuning_manifest.csv",
+        "planned": 36
+      }
+    }
+  }
+}

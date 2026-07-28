@@ -1,0 +1,34 @@
+[
+  {
+    "best_validation_round": 1384,
+    "final_test_mse": 0.03807495838068217,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/step_geetika_repro_v1/step/fedogda_s/seed_0/curvefit_step_geetika_repro_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p01_wd0p02_cm15_slr1p5",
+    "run_id": "curvefit_step_geetika_repro_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p01_wd0p02_cm15_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.013467857625317697
+  },
+  {
+    "best_validation_round": 266,
+    "final_test_mse": 0.11187734949650062,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/step_geetika_repro_v1/step/fedgda_s/seed_0/curvefit_step_geetika_repro_fedgda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p03_wd0p02_cm15_slr1p5",
+    "run_id": "curvefit_step_geetika_repro_fedgda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p03_wd0p02_cm15_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.006126142455462217
+  },
+  {
+    "best_validation_round": 1311,
+    "final_test_mse": 0.029664733013192612,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/step_geetika_repro_v1/step/fedogda_d/seed_0/curvefit_step_geetika_repro_fedogda_d_partialfb_seed0_alpha0p5_T1500_R7_batch0_glr0p01_wd0p02_cm15_slr1p5",
+    "run_id": "curvefit_step_geetika_repro_fedogda_d_partialfb_seed0_alpha0p5_T1500_R7_batch0_glr0p01_wd0p02_cm15_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.013571058806424008
+  },
+  {
+    "best_validation_round": 423,
+    "final_test_mse": 0.12677957217631558,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/step_geetika_repro_v1/step/fedgda_d/seed_0/curvefit_step_geetika_repro_fedgda_d_partialfb_seed0_alpha0p5_T1500_R7_batch0_glr0p03_wd0p02_cm15_slr1p5",
+    "run_id": "curvefit_step_geetika_repro_fedgda_d_partialfb_seed0_alpha0p5_T1500_R7_batch0_glr0p03_wd0p02_cm15_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.00658599741049196
+  }
+]

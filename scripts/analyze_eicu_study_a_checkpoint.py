@@ -47,6 +47,27 @@ from experiment_utils import moment_violation as _moment_violation_scalar  # noq
 EICU_HIDDEN_WIDTHS = [64, 64]
 
 
+def _hidden_widths(effective_config):
+    value = effective_config.get("hidden_widths", EICU_HIDDEN_WIDTHS)
+    if isinstance(value, (list, tuple)):
+        widths = [int(item) for item in value]
+    else:
+        widths = [
+            int(item.strip())
+            for item in str(value).strip("[]").split(",")
+            if item.strip()
+        ]
+    return widths or list(EICU_HIDDEN_WIDTHS)
+
+
+def _activation(effective_config):
+    value = str(effective_config.get("model_activation", "leaky_relu")).lower()
+    choices = {"relu": nn.ReLU, "leaky_relu": nn.LeakyReLU, "tanh": nn.Tanh}
+    if value not in choices:
+        raise ValueError(f"unsupported checkpoint model_activation {value!r}")
+    return choices[value]
+
+
 def load_checkpoint(path):
     checkpoint = torch.load(path, map_location="cpu", weights_only=False)
     for key in ("g_state_dict", "f_state_dict", "effective_config"):
@@ -64,8 +85,10 @@ def build_models(effective_config):
             f"(got {input_dim_g}, {input_dim_f}); was it trained before this field "
             "was added?"
         )
-    g = MLPModel(input_dim=input_dim_g, layer_widths=EICU_HIDDEN_WIDTHS, activation=nn.LeakyReLU).double()
-    f = MLPModel(input_dim=input_dim_f, layer_widths=EICU_HIDDEN_WIDTHS, activation=nn.LeakyReLU).double()
+    widths = _hidden_widths(effective_config)
+    activation = _activation(effective_config)
+    g = MLPModel(input_dim=input_dim_g, layer_widths=widths, activation=activation).double()
+    f = MLPModel(input_dim=input_dim_f, layer_widths=widths, activation=activation).double()
     return g, f
 
 

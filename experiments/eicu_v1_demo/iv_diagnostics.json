@@ -1,0 +1,320 @@
+[
+  {
+    "balance": [
+      {
+        "abs_smd": 0.40134408742932204,
+        "covariate": "lab_bicarbonate_missing",
+        "mean_high": 0.8333333333333334,
+        "mean_low": 0.9553571428571429,
+        "smd": -0.40134408742932204
+      },
+      {
+        "abs_smd": 0.3640643093400559,
+        "covariate": "lab_bun_missing",
+        "mean_high": 0.8333333333333334,
+        "mean_low": 0.9464285714285714,
+        "smd": -0.3640643093400559
+      },
+      {
+        "abs_smd": 0.3640643093400559,
+        "covariate": "lab_creatinine_missing",
+        "mean_high": 0.8333333333333334,
+        "mean_low": 0.9464285714285714,
+        "smd": -0.3640643093400559
+      },
+      {
+        "abs_smd": 0.2947770669718251,
+        "covariate": "lab_sodium_missing",
+        "mean_high": 0.8333333333333334,
+        "mean_low": 0.9285714285714286,
+        "smd": -0.2947770669718251
+      },
+      {
+        "abs_smd": 0.2856704656016015,
+        "covariate": "lab_bilirubin",
+        "mean_high": 0.4937500000000001,
+        "mean_low": 0.5071428571428571,
+        "smd": -0.2856704656016015
+      },
+      {
+        "abs_smd": 0.2210332640355101,
+        "covariate": "lab_creatinine",
+        "mean_high": 1.4375,
+        "mean_low": 1.6002678571428575,
+        "smd": -0.2210332640355101
+      },
+      {
+        "abs_smd": 0.2138557296185435,
+        "covariate": "lab_wbc_missing",
+        "mean_high": 0.875,
+        "mean_low": 0.9375,
+        "smd": -0.2138557296185435
+      },
+      {
+        "abs_smd": 0.2138557296185435,
+        "covariate": "lab_platelets_missing",
+        "mean_high": 0.875,
+        "mean_low": 0.9375,
+        "smd": -0.2138557296185435
+      },
+      {
+        "abs_smd": 0.1829356036129733,
+        "covariate": "lab_wbc",
+        "mean_high": 13.354166666666666,
+        "mean_low": 12.392410714285711,
+        "smd": 0.1829356036129733
+      },
+      {
+        "abs_smd": 0.17759892765326551,
+        "covariate": "lab_bun",
+        "mean_high": 24.208333333333332,
+        "mean_low": 26.258928571428573,
+        "smd": -0.17759892765326551
+      },
+      {
+        "abs_smd": 0.14995042711573145,
+        "covariate": "lab_ph_missing",
+        "mean_high": 0.8958333333333334,
+        "mean_low": 0.9375,
+        "smd": -0.14995042711573145
+      },
+      {
+        "abs_smd": 0.14480500342500663,
+        "covariate": "lab_lactate",
+        "mean_high": 2.0260416666666665,
+        "mean_low": 2.1236607142857147,
+        "smd": -0.14480500342500663
+      },
+      {
+        "abs_smd": 0.12844731685686728,
+        "covariate": "admissionweight",
+        "mean_high": 76.55416666666666,
+        "mean_low": 79.65508928571428,
+        "smd": -0.12844731685686728
+      },
+      {
+        "abs_smd": 0.1149499705922451,
+        "covariate": "vital_sao2_missing",
+        "mean_high": 0.10416666666666667,
+        "mean_low": 0.07142857142857142,
+        "smd": 0.1149499705922451
+      },
+      {
+        "abs_smd": 0.09885849513567613,
+        "covariate": "vital_map",
+        "mean_high": 74.46875,
+        "mean_low": 76.34821428571429,
+        "smd": -0.09885849513567613
+      }
+    ],
+    "client_col": "hospitalid",
+    "clients_with_structural_variation": 3,
+    "construction": "ward",
+    "first_stage": {
+      "instrument_coef": 0.18095051599800094,
+      "instrument_stderr": 0.11123025870703757,
+      "n": 201,
+      "partial_f": 3.285843704366533,
+      "partial_r2": 0.01929604735711966,
+      "weak_instrument_warning": true
+    },
+    "iv_effect": 0.11295430787955991,
+    "iv_stderr": 0.5274416534666089,
+    "mortality_rate": 0.16417910447761194,
+    "n": 201,
+    "n_clients": 89,
+    "n_covariates": 32,
+    "naive_ols_effect": 0.12288128453614698,
+    "naive_ols_stderr": 0.087738864968817,
+    "overlap": [
+      {
+        "bin": 0,
+        "n": 150,
+        "treatment_rate": 0.14666666666666667,
+        "z_high": 0.15920398009950248,
+        "z_low": 0.0
+      },
+      {
+        "bin": 1,
+        "n": 19,
+        "treatment_rate": 0.10526315789473684,
+        "z_high": 0.25,
+        "z_low": 0.15920398009950248
+      },
+      {
+        "bin": 2,
+        "n": 32,
+        "treatment_rate": 0.25,
+        "z_high": 1.0,
+        "z_low": 0.25
+      }
+    ],
+    "treatment_rate": 0.15920398009950248
+  },
+  {
+    "balance": [
+      {
+        "abs_smd": 0.4773950045683412,
+        "covariate": "lab_creatinine",
+        "mean_high": 1.4024444444444444,
+        "mean_low": 1.5246511627906978,
+        "smd": -0.4773950045683412
+      },
+      {
+        "abs_smd": 0.3610325163155694,
+        "covariate": "vital_map_missing",
+        "mean_high": 0.06666666666666667,
+        "mean_low": 0.18604651162790697,
+        "smd": -0.3610325163155694
+      },
+      {
+        "abs_smd": 0.3610325163155694,
+        "covariate": "vital_sbp_missing",
+        "mean_high": 0.06666666666666667,
+        "mean_low": 0.18604651162790697,
+        "smd": -0.3610325163155694
+      },
+      {
+        "abs_smd": 0.33365091149244125,
+        "covariate": "lab_bun",
+        "mean_high": 23.266666666666666,
+        "mean_low": 25.41860465116279,
+        "smd": -0.33365091149244125
+      },
+      {
+        "abs_smd": 0.280791223726343,
+        "covariate": "vital_map",
+        "mean_high": 74.91111111111111,
+        "mean_low": 79.96511627906976,
+        "smd": -0.280791223726343
+      },
+      {
+        "abs_smd": 0.2707525603904349,
+        "covariate": "lab_bun_missing",
+        "mean_high": 0.8444444444444444,
+        "mean_low": 0.9302325581395349,
+        "smd": -0.2707525603904349
+      },
+      {
+        "abs_smd": 0.2707525603904349,
+        "covariate": "lab_bicarbonate_missing",
+        "mean_high": 0.8444444444444444,
+        "mean_low": 0.9302325581395349,
+        "smd": -0.2707525603904349
+      },
+      {
+        "abs_smd": 0.2707525603904349,
+        "covariate": "lab_creatinine_missing",
+        "mean_high": 0.8444444444444444,
+        "mean_low": 0.9302325581395349,
+        "smd": -0.2707525603904349
+      },
+      {
+        "abs_smd": 0.263500913789119,
+        "covariate": "vital_temperature_missing",
+        "mean_high": 0.9555555555555556,
+        "mean_low": 0.8837209302325582,
+        "smd": 0.263500913789119
+      },
+      {
+        "abs_smd": 0.22869564951252758,
+        "covariate": "lab_lactate",
+        "mean_high": 2.001111111111111,
+        "mean_low": 2.0813953488372086,
+        "smd": -0.22869564951252758
+      },
+      {
+        "abs_smd": 0.22580827693002212,
+        "covariate": "lab_bilirubin_missing",
+        "mean_high": 0.9777777777777777,
+        "mean_low": 0.9302325581395349,
+        "smd": 0.22580827693002212
+      },
+      {
+        "abs_smd": 0.22163515150891833,
+        "covariate": "lab_lactate_missing",
+        "mean_high": 0.9111111111111111,
+        "mean_low": 0.8372093023255814,
+        "smd": 0.22163515150891833
+      },
+      {
+        "abs_smd": 0.21023767971764748,
+        "covariate": "lab_wbc",
+        "mean_high": 12.56777777777778,
+        "mean_low": 13.872093023255816,
+        "smd": -0.21023767971764748
+      },
+      {
+        "abs_smd": 0.19969589054833403,
+        "covariate": "lab_ph",
+        "mean_high": 7.291488888888888,
+        "mean_low": 7.2956046511627894,
+        "smd": -0.19969589054833403
+      },
+      {
+        "abs_smd": 0.18943248112629663,
+        "covariate": "vital_sbp",
+        "mean_high": 109.57777777777778,
+        "mean_low": 114.65116279069767,
+        "smd": -0.18943248112629663
+      }
+    ],
+    "client_col": "client_group",
+    "clients_with_structural_variation": 14,
+    "construction": "hospital",
+    "first_stage": {
+      "instrument_coef": 0.8628433203925945,
+      "instrument_stderr": 0.7997098001193121,
+      "n": 201,
+      "partial_f": 1.3745888806493707,
+      "partial_r2": 0.008163873716263292,
+      "weak_instrument_warning": true
+    },
+    "iv_effect": 0.5750182358888222,
+    "iv_stderr": 0.9394269405185375,
+    "mortality_rate": 0.16417910447761194,
+    "n": 201,
+    "n_clients": 21,
+    "n_covariates": 32,
+    "naive_ols_effect": 0.12288128453614698,
+    "naive_ols_stderr": 0.087738864968817,
+    "overlap": [
+      {
+        "bin": 0,
+        "n": 43,
+        "treatment_rate": 0.11627906976744186,
+        "z_high": 0.12246460007654036,
+        "z_low": 0.10613598673300165
+      },
+      {
+        "bin": 1,
+        "n": 70,
+        "treatment_rate": 0.14285714285714285,
+        "z_high": 0.1447308909995477,
+        "z_low": 0.12246460007654036
+      },
+      {
+        "bin": 2,
+        "n": 42,
+        "treatment_rate": 0.16666666666666666,
+        "z_high": 0.15920398009950248,
+        "z_low": 0.1447308909995477
+      },
+      {
+        "bin": 3,
+        "n": 11,
+        "treatment_rate": 0.18181818181818182,
+        "z_high": 0.1851457000710732,
+        "z_low": 0.15920398009950248
+      },
+      {
+        "bin": 4,
+        "n": 35,
+        "treatment_rate": 0.22857142857142856,
+        "z_high": 0.2993366500829187,
+        "z_low": 0.1851457000710732
+      }
+    ],
+    "treatment_rate": 0.15920398009950248
+  }
+]

@@ -1,0 +1,138 @@
+[
+  {
+    "best_validation_round": 494,
+    "final_test_mse": 0.07551664181797423,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p002_cm10_lam0p03_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p002_cm10_lam0p03_slr1p5",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.07469077042026663
+  },
+  {
+    "best_validation_round": 466,
+    "final_test_mse": 0.07846116997544043,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p002_cm10_lam0p1_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p002_cm10_lam0p1_slr1p5",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.07789101263673558
+  },
+  {
+    "best_validation_round": 492,
+    "final_test_mse": 0.06984268561255806,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p002_cm15_lam0p03_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p002_cm15_lam0p03_slr1p5",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.0682279941254776
+  },
+  {
+    "best_validation_round": 492,
+    "final_test_mse": 0.07316762318568898,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p002_cm15_lam0p1_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p002_cm15_lam0p1_slr1p5",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.07298775692774966
+  },
+  {
+    "best_validation_round": 492,
+    "final_test_mse": 0.043907985938468175,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p005_cm10_lam0p03_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p005_cm10_lam0p03_slr1p5",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.042874493130950216
+  },
+  {
+    "best_validation_round": 495,
+    "final_test_mse": 0.056988791054498326,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p005_cm10_lam0p1_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p005_cm10_lam0p1_slr1p5",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.056139413600179114
+  },
+  {
+    "best_validation_round": 495,
+    "final_test_mse": 0.049167377706094015,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p005_cm15_lam0p03_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p005_cm15_lam0p03_slr1p5",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.04743434261078732
+  },
+  {
+    "best_validation_round": 477,
+    "final_test_mse": 0.05791930388207852,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p005_cm15_lam0p1_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p005_cm15_lam0p1_slr1p5",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.057453195485923016
+  },
+  {
+    "best_validation_round": 498,
+    "final_test_mse": 0.06284349686827004,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p01_cm10_lam0p03_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p01_cm10_lam0p03_slr1p5",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.04483827497613864
+  },
+  {
+    "best_validation_round": 498,
+    "final_test_mse": 0.06114008092866621,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p01_cm10_lam0p1_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p01_cm10_lam0p1_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.060724194729036785
+  },
+  {
+    "best_validation_round": 498,
+    "final_test_mse": 0.05422500783701814,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p01_cm15_lam0p03_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p01_cm15_lam0p03_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.053281587469896786
+  },
+  {
+    "best_validation_round": 481,
+    "final_test_mse": 0.06429978070458478,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/sin/fedogda_s/seed_0/curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p01_cm15_lam0p1_slr1p5",
+    "run_id": "curvefit_sin_fedogda_s_seed0_alpha1p0_T500_R3_batch256_glr0p01_cm15_lam0p1_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.06195348574446905
+  },
+  {
+    "best_validation_round": 1492,
+    "final_test_mse": 0.01091731942746012,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/step/fedogda_s/seed_0/curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p005_cm15_lam0p1_slr1p5",
+    "run_id": "curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p005_cm15_lam0p1_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.010636225967950308
+  },
+  {
+    "best_validation_round": 1491,
+    "final_test_mse": 0.01916491642466484,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/step/fedogda_s/seed_0/curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p005_cm15_lam0p3_slr1p5",
+    "run_id": "curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p005_cm15_lam0p3_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.018619408323761254
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/step/fedogda_s/seed_0/curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p005_cm15_lam1_slr1p5",
+    "run_id": "curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p005_cm15_lam1_slr1p5",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/step/fedogda_s/seed_0/curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p01_cm15_lam0p3_slr1p5",
+    "run_id": "curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p01_cm15_lam0p3_slr1p5",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/step/fedogda_s/seed_0/curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p01_cm15_lam1_slr1p5",
+    "run_id": "curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p01_cm15_lam1_slr1p5",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/optimistic_curve_screen_v2/step/fedogda_s/seed_0/curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p02_cm15_lam0p3_slr1p5",
+    "run_id": "curvefit_step_fedogda_s_seed0_alpha0p5_T1500_R7_batch256_glr0p02_cm15_lam0p3_slr1p5",
+    "status": "failed_process"
+  }
+]

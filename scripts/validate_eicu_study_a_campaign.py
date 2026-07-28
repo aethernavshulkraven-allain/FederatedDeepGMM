@@ -28,6 +28,51 @@ REPORT_MARKDOWN = "eicu_study_a_validation.md"
 MISSING = object()
 
 
+# ---------------------------------------------------------------------------
+# Canonical split naming
+# ---------------------------------------------------------------------------
+# Study A v2's frozen artifacts are the source of truth for the middle split's
+# name: cohort_metadata.json keys it "dev" (``split_sizes.dev``,
+# ``clients_per_split.dev``), as does the v1 scenario metadata
+# (``split_sizes: {dev, test, train}``), ``prepare_eicu_study_a_v2_cohort.py``,
+# and the ``missing_train_dev_or_test`` exclusion reason in
+# ``client_eligibility_audit.csv``. Some prose write-ups instead call the same
+# split "Validation" (protocol_v2.md: "Train+Validation"; RUNBOOK.md: "Select
+# from Validation only"). Both spellings name the identical split.
+#
+# "dev" is canonical because it is what the checksummed/frozen artifacts use;
+# renaming those artifacts to "validation" is out of scope (it would break
+# ``cohort_sha256`` / ``frozen_client_list_sha256`` provenance checks). This
+# map instead lets any caller normalize either spelling to the canonical
+# artifact key, additively, without touching frozen metadata.
+CANONICAL_SPLIT_NAMES = ("train", "dev", "test")
+SPLIT_NAME_ALIASES = {
+    "train": "train",
+    "dev": "dev",
+    "validation": "dev",
+    "val": "dev",
+    "test": "test",
+}
+
+
+def normalize_split_name(name: str) -> str:
+    """Map a split spelling (``dev``, ``Validation``, ``val``, ...) to its
+    canonical artifact name (``train``, ``dev``, or ``test``).
+
+    Raises ``ValueError`` on a name that is neither the canonical spelling
+    nor a recognized alias, so a typo fails loudly instead of silently
+    dropping a split.
+    """
+    key = str(name).strip().lower()
+    try:
+        return SPLIT_NAME_ALIASES[key]
+    except KeyError as exc:
+        raise ValueError(
+            f"unrecognized split name {name!r}; expected one of "
+            f"{sorted(SPLIT_NAME_ALIASES)}"
+        ) from exc
+
+
 @dataclass(frozen=True)
 class Issue:
     code: str

@@ -1,0 +1,10 @@
+[
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 0.26470110549614545,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/_smoke/real_image_abs/cifar10_x_fedogda_s/cifar10_x/fedogda_s/seed_0/tune_cifar10_x_fedogda_s_seed0_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_x_fedogda_s_seed0_lr0p003_wd0p05",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.26470110549614545
+  }
+]

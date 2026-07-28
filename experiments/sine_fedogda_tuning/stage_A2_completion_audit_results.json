@@ -1,0 +1,62 @@
+[
+  {
+    "artifacts": {
+      "effective_config.json": true,
+      "metrics.json": true,
+      "mse_by_round.csv": true,
+      "predictions.npz": true,
+      "test_mse_by_round.csv": true
+    },
+    "run_dir": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_0/stage_A2_from_A1_mini_sin_fedogda_d_seed0_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed0_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "status": "completed_validated"
+  },
+  {
+    "artifacts": {},
+    "run_dir": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_1/stage_A2_from_A1_mini_sin_fedogda_d_seed1_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed1_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "status": "not_started"
+  },
+  {
+    "artifacts": {},
+    "run_dir": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_2/stage_A2_from_A1_mini_sin_fedogda_d_seed2_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed2_alpha1p0_R3_cm15_slr1.5_glr0p002",
+    "status": "not_started"
+  },
+  {
+    "artifacts": {},
+    "run_dir": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_0/stage_A2_from_A1_mini_sin_fedogda_d_seed0_alpha1p0_R3_cm10_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed0_alpha1p0_R3_cm10_slr1.5_glr0p002",
+    "status": "not_started"
+  },
+  {
+    "artifacts": {},
+    "run_dir": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_1/stage_A2_from_A1_mini_sin_fedogda_d_seed1_alpha1p0_R3_cm10_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed1_alpha1p0_R3_cm10_slr1.5_glr0p002",
+    "status": "not_started"
+  },
+  {
+    "artifacts": {},
+    "run_dir": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_2/stage_A2_from_A1_mini_sin_fedogda_d_seed2_alpha1p0_R3_cm10_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed2_alpha1p0_R3_cm10_slr1.5_glr0p002",
+    "status": "not_started"
+  },
+  {
+    "artifacts": {},
+    "run_dir": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_0/stage_A2_from_A1_mini_sin_fedogda_d_seed0_alpha1p0_R2_cm15_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed0_alpha1p0_R2_cm15_slr1.5_glr0p002",
+    "status": "not_started"
+  },
+  {
+    "artifacts": {},
+    "run_dir": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_1/stage_A2_from_A1_mini_sin_fedogda_d_seed1_alpha1p0_R2_cm15_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed1_alpha1p0_R2_cm15_slr1.5_glr0p002",
+    "status": "not_started"
+  },
+  {
+    "artifacts": {},
+    "run_dir": "results/sine_fedogda_tuning/stage_A2_from_A1_mini/sin/fedogda_d/seed_2/stage_A2_from_A1_mini_sin_fedogda_d_seed2_alpha1p0_R2_cm15_slr1.5_glr0p002",
+    "run_id": "stage_A2_from_A1_mini_sin_fedogda_d_seed2_alpha1p0_R2_cm15_slr1.5_glr0p002",
+    "status": "not_started"
+  }
+]

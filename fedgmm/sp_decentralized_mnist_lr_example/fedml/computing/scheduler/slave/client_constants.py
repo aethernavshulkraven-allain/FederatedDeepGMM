@@ -103,6 +103,10 @@ class ClientConstants(object):
 
     @staticmethod
     def get_log_file_dir():
+        local_log_dir = os.getenv("FEDGMM_FEDML_LOG_DIR")
+        if local_log_dir is not None and local_log_dir != "":
+            os.makedirs(local_log_dir, exist_ok=True)
+            return local_log_dir
         log_file_dir = os.path.join(ClientConstants.get_fedml_home_dir(), "fedml", "logs")
         if not os.path.exists(log_file_dir):
             os.makedirs(log_file_dir, exist_ok=True)

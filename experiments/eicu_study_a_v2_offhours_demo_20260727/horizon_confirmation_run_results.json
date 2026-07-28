@@ -1,0 +1,50 @@
+[
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 2.19712245374128,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/horizon_confirmation_linear_fedgda_s_tuning_01_r500",
+    "run_id": "horizon_confirmation_linear_fedgda_s_tuning_01_r500",
+    "status": "passed",
+    "test_mse_at_best_validation": 2.19712245374128
+  },
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 1.9257110803655297,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/horizon_confirmation_linear_fedogda_s_tuning_01_r500",
+    "run_id": "horizon_confirmation_linear_fedogda_s_tuning_01_r500",
+    "status": "passed",
+    "test_mse_at_best_validation": 1.9257110803655297
+  },
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 3.2144131155806996,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/horizon_confirmation_interaction_fedgda_s_tuning_01_r500",
+    "run_id": "horizon_confirmation_interaction_fedgda_s_tuning_01_r500",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.2144131155806996
+  },
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 3.1069072787898286,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/horizon_confirmation_interaction_fedogda_s_tuning_01_r500",
+    "run_id": "horizon_confirmation_interaction_fedogda_s_tuning_01_r500",
+    "status": "passed",
+    "test_mse_at_best_validation": 3.1069072787898286
+  },
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 0.3349344065377504,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/horizon_confirmation_mlp_fedgda_s_tuning_01_r500",
+    "run_id": "horizon_confirmation_mlp_fedgda_s_tuning_01_r500",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3349344065377504
+  },
+  {
+    "best_validation_round": 499,
+    "final_test_mse": 0.40239464590670626,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/horizon_confirmation_mlp_fedogda_s_tuning_01_r500",
+    "run_id": "horizon_confirmation_mlp_fedogda_s_tuning_01_r500",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.40239464590670626
+  }
+]

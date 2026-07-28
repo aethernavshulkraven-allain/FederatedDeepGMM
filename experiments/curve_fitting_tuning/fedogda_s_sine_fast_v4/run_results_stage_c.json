@@ -1,0 +1,50 @@
+[
+  {
+    "best_validation_round": 960,
+    "final_test_mse": 0.033716098686652714,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/fedogda_s_sine_fast_v4/sin/fedogda_s/seed_0/v4_stage_c_confirm_sin_fedogda_s_seed0_alpha1_T1000_R3_batch256_glr0p01_cm8_lam0p01_slr1p5",
+    "run_id": "v4_stage_c_confirm_sin_fedogda_s_seed0_alpha1_T1000_R3_batch256_glr0p01_cm8_lam0p01_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.015376236517713903
+  },
+  {
+    "best_validation_round": 961,
+    "final_test_mse": 0.0350989830795126,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/fedogda_s_sine_fast_v4/sin/fedogda_s/seed_1/v4_stage_c_confirm_sin_fedogda_s_seed1_alpha1_T1000_R3_batch256_glr0p01_cm8_lam0p01_slr1p5",
+    "run_id": "v4_stage_c_confirm_sin_fedogda_s_seed1_alpha1_T1000_R3_batch256_glr0p01_cm8_lam0p01_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.019297060678056626
+  },
+  {
+    "best_validation_round": 893,
+    "final_test_mse": 0.06772511724086828,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/fedogda_s_sine_fast_v4/sin/fedogda_s/seed_0/v4_stage_c_confirm_sin_fedogda_s_seed0_alpha1_T1000_R3_batch256_glr0p01_cm7_lam0p005_slr1p75",
+    "run_id": "v4_stage_c_confirm_sin_fedogda_s_seed0_alpha1_T1000_R3_batch256_glr0p01_cm7_lam0p005_slr1p75",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.013606265601841815
+  },
+  {
+    "best_validation_round": 920,
+    "final_test_mse": 0.02327205437926191,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/fedogda_s_sine_fast_v4/sin/fedogda_s/seed_2/v4_stage_c_confirm_sin_fedogda_s_seed2_alpha1_T1000_R3_batch256_glr0p01_cm8_lam0p01_slr1p5",
+    "run_id": "v4_stage_c_confirm_sin_fedogda_s_seed2_alpha1_T1000_R3_batch256_glr0p01_cm8_lam0p01_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.014356731775729846
+  },
+  {
+    "best_validation_round": 968,
+    "final_test_mse": 0.0919859194029346,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/fedogda_s_sine_fast_v4/sin/fedogda_s/seed_1/v4_stage_c_confirm_sin_fedogda_s_seed1_alpha1_T1000_R3_batch256_glr0p01_cm7_lam0p005_slr1p75",
+    "run_id": "v4_stage_c_confirm_sin_fedogda_s_seed1_alpha1_T1000_R3_batch256_glr0p01_cm7_lam0p005_slr1p75",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.014173586212613725
+  },
+  {
+    "best_validation_round": 724,
+    "final_test_mse": 0.028660943991035408,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/fedogda_s_sine_fast_v4/sin/fedogda_s/seed_2/v4_stage_c_confirm_sin_fedogda_s_seed2_alpha1_T1000_R3_batch256_glr0p01_cm7_lam0p005_slr1p75",
+    "run_id": "v4_stage_c_confirm_sin_fedogda_s_seed2_alpha1_T1000_R3_batch256_glr0p01_cm7_lam0p005_slr1p75",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.012439766703461752
+  }
+]

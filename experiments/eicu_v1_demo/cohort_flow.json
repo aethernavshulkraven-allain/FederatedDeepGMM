@@ -1,0 +1,68 @@
+{
+  "baseline_window_minutes": [
+    0,
+    60
+  ],
+  "eicu_root": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1",
+  "flow": [
+    {
+      "n_stays": 2520,
+      "step": "all ICU stays"
+    },
+    {
+      "n_stays": 2512,
+      "step": "adults (age >= 18)"
+    },
+    {
+      "n_stays": 2111,
+      "step": "first unit visit (unitvisitnumber == 1)"
+    },
+    {
+      "detail": "dropped 0 repeat unit stays",
+      "n_stays": 2111,
+      "step": "first ICU stay per hospital admission"
+    },
+    {
+      "n_stays": 2086,
+      "step": "known hospital discharge status"
+    },
+    {
+      "n_stays": 2086,
+      "step": "known hospital and ward id"
+    },
+    {
+      "detail": "diagnosisoffset window (-360, 360) min, or sepsis admitDx",
+      "n_stays": 304,
+      "step": "sepsis at / near ICU admission"
+    },
+    {
+      "n_stays": 205,
+      "step": "hospital has a working infusion interface"
+    },
+    {
+      "detail": "excluded 4 stays with infusionoffset < 0",
+      "n_stays": 201,
+      "step": "no vasopressor before ICU admission"
+    },
+    {
+      "n_stays": 201,
+      "step": "final cohort"
+    }
+  ],
+  "include_apache": false,
+  "include_dopamine": false,
+  "keep_pre_icu_vasopressors": false,
+  "n_deaths": 33,
+  "n_hospitals": 89,
+  "n_rows": 201,
+  "n_treated": 32,
+  "n_wards": 97,
+  "sepsis_window_minutes": [
+    -360,
+    360
+  ],
+  "treatment_window_minutes": [
+    0,
+    360
+  ]
+}

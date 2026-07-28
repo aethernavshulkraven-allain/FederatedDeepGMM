@@ -9,9 +9,12 @@ Table filenames differ in case between mirrors (``infusiondrug.csv.gz`` in the d
 ``infusionDrug.csv.gz`` elsewhere), so tables are always resolved case-insensitively.
 """
 
+import csv
 import gzip
+import math
 import os
 import re
+import statistics
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -338,3 +341,172 @@ def continuous_covariate_columns(frame):
         if c.startswith(prefixes) and not c.endswith("_missing")
     ]
     return cols
+
+
+# ---------------------------------------------------------------------------
+# Final-iterate stability
+# ---------------------------------------------------------------------------
+
+DEFAULT_STABILITY_WINDOW = 50
+DEFAULT_STABILITY_METRIC_COLUMN = "val_mse"
+
+
+def _stability_to_bool(value):
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in {"1", "true", "yes", "y"}
+
+
+def final_iterate_stability(
+    mse_by_round_csv,
+    metric_column=DEFAULT_STABILITY_METRIC_COLUMN,
+    window=DEFAULT_STABILITY_WINDOW,
+):
+    """Canonical final-iterate instability + divergence diagnostic for a run.
+
+    This is the ONE place in the repo that should compute "last-50
+    stability" going forward. It was previously reimplemented ad hoc, with
+    differing return signatures, in ``scripts/analyze_fedogda_s_focused_v3.py``
+    (line 147), ``scripts/analyze_optimistic_curve_screen_v1.py`` (line 148),
+    ``scripts/analyze_fedogda_s_step_fast_v5.py`` (line 187), and
+    ``scripts/analyze_fedogda_s_tuning_pilot.py`` (line 87). Those four
+    callers are left untouched (they belong to other, already-analyzed
+    campaigns; changing them risks their results) -- this function exists so
+    every *new* analysis, starting with
+    ``scripts/analyze_eicu_study_a_v2_confirmatory.py``, has one
+    unambiguous, documented definition to import instead of copy-pasting a
+    fifth variant.
+
+    Window: the last ``min(window, n_rows)`` rows of ``mse_by_round_csv``, in
+    file order. Rows are written/appended strictly in round order by
+    ``experiment_utils.write_mse_by_round`` / ``append_mse_by_round``, so
+    file order is round order; this function does not re-sort by ``round``.
+
+    Statistic: population standard deviation (``statistics.pstdev``, i.e.
+    divide-by-``n``, not divide-by-``n-1``) of ``metric_column`` over that
+    window. This is the exact statistic all four prior implementations used
+    (``pstdev_or_zero`` / ``statistics.pstdev`` with a 0.0 fallback for a
+    single-row window) -- picking it is not inventing a new definition, it's
+    codifying the one thing all four callers already agreed on. Also reports
+    mean/min/max/range/coefficient-of-variation over the same window, since
+    ``metric_policy.md``'s stability section wants range as well as std.
+
+    ``metric_column`` defaults to ``"val_mse"`` to match the four priors
+    exactly (their datasets have no ``client_id``, so pooled and
+    equal-client validation MSE coincide). Study A v2's
+    ``mse_by_round.csv`` additionally has ``primary_val_mse`` (the actual
+    checkpoint selector: equal-client validation MSE when client_id is
+    available, per ``fedavg_api.py``) and ``equal_client_val_mse`` columns;
+    ``scripts/analyze_eicu_study_a_v2_confirmatory.py`` passes
+    ``metric_column="primary_val_mse"`` explicitly, per
+    ``metric_policy.md``'s "Stability metrics" section (equal-client
+    validation structural MSE, not pooled).
+
+    Divergence flag: ``True`` if ANY row across the FULL run history (not
+    just the tail window) has ``diverged`` truthy or ``finite`` falsy --
+    again matching all four priors exactly. A run that diverged early and
+    then produced 50 finite-looking rows before a manual stop is still
+    flagged diverged: divergence is a permanent taint on the run's numerical
+    trustworthiness, not a momentary state that can be "recovered from" by
+    looking away from it.
+
+    Unlike the four priors (which call ``float()`` on every tail value and
+    raise on the first non-finite one, so a single divergent run stops a
+    whole batch analysis), this implementation skips non-finite / unparsable
+    tail values when computing the window statistics and still returns a
+    result -- ``diverged`` is already set from the full history regardless,
+    so nothing about divergence detection is weakened; a confirmatory
+    analyzer comparing 30 runs needs to be able to report "these seeds
+    diverged" instead of crashing on the first one.
+
+    Returns a dict (not a tuple -- the four priors also disagreed with each
+    other on tuple arity/order, which is exactly the ambiguity this
+    canonicalization removes) with keys:
+
+    ``metric_column``, ``window_requested``, ``window_used``,
+    ``n_rows_total``, ``n_tail_finite``, ``n_tail_nonfinite``, ``tail_mean``,
+    ``tail_std``, ``tail_min``, ``tail_max``, ``tail_range``, ``tail_cv``
+    (``tail_std / abs(tail_mean)``, ``None`` if the mean is ~0 or the window
+    has no finite values), ``diverged``, ``first_diverged_round``.
+    """
+    with open(mse_by_round_csv, newline="") as handle:
+        rows = list(csv.DictReader(handle))
+
+    n_rows_total = len(rows)
+    if n_rows_total == 0:
+        # No data to trust: conservatively flag diverged rather than silently
+        # reporting "stable" for a run that produced nothing.
+        return {
+            "metric_column": metric_column,
+            "window_requested": int(window),
+            "window_used": 0,
+            "n_rows_total": 0,
+            "n_tail_finite": 0,
+            "n_tail_nonfinite": 0,
+            "tail_mean": None,
+            "tail_std": None,
+            "tail_min": None,
+            "tail_max": None,
+            "tail_range": None,
+            "tail_cv": None,
+            "diverged": True,
+            "first_diverged_round": None,
+        }
+
+    diverged = False
+    first_diverged_round = None
+    for row in rows:
+        row_diverged = _stability_to_bool(
+            row.get("diverged", "false")
+        ) or not _stability_to_bool(row.get("finite", "true"))
+        if row_diverged and first_diverged_round is None:
+            raw_round = row.get("round", "")
+            try:
+                first_diverged_round = int(raw_round)
+            except (TypeError, ValueError):
+                first_diverged_round = raw_round
+        diverged = diverged or row_diverged
+
+    window = int(window)
+    tail_rows = rows[-window:] if window > 0 else rows
+    window_used = len(tail_rows)
+
+    tail_values = []
+    n_nonfinite = 0
+    for row in tail_rows:
+        try:
+            value = float(row.get(metric_column, ""))
+        except (TypeError, ValueError):
+            n_nonfinite += 1
+            continue
+        if not math.isfinite(value):
+            n_nonfinite += 1
+            continue
+        tail_values.append(value)
+
+    if tail_values:
+        tail_mean = statistics.fmean(tail_values)
+        tail_std = statistics.pstdev(tail_values) if len(tail_values) > 1 else 0.0
+        tail_min = min(tail_values)
+        tail_max = max(tail_values)
+        tail_range = tail_max - tail_min
+        tail_cv = tail_std / abs(tail_mean) if abs(tail_mean) > 1e-12 else None
+    else:
+        tail_mean = tail_std = tail_min = tail_max = tail_range = tail_cv = None
+
+    return {
+        "metric_column": metric_column,
+        "window_requested": window,
+        "window_used": window_used,
+        "n_rows_total": n_rows_total,
+        "n_tail_finite": len(tail_values),
+        "n_tail_nonfinite": n_nonfinite,
+        "tail_mean": tail_mean,
+        "tail_std": tail_std,
+        "tail_min": tail_min,
+        "tail_max": tail_max,
+        "tail_range": tail_range,
+        "tail_cv": tail_cv,
+        "diverged": diverged,
+        "first_diverged_round": first_diverged_round,
+    }

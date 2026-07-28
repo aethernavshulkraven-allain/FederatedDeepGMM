@@ -1,0 +1,194 @@
+[
+  {
+    "best_validation_round": 36,
+    "final_test_mse": 0.3524170543189074,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_x/fedgda_s/seed_0/tune_cifar10_x_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_x_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.15455086636824558
+  },
+  {
+    "best_validation_round": 11,
+    "final_test_mse": 2.0432462655770878,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_x/fedgda_s/seed_0/tune_cifar10_x_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_x_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.14916229510146842
+  },
+  {
+    "best_validation_round": 33,
+    "final_test_mse": 0.43058248545070776,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_x/fedogda_s/seed_0/tune_cifar10_x_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_x_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.15510351310079767
+  },
+  {
+    "best_validation_round": 22,
+    "final_test_mse": 1.819374791466819,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_x/fedogda_s/seed_0/tune_cifar10_x_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_x_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.1551334363895226
+  },
+  {
+    "best_validation_round": 9,
+    "final_test_mse": 0.2732639543864991,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_xz/fedgda_s/seed_0/tune_cifar10_xz_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_xz_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.2253298105580453
+  },
+  {
+    "best_validation_round": 9,
+    "final_test_mse": 0.36901772946962835,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_xz/fedgda_s/seed_0/tune_cifar10_xz_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_xz_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.20767078364902555
+  },
+  {
+    "best_validation_round": 29,
+    "final_test_mse": 0.251077779383619,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_xz/fedogda_s/seed_0/tune_cifar10_xz_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_xz_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.20602859401834786
+  },
+  {
+    "best_validation_round": 24,
+    "final_test_mse": 0.34151885428726103,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_xz/fedogda_s/seed_0/tune_cifar10_xz_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_xz_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.1755991347155598
+  },
+  {
+    "best_validation_round": 36,
+    "final_test_mse": 0.24660248084871828,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_z/fedgda_s/seed_0/tune_cifar10_z_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_z_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.2338953344849281
+  },
+  {
+    "best_validation_round": 146,
+    "final_test_mse": 0.2448261753346424,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_z/fedgda_s/seed_0/tune_cifar10_z_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_z_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.23367503364867812
+  },
+  {
+    "best_validation_round": 27,
+    "final_test_mse": 0.2520453122924686,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_z/fedogda_s/seed_0/tune_cifar10_z_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_z_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.23456297947758836
+  },
+  {
+    "best_validation_round": 7,
+    "final_test_mse": 0.29151754496686894,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_z/fedogda_s/seed_0/tune_cifar10_z_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_z_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.23490475506938766
+  },
+  {
+    "best_validation_round": 18,
+    "final_test_mse": 0.5635798661705163,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_x/fedgda_s/seed_0/tune_femnist_x_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_x_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.17040816126089914
+  },
+  {
+    "best_validation_round": 14,
+    "final_test_mse": 0.693988887364166,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_x/fedgda_s/seed_0/tune_femnist_x_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_x_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.1331755885814074
+  },
+  {
+    "best_validation_round": 26,
+    "final_test_mse": 1.0488887965501612,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_x/fedogda_s/seed_0/tune_femnist_x_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_x_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.15044855301747734
+  },
+  {
+    "best_validation_round": 24,
+    "final_test_mse": 1.725791296220955,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_x/fedogda_s/seed_0/tune_femnist_x_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_x_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.14197916682798506
+  },
+  {
+    "best_validation_round": 108,
+    "final_test_mse": 0.2203905811794302,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_xz/fedgda_s/seed_0/tune_femnist_xz_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_xz_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.13779985461139746
+  },
+  {
+    "best_validation_round": 24,
+    "final_test_mse": 0.38308112299681873,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_xz/fedgda_s/seed_0/tune_femnist_xz_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_xz_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.15008815998367497
+  },
+  {
+    "best_validation_round": 109,
+    "final_test_mse": 0.332835607814648,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_xz/fedogda_s/seed_0/tune_femnist_xz_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_xz_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.1435812140336127
+  },
+  {
+    "best_validation_round": 30,
+    "final_test_mse": 2.1546922317314157,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_xz/fedogda_s/seed_0/tune_femnist_xz_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_xz_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.14455307970270498
+  },
+  {
+    "best_validation_round": 145,
+    "final_test_mse": 0.22332021350643544,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_z/fedgda_s/seed_0/tune_femnist_z_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_z_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.22317504352214573
+  },
+  {
+    "best_validation_round": 147,
+    "final_test_mse": 0.16244606703075687,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_z/fedgda_s/seed_0/tune_femnist_z_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_z_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.15813057904003464
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 0.2224758497149815,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_z/fedogda_s/seed_0/tune_femnist_z_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_z_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.2224758497149815
+  },
+  {
+    "best_validation_round": 145,
+    "final_test_mse": 0.20043340705245263,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_z/fedogda_s/seed_0/tune_femnist_z_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_z_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 0.16870838060680704
+  }
+]

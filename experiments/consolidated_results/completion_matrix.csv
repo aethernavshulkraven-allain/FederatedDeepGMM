@@ -1,0 +1,22 @@
+experiment_family,dataset_or_scope,method,status,expected_runs,completed_runs,validated_runs,seeds_present,alphas_present,metrics_json_present_count,mse_by_round_csv_present_count,test_mse_by_round_csv_present_count,predictions_npz_present_count,best_validation_pt_present_count,final_pt_present_count,notes
+lowdim_federated_base_sweep,abs,fedgda_d,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,abs,fedogda_d,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,abs,fedgda_s,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,abs,fedogda_s,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,step,fedgda_d,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,step,fedogda_d,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,step,fedgda_s,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,step,fedogda_s,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,linear,fedgda_d,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,linear,fedogda_d,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,linear,fedgda_s,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,linear,fedogda_s,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,sin,fedgda_d,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,sin,fedogda_d,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,sin,fedgda_s,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+lowdim_federated_base_sweep,sin,fedogda_s,complete,9,9,9,0 1 2,0.1 0.5 1.0,9,9,0,9,9,9,legacy base sweep; no per-round Test MSE logging
+tuned_sine_fedogda_d_a2_lite,sin alpha=1.0,fedogda_d,complete,3,3,3,0 1 2,1.0,3,3,3,3,3,3,locked by validation-only A2-lite; paired FedGDA-D baseline exists; do not merge into original sweep
+fedogda_s_tuning_pilot_alpha0p5,abs linear step,fedogda_s,complete,144,144,144,0 1 2,0.5,144,144,0,144,144,144,separate FedOGDA-S hyperparameter pilot; validation-only selection; improves current FedOGDA-S but does not beat FedGDA-S Test MSE
+centralized_lowdim_c3_full,abs step linear sin,gda sgda oadam,complete,36,36,36,0 1 2,na,36,36,not_required,36,36,36,true centralized C3 completed; OAdam strong; C3 GDA/SGDA under-tuned but valid
+centralized_lowdim_c5_tuned_gda_sgda,abs step linear sin,gda sgda,complete,24,24,24,0 1 2,na,24,24,not_required,24,24,24,C5a/C5b selected g_lr=0.005 f_lr=0.03 by validation only; improved all GDA/SGDA datasets vs C3
+highdim_real_image_abs_alpha0p5,FEMNIST/CIFAR x z xz,fedgda_d fedogda_d fedgda_s fedogda_s,pending_blocked_gpu_permissions,72,0,0,0 1 2,0.5,0,0,0,0,0,0,data/code path and smoke/preflight checks exist; actual high-dimensional tuning blocked by GPU permission issue; no final reportable results

@@ -1,0 +1,146 @@
+[
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_x/fedgda_s/seed_0/tune_cifar10_x_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_x_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_x/fedgda_s/seed_0/tune_cifar10_x_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_x_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_x/fedogda_s/seed_0/tune_cifar10_x_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_x_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_x/fedogda_s/seed_0/tune_cifar10_x_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_x_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_xz/fedgda_s/seed_0/tune_cifar10_xz_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_xz_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_xz/fedgda_s/seed_0/tune_cifar10_xz_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_xz_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_xz/fedogda_s/seed_0/tune_cifar10_xz_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_xz_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_xz/fedogda_s/seed_0/tune_cifar10_xz_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_xz_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_z/fedgda_s/seed_0/tune_cifar10_z_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_z_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_z/fedgda_s/seed_0/tune_cifar10_z_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_z_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_z/fedogda_s/seed_0/tune_cifar10_z_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_cifar10_z_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/cifar10_z/fedogda_s/seed_0/tune_cifar10_z_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_cifar10_z_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_x/fedgda_s/seed_0/tune_femnist_x_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_x_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_x/fedgda_s/seed_0/tune_femnist_x_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_x_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_x/fedogda_s/seed_0/tune_femnist_x_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_x_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_x/fedogda_s/seed_0/tune_femnist_x_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_x_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_xz/fedgda_s/seed_0/tune_femnist_xz_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_xz_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_xz/fedgda_s/seed_0/tune_femnist_xz_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_xz_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_xz/fedogda_s/seed_0/tune_femnist_xz_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_xz_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_xz/fedogda_s/seed_0/tune_femnist_xz_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_xz_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_z/fedgda_s/seed_0/tune_femnist_z_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_z_fedgda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_z/fedgda_s/seed_0/tune_femnist_z_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_z_fedgda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_z/fedogda_s/seed_0/tune_femnist_z_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "run_id": "tune_femnist_z_fedogda_s_seed0_alpha1_lr0p003_wd0p05",
+    "status": "failed_process"
+  },
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha1_tuning/femnist_z/fedogda_s/seed_0/tune_femnist_z_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "run_id": "tune_femnist_z_fedogda_s_seed0_alpha1_lr0p01_wd0p05",
+    "status": "failed_process"
+  }
+]

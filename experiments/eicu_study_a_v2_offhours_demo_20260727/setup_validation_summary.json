@@ -1,0 +1,78 @@
+{
+  "centralized_canary": {
+    "diverged": false,
+    "hidden_widths": [
+      32,
+      32
+    ],
+    "iterations": 2,
+    "model_activation": "relu",
+    "objective_mode": "paper_aligned",
+    "passed": true
+  },
+  "cohort": {
+    "client_id_column": "hospitalid",
+    "n_clients": 179,
+    "n_rows": 2031,
+    "off_hours_rate": 0.55,
+    "split_sizes": {
+      "dev": 306,
+      "test": 305,
+      "train": 1420
+    },
+    "wardid_used_as_client": false
+  },
+  "environment": {
+    "cuda_available": false,
+    "python": "/home/arnav22103/miniconda3/envs/fedgmm/bin/python",
+    "recommended_max_parallel_cpu": 2
+  },
+  "federated_canary": {
+    "batch_size": 4,
+    "batching_provenance_rows": 358,
+    "client_num_in_total": 179,
+    "client_num_per_round": 179,
+    "diverged": false,
+    "iterations": 2,
+    "maximum_local_batches": 5,
+    "minimum_local_batches": 2,
+    "single_batch_client_rounds": 0,
+    "passed": true
+  },
+  "final_manifest_prelaunch_test": {
+    "blocking_errors": 0,
+    "launchable": true,
+    "rows": 105,
+    "used_placeholder_validation_choices_only_in_tmp": true,
+    "warnings": 0
+  },
+  "full_test_suite": {
+    "known_unrelated_error": "results/_golden smoke artifacts are absent",
+    "passed": 373,
+    "ran": 374,
+    "study_a_v2_failures": 0
+  },
+  "protocol_version": "eicu_study_a_v2_offhours",
+  "scenario_campaign": {
+    "all_certified": true,
+    "client_list_identical": true,
+    "g0_variants": 3,
+    "input_dim": 47,
+    "n_scenarios": 18,
+    "scenario_seeds": [
+      11,
+      101,
+      102,
+      103,
+      104,
+      105
+    ],
+    "test_used_for_acceptance": false
+  },
+  "scenario_scope": "demo",
+  "tuning_dry_run": {
+    "launchable": 36,
+    "shown": 36,
+    "skipped_unlaunchable": 0
+  }
+}

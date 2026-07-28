@@ -1,0 +1,290 @@
+[
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.514570893986919,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm0p5_slr1p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm0p5_slr1p0",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 5.514570893986919
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.370997088195285,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm0p5_slr1p5",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm0p5_slr1p5",
+    "status": "skipped_completed",
+    "test_mse_at_best_validation": 5.370997088195285
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.160698288178979,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.160698288178979
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.273444295250234,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.273444295250234
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.088053676083098,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.088053676083098
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 4.921476213641498,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 4.921476213641498
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.5397275873226715,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm0p5_slr1p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm0p5_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.5397275873226715
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.3933974415765205,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm0p5_slr1p5",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm0p5_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.3933974415765205
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.282164113897366,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.282164113897366
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.1351068834534015,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.1351068834534015
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.033877796866827,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.033877796866827
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 4.8151255769690975,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 4.8151255769690975
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 6.065987057257053,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm0p5_slr1p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm0p5_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 6.065987057257053
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.9948182474297305,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm0p5_slr1p5",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm0p5_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.9948182474297305
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.938849439606759,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.938849439606759
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.852257737364346,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.852257737364346
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.777143968370659,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.777143968370659
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.615666056378631,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.615666056378631
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 6.0689814356524,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm0p5_slr1p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm0p5_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 6.0689814356524
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 6.00018527919564,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm0p5_slr1p5",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm0p5_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 6.00018527919564
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.943618289026482,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.943618289026482
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.854998884304234,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.854998884304234
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.76413414216227,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.76413414216227
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 5.599940548254352,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 5.599940548254352
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 0.5320208364853656,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm0p5_slr1p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm0p5_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5320208364853656
+  },
+  {
+    "best_validation_round": 137,
+    "final_test_mse": 0.5409466287736628,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm0p5_slr1p5",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm0p5_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5364931831223574
+  },
+  {
+    "best_validation_round": 102,
+    "final_test_mse": 0.543545408953207,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5361788804984997
+  },
+  {
+    "best_validation_round": 124,
+    "final_test_mse": 0.5216595683124002,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5293435502308225
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 0.5127133891014267,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5127133891014267
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 0.4883199336302308,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.4883199336302308
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 0.5349923280528655,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm0p5_slr1p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm0p5_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5349923280528655
+  },
+  {
+    "best_validation_round": 144,
+    "final_test_mse": 0.5387265787271723,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm0p5_slr1p5",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm0p5_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5369471386481104
+  },
+  {
+    "best_validation_round": 109,
+    "final_test_mse": 0.5473724280659451,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5370090993335295
+  },
+  {
+    "best_validation_round": 73,
+    "final_test_mse": 0.5294157805634706,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5373186146656526
+  },
+  {
+    "best_validation_round": 56,
+    "final_test_mse": 0.5247294583946175,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5372308449803973
+  },
+  {
+    "best_validation_round": 149,
+    "final_test_mse": 0.5138351618237762,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5138351618237762
+  }
+]

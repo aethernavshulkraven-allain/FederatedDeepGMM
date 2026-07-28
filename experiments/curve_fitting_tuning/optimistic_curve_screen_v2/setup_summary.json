@@ -1,0 +1,20 @@
+{
+  "actual_tuned_regularizer": "objective_lambda_1",
+  "compatibility_only_fields": [
+    "weight_decay"
+  ],
+  "datasets": {
+    "sin": 12,
+    "step": 6
+  },
+  "manifest": "experiments/curve_fitting_tuning/optimistic_curve_screen_v2/manifest.csv",
+  "output_root": "results/curve_fitting_tuning/optimistic_curve_screen_v2",
+  "post_selection_only": [
+    "test_mse_at_best_validation",
+    "curve_mse",
+    "curve_mae",
+    "visual curve"
+  ],
+  "rows": 18,
+  "selection_rule": "validation-only: finite/non-diverged; lowest best_validation_mse; tie lower last-50 validation std; tie lower final-vs-best validation gap"
+}

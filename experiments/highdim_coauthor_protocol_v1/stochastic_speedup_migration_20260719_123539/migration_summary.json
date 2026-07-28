@@ -1,0 +1,33 @@
+{
+  "combined_manifest": "experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_123539/remaining_pending_manifest_stochastic_safe_speedup_v1.csv",
+  "created_at": "2026-07-19T12:36:18",
+  "invalid_complete_count": 0,
+  "launch_policy": "pending-only into fresh result root; old complete/partial artifacts are not overwritten or deleted",
+  "migration_dir": "experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_123539",
+  "new_output_root": "results/rerun_protocol_v1_real_images_abs_remaining_safe_speedup_v1_20260719_123539",
+  "pending_to_launch_count": 161,
+  "per_alpha_counts": {
+    "alpha0p1": {
+      "complete": 0,
+      "invalid_complete": 0,
+      "partial": 0,
+      "pending": 60
+    },
+    "alpha0p5": {
+      "complete": 8,
+      "invalid_complete": 0,
+      "partial": 0,
+      "pending": 52
+    },
+    "alpha1": {
+      "complete": 11,
+      "invalid_complete": 0,
+      "partial": 0,
+      "pending": 49
+    }
+  },
+  "preserved_completed_count": 19,
+  "preserved_partial_count": 0,
+  "recommended_launch_command": "tmux new-session -d -s hd_stoch_safe_speedup_v1_20260719_123539 -c /home/arnav22103/FederatedDeepGMM gpurun -g 2 /home/arnav22103/miniconda3/envs/fedgmm/bin/python scripts/run_manifest.py --manifest experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_123539/remaining_pending_manifest_stochastic_safe_speedup_v1.csv --config-dir experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_123539/generated_configs --output-root results/rerun_protocol_v1_real_images_abs_remaining_safe_speedup_v1_20260719_123539 --gpu-ids 0,1 --max-parallel 2 --resume-skip-completed --keep-going --results-json experiments/highdim_coauthor_protocol_v1/stochastic_speedup_migration_20260719_123539/launcher_results.json",
+  "speedup_level": "safe_speedup_v1: current fixed runtime path, no skip_model_selection, no disable_auxiliary_regression overrides"
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "alpha": "0.5",
+    "checked_client_count": 1000,
+    "dataset": "cifar10_x",
+    "effective_config_path": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_cifar10_x_fedgda_d/cifar10_x/fedgda_d/seed_0/rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed0_alpha0p5_full_gradient_preflight/effective_config.json",
+    "error": "",
+    "method": "fedgda_d",
+    "preflight_report_path": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_cifar10_x_fedgda_d/cifar10_x/fedgda_d/seed_0/rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed0_alpha0p5_full_gradient_preflight/full_gradient_preflight.json",
+    "preflight_run_dir": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_cifar10_x_fedgda_d/cifar10_x/fedgda_d/seed_0/rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed0_alpha0p5_full_gradient_preflight",
+    "run_id": "rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed0_alpha0p5",
+    "sample_count_max": 478,
+    "sample_count_min": 5,
+    "sample_count_sum": 20000,
+    "seed": "0",
+    "status": "passed"
+  },
+  {
+    "alpha": "0.5",
+    "checked_client_count": 1000,
+    "dataset": "cifar10_x",
+    "effective_config_path": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_cifar10_x_fedgda_d/cifar10_x/fedgda_d/seed_1/rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed1_alpha0p5_full_gradient_preflight/effective_config.json",
+    "error": "",
+    "method": "fedgda_d",
+    "preflight_report_path": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_cifar10_x_fedgda_d/cifar10_x/fedgda_d/seed_1/rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed1_alpha0p5_full_gradient_preflight/full_gradient_preflight.json",
+    "preflight_run_dir": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_cifar10_x_fedgda_d/cifar10_x/fedgda_d/seed_1/rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed1_alpha0p5_full_gradient_preflight",
+    "run_id": "rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed1_alpha0p5",
+    "sample_count_max": 468,
+    "sample_count_min": 5,
+    "sample_count_sum": 20000,
+    "seed": "1",
+    "status": "passed"
+  },
+  {
+    "alpha": "0.5",
+    "checked_client_count": 1000,
+    "dataset": "cifar10_x",
+    "effective_config_path": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_cifar10_x_fedgda_d/cifar10_x/fedgda_d/seed_2/rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed2_alpha0p5_full_gradient_preflight/effective_config.json",
+    "error": "",
+    "method": "fedgda_d",
+    "preflight_report_path": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_cifar10_x_fedgda_d/cifar10_x/fedgda_d/seed_2/rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed2_alpha0p5_full_gradient_preflight/full_gradient_preflight.json",
+    "preflight_run_dir": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_cifar10_x_fedgda_d/cifar10_x/fedgda_d/seed_2/rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed2_alpha0p5_full_gradient_preflight",
+    "run_id": "rerun_protocol_v1_real_images_abs_alpha0p5_cifar10_x_fedgda_d_seed2_alpha0p5",
+    "sample_count_max": 485,
+    "sample_count_min": 5,
+    "sample_count_sum": 20000,
+    "seed": "2",
+    "status": "passed"
+  }
+]

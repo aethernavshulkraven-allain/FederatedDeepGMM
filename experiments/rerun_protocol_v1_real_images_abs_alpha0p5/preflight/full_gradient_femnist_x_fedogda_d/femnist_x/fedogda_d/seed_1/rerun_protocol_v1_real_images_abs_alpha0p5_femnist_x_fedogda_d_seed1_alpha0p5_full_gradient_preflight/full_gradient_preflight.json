@@ -1,0 +1,59 @@
+{
+  "checked_client_count": 1000,
+  "client_detail_limit": 5,
+  "client_details": [
+    {
+      "actual_batch_size": 10,
+      "client_id": 0,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 10
+    },
+    {
+      "actual_batch_size": 5,
+      "client_id": 1,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 5
+    },
+    {
+      "actual_batch_size": 5,
+      "client_id": 2,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 5
+    },
+    {
+      "actual_batch_size": 6,
+      "client_id": 3,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 6
+    },
+    {
+      "actual_batch_size": 9,
+      "client_id": 4,
+      "num_train_batches": 1,
+      "round": 0,
+      "sample_count": 9
+    }
+  ],
+  "client_num_in_total": 1000,
+  "client_num_per_round": 1000,
+  "configured_batch_size": 0,
+  "dataset": "femnist_x",
+  "effective_config_batch_size": 0,
+  "effective_config_mode": "deterministic",
+  "effective_config_path": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_femnist_x_fedogda_d/femnist_x/fedogda_d/seed_1/rerun_protocol_v1_real_images_abs_alpha0p5_femnist_x_fedogda_d_seed1_alpha0p5_full_gradient_preflight/effective_config.json",
+  "errors": [],
+  "failed_clients": [],
+  "partition_alpha": 0.5,
+  "rounds_checked": 1,
+  "run_dir": "/home/arnav22103/FederatedDeepGMM/experiments/rerun_protocol_v1_real_images_abs_alpha0p5/preflight/full_gradient_femnist_x_fedogda_d/femnist_x/fedogda_d/seed_1/rerun_protocol_v1_real_images_abs_alpha0p5_femnist_x_fedogda_d_seed1_alpha0p5_full_gradient_preflight",
+  "sample_count_max": 468,
+  "sample_count_min": 5,
+  "sample_count_sum": 20000,
+  "seed": 1,
+  "selected_client_count": 1000,
+  "status": "passed"
+}

@@ -1,0 +1,36 @@
+{
+  "purpose": "Side-by-side visual comparison against old committed All_3/All_3latest style plots.",
+  "source": "Validated predictions.npz artifacts under results/rerun_protocol_v1.",
+  "prediction_key": "best_validation_prediction",
+  "aggregation": "mean across seeds 0,1,2, interpolated to seed-0 x grid if needed",
+  "datasets": {
+    "abs": {
+      "alpha": 1.0,
+      "methods": {
+        "FedDeepGMM-GDA": "fedgda_d",
+        "FedDeepGMM-OGDA": "fedogda_d",
+        "FedDeepGMM-SGDA": "fedgda_s",
+        "FedDeepGMM-SOGDA": "fedogda_s"
+      }
+    },
+    "step": {
+      "alpha": 0.1,
+      "methods": {
+        "FedDeepGMM-SGDA": "fedgda_s",
+        "FedDeepGMM-SOGDA": "fedogda_s",
+        "FedDeepGMM-GDA (FB)": "fedgda_d",
+        "FedDeepGMM-OGDA (FB)": "fedogda_d"
+      }
+    },
+    "linear": {
+      "alpha": 0.1,
+      "methods": {
+        "FedDeepGMM-GDA": "fedgda_d",
+        "FedDeepGMM-OGDA": "fedogda_d"
+      }
+    }
+  },
+  "caveat": "Old committed plot labels do not map exactly to all current validated method variants; this figure matches layout/style for visual comparison and uses explicit current artifact-backed method mappings.",
+  "png": "experiments/curve_fitting_plots/png/git_style_side_by_side/validated_all3_like_git_committed_style.png",
+  "pdf": "experiments/curve_fitting_plots/pdf/git_style_side_by_side/validated_all3_like_git_committed_style.pdf"
+}

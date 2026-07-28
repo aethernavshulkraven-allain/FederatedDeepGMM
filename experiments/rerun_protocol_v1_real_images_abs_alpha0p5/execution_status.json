@@ -1,0 +1,30 @@
+{
+  "alpha": 0.5,
+  "blocker": null,
+  "g_function": "abs",
+  "preflight": {
+    "data_scenarios_certified": 6,
+    "deterministic_checks_passed": 12,
+    "overall": "passed",
+    "stochastic_smokes_passed": 4
+  },
+  "steps": {
+    "1_protocol_lock": "complete",
+    "2_data_generation": "complete",
+    "3_data_certification": "complete",
+    "4_preflight_and_smoke": "complete",
+    "5_tuning_protocol": "complete",
+    "6_tuning_runs": "launched_via_gpurun",
+    "7_validation_selection": "prepared_waiting_for_step_6",
+    "8_final_120_runs": "prepared_waiting_for_step_7",
+    "9_validation_and_reporting": "prepared_waiting_for_step_8"
+  },
+  "test_mse_used_for_selection": false,
+  "final_seeds": [0, 1, 2, 3, 4],
+  "scheduler": {
+    "gpu_model": "NVIDIA H100 NVL",
+    "tuning_method_queues_submitted": 4,
+    "tuning_runs": 96,
+    "wrapper": "gpurun"
+  }
+}

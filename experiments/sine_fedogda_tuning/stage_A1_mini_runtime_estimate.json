@@ -1,0 +1,10 @@
+{
+  "basis": "previous_estimate_48_candidates_approximately_51p5_gpu_hours",
+  "estimated_gpu_hours": 12.875,
+  "estimated_wall_clock_hours_on_two_gpus": 6.4375,
+  "mini_grid_candidates": 12,
+  "previous_grid_candidates": 48,
+  "previous_grid_gpu_hours": 51.5,
+  "safe_to_launch": true,
+  "stop_if_exceeds_gpu_hours": 18.0
+}

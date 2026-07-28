@@ -1,0 +1,58 @@
+common_args:
+  training_type: "simulation"
+  using_mlops: false
+  random_seed: 0
+  run_id: "v3_screen_sine_sin_fedogda_s_seed0_alpha1_T500_R3_batch256_glr0p0075_cm8_lam0p03_slr1p5"
+  config_version: "release"
+  output_dir: "/home/arnav22103/FederatedDeepGMM/results/curve_fitting_tuning/fedogda_s_focused_v3"
+  overwrite: false
+
+data_args:
+  dataset: "sin"
+  data_cache_dir: "data"
+  partition_method: "hetero"
+  partition_alpha: 1.0
+
+model_args:
+  model: "lr"
+
+train_args:
+  federated_optimizer: "FedAvg"
+  client_id_list: "[]"
+  client_num_in_total: 1000
+  client_num_per_round: 10
+  comm_round: 500
+  epochs: 3
+  batch_size: 256
+  client_optimizer: "ogda"
+  learning_rate: 0.0075
+  weight_decay: 0.0
+  critic_multiplier: 8.0
+  server_learning_rate: 1.5
+  objective_lambda_1: 0.03
+  gradient_clip_norm: 1.0
+  simple_model_selection_epochs: 100
+  f_history_model_selection_epochs: 60
+  model_selection_batch_size: 200
+  model_selection_max_samples: 0
+  enable_legacy_outputs: false
+  require_multibatch_stochastic: false
+  log_test_mse_by_round: true
+  test_mse_used_for_selection: false
+  selection_metric_source: "validation"
+
+validation_args:
+  frequency_of_the_test: 1
+
+device_args:
+  using_gpu: true
+  gpu_id: 0
+
+comm_args:
+  backend: "sp"
+
+tracking_args:
+  enable_tracking: false
+  enable_wandb: false
+  run_name: "sin_fedogda_s_seed_0_v3_screen_sine_sin_fedogda_s_seed0_alpha1_T500_R3_batch256_glr0p0075_cm8_lam0p03_slr1p5"
+

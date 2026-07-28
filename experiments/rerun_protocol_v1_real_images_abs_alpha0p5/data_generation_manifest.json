@@ -1,0 +1,356 @@
+{
+  "g_function": "abs",
+  "generated_files": [
+    {
+      "dataset": "femnist_x",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_x/main.npz",
+      "sha256": "1f88d17b29d3e4cf4ec0951a7fab53e0c27f2207cdfd158df855835858992b44",
+      "size_bytes": 126723986,
+      "standardizer_mean": 1.675408854138307,
+      "standardizer_std": 2.285176914695265,
+      "status": "generated",
+      "use_x_images": true,
+      "use_z_images": false
+    },
+    {
+      "dataset": "femnist_z",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_z/main.npz",
+      "sha256": "582b49c9c64186a4660817a816312e214e51f897053cb560b517b89cb35da5c4",
+      "size_bytes": 126723986,
+      "standardizer_mean": 1.675408854138307,
+      "standardizer_std": 2.285176914695265,
+      "status": "generated",
+      "use_x_images": false,
+      "use_z_images": true
+    },
+    {
+      "dataset": "femnist_xz",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_xz/main.npz",
+      "sha256": "0cb3b5af2edc011fcf55bd1ad4cc1c3c6c58fb009333f2e62ca29832f4319b5c",
+      "size_bytes": 251843986,
+      "standardizer_mean": 1.675408854138307,
+      "standardizer_std": 2.285176914695265,
+      "status": "generated",
+      "use_x_images": true,
+      "use_z_images": true
+    },
+    {
+      "dataset": "cifar10_x",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_x/main.npz",
+      "sha256": "ca5aea225a2e5b72545b6664c8256d794460ea5b335144cba8e7685e6d23a84e",
+      "size_bytes": 492803986,
+      "standardizer_mean": 1.675408854138307,
+      "standardizer_std": 2.285176914695265,
+      "status": "generated",
+      "use_x_images": true,
+      "use_z_images": false
+    },
+    {
+      "dataset": "cifar10_z",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_z/main.npz",
+      "sha256": "28a986f9a521b3fb8b96df72455d30bb21da66fbfc18d4949abec98466786109",
+      "size_bytes": 492803986,
+      "standardizer_mean": 1.675408854138307,
+      "standardizer_std": 2.285176914695265,
+      "status": "generated",
+      "use_x_images": false,
+      "use_z_images": true
+    },
+    {
+      "dataset": "cifar10_xz",
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_xz/main.npz",
+      "sha256": "ec0033d4773125937fc1c33c97eeefa57f033cd04af603d67d4cffb52425e7fd",
+      "size_bytes": 984003986,
+      "standardizer_mean": 1.675408854138307,
+      "standardizer_std": 2.285176914695265,
+      "status": "generated",
+      "use_x_images": true,
+      "use_z_images": true
+    }
+  ],
+  "protocol_version": "rerun_protocol_v1_real_images_abs_alpha0p5",
+  "seed": 527,
+  "sources": {
+    "cifar10": {
+      "cache_dir": "/home/arnav22103/FederatedDeepGMM/fedgmm/sp_decentralized_mnist_lr_example/datasets/cifar10",
+      "content_disjoint_split_diagnostics": {
+        "0": {
+          "generated_dev_unique_content": 1000,
+          "generated_test_unique_content": 1000,
+          "generated_train_unique_content": 4000,
+          "source_test_records": 1000,
+          "source_train_content_excluded_due_to_test_overlap": 0,
+          "source_train_records": 5000
+        },
+        "1": {
+          "generated_dev_unique_content": 1000,
+          "generated_test_unique_content": 1000,
+          "generated_train_unique_content": 4000,
+          "source_test_records": 1000,
+          "source_train_content_excluded_due_to_test_overlap": 0,
+          "source_train_records": 5000
+        },
+        "2": {
+          "generated_dev_unique_content": 1000,
+          "generated_test_unique_content": 1000,
+          "generated_train_unique_content": 4000,
+          "source_test_records": 1000,
+          "source_train_content_excluded_due_to_test_overlap": 0,
+          "source_train_records": 5000
+        },
+        "3": {
+          "generated_dev_unique_content": 1000,
+          "generated_test_unique_content": 1000,
+          "generated_train_unique_content": 4000,
+          "source_test_records": 1000,
+          "source_train_content_excluded_due_to_test_overlap": 0,
+          "source_train_records": 5000
+        },
+        "4": {
+          "generated_dev_unique_content": 1000,
+          "generated_test_unique_content": 1000,
+          "generated_train_unique_content": 4000,
+          "source_test_records": 1000,
+          "source_train_content_excluded_due_to_test_overlap": 0,
+          "source_train_records": 5000
+        },
+        "5": {
+          "generated_dev_unique_content": 1000,
+          "generated_test_unique_content": 1000,
+          "generated_train_unique_content": 4000,
+          "source_test_records": 1000,
+          "source_train_content_excluded_due_to_test_overlap": 0,
+          "source_train_records": 5000
+        },
+        "6": {
+          "generated_dev_unique_content": 1000,
+          "generated_test_unique_content": 1000,
+          "generated_train_unique_content": 4000,
+          "source_test_records": 1000,
+          "source_train_content_excluded_due_to_test_overlap": 0,
+          "source_train_records": 5000
+        },
+        "7": {
+          "generated_dev_unique_content": 1000,
+          "generated_test_unique_content": 1000,
+          "generated_train_unique_content": 4000,
+          "source_test_records": 1000,
+          "source_train_content_excluded_due_to_test_overlap": 0,
+          "source_train_records": 5000
+        },
+        "8": {
+          "generated_dev_unique_content": 1000,
+          "generated_test_unique_content": 1000,
+          "generated_train_unique_content": 4000,
+          "source_test_records": 1000,
+          "source_train_content_excluded_due_to_test_overlap": 0,
+          "source_train_records": 5000
+        },
+        "9": {
+          "generated_dev_unique_content": 1000,
+          "generated_test_unique_content": 1000,
+          "generated_train_unique_content": 4000,
+          "source_test_records": 1000,
+          "source_train_content_excluded_due_to_test_overlap": 0,
+          "source_train_records": 5000
+        }
+      },
+      "counts_by_split_and_digit": {
+        "dev": {
+          "0": 1000,
+          "1": 1000,
+          "2": 1000,
+          "3": 1000,
+          "4": 1000,
+          "5": 1000,
+          "6": 1000,
+          "7": 1000,
+          "8": 1000,
+          "9": 1000
+        },
+        "test": {
+          "0": 1000,
+          "1": 1000,
+          "2": 1000,
+          "3": 1000,
+          "4": 1000,
+          "5": 1000,
+          "6": 1000,
+          "7": 1000,
+          "8": 1000,
+          "9": 1000
+        },
+        "train": {
+          "0": 4000,
+          "1": 4000,
+          "2": 4000,
+          "3": 4000,
+          "4": 4000,
+          "5": 4000,
+          "6": 4000,
+          "7": 4000,
+          "8": 4000,
+          "9": 4000
+        }
+      },
+      "generated_split_policy": "content_disjoint: source test -> generated test; source train unique content -> deterministic 80/20 generated train/dev; content appearing in source test excluded from train/dev",
+      "generated_split_seed": 527,
+      "image_shape": [
+        3,
+        32,
+        32
+      ],
+      "max_images_per_digit": null,
+      "official_source": "https://www.cs.toronto.edu/~kriz/cifar.html",
+      "source": "torchvision.datasets.CIFAR10",
+      "source_name": "torchvision_cifar10",
+      "split_sizes": {
+        "test": 10000,
+        "train": 50000
+      }
+    },
+    "femnist": {
+      "cache_dir": "/home/arnav22103/FederatedDeepGMM/fedgmm/sp_decentralized_mnist_lr_example/datasets/femnist",
+      "content_disjoint_split_diagnostics": {
+        "0": {
+          "generated_dev_unique_content": 6818,
+          "generated_test_unique_content": 4074,
+          "generated_train_unique_content": 27270,
+          "source_test_records": 4075,
+          "source_train_content_excluded_due_to_test_overlap": 15,
+          "source_train_records": 34180
+        },
+        "1": {
+          "generated_dev_unique_content": 7547,
+          "generated_test_unique_content": 4582,
+          "generated_train_unique_content": 30190,
+          "source_test_records": 4583,
+          "source_train_content_excluded_due_to_test_overlap": 24,
+          "source_train_records": 37855
+        },
+        "2": {
+          "generated_dev_unique_content": 6782,
+          "generated_test_unique_content": 4031,
+          "generated_train_unique_content": 27126,
+          "source_test_records": 4033,
+          "source_train_content_excluded_due_to_test_overlap": 21,
+          "source_train_records": 34001
+        },
+        "3": {
+          "generated_dev_unique_content": 6952,
+          "generated_test_unique_content": 4112,
+          "generated_train_unique_content": 27808,
+          "source_test_records": 4113,
+          "source_train_content_excluded_due_to_test_overlap": 17,
+          "source_train_records": 34874
+        },
+        "4": {
+          "generated_dev_unique_content": 6637,
+          "generated_test_unique_content": 3912,
+          "generated_train_unique_content": 26550,
+          "source_test_records": 3912,
+          "source_train_content_excluded_due_to_test_overlap": 15,
+          "source_train_records": 33280
+        },
+        "5": {
+          "generated_dev_unique_content": 6221,
+          "generated_test_unique_content": 3684,
+          "generated_train_unique_content": 24885,
+          "source_test_records": 3685,
+          "source_train_content_excluded_due_to_test_overlap": 21,
+          "source_train_records": 31204
+        },
+        "6": {
+          "generated_dev_unique_content": 6754,
+          "generated_test_unique_content": 4076,
+          "generated_train_unique_content": 27017,
+          "source_test_records": 4076,
+          "source_train_content_excluded_due_to_test_overlap": 16,
+          "source_train_records": 33865
+        },
+        "7": {
+          "generated_dev_unique_content": 7075,
+          "generated_test_unique_content": 4303,
+          "generated_train_unique_content": 28298,
+          "source_test_records": 4307,
+          "source_train_content_excluded_due_to_test_overlap": 16,
+          "source_train_records": 35475
+        },
+        "8": {
+          "generated_dev_unique_content": 6687,
+          "generated_test_unique_content": 4048,
+          "generated_train_unique_content": 26750,
+          "source_test_records": 4048,
+          "source_train_content_excluded_due_to_test_overlap": 27,
+          "source_train_records": 33542
+        },
+        "9": {
+          "generated_dev_unique_content": 6696,
+          "generated_test_unique_content": 3999,
+          "generated_train_unique_content": 26785,
+          "source_test_records": 4000,
+          "source_train_content_excluded_due_to_test_overlap": 27,
+          "source_train_records": 33597
+        }
+      },
+      "counts_by_split_and_digit": {
+        "dev": {
+          "0": 6818,
+          "1": 7547,
+          "2": 6782,
+          "3": 6952,
+          "4": 6637,
+          "5": 6221,
+          "6": 6754,
+          "7": 7075,
+          "8": 6687,
+          "9": 6696
+        },
+        "test": {
+          "0": 4074,
+          "1": 4582,
+          "2": 4031,
+          "3": 4112,
+          "4": 3912,
+          "5": 3684,
+          "6": 4076,
+          "7": 4303,
+          "8": 4048,
+          "9": 3999
+        },
+        "train": {
+          "0": 27270,
+          "1": 30190,
+          "2": 27126,
+          "3": 27808,
+          "4": 26550,
+          "5": 24885,
+          "6": 27017,
+          "7": 28298,
+          "8": 26750,
+          "9": 26785
+        }
+      },
+      "generated_split_policy": "content_disjoint: source test -> generated test; source train unique content -> deterministic 80/20 generated train/dev; content appearing in source test excluded from train/dev",
+      "generated_split_seed": 527,
+      "image_shape": [
+        1,
+        28,
+        28
+      ],
+      "max_images_per_digit": null,
+      "only_digits": true,
+      "source": "tensorflow_federated.simulation.datasets.emnist.load_data",
+      "source_name": "tff_federated_emnist_only_digits",
+      "split_client_counts": {
+        "test": 3383,
+        "train": 3383
+      }
+    }
+  },
+  "split_sizes": {
+    "dev": 10000,
+    "test": 10000,
+    "train": 20000
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "complete": false,
+  "completed": 33,
+  "expected": 48,
+  "invalid": 0,
+  "invalid_runs": [],
+  "missing": 15,
+  "missing_run_ids": [
+    "tune_cifar10_x_fedgda_d_seed0_lr0p001_wd0p001",
+    "tune_cifar10_x_fedgda_d_seed0_lr0p003_wd0p001",
+    "tune_cifar10_x_fedogda_d_seed0_lr0p001_wd0p001",
+    "tune_cifar10_x_fedogda_d_seed0_lr0p003_wd0p001",
+    "tune_cifar10_xz_fedgda_d_seed0_lr0p001_wd0p001",
+    "tune_cifar10_xz_fedgda_d_seed0_lr0p003_wd0p001",
+    "tune_cifar10_xz_fedogda_d_seed0_lr0p001_wd0p001",
+    "tune_cifar10_xz_fedogda_d_seed0_lr0p003_wd0p001",
+    "tune_cifar10_z_fedgda_d_seed0_lr0p001_wd0p001",
+    "tune_cifar10_z_fedgda_d_seed0_lr0p003_wd0p001",
+    "tune_cifar10_z_fedogda_d_seed0_lr0p001_wd0p001",
+    "tune_cifar10_z_fedogda_d_seed0_lr0p003_wd0p001",
+    "tune_femnist_xz_fedgda_d_seed0_lr0p003_wd0p001",
+    "tune_femnist_xz_fedogda_d_seed0_lr0p001_wd0p001",
+    "tune_femnist_xz_fedogda_d_seed0_lr0p003_wd0p001"
+  ]
+}

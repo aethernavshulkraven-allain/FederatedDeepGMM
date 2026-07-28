@@ -1,0 +1,13 @@
+dataset,function,method,source,mean_test_mse_at_best_validation,comparison_note
+abs,Absolute,gda,centralized_c5_tuned_gda_sgda,0.056168980506173,FedGDA-D original mean=0.0180081; FedOGDA-D original mean=0.0168918
+abs,Absolute,oadam,centralized_c3_full,0.001779514509401,FedGDA-D original mean=0.0180081; FedOGDA-D original mean=0.0168918
+abs,Absolute,sgda,centralized_c5_tuned_gda_sgda,0.0562582413556839,FedGDA-D original mean=0.0180081; FedOGDA-D original mean=0.0168918
+step,Step,gda,centralized_c5_tuned_gda_sgda,0.0321918636318558,FedGDA-D original mean=0.0297296; FedOGDA-D original mean=0.0291688
+step,Step,oadam,centralized_c3_full,0.0172140141734421,FedGDA-D original mean=0.0297296; FedOGDA-D original mean=0.0291688
+step,Step,sgda,centralized_c5_tuned_gda_sgda,0.0319682203688549,FedGDA-D original mean=0.0297296; FedOGDA-D original mean=0.0291688
+linear,Linear,gda,centralized_c5_tuned_gda_sgda,0.0095437627016982,FedGDA-D original mean=0.00422609; FedOGDA-D original mean=0.0028616
+linear,Linear,oadam,centralized_c3_full,0.0007596637352553,FedGDA-D original mean=0.00422609; FedOGDA-D original mean=0.0028616
+linear,Linear,sgda,centralized_c5_tuned_gda_sgda,0.0079972981005886,FedGDA-D original mean=0.00422609; FedOGDA-D original mean=0.0028616
+sin,Sine,gda,centralized_c5_tuned_gda_sgda,0.0871173647426747,FedGDA-D original mean=0.0861523; FedOGDA-D original mean=0.0862134; tuned Sine FedOGDA-D=0.0800115
+sin,Sine,oadam,centralized_c3_full,0.0376761191738272,FedGDA-D original mean=0.0861523; FedOGDA-D original mean=0.0862134; tuned Sine FedOGDA-D=0.0800115
+sin,Sine,sgda,centralized_c5_tuned_gda_sgda,0.0876799502972288,FedGDA-D original mean=0.0861523; FedOGDA-D original mean=0.0862134; tuned Sine FedOGDA-D=0.0800115

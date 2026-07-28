@@ -1,0 +1,23 @@
+dataset,source,method,n,mean_test_mse_at_best_validation,std_test_mse_at_best_validation,mean_best_validation_mse,mean_final_test_mse,notes
+abs,centralized_c3,Centralized GDA,3,0.30520332523258303,0.15831505835783147,0.2965948286286917,0.30520332523258303,Centralized pooled-data baseline; validation-selected checkpoint.
+abs,centralized_c3,Centralized OAdam,3,0.0017795145094010964,0.0008271198204562864,0.0017383386914469748,0.027301972676474825,Centralized pooled-data baseline; validation-selected checkpoint.
+abs,centralized_c3,Centralized SGDA,3,0.3039306732262,0.15657632740311248,0.29541199091989007,0.3039306732262,Centralized pooled-data baseline; validation-selected checkpoint.
+linear,centralized_c3,Centralized GDA,3,0.08439628361658941,0.09640939884691904,0.08211761970371394,0.11489295374442436,Centralized pooled-data baseline; validation-selected checkpoint.
+linear,centralized_c3,Centralized OAdam,3,0.0007596637352553279,0.0006194178043768109,0.0007439620583110646,0.02166447256371619,Centralized pooled-data baseline; validation-selected checkpoint.
+linear,centralized_c3,Centralized SGDA,3,0.08574717921454679,0.09600294830118769,0.08342734315831304,0.11511381091504928,Centralized pooled-data baseline; validation-selected checkpoint.
+sin,centralized_c3,Centralized GDA,3,0.10113594997705458,0.022348426963806737,0.10024292276404831,0.11882869771456081,Centralized pooled-data baseline; validation-selected checkpoint.
+sin,centralized_c3,Centralized OAdam,3,0.03767611917382725,0.0034331735080523453,0.03679573970306755,0.04145794511598001,Centralized pooled-data baseline; validation-selected checkpoint.
+sin,centralized_c3,Centralized SGDA,3,0.10119913616978989,0.021933185433061424,0.10032334272538017,0.11878371875107611,Centralized pooled-data baseline; validation-selected checkpoint.
+step,centralized_c3,Centralized GDA,3,0.058259065152514056,0.038066131894597524,0.05766309265400918,0.0721480196955783,Centralized pooled-data baseline; validation-selected checkpoint.
+step,centralized_c3,Centralized OAdam,3,0.01721401417344212,0.0005727677904835276,0.01697256642272293,0.022301023169819908,Centralized pooled-data baseline; validation-selected checkpoint.
+step,centralized_c3,Centralized SGDA,3,0.058199613391230795,0.03743310254829286,0.05760814992696238,0.07258976924758986,Centralized pooled-data baseline; validation-selected checkpoint.
+abs,federated_original_sweep,FedGDA-D original,9,0.018008147975330253,0.014074316374160067,,,Aggregate over alpha 0.1/0.5/1.0 x seeds 0/1/2; not directly paired to centralized.
+abs,federated_original_sweep,FedOGDA-D original,9,0.01689183376683953,0.013137005967411105,,,Aggregate over alpha 0.1/0.5/1.0 x seeds 0/1/2; not directly paired to centralized.
+linear,federated_original_sweep,FedGDA-D original,9,0.004226089512893182,0.005026156464802362,,,Aggregate over alpha 0.1/0.5/1.0 x seeds 0/1/2; not directly paired to centralized.
+linear,federated_original_sweep,FedOGDA-D original,9,0.0028615976794550114,0.0033898887692543718,,,Aggregate over alpha 0.1/0.5/1.0 x seeds 0/1/2; not directly paired to centralized.
+sin,federated_original_sweep,FedGDA-D original,9,0.08615231668824437,0.003994609228763685,,,Aggregate over alpha 0.1/0.5/1.0 x seeds 0/1/2; not directly paired to centralized.
+sin,federated_original_sweep,FedOGDA-D original,9,0.08621344444851477,0.003954899473142916,,,Aggregate over alpha 0.1/0.5/1.0 x seeds 0/1/2; not directly paired to centralized.
+step,federated_original_sweep,FedGDA-D original,9,0.029729612297582555,0.002740138111452727,,,Aggregate over alpha 0.1/0.5/1.0 x seeds 0/1/2; not directly paired to centralized.
+step,federated_original_sweep,FedOGDA-D original,9,0.029168797675244454,0.002907005057340834,,,Aggregate over alpha 0.1/0.5/1.0 x seeds 0/1/2; not directly paired to centralized.
+sin,tuned_sine_a2_lite_matched_baseline,FedGDA-D matched for tuned Sine,3,0.0861068629066856,0.004618223794624133,,0.08789506957005018,Fully matched alpha=1.0/T=500/R=3 baseline for tuned Sine; label separately.
+sin,tuned_sine_a2_lite,FedOGDA-D tuned Sine,3,0.08001153457404324,0.0046749914923899264,,0.08001153457404324,Validation-locked deterministic Sine tuning result; not merged with original sweep.

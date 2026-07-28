@@ -1,0 +1,108 @@
+{
+  "categorical_covariate_candidates": [
+    "gender",
+    "hospitaladmitsource"
+  ],
+  "client_id_column": "hospitalid",
+  "clients_per_split": {
+    "dev": 179,
+    "test": 179,
+    "train": 179
+  },
+  "cohort_sha256": "9f2418bd66db6840b3f4357d8d99bf0d1203d66637da63edaff72b94f53535a4",
+  "continuous_covariate_candidates": [
+    "age",
+    "admissionweight",
+    "vital_heartrate",
+    "vital_map",
+    "vital_respiration",
+    "vital_sao2",
+    "vital_temperature",
+    "lab_creatinine",
+    "lab_lactate",
+    "lab_wbc",
+    "lab_platelets",
+    "lab_bilirubin",
+    "lab_bicarbonate",
+    "lab_bun",
+    "lab_sodium",
+    "lab_ph"
+  ],
+  "eicu_root": "/home/arnav22103/FederatedDeepGMM/physionet.org/files/eicu-crd-demo/2.0.1",
+  "flow": [
+    {
+      "n_stays": 2520,
+      "step": "all ICU stays"
+    },
+    {
+      "n_stays": 2512,
+      "step": "adults (age >= 18)"
+    },
+    {
+      "n_stays": 2111,
+      "step": "first ICU stay per hospital admission"
+    },
+    {
+      "n_stays": 2111,
+      "step": "valid hospital, stay, and patient identifiers"
+    },
+    {
+      "n_stays": 2111,
+      "step": "valid hospital admission clock time"
+    },
+    {
+      "detail": "excluded 17 cross-hospital patients",
+      "n_stays": 2073,
+      "step": "patient belongs to one hospital client"
+    },
+    {
+      "detail": "179 hospitals; min rows 7; real off-hours and split gates",
+      "n_stays": 2031,
+      "step": "eligible hospital clients before simulation"
+    },
+    {
+      "n_stays": 2031,
+      "step": "final Study A v2 cohort"
+    }
+  ],
+  "frozen_client_list_sha256": "0775402ce7bb44a72649ee8334d055d3e848bf312df590a5d008bbe557d6e0f6",
+  "identifier_columns_excluded_from_model": [
+    "patientunitstayid",
+    "patienthealthsystemstayid",
+    "uniquepid",
+    "hospitalid",
+    "wardid"
+  ],
+  "instrument": {
+    "definition": "outside [07:00, 19:00)",
+    "name": "off_hours_admission",
+    "source_column": "hospitaladmittime24",
+    "weekend_instrument_included": false,
+    "weekend_reason": "eICU patient table has no reliable admission date or weekday"
+  },
+  "is_demo": true,
+  "min_client_rows": 7,
+  "n_clients": 179,
+  "n_rows": 2031,
+  "n_unique_hospitalid": 179,
+  "off_hours_rate": 0.5499753815854259,
+  "protocol_version": "eicu_study_a_v2_offhours",
+  "scenario_scope": "demo",
+  "split_fractions": {
+    "dev": 0.15,
+    "test": 0.15,
+    "train": 0.7
+  },
+  "split_group_columns": [
+    "uniquepid",
+    "patienthealthsystemstayid"
+  ],
+  "split_seed": 20260727,
+  "split_sizes": {
+    "dev": 306,
+    "test": 305,
+    "train": 1420
+  },
+  "study_label": "Study A v2",
+  "wardid_used_as_client": false
+}

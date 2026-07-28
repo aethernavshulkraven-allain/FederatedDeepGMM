@@ -3,13 +3,15 @@ import torch
 import torch.nn as nn
 from game_objectives.approximate_psi_objective import max_approx_psi_eval
 from model_selection.learning_eval import f_history_g_eval
+from experiment_utils import format_no_valid_model_selection_error
 
 
 class FHistoryModelSelectionV3(object):
     def __init__(self, g_model_list, f_model_list, learning_args_list,
                  default_g_optimizer_factory, default_f_optimizer_factory,
                  g_simple_model_eval, f_simple_model_eval, learning_eval,
-                 psi_eval_max_no_progress, psi_eval_burn_in):
+                 psi_eval_max_no_progress, psi_eval_burn_in,
+                 failure_context=None):
         self.g_model_list = g_model_list
         self.f_model_list = f_model_list
         self.learning_args_list = learning_args_list
@@ -23,6 +25,7 @@ class FHistoryModelSelectionV3(object):
 
         self.psi_eval_max_no_progress = psi_eval_max_no_progress
         self.psi_eval_burn_in = psi_eval_burn_in
+        self.failure_context = dict(failure_context or {})
 
     def do_model_selection(self, x_train, z_train, y_train,
                            x_dev, z_dev, y_dev, verbose=False):
@@ -75,6 +78,11 @@ class FHistoryModelSelectionV3(object):
                 best_f_model = f
                 best_learning_args = learning_args
                 best_e_dev_tilde = current_e_dev_tilde
+
+        if best_g_model is None or best_f_model is None or best_learning_args is None:
+            context = dict(self.failure_context)
+            context["best_score"] = max_learning_eval
+            raise RuntimeError(format_no_valid_model_selection_error(context))
 
         best_g_model.initialize()
         best_f_model.initialize()

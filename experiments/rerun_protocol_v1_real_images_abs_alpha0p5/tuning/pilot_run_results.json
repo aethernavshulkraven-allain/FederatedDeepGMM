@@ -1,0 +1,8 @@
+[
+  {
+    "returncode": 120,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning/femnist_x/fedgda_d/seed_0/tune_femnist_x_fedgda_d_seed0_lr0p001_wd0p001",
+    "run_id": "tune_femnist_x_fedgda_d_seed0_lr0p001_wd0p001",
+    "status": "failed_process"
+  }
+]

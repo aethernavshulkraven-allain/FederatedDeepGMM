@@ -1,0 +1,55 @@
+{
+  "alphas": [
+    0.1,
+    0.5,
+    1.0
+  ],
+  "by_alpha": {
+    "alpha0p1": {
+      "final": 120,
+      "final_output_root": "results/rerun_protocol_v1_real_images_abs_alpha0p1",
+      "tuning": 48,
+      "tuning_deterministic": 24,
+      "tuning_output_root": "results/rerun_protocol_v1_real_images_abs_alpha0p1_tuning",
+      "tuning_stochastic": 24
+    },
+    "alpha0p5": {
+      "final": 120,
+      "final_output_root": "results/rerun_protocol_v1_real_images_abs_alpha0p5",
+      "tuning": 48,
+      "tuning_deterministic": 24,
+      "tuning_output_root": "results/rerun_protocol_v1_real_images_abs_alpha0p5_tuning",
+      "tuning_stochastic": 24
+    },
+    "alpha1": {
+      "final": 120,
+      "final_output_root": "results/rerun_protocol_v1_real_images_abs_alpha1",
+      "tuning": 48,
+      "tuning_deterministic": 24,
+      "tuning_output_root": "results/rerun_protocol_v1_real_images_abs_alpha1_tuning",
+      "tuning_stochastic": 24
+    }
+  },
+  "centralized_final_runs_planned": 90,
+  "deterministic_final_rounds": 500,
+  "effective_tuning_dimensions": [
+    "learning_rate"
+  ],
+  "federated_final_runs": 360,
+  "federated_tuning_runs": 144,
+  "g_function": "abs",
+  "protocol": "highdim_coauthor_protocol_v1",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "selection": "validation_only",
+  "stochastic_final_rounds": 1500,
+  "test_mse_used_for_selection": false,
+  "tuning_rounds": 150,
+  "tuning_seed": 0,
+  "weight_decay_policy": "fixed compatibility field; not connected to federated G/F optimizers"
+}

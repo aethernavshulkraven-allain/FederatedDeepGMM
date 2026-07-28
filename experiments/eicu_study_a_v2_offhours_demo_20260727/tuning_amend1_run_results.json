@@ -1,0 +1,578 @@
+[
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.31367049343601383,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm4p0_slr1p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm4p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.31367049343601383
+  },
+  {
+    "best_validation_round": 2718,
+    "final_test_mse": 0.4886101026033803,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm8p0_slr1p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm8p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3409898788104654
+  },
+  {
+    "best_validation_round": 2548,
+    "final_test_mse": 0.49714626895005026,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm4p0_slr2p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm4p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2907002206205681
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.2711476260087744,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2711476260087744
+  },
+  {
+    "best_validation_round": 3505,
+    "final_test_mse": 0.33860598696753585,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm4p0_slr1p5",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm4p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.29144393978273425
+  },
+  {
+    "best_validation_round": 1808,
+    "final_test_mse": 0.5328615196360699,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm8p0_slr1p5",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm8p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3191059401806611
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.39351625208937685,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.39351625208937685
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.32671860248808204,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm1p0_slr2p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm1p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.32671860248808204
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.3004503982652328,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm2p0_slr2p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm2p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3004503982652328
+  },
+  {
+    "best_validation_round": 3955,
+    "final_test_mse": 0.48733950624715655,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.49176141924367317
+  },
+  {
+    "best_validation_round": 1301,
+    "final_test_mse": 0.5467445483998598,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm8p0_slr2p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm8p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3231645125420833
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.3066360403532687,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_linear_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_linear_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3066360403532687
+  },
+  {
+    "best_validation_round": 3422,
+    "final_test_mse": 0.41276306317566325,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm4p0_slr1p5",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm4p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3869913639011094
+  },
+  {
+    "best_validation_round": 3565,
+    "final_test_mse": 0.43244074721238185,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm2p0_slr2p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm2p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.49052987450006497
+  },
+  {
+    "best_validation_round": 301,
+    "final_test_mse": 0.7173828488405937,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm8p0_slr1p5",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm8p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5794611293607155
+  },
+  {
+    "best_validation_round": 2836,
+    "final_test_mse": 0.5714790718860107,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm4p0_slr2p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm4p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3927327695403224
+  },
+  {
+    "best_validation_round": 3219,
+    "final_test_mse": 0.5505036809332597,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5859922639612624
+  },
+  {
+    "best_validation_round": 3998,
+    "final_test_mse": 0.48506194350502313,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.4850790085415618
+  },
+  {
+    "best_validation_round": 449,
+    "final_test_mse": 0.526371825403743,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm8p0_slr1p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm8p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5884655159571889
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.46810716809189806,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm1p0_slr2p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm1p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.46810716809189806
+  },
+  {
+    "best_validation_round": 3700,
+    "final_test_mse": 0.47833266100626587,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.4704877280141007
+  },
+  {
+    "best_validation_round": 3424,
+    "final_test_mse": 0.5288552975031039,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5302648698093851
+  },
+  {
+    "best_validation_round": 225,
+    "final_test_mse": 0.8108544640797629,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm8p0_slr2p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm8p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5823376601923844
+  },
+  {
+    "best_validation_round": 3929,
+    "final_test_mse": 0.4667978603156031,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_linear_fedogda_s_tuning_01_lrm4p0_slr1p0",
+    "run_id": "tuning_linear_fedogda_s_tuning_01_lrm4p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.4689793673439552
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.8536326266814319,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8536326266814319
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.7531505513425677,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.7531505513425677
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.7616992071853496,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm1p0_slr2p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm1p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.7616992071853496
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.7805897127724015,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.7805897127724015
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.7492687076772864,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.7492687076772864
+  },
+  {
+    "best_validation_round": 2504,
+    "final_test_mse": 0.7072899242272638,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm8p0_slr1p5",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm8p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.6389033182610356
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.574609585613363,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm4p0_slr1p5",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm4p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.574609585613363
+  },
+  {
+    "best_validation_round": 1833,
+    "final_test_mse": 0.7396140855885119,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm8p0_slr2p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm8p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.5822179857761295
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.613865054447966,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm4p0_slr1p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm4p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.613865054447966
+  },
+  {
+    "best_validation_round": 3159,
+    "final_test_mse": 0.6483257172107864,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm8p0_slr1p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm8p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.6021219717672684
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.6703492809988385,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr2p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm2p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.6703492809988385
+  },
+  {
+    "best_validation_round": 3760,
+    "final_test_mse": 0.6979545208539837,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_interaction_fedgda_s_tuning_01_lrm4p0_slr2p0",
+    "run_id": "tuning_interaction_fedgda_s_tuning_01_lrm4p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.6542138839776248
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.8640075886816759,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8640075886816759
+  },
+  {
+    "best_validation_round": 3999,
+    "final_test_mse": 0.8821269520429352,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8821269520429352
+  },
+  {
+    "best_validation_round": 2922,
+    "final_test_mse": 1.122162517619995,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm4p0_slr2p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm4p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.9321400616579073
+  },
+  {
+    "best_validation_round": 2174,
+    "final_test_mse": 1.077527235093689,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm8p0_slr1p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm8p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8496010501576656
+  },
+  {
+    "best_validation_round": 3917,
+    "final_test_mse": 0.9515969638074869,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm1p0_slr2p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm1p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.94048129523888
+  },
+  {
+    "best_validation_round": 1602,
+    "final_test_mse": 1.0002096406663072,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm8p0_slr2p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm8p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8885405707502293
+  },
+  {
+    "best_validation_round": 3489,
+    "final_test_mse": 1.014414993092227,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr2p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.9545974031768436
+  },
+  {
+    "best_validation_round": 3998,
+    "final_test_mse": 1.066665834965131,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 1.0662406967589617
+  },
+  {
+    "best_validation_round": 3875,
+    "final_test_mse": 0.9601247143662373,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.9384980694290581
+  },
+  {
+    "best_validation_round": 2735,
+    "final_test_mse": 1.0537137396408784,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm4p0_slr1p5",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm4p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 1.0155997411960076
+  },
+  {
+    "best_validation_round": 3627,
+    "final_test_mse": 0.9653521645496075,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm4p0_slr1p0",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm4p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 1.0375739226043872
+  },
+  {
+    "best_validation_round": 1595,
+    "final_test_mse": 1.063358999898943,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_interaction_fedogda_s_tuning_01_lrm8p0_slr1p5",
+    "run_id": "tuning_interaction_fedogda_s_tuning_01_lrm8p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.8458192332894248
+  },
+  {
+    "best_validation_round": 1804,
+    "final_test_mse": 0.175531706204115,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.21412079037309437
+  },
+  {
+    "best_validation_round": 1811,
+    "final_test_mse": 0.1771994475316452,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm1p0_slr2p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm1p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.21053171693155098
+  },
+  {
+    "best_validation_round": 2408,
+    "final_test_mse": 0.17868221114334795,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.210798755954914
+  },
+  {
+    "best_validation_round": 1184,
+    "final_test_mse": 0.2153634126987842,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.21562959476855068
+  },
+  {
+    "best_validation_round": 886,
+    "final_test_mse": 0.3124470329593415,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr2p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm2p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2161111625333584
+  },
+  {
+    "best_validation_round": 3585,
+    "final_test_mse": 0.1995417836976163,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.21181351812820126
+  },
+  {
+    "best_validation_round": 1028,
+    "final_test_mse": 0.29061174405974805,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm4p0_slr1p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm4p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2029009086772581
+  },
+  {
+    "best_validation_round": 513,
+    "final_test_mse": 0.40885564343780345,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm4p0_slr2p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm4p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.20295763565811256
+  },
+  {
+    "best_validation_round": 507,
+    "final_test_mse": 0.41283349932683,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm8p0_slr1p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm8p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.21005313051229518
+  },
+  {
+    "best_validation_round": 682,
+    "final_test_mse": 0.4198028624267708,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm4p0_slr1p5",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm4p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.203838439468824
+  },
+  {
+    "best_validation_round": 348,
+    "final_test_mse": 0.6003740633574876,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm8p0_slr1p5",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm8p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.20943763611088306
+  },
+  {
+    "best_validation_round": 260,
+    "final_test_mse": 0.7358350042289417,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedgda_s/seed_1011/tuning_mlp_fedgda_s_tuning_01_lrm8p0_slr2p0",
+    "run_id": "tuning_mlp_fedgda_s_tuning_01_lrm8p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2084568226187949
+  },
+  {
+    "best_validation_round": 1934,
+    "final_test_mse": 0.21787674487577938,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm1p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.29980148034458526
+  },
+  {
+    "best_validation_round": 2897,
+    "final_test_mse": 0.2669383543632988,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm1p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3008196234557403
+  },
+  {
+    "best_validation_round": 1452,
+    "final_test_mse": 0.27602624691839733,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm1p0_slr2p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm1p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.299792476903127
+  },
+  {
+    "best_validation_round": 979,
+    "final_test_mse": 0.3342938453794642,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.30625753510510195
+  },
+  {
+    "best_validation_round": 738,
+    "final_test_mse": 0.433372087798467,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr2p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.306756940281511
+  },
+  {
+    "best_validation_round": 755,
+    "final_test_mse": 0.3667846751249426,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm4p0_slr1p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm4p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3015151652198036
+  },
+  {
+    "best_validation_round": 1461,
+    "final_test_mse": 0.27638296551819236,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm2p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.30709930374423294
+  },
+  {
+    "best_validation_round": 497,
+    "final_test_mse": 0.5427234434991749,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm4p0_slr1p5",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm4p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.30100432690746926
+  },
+  {
+    "best_validation_round": 429,
+    "final_test_mse": 0.6263515791727562,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm8p0_slr1p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm8p0_slr1p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3094284931835274
+  },
+  {
+    "best_validation_round": 275,
+    "final_test_mse": 0.7052240765101229,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm8p0_slr1p5",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm8p0_slr1p5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3181403098115682
+  },
+  {
+    "best_validation_round": 380,
+    "final_test_mse": 0.6370324159991938,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm4p0_slr2p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm4p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.3038241204714467
+  },
+  {
+    "best_validation_round": 203,
+    "final_test_mse": 0.7179689900460005,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/eicu_study_a_v2_offhours_demo_amend1/eicu_semisynth_offhours_v2_demo/fedogda_s/seed_1011/tuning_mlp_fedogda_s_tuning_01_lrm8p0_slr2p0",
+    "run_id": "tuning_mlp_fedogda_s_tuning_01_lrm8p0_slr2p0",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.31751001945846635
+  }
+]

@@ -886,6 +886,8 @@ class FedAvgAPI(object):
             time.perf_counter() - training_profile_wall,
             process_cpu_seconds=time.process_time() - training_profile_cpu,
         )
+        if self.batching_summary_rows:
+            write_batching_summary(self.run_dir, self.batching_summary_rows)
         # plot relationship between MSE and eval
         # if self.args.video_plotter:
         #     plt.figure()
@@ -1221,7 +1223,11 @@ class FedAvgAPI(object):
                     f"sample_count={sample_count}, configured_batch_size={batch_size}, "
                     f"num_batches={num_batches}"
                 )
-        write_batching_summary(self.run_dir, self.batching_summary_rows)
+        # The file is written once after the round loop, not here. Rewriting the
+        # whole accumulated list every round is quadratic in comm_round: the list
+        # grows by client_num_per_round entries per round, so a 2000-round run
+        # serialized ~358M rows to produce a 64MB artifact. The guard above still
+        # flushes on failure, so a violating run keeps its forensic record.
 
     def _record_aggregation_weights(self, round_idx, client_indexes, w_locals):
         """Persist the resolved aggregation mode and the actual per-client

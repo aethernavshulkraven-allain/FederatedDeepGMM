@@ -1,0 +1,1406 @@
+diff --git a/experiments/abs_smoke_manifest.json b/experiments/abs_smoke_manifest.json
+new file mode 100644
+index 0000000..43c1c90
+--- /dev/null
++++ b/experiments/abs_smoke_manifest.json
+@@ -0,0 +1,50 @@
++{
++  "base": {
++    "dataset": "abs",
++    "model": "lr",
++    "federated_optimizer": "FedAvg",
++    "client_id_list": "[]",
++    "client_num_in_total": 1000,
++    "client_num_per_round": 2,
++    "comm_round": 3,
++    "epochs": 2,
++    "frequency_of_the_test": 1,
++    "random_seed": 0,
++    "partition_method": "hetero",
++    "partition_alpha": 0.5,
++    "data_cache_dir": "data",
++    "learning_rate": 0.001,
++    "weight_decay": 0.1,
++    "critic_multiplier": 10.0,
++    "server_learning_rate": 1.5,
++    "gradient_clip_norm": 1.0,
++    "run_id": "smoke",
++    "output_dir": "results",
++    "using_gpu": false,
++    "gpu_id": 0,
++    "enable_legacy_outputs": false,
++    "overwrite": false
++  },
++  "variants": [
++    {
++      "variant": "fedgda_d",
++      "client_optimizer": "sgd",
++      "batch_size": 0
++    },
++    {
++      "variant": "fedgda_s",
++      "client_optimizer": "sgd",
++      "batch_size": 256
++    },
++    {
++      "variant": "fedogda_d",
++      "client_optimizer": "ogda",
++      "batch_size": 0
++    },
++    {
++      "variant": "fedogda_s",
++      "client_optimizer": "ogda",
++      "batch_size": 256
++    }
++  ]
++}
+diff --git a/fedgmm/sp_decentralized_mnist_lr_example/experiment_utils.py b/fedgmm/sp_decentralized_mnist_lr_example/experiment_utils.py
+new file mode 100644
+index 0000000..5e3e931
+--- /dev/null
++++ b/fedgmm/sp_decentralized_mnist_lr_example/experiment_utils.py
+@@ -0,0 +1,383 @@
++import csv
++import json
++import math
++import os
++import random
++import shutil
++import time
++from contextlib import nullcontext
++
++
++ZOO_DATASETS = {"linear", "abs", "sin", "step", "zoo"}
++PREDICTION_OUTPUT_KEYS = ("best_validation_prediction", "final_prediction")
++RUN_ARTIFACT_NAMES = {
++    "effective_config.json",
++    "mse_by_round.csv",
++    "metrics.json",
++    "predictions.npz",
++}
++EFFECTIVE_CONFIG_FIELDS = (
++    "dataset",
++    "algorithm",
++    "variant",
++    "mode",
++    "model",
++    "federated_optimizer",
++    "client_optimizer",
++    "learning_rate",
++    "g_learning_rate",
++    "critic_multiplier",
++    "f_learning_rate",
++    "server_learning_rate",
++    "gradient_clip_norm",
++    "weight_decay",
++    "batch_size",
++    "epochs",
++    "local_epochs",
++    "comm_round",
++    "client_num_in_total",
++    "client_num_per_round",
++    "partition_method",
++    "partition_alpha",
++    "data_cache_dir",
++    "random_seed",
++    "run_id",
++    "output_dir",
++    "using_gpu",
++    "gpu_id",
++    "frequency_of_the_test",
++    "eval_freq",
++    "print_freq",
++    "enable_legacy_outputs",
++    "enable_legacy_plot",
++    "overwrite",
++)
++
++
++def default_critic_multiplier(dataset):
++    multiplier = 20.0
++    if dataset in ZOO_DATASETS:
++        multiplier = 10.0
++    if dataset in {
++        "mnist_z",
++        "femnist_z",
++        "mnist_xz",
++        "femnist_xz",
++        "cifar10_z",
++        "cifar10_xz",
++        "cifar_xz",
++    }:
++        multiplier = 5.0
++    elif dataset in {"mnist_x", "femnist_x", "cifar10_x", "cifar_x"}:
++        multiplier = 3.0
++    return multiplier
++
++
++def get_effective_config(args):
++    dataset = getattr(args, "dataset", "unknown")
++    client_optimizer = getattr(args, "client_optimizer", "sgd")
++    optimizer_name = str(client_optimizer).lower()
++    algorithm = "fedogda" if optimizer_name == "ogda" else "fedgda"
++    batch_size = getattr(args, "batch_size", 0)
++    mode = "d" if batch_size is None or int(batch_size) <= 0 else "s"
++    seed = int(getattr(args, "random_seed", 0))
++    run_id = str(getattr(args, "run_id", "0"))
++    output_dir = getattr(args, "output_dir", "results")
++    variant = f"{algorithm}_{mode}"
++    critic_multiplier = float(
++        getattr(args, "critic_multiplier", default_critic_multiplier(dataset))
++    )
++    server_learning_rate = float(getattr(args, "server_learning_rate", 1.5))
++
++    learning_rate = float(getattr(args, "learning_rate", 0.0))
++    return json_safe({
++        "dataset": dataset,
++        "algorithm": algorithm,
++        "variant": variant,
++        "mode": "deterministic" if mode == "d" else "stochastic",
++        "model": getattr(args, "model", ""),
++        "federated_optimizer": getattr(args, "federated_optimizer", ""),
++        "client_optimizer": client_optimizer,
++        "learning_rate": learning_rate,
++        "batch_size": batch_size,
++        "epochs": int(getattr(args, "epochs", 0)),
++        "local_epochs": int(getattr(args, "epochs", 0)),
++        "comm_round": int(getattr(args, "comm_round", 0)),
++        "client_num_in_total": int(getattr(args, "client_num_in_total", 0)),
++        "client_num_per_round": int(getattr(args, "client_num_per_round", 0)),
++        "frequency_of_the_test": int(getattr(args, "frequency_of_the_test", 1)),
++        "eval_freq": int(getattr(args, "eval_freq", 1)),
++        "print_freq": int(getattr(args, "print_freq", 1)),
++        "g_learning_rate": learning_rate,
++        "critic_multiplier": critic_multiplier,
++        "f_learning_rate": critic_multiplier * learning_rate,
++        "server_learning_rate": server_learning_rate,
++        "random_seed": seed,
++        "run_id": run_id,
++        "output_dir": output_dir,
++        "partition_method": getattr(args, "partition_method", ""),
++        "partition_alpha": float(getattr(args, "partition_alpha", 0.0)),
++        "data_cache_dir": getattr(args, "data_cache_dir", ""),
++        "weight_decay": float(getattr(args, "weight_decay", 0.0)),
++        "gradient_clip_norm": float(getattr(args, "gradient_clip_norm", 1.0)),
++        "using_gpu": bool(getattr(args, "using_gpu", False)),
++        "gpu_id": int(getattr(args, "gpu_id", 0)),
++        "enable_legacy_outputs": bool(getattr(args, "enable_legacy_outputs", True)),
++        "enable_legacy_plot": bool(getattr(args, "enable_legacy_plot", False)),
++        "overwrite": bool(getattr(args, "overwrite", False)),
++    })
++
++
++def build_run_dir(output_dir, dataset, variant, seed, run_id):
++    return os.path.join(str(output_dir), str(dataset), str(variant), f"seed_{int(seed)}", str(run_id))
++
++
++def run_dir_from_config(config):
++    return build_run_dir(
++        config["output_dir"],
++        config["dataset"],
++        config["variant"],
++        config["random_seed"],
++        config["run_id"],
++    )
++
++
++def ensure_run_dirs(run_dir):
++    os.makedirs(os.path.join(run_dir, "checkpoints"), exist_ok=True)
++
++
++def exact_sample_count(indices_or_subset):
++    return int(len(indices_or_subset))
++
++
++def client_indices_for_round(random_seed, round_idx, client_num_in_total, client_num_per_round):
++    if client_num_in_total == client_num_per_round:
++        return list(range(client_num_in_total))
++    num_clients = min(client_num_per_round, client_num_in_total)
++    rng = random.Random(f"{int(random_seed)}:{int(round_idx)}")
++    return rng.sample(range(client_num_in_total), num_clients)
++
++
++def has_run_artifacts(run_dir):
++    if not os.path.isdir(run_dir):
++        return False
++    for artifact_name in RUN_ARTIFACT_NAMES:
++        if os.path.exists(os.path.join(run_dir, artifact_name)):
++            return True
++    checkpoint_dir = os.path.join(run_dir, "checkpoints")
++    return os.path.isdir(checkpoint_dir) and bool(os.listdir(checkpoint_dir))
++
++
++def prepare_run_dir(run_dir, overwrite=False, dry_run=False):
++    if dry_run:
++        return
++    if has_run_artifacts(run_dir):
++        if not overwrite:
++            raise FileExistsError(
++                f"Run directory already contains artifacts: {run_dir}. "
++                "Use --overwrite or set overwrite: true to replace it."
++            )
++        shutil.rmtree(run_dir)
++
++
++def _flatten_numbers(value):
++    if value is None:
++        return []
++    for method_name in ("detach", "cpu"):
++        method = getattr(value, method_name, None)
++        if callable(method):
++            value = method()
++    reshape = getattr(value, "reshape", None)
++    if callable(reshape):
++        try:
++            value = reshape(-1)
++        except TypeError:
++            pass
++    tolist = getattr(value, "tolist", None)
++    if callable(tolist):
++        value = tolist()
++    if isinstance(value, (int, float)):
++        return [float(value)]
++    if isinstance(value, (list, tuple)):
++        out = []
++        for item in value:
++            out.extend(_flatten_numbers(item))
++        return out
++    return [float(value)]
++
++
++def json_safe(value):
++    if value is None or isinstance(value, (str, bool, int, float)):
++        return value
++    item = getattr(value, "item", None)
++    if callable(item):
++        return json_safe(item())
++    if isinstance(value, dict):
++        return {str(key): json_safe(item_value) for key, item_value in value.items()}
++    if isinstance(value, (list, tuple)):
++        return [json_safe(item_value) for item_value in value]
++    return str(value)
++
++
++def structural_mse_from_predictions(prediction, true_g):
++    pred_values = _flatten_numbers(prediction)
++    true_values = _flatten_numbers(true_g)
++    if len(pred_values) != len(true_values):
++        raise ValueError(
++            f"Prediction/target length mismatch: {len(pred_values)} != {len(true_values)}"
++        )
++    if not pred_values:
++        raise ValueError("Cannot compute structural MSE on an empty split")
++    total = 0.0
++    for pred, true in zip(pred_values, true_values):
++        total += (pred - true) ** 2
++    return total / len(pred_values)
++
++
++def structural_mse(model, split):
++    if not hasattr(split, "x") or not hasattr(split, "g"):
++        raise ValueError("Split must expose x and ground-truth structural g")
++    was_training = getattr(model, "training", None)
++    eval_method = getattr(model, "eval", None)
++    train_method = getattr(model, "train", None)
++    if callable(eval_method):
++        eval_method()
++    try:
++        import torch
++        no_grad = torch.no_grad()
++    except Exception:
++        no_grad = nullcontext()
++    with no_grad:
++        prediction = model(split.x)
++    if callable(train_method) and was_training:
++        train_method()
++    return structural_mse_from_predictions(prediction, split.g)
++
++
++def predictions_for_split(model, split):
++    if not hasattr(split, "x") or not hasattr(split, "g"):
++        raise ValueError("Split must expose x and ground-truth structural g")
++    was_training = getattr(model, "training", None)
++    eval_method = getattr(model, "eval", None)
++    train_method = getattr(model, "train", None)
++    if callable(eval_method):
++        eval_method()
++    try:
++        import torch
++        no_grad = torch.no_grad()
++    except Exception:
++        no_grad = nullcontext()
++    with no_grad:
++        prediction = model(split.x)
++    if callable(train_method) and was_training:
++        train_method()
++    return prediction
++
++
++def state_is_finite(state_dict):
++    for value in state_dict.values():
++        for number in _flatten_numbers(value):
++            if not math.isfinite(number):
++                return False
++    return True
++
++
++def write_effective_config(run_dir, config):
++    ensure_run_dirs(run_dir)
++    path = os.path.join(run_dir, "effective_config.json")
++    with open(path, "w") as f:
++        json.dump(json_safe(config), f, indent=2, sort_keys=True)
++        f.write("\n")
++    return path
++
++
++def write_mse_by_round(run_dir, rows):
++    path = os.path.join(run_dir, "mse_by_round.csv")
++    fieldnames = [
++        "round",
++        "train_mse",
++        "val_mse",
++        "gmm_train_objective",
++        "gmm_val_objective",
++        "gmm_eval",
++        "finite",
++        "diverged",
++    ]
++    with open(path, "w", newline="") as f:
++        writer = csv.DictWriter(f, fieldnames=fieldnames)
++        writer.writeheader()
++        for row in rows:
++            writer.writerow({key: row.get(key, "") for key in fieldnames})
++    return path
++
++
++def write_metrics(run_dir, metrics):
++    path = os.path.join(run_dir, "metrics.json")
++    with open(path, "w") as f:
++        json.dump(json_safe(metrics), f, indent=2, sort_keys=True)
++        f.write("\n")
++    return path
++
++
++def _to_numpy(value):
++    import numpy as np
++
++    for method_name in ("detach", "cpu"):
++        method = getattr(value, method_name, None)
++        if callable(method):
++            value = method()
++    numpy_method = getattr(value, "numpy", None)
++    if callable(numpy_method):
++        return numpy_method()
++    return np.asarray(value)
++
++
++def save_predictions_npz(
++    run_dir,
++    test_split,
++    best_prediction,
++    final_prediction,
++    metadata,
++):
++    import numpy as np
++
++    x = _to_numpy(test_split.x)
++    true_g = _to_numpy(test_split.g)
++    best_pred = _to_numpy(best_prediction)
++    final_pred = _to_numpy(final_prediction)
++    indices = np.argsort(x, axis=0).flatten()
++    path = os.path.join(run_dir, "predictions.npz")
++    np.savez(
++        path,
++        x=x[indices],
++        true_g=true_g[indices],
++        **{
++            PREDICTION_OUTPUT_KEYS[0]: best_pred[indices],
++            PREDICTION_OUTPUT_KEYS[1]: final_pred[indices],
++        },
++        algorithm=np.asarray(str(metadata.get("algorithm", ""))),
++        variant=np.asarray(str(metadata.get("variant", ""))),
++        seed=np.asarray(int(metadata.get("random_seed", 0))),
++        run_id=np.asarray(str(metadata.get("run_id", ""))),
++    )
++    return path
++
++
++def now_seconds():
++    return time.time()
++
++
++def expand_smoke_manifest(manifest):
++    base = dict(manifest.get("base", {}))
++    variants = manifest.get("variants", [])
++    expanded = []
++    for variant in variants:
++        item = dict(base)
++        item.update(variant)
++        optimizer = item.get("client_optimizer", "sgd")
++        batch_size = int(item.get("batch_size", 0))
++        algorithm = "fedogda" if str(optimizer).lower() == "ogda" else "fedgda"
++        suffix = "d" if batch_size <= 0 else "s"
++        item["variant"] = variant.get("variant", f"{algorithm}_{suffix}")
++        expanded.append(item)
++    return expanded
+diff --git a/fedgmm/sp_decentralized_mnist_lr_example/fedml/data/MNIST/data_loader.py b/fedgmm/sp_decentralized_mnist_lr_example/fedml/data/MNIST/data_loader.py
+index 950bc78..3b23fb3 100755
+--- a/fedgmm/sp_decentralized_mnist_lr_example/fedml/data/MNIST/data_loader.py
++++ b/fedgmm/sp_decentralized_mnist_lr_example/fedml/data/MNIST/data_loader.py
+@@ -10,6 +10,7 @@ import logging
+ from scenarios.abstract_scenario import AbstractScenario
+ import torch
+ from torch.utils.data import DataLoader, TensorDataset, Subset
++from experiment_utils import exact_sample_count
+ 
+ cwd = os.getcwd()
+ 
+@@ -71,6 +72,7 @@ def load_data(args, train, test, dev):
+         subset_indices = indices_train[start:end]
+         # train_data_local_dict[i] = DataLoader(Subset(train_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
+         train_data_local_dict[i] = DataLoader(Subset(train_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
++        train_data_local_num_dict[i] = exact_sample_count(subset_indices)
+ 
+         start = end
+ 
+@@ -80,6 +82,7 @@ def load_data(args, train, test, dev):
+         subset_indices = indices_test[start:end]
+         # test_data_local_dict[i] = DataLoader(Subset(test_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
+         test_data_local_dict[i] = DataLoader(Subset(test_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
++        test_data_local_num_dict[i] = exact_sample_count(subset_indices)
+ 
+         start = end
+ 
+@@ -89,6 +92,7 @@ def load_data(args, train, test, dev):
+         subset_indices = indices_dev[start:end]
+         # val_data_local_dict[i] = DataLoader(Subset(dev_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
+         val_data_local_dict[i] = DataLoader(Subset(dev_dataset, subset_indices), batch_size=args.batch_size, shuffle=True)
++        val_data_local_num_dict[i] = exact_sample_count(subset_indices)
+ 
+         start = end
+     # Distributing the batches among clients
+@@ -128,12 +132,6 @@ def load_data(args, train, test, dev):
+ #         val_data_local_dict[i].append(all_dev_batches[idx])
+ 
+ 
+-#     # Calculating the number of samples for each client
+-    for user in clients_num:
+-        train_data_local_num_dict[user] = len(train_data_local_dict[user]) * args.batch_size
+-        test_data_local_num_dict[user] = len(test_data_local_dict[user]) * args.batch_size
+-        val_data_local_num_dict[user] = len(val_data_local_dict[user]) * args.batch_size
+-
+     return (
+         train_data_local_dict,
+         test_data_local_dict,
+@@ -302,8 +300,8 @@ def load_partition_data_mnist(
+     scenario = AbstractScenario(filename=path) 
+     scenario.info()
+     scenario.to_tensor()
+-    if torch.cuda.is_available():
+-        scenario.to_cuda()
++    # Keep scenario tensors on CPU during loading.
++    # The runtime layer moves tensors to FedML's resolved device.
+ 
+     train = scenario.get_dataset("train")
+     dev = scenario.get_dataset("dev")
+@@ -332,4 +330,4 @@ def load_partition_data_mnist(
+         val_data_local_dict,
+         # None,
+         class_num,
+-    )
+\ No newline at end of file
++    )
+diff --git a/fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/my_model_trainer_classification.py b/fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/my_model_trainer_classification.py
+index 4a622b1..3caf3fe 100644
+--- a/fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/my_model_trainer_classification.py
++++ b/fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/my_model_trainer_classification.py
+@@ -362,6 +362,7 @@ class ModelTrainerCLS(ClientTrainer):
+     def train_gmm(self, client_data, device, args):
+         g = self.g
+         f = self.f
++        gradient_clip_norm = float(getattr(args, "gradient_clip_norm", 1.0))
+         
+         # Clear optimizer states because the model weights were just updated with global weights!
+         # This is critical for stateful optimizers like OGDA, otherwise prev_grad is stale.
+@@ -380,9 +381,9 @@ class ModelTrainerCLS(ClientTrainer):
+     # loop through training data
+         for epoch in range(args.epochs):
+             for batch in client_data:
+-                x_batch = batch[2]
+-                y_batch = batch[3]
+-                z_batch = batch[4]
++                x_batch = batch[2].to(device)
++                y_batch = batch[3].to(device)
++                z_batch = batch[4].to(device)
+                 g_obj, f_obj = self.game_objective.calc_objective(
+                    g,f, x_batch, z_batch, y_batch)
+                 # do single step optimization on f and g
+@@ -390,7 +391,7 @@ class ModelTrainerCLS(ClientTrainer):
+                 self.g_optimizer.zero_grad()
+                 # optimizer_g.zero_grad()
+                 g_obj.backward(retain_graph=True)
+-                torch.nn.utils.clip_grad_norm_(g.parameters(), 1.0)
++                torch.nn.utils.clip_grad_norm_(g.parameters(), gradient_clip_norm)
+                 # final_g.step()
+                 self.g_optimizer.step()
+                 # optimizer_g.step()
+@@ -399,7 +400,7 @@ class ModelTrainerCLS(ClientTrainer):
+                 # optimizer_f.zero_grad()
+                 # final_f.zero_grad()
+                 f_obj.backward()
+-                torch.nn.utils.clip_grad_norm_(f.parameters(), 1.0)
++                torch.nn.utils.clip_grad_norm_(f.parameters(), gradient_clip_norm)
+                 # final_f.step()
+                 self.f_optimizer.step()
+                 # optimizer_f.step()
+diff --git a/fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py b/fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py
+index d514430..6a775a6 100644
+--- a/fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py
++++ b/fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py
+@@ -25,6 +25,23 @@ from game_objectives.approximate_psi_objective import approx_psi_eval
+ # from fedgmm.sp_decentralized_mnist_lr_example.plotting import PlotElement
+ from plotting import PlotElement
+ import matplotlib.pyplot as plt
++from experiment_utils import (
++    client_indices_for_round,
++    default_critic_multiplier,
++    ensure_run_dirs,
++    get_effective_config,
++    prepare_run_dir,
++    predictions_for_split,
++    run_dir_from_config,
++    save_predictions_npz,
++    state_is_finite,
++    structural_mse,
++    structural_mse_from_predictions,
++    now_seconds,
++    write_effective_config,
++    write_metrics,
++    write_mse_by_round,
++)
+ 
+ def log_results_to_csv(file_path, round_number, mse):
+        if os.path.dirname(file_path):
+@@ -54,6 +71,44 @@ class FedAvgAPI(object):
+         for arg_name, default_value in research_args.items():
+             if not hasattr(self.args, arg_name):
+                 setattr(self.args, arg_name, default_value)
++        if not hasattr(self.args, "critic_multiplier"):
++            setattr(self.args, "critic_multiplier", default_critic_multiplier(args.dataset))
++        if not hasattr(self.args, "server_learning_rate"):
++            setattr(self.args, "server_learning_rate", 1.5)
++        if not hasattr(self.args, "output_dir"):
++            setattr(self.args, "output_dir", "results")
++        if not hasattr(self.args, "run_id"):
++            setattr(self.args, "run_id", "0")
++        if not hasattr(self.args, "random_seed"):
++            setattr(self.args, "random_seed", 0)
++        if not hasattr(self.args, "gradient_clip_norm"):
++            setattr(self.args, "gradient_clip_norm", 1.0)
++        if not hasattr(self.args, "enable_legacy_outputs"):
++            setattr(self.args, "enable_legacy_outputs", True)
++        if not hasattr(self.args, "overwrite"):
++            setattr(self.args, "overwrite", False)
++        self.effective_config = get_effective_config(self.args)
++        self.run_dir = run_dir_from_config(self.effective_config)
++        prepare_run_dir(self.run_dir, overwrite=bool(getattr(self.args, "overwrite", False)))
++        ensure_run_dirs(self.run_dir)
++        write_effective_config(self.run_dir, self.effective_config)
++        self.server_learning_rate = float(self.effective_config["server_learning_rate"])
++        self.critic_multiplier = float(self.effective_config["critic_multiplier"])
++        self.mse_rows = []
++        self.best_validation_mse = float("inf")
++        self.best_validation_round = None
++        self.best_g_state = None
++        self.best_f_state = None
++        self.best_reg_state = None
++        self.final_g_state = None
++        self.final_f_state = None
++        self.final_reg_state = None
++        self.best_state = None
++        self.final_state = None
++        self.delta_g_prev = None
++        self.delta_f_prev = None
++        self.diverged = False
++        self.start_time = now_seconds()
+         [
+         train_data_num,
+         test_data_num,
+@@ -71,6 +126,9 @@ class FedAvgAPI(object):
+         self.train_global = train_data_global
+         self.test_global = test_data_global
+         self.val_global = val_data_global
++        for split_name, split in [("train", self.train_global), ("val", self.val_global), ("test", self.test_global)]:
++            if not hasattr(split, "g") or split.g is None:
++                raise ValueError(f"{split_name} split does not expose ground-truth structural g")
+         self.train_data_num_in_total = train_data_num
+         self.test_data_num_in_total = test_data_num
+         self.val_data_num_in_total = val_data_num
+@@ -97,6 +155,19 @@ class FedAvgAPI(object):
+                     model_list.to(self.device).double()
+         elif isinstance(self.model, torch.nn.Module):
+             self.model.to(self.device).double()
++
++        # FedML's resolved device is authoritative. Keep every global
++        # split on the same device as the models before model selection.
++        for split in (self.train_global, self.val_global, self.test_global):
++            for tensor_name in ("x", "z", "y", "g", "w"):
++                tensor = getattr(split, tensor_name, None)
++                if torch.is_tensor(tensor):
++                    setattr(
++                        split,
++                        tensor_name,
++                        tensor.to(self.device),
++                    )
++
+         # g_learning_rates = [0.010, 0.050, 0.020]
+         ##g_learning_rates =[0.01, 0.001,0.0001,0.0005]
+         # g_learning_rates = [0.0005]
+@@ -108,15 +179,7 @@ class FedAvgAPI(object):
+             OptimalMomentObjective(),
+         ]
+         learning_setups = []
+-        # Dynamically adjust Critic multiplier based on dataset complexity
+-        # CNN critics (in z and xz scenarios) are very powerful and need a lower multiplier to avoid NaN
+-        critic_multiplier = 20.0
+-        if args.dataset in ['linear', 'abs', 'sin', 'step', 'zoo']:
+-            critic_multiplier = 10.0
+-        if args.dataset in ['mnist_z', 'femnist_z', 'mnist_xz', 'femnist_xz','cifar10_z', 'cifar10_xz', 'cifar_xz']:
+-            critic_multiplier = 5.0  # CNN Critic is powerful enough without a high LR
+-        elif args.dataset in ['mnist_x', 'femnist_x','cifar10_x', 'cifar_x']:
+-            critic_multiplier = 3.0  # Balanced approach
++        critic_multiplier = self.critic_multiplier
+        
+         for g_lr in g_learning_rates:
+             for game_objective in game_objectives:
+@@ -133,8 +196,7 @@ class FedAvgAPI(object):
+                         "g_optimizer_factory": OptimizerFactory(
+                             OGDA, lr=float(g_lr)),
+                         "f_optimizer_factory": OptimizerFactory(
+-                            # OGDA, lr=20.0*float(g_lr)),
+-                            OGDA, lr=critic_multiplier*float(g_lr)), # Adjusted
++                            OGDA, lr=critic_multiplier*float(g_lr)),
+                         "game_objective": game_objective
+                     }
+                 else:
+@@ -142,7 +204,6 @@ class FedAvgAPI(object):
+                         "g_optimizer_factory": OptimizerFactory(
+                             CustomSGD, lr=float(g_lr), momentum=0.0),
+                         "f_optimizer_factory": OptimizerFactory(
+-                            # CustomSGD, lr=20.0*float(g_lr), momentum=0.0),
+                             CustomSGD, lr=critic_multiplier*float(g_lr), momentum=0.0),
+                         "game_objective": game_objective
+                     }
+@@ -338,9 +399,7 @@ class FedAvgAPI(object):
+             w_agg = self._aggregate(w_locals)
+             
+             if self.args.client_optimizer == "ogda":
+-                # Suitable beta (Server LR). 1.0 is standard for FedAvg. 
+-                # Can be lowered (e.g., 0.5) for more stability.
+-                server_lr = 1.5 
++                server_lr = self.server_learning_rate
+ 
+                 # Current weights (theta_t)
+                 g_old = self.model_trainer.get_g_model_params()
+@@ -366,7 +425,7 @@ class FedAvgAPI(object):
+                 w_global = [g_new, f_new]
+             else:
+                 # w_global = w_agg
+-                server_lr = 1.5 
++                server_lr = self.server_learning_rate
+ 
+                 # Current weights (theta_t)
+                 g_old = self.model_trainer.get_g_model_params()
+@@ -393,19 +452,64 @@ class FedAvgAPI(object):
+             # if round_idx == self.args.comm_round - 1:
+             #     self._local_test_on_all_clients(round_idx)
+             # per {frequency_of_the_test} round
+-            mse, obj_train, obj_dev, curr_eval, max_recent_eval, f_of_z_train, f_of_z_dev = self.eval_global_model()
+-            log_results_to_csv(f"csv/{self.args.client_optimizer}_{self.args.dataset}newtrial.csv", round_idx, mse)
++            eval_result = self.eval_global_model()
++            mse = eval_result["train_mse"]
++            obj_train = eval_result["gmm_train_objective"]
++            obj_dev = eval_result["gmm_val_objective"]
++            curr_eval = eval_result["gmm_eval"]
++            max_recent_eval = eval_result["max_recent_gmm_eval"]
++            f_of_z_train = eval_result["f_of_z_train"]
++            f_of_z_dev = eval_result["f_of_z_dev"]
++            finite = state_is_finite(self.model_trainer.get_g_model_params()) and state_is_finite(self.model_trainer.get_f_model_params())
++            diverged = not finite
++            self.diverged = self.diverged or diverged
++            self.mse_rows.append({
++                "round": round_idx,
++                "train_mse": eval_result["train_mse"],
++                "val_mse": eval_result["val_mse"],
++                "gmm_train_objective": obj_train,
++                "gmm_val_objective": obj_dev,
++                "gmm_eval": curr_eval,
++                "finite": finite,
++                "diverged": diverged,
++            })
++            write_mse_by_round(self.run_dir, self.mse_rows)
++            if getattr(self.args, "enable_legacy_outputs", True):
++                log_results_to_csv(f"csv/{self.args.client_optimizer}_{self.args.dataset}newtrial.csv", round_idx, mse)
++            if eval_result["val_mse"] < self.best_validation_mse:
++                self.best_validation_mse = eval_result["val_mse"]
++                self.best_validation_round = round_idx
++                self.best_state = self._capture_training_state()
++                self.best_g_state = copy.deepcopy(self.best_state["g_state_dict"])
++                self.best_f_state = copy.deepcopy(self.best_state["f_state_dict"])
++                self.best_reg_state = copy.deepcopy(self.best_state["reg_state_dict"])
++                self._save_checkpoint(
++                    os.path.join(self.run_dir, "checkpoints", "best_validation.pt"),
++                    round_idx,
++                    self.best_state,
++                    eval_result,
++                    "best_validation",
++                )
+             
+-            # Save checkpoint every 200 rounds
++            # Save periodic checkpoints inside the unique run directory.
+             if round_idx % 200 == 0:
+-                checkpoint_path = f"checkpoints/{self.args.client_optimizer}_{self.args.dataset}_round_{round_idx}.pt"
+-                os.makedirs("checkpoints", exist_ok=True)
+-                torch.save({
+-                    'round': round_idx,
+-                    'g_state_dict': self.g.state_dict(),
+-                    'f_state_dict': self.f.state_dict(),
+-                    'mse': mse
+-                }, checkpoint_path)
++                checkpoint_path = os.path.join(self.run_dir, "checkpoints", f"round_{round_idx}.pt")
++                self._save_checkpoint(
++                    checkpoint_path,
++                    round_idx,
++                    self._capture_training_state(),
++                    eval_result,
++                    "periodic",
++                )
++                if getattr(self.args, "enable_legacy_outputs", True):
++                    legacy_checkpoint_path = f"checkpoints/{self.args.client_optimizer}_{self.args.dataset}_round_{round_idx}.pt"
++                    os.makedirs("checkpoints", exist_ok=True)
++                    torch.save({
++                        "round": round_idx,
++                        "g_state_dict": self.g.state_dict(),
++                        "f_state_dict": self.f.state_dict(),
++                        "mse": mse,
++                    }, legacy_checkpoint_path)
+             # wandb.log({"round":round_idx,"MSE" :mse})
+             # logging.info(f"{round_idx}: {mse:.4f}")
+             # print(round_idx,end=" ")
+@@ -415,8 +519,7 @@ class FedAvgAPI(object):
+                 if self.args.dataset.startswith("stackoverflow"):
+                     self._local_test_on_validation_set(round_idx)
+                 else:
+-                    # self._local_test_on_all_clients(round_idx)
+-                    mse, obj_train, obj_dev, curr_eval, max_recent_eval, f_of_z_train, f_of_z_dev = self.eval_global_model()
++                    pass
+                 
+                 if self.args.video_plotter and round_idx % self.args.print_freq == 0:
+                     frame = self.video_plotter.get_new_frame("iter = %d" % round_idx)
+@@ -465,101 +568,104 @@ class FedAvgAPI(object):
+             # print("best iteration:", self.args.eval_freq * max_i)
+             pass
+             # mlops.log_round_info(self.args.comm_round, round_idx)
+-        self.model_trainer.set_g_model_params(self.g_state_history[max_i])
+-        g_final = self.g
+-        # torch.save(g_final,'/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_step_fedsgd')
+-        reg_model_final = self.reg_model
+-        g_final.load_state_dict(self.model_trainer.get_g_model_params())
+-        reg_model_final.load_state_dict(self.model_trainer.get_model_params())
+-        g_pred = g_final(self.test_global.x)
+-        reg_model_final.to(self.device)
+-        reg_pred = reg_model_final(self.test_global.x)
+-        # model_linear = torch.load('/home/somya/final/model_oldabs')
+-        # model_linear_sgd = torch.load('/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_abs')
+-        # model_linear_sgd_fedavg = torch.load('/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_abs_fedsgd')
+-        # model_linear_sgd_plain = torch.load('/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_abs_plain')
+-
+-        # model_linear.to(self.device)
+-        # model_linear_sgd_fedavg.to(self.device)
+-        # model_linear_sgd.to(self.device)
+-        # model_linear_sgd_plain.to(self.device)
+-        # gmm_pred = model_linear(self.test_global.x)
+-        # gmm_pred_sgd = model_linear_sgd(self.test_global.x)
+-        # fedavg_sgd = model_linear_sgd_fedavg(self.test_global.x)
+-        # sgd_plain = model_linear_sgd_plain(self.test_global.x)
+-        
+-        # mse = float(((fedavg_sgd - self.test_global.g) ** 2).mean())
+-        mse = float(((g_pred - self.test_global.g) ** 2).mean())
+-        # print("---------------")
+-        # print("finished running methodology on scenario %s" % self.args.scenario_name)
+-        print("MSE on test ------------------------------>>>>>>>>>>>>>>>>>>", mse)
+-        # print("")
+-        # print("saving results...")
+-        x = self.test_global.x.detach().cpu().numpy()
+-        g_pred = g_pred.detach().cpu().numpy()
+-        g_true = self.test_global.g.detach().cpu().numpy()
+-        # gmm_pred = gmm_pred.detach().cpu().numpy()
+-        reg_pred = reg_pred.detach().cpu().numpy()
+-        # sgd_plain = sgd_plain.detach().cpu().numpy()
+-        # gmm_pred_sgd = gmm_pred_sgd.detach().cpu().numpy()
+-        # fedavg_sgd = fedavg_sgd.detach().cpu().numpy()
+-
+-        indices = numpy.argsort(x, axis = 0).flatten() 
+-        x_sort = x[indices]
+-        x_label =[]
+-        for i in range(20):
+-            x_label.append(i)
+-        g_pred_sort = g_pred[indices]
+-        g_true_sort = g_true[indices]
+-        
+-        # Save the data for later plotting
+-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_x.npy", x_sort)
+-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_prednewtrial.npy", g_pred_sort)
+-        numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_y_true.npy", g_true_sort)
+-        # gmm_true_sort = gmm_pred[indices]
+-        # gmm_sgd_sort = gmm_pred_sgd[indices]
+-        # fedavg_sgd_sort = fedavg_sgd[indices]
+-        # sgd_plain_sort = sgd_plain[indices]
+-        # for i in range(len(x_sort)):
+-        #     log_results_to_csv("/home/somya/thesis/new_FedDeepGMM-SGDA.csv", x_sort[i][0], g_pred_sort[i][0])
+-        #     log_results_to_csv("/home/somya/thesis/new_Actual Causal Effect.csv", x_sort[i][0], g_true_sort[i][0])
+-        #     log_results_to_csv("/home/somya/thesis/new_DeepGMM-OAdam.csv", x_sort[i][0], gmm_true_sort[i][0])
+-        #     log_results_to_csv("/home/somya/thesis/new_DeepGMM-SMDA.csv", x_sort[i][0], gmm_sgd_sort[i][0])
+-        #     log_results_to_csv("/home/somya/thesis/new_FedDeepGMM-SMDA.csv", x_sort[i][0], fedavg_sgd_sort[i][0])
+-        #     log_results_to_csv("/home/somya/thesis/new_DeepGMM-SGDA.csv", x_sort[i][0], sgd_plain_sort[i][0])
+-        reg_pred_sort = reg_pred[indices]
+-        pred_plot = PlotElement(x_sort, g_pred_sort, "FedDeepGMM-SGDA")
+-        true_plot = PlotElement(x_sort, g_true_sort, "Actual Causal Effect")
+-        # gmm_plot = PlotElement(x_sort, gmm_true_sort, "DeepGMM-OAdam")
+-        # gmm_sgd_plot = PlotElement(x_sort, gmm_sgd_sort, "DeepGMM-SMDA")
+-        # fedavg_sgd_plot = PlotElement(x_sort,fedavg_sgd_sort,"FedDeepGMM-SMDA")
+-        # sgd_plain_plot = PlotElement(x_sort,sgd_plain_sort,"DeepGMM-SGDA")
+-
+-        # plot_Avg = PlotElement(x_label,fedAvg,"FedAvg")
+-        # reg_NN_plot = PlotElement(x_sort, reg_pred_sort, "Direct predictions from Neural Network")
++        best_gmm_eval_round = self.args.eval_freq * max_i
++        final_round = round_idx if "round_idx" in locals() else -1
++        self.final_state = self._capture_training_state()
++        self.final_g_state = copy.deepcopy(self.final_state["g_state_dict"])
++        self.final_f_state = copy.deepcopy(self.final_state["f_state_dict"])
++        self.final_reg_state = copy.deepcopy(self.final_state["reg_state_dict"])
++        self._load_training_state(self.final_state)
++        final_validation_mse = structural_mse(self.model_trainer.g, self.val_global)
++        final_test_mse = structural_mse(self.model_trainer.g, self.test_global)
++        final_prediction = predictions_for_split(self.model_trainer.g, self.test_global)
++        self._save_checkpoint(
++            os.path.join(self.run_dir, "checkpoints", "final.pt"),
++            final_round,
++            self.final_state,
++            {
++                "train_mse": structural_mse(self.model_trainer.g, self.train_global),
++                "val_mse": final_validation_mse,
++                "test_mse": final_test_mse,
++            },
++            "final",
++        )
++        if self.best_state is None:
++            self.best_validation_round = final_round
++            self.best_validation_mse = final_validation_mse
++            self.best_state = copy.deepcopy(self.final_state)
++            self.best_g_state = copy.deepcopy(self.final_g_state)
++            self.best_f_state = copy.deepcopy(self.final_f_state)
++            self.best_reg_state = copy.deepcopy(self.final_reg_state)
++
++        self._load_training_state(self.best_state)
++        best_prediction = predictions_for_split(self.model_trainer.g, self.test_global)
++        best_test_mse = structural_mse_from_predictions(best_prediction, self.test_global.g)
++        print("MSE on test ------------------------------>>>>>>>>>>>>>>>>>>", best_test_mse)
+         
+-        os.makedirs("plots", exist_ok=True)
+-        fig, ax = plt.subplots()
+-        # ax = sgd_plain_plot.plot(ax=ax)
+-        ax = true_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
+-        # ax = gmm_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
+-        # ax = gmm_sgd_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
+-        # ax = fedavg_sgd_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
+-        ax = pred_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
++        save_predictions_npz(
++            self.run_dir,
++            self.test_global,
++            best_prediction,
++            final_prediction,
++            self.effective_config,
++        )
++        metrics = {
++            "best_validation_round": self.best_validation_round,
++            "best_validation_mse": self.best_validation_mse,
++            "test_mse_at_best_validation": best_test_mse,
++            "final_validation_mse": final_validation_mse,
++            "final_test_mse": final_test_mse,
++            "best_gmm_eval_round": best_gmm_eval_round,
++            "best_gmm_eval": self.eval_history[max_i],
++            "diverged": self.diverged,
++            "runtime_seconds": now_seconds() - self.start_time,
++        }
++        write_metrics(self.run_dir, metrics)
++
++        if getattr(self.args, "enable_legacy_outputs", True) or getattr(self.args, "enable_legacy_plot", False):
++            x = self.test_global.x.detach().cpu().numpy()
++            best_pred_np = best_prediction.detach().cpu().numpy()
++            g_true = self.test_global.g.detach().cpu().numpy()
++            indices = numpy.argsort(x, axis=0).flatten()
++            x_sort = x[indices]
++            pred_plot = PlotElement(x_sort, best_pred_np[indices], "FedDeepGMM-SGDA")
++            true_plot = PlotElement(x_sort, g_true[indices], "Actual Causal Effect")
++            plot_dir = "plots" if getattr(self.args, "enable_legacy_outputs", True) else os.path.join(self.run_dir, "plots")
++            os.makedirs(plot_dir, exist_ok=True)
++            fig, ax = plt.subplots()
++            ax = true_plot.plot(ax=ax, save_path=os.path.join(plot_dir, f'aaaa_{self.args.run_name}_.png'))
++            ax = pred_plot.plot(ax=ax, save_path=os.path.join(plot_dir, f'aaaa_{self.args.run_name}_.png'))
+         # ax = reg_NN_plot.plot(ax=ax, save_path=f'plots/aaaacomparison_{self.args.run_name}_.png')
+         
+         # mlops.log_training_finished_status()
+         # mlops.log_aggregation_finished_status()
+         
+     def _client_sampling(self, round_idx, client_num_in_total, client_num_per_round):
+-        if client_num_in_total == client_num_per_round:
+-            client_indexes = [client_index for client_index in range(client_num_in_total)]
+-        else:
+-            num_clients = min(client_num_per_round, client_num_in_total)
+-            numpy.random.seed(round_idx)  # make sure for each comparison, we are selecting the same clients each round
+-            client_indexes = numpy.random.choice(range(client_num_in_total), num_clients, replace=False)
++        client_indexes = client_indices_for_round(
++            getattr(self.args, "random_seed", 0),
++            round_idx,
++            client_num_in_total,
++            client_num_per_round,
++        )
+         # logging.info("client_indexes = %s" % str(client_indexes))
+         return client_indexes
++
++    def _capture_training_state(self):
++        return {
++            "g_state_dict": copy.deepcopy(self.model_trainer.get_g_model_params()),
++            "f_state_dict": copy.deepcopy(self.model_trainer.get_f_model_params()),
++            "reg_state_dict": copy.deepcopy(self.model_trainer.get_model_params()),
++        }
++
++    def _load_training_state(self, state):
++        self.model_trainer.set_g_model_params(copy.deepcopy(state["g_state_dict"]))
++        self.model_trainer.set_f_model_params(copy.deepcopy(state["f_state_dict"]))
++        if state.get("reg_state_dict") is not None:
++            self.model_trainer.set_model_params(copy.deepcopy(state["reg_state_dict"]))
++        self.g = self.model_trainer.g
++        self.f = self.model_trainer.f
++        self.reg_model = self.model_trainer.reg_model
++
+     def _aggregate_t(self,obj_sum):
+         total_sum=0
+         for i in obj_sum:
+@@ -605,6 +711,23 @@ class FedAvgAPI(object):
+                     f[k] += local_f[k] * w
+         return [g, f]
+ 
++    def _save_checkpoint(self, path, round_idx, state, metrics, checkpoint_type):
++        os.makedirs(os.path.dirname(path), exist_ok=True)
++        torch.save({
++            "round": round_idx,
++            "checkpoint_type": checkpoint_type,
++            "state": {
++                "g": state["g_state_dict"],
++                "f": state["f_state_dict"],
++                "regression": state.get("reg_state_dict"),
++            },
++            "g_state_dict": state["g_state_dict"],
++            "f_state_dict": state["f_state_dict"],
++            "reg_state_dict": state.get("reg_state_dict"),
++            "metrics": metrics,
++            "effective_config": self.effective_config,
++        }, path)
++
+     def _effective_batch_size(self, num_data):
+         if not hasattr(self.args, "batch_size") or self.args.batch_size is None or self.args.batch_size <= 0:
+             return num_data
+@@ -638,7 +761,7 @@ class FedAvgAPI(object):
+                 g_of_x = torch.cat([g_of_x, g_of_x_batch], dim=0)
+                 f_of_z = torch.cat([f_of_z, f_of_z_batch], dim=0)
+             obj_total += float(g_obj.detach().cpu()) * len(batch_idx) * 1.0 / num_data
+-        return g_of_x, f_of_z, float(g_obj.detach().cpu())
++        return g_of_x, f_of_z, obj_total
+     
+         
+     def eval_global_model(self):
+@@ -650,10 +773,10 @@ class FedAvgAPI(object):
+         epsilon_train = g_of_x_train - self.train_global.y.cpu()
+         curr_eval = approx_psi_eval(epsilon_dev, self.dev_f_collection,
+                                             self.e_dev_tilde)
+-        g_error = epsilon_train + self.train_global.y.cpu() - self.train_global.g.cpu()
+-        mse = float((g_error ** 2).mean())
++        train_mse = structural_mse_from_predictions(g_of_x_train, self.train_global.g.cpu())
++        val_mse = structural_mse_from_predictions(g_of_x_dev, self.val_global.g.cpu())
+         self.eval_list.append(curr_eval)
+-        self.mse_list.append(mse)
++        self.mse_list.append(train_mse)
+         if self.eval_history:
+             max_recent_eval = max(self.eval_history)
+         else:
+@@ -667,4 +790,13 @@ class FedAvgAPI(object):
+         self.g = self.g.train()
+         self.model_trainer.set_f_model_params(self.f.state_dict())
+         self.model_trainer.set_g_model_params(self.g.state_dict())
+-        return mse, obj_train, obj_dev, curr_eval, max_recent_eval, f_of_z_train, f_of_z_dev
+\ No newline at end of file
++        return {
++            "train_mse": train_mse,
++            "val_mse": val_mse,
++            "gmm_train_objective": obj_train,
++            "gmm_val_objective": obj_dev,
++            "gmm_eval": curr_eval,
++            "max_recent_gmm_eval": max_recent_eval,
++            "f_of_z_train": f_of_z_train,
++            "f_of_z_dev": f_of_z_dev,
++        }
+diff --git a/scripts/run_abs_smoke.py b/scripts/run_abs_smoke.py
+new file mode 100644
+index 0000000..5e52f1a
+--- /dev/null
++++ b/scripts/run_abs_smoke.py
+@@ -0,0 +1,168 @@
++#!/usr/bin/env python3
++import argparse
++import json
++import os
++import subprocess
++import sys
++import tempfile
++
++REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
++if REPO_ROOT not in sys.path:
++    sys.path.insert(0, REPO_ROOT)
++
++from fedgmm.sp_decentralized_mnist_lr_example.experiment_utils import (
++    build_run_dir,
++    expand_smoke_manifest,
++    prepare_run_dir,
++)
++
++
++DEFAULT_MANIFEST = os.path.join(REPO_ROOT, "experiments", "abs_smoke_manifest.json")
++DEFAULT_MAIN = os.path.join(
++    REPO_ROOT,
++    "fedgmm",
++    "sp_decentralized_mnist_lr_example",
++    "main.py",
++)
++
++
++def _yaml_scalar(value):
++    if isinstance(value, bool):
++        return "true" if value else "false"
++    if isinstance(value, (int, float)):
++        return str(value)
++    text = str(value)
++    escaped = text.replace("\\", "\\\\").replace('"', '\\"')
++    return f'"{escaped}"'
++
++
++def write_config(path, config):
++    sections = {
++        "common_args": {
++            "training_type": "simulation",
++            "using_mlops": False,
++            "random_seed": config["random_seed"],
++            "run_id": config["run_id"],
++            "config_version": "release",
++            "output_dir": config["output_dir"],
++            "overwrite": config.get("overwrite", False),
++        },
++        "data_args": {
++            "dataset": config["dataset"],
++            "data_cache_dir": config["data_cache_dir"],
++            "partition_method": config["partition_method"],
++            "partition_alpha": config["partition_alpha"],
++        },
++        "model_args": {
++            "model": config["model"],
++        },
++        "train_args": {
++            "federated_optimizer": config["federated_optimizer"],
++            "client_id_list": config["client_id_list"],
++            "client_num_in_total": config["client_num_in_total"],
++            "client_num_per_round": config["client_num_per_round"],
++            "comm_round": config["comm_round"],
++            "epochs": config["epochs"],
++            "batch_size": config["batch_size"],
++            "client_optimizer": config["client_optimizer"],
++            "learning_rate": config["learning_rate"],
++            "weight_decay": config["weight_decay"],
++            "critic_multiplier": config["critic_multiplier"],
++            "server_learning_rate": config["server_learning_rate"],
++            "gradient_clip_norm": config["gradient_clip_norm"],
++            "enable_legacy_outputs": config.get("enable_legacy_outputs", True),
++        },
++        "validation_args": {
++            "frequency_of_the_test": config["frequency_of_the_test"],
++        },
++        "device_args": {
++            "using_gpu": config["using_gpu"],
++            "gpu_id": config["gpu_id"],
++        },
++        "comm_args": {
++            "backend": "sp",
++        },
++        "tracking_args": {
++            "enable_tracking": False,
++            "enable_wandb": False,
++            "run_name": f"abs_{config['variant']}_seed_{config['random_seed']}_{config['run_id']}",
++        },
++    }
++    with open(path, "w") as f:
++        for section, values in sections.items():
++            f.write(f"{section}:\n")
++            for key, value in values.items():
++                f.write(f"  {key}: {_yaml_scalar(value)}\n")
++            f.write("\n")
++
++
++def load_manifest(path):
++    with open(path, "r") as f:
++        return json.load(f)
++
++
++def command_for_variant(python_executable, main_path, config_path):
++    return [python_executable, main_path, "--cf", config_path]
++
++
++def filter_variants(variants, selected_variant=None):
++    if selected_variant is None:
++        return variants
++    return [variant for variant in variants if variant["variant"] == selected_variant]
++
++
++def resolve_output_dir(output_dir):
++    if os.path.isabs(str(output_dir)):
++        return os.path.abspath(str(output_dir))
++    return os.path.abspath(os.path.join(REPO_ROOT, str(output_dir)))
++
++
++def main():
++    parser = argparse.ArgumentParser(description="Run the four local ABS smoke variants.")
++    parser.add_argument("--manifest", default=DEFAULT_MANIFEST)
++    parser.add_argument("--main", default=DEFAULT_MAIN)
++    parser.add_argument("--python", default=sys.executable)
++    parser.add_argument("--output-dir", default=None)
++    parser.add_argument("--run-id", default=None)
++    parser.add_argument("--dry-run", action="store_true")
++    parser.add_argument("--overwrite", action="store_true")
++    parser.add_argument(
++        "--variant",
++        choices=["fedgda_d", "fedgda_s", "fedogda_d", "fedogda_s"],
++        default=None,
++        help="Run only one ABS smoke variant.",
++    )
++    args = parser.parse_args()
++
++    manifest = load_manifest(args.manifest)
++    variants = filter_variants(expand_smoke_manifest(manifest), args.variant)
++    with tempfile.TemporaryDirectory(prefix="abs_smoke_configs_") as tmpdir:
++        for variant in variants:
++            if args.output_dir is not None:
++                variant["output_dir"] = args.output_dir
++            if args.run_id is not None:
++                variant["run_id"] = args.run_id
++            variant["output_dir"] = resolve_output_dir(variant["output_dir"])
++            variant["overwrite"] = args.overwrite or bool(variant.get("overwrite", False))
++            config_path = os.path.join(tmpdir, f"{variant['variant']}.yaml")
++            write_config(config_path, variant)
++            run_dir = build_run_dir(
++                variant["output_dir"],
++                variant["dataset"],
++                variant["variant"],
++                variant["random_seed"],
++                variant["run_id"],
++            )
++            cmd = command_for_variant(args.python, args.main, config_path)
++            print(f"{variant['variant']} -> {run_dir}")
++            print(" ".join(cmd))
++            if args.dry_run:
++                continue
++            prepare_run_dir(run_dir, overwrite=variant["overwrite"])
++            result = subprocess.run(cmd, cwd=REPO_ROOT)
++            if result.returncode != 0:
++                raise SystemExit(f"{variant['variant']} failed with exit code {result.returncode}")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/test_experiment_utils.py b/tests/test_experiment_utils.py
+new file mode 100644
+index 0000000..3f1f6aa
+--- /dev/null
++++ b/tests/test_experiment_utils.py
+@@ -0,0 +1,173 @@
++import json
++import os
++import tempfile
++import unittest
++from types import SimpleNamespace
++
++from fedgmm.sp_decentralized_mnist_lr_example.experiment_utils import (
++    EFFECTIVE_CONFIG_FIELDS,
++    PREDICTION_OUTPUT_KEYS,
++    build_run_dir,
++    client_indices_for_round,
++    exact_sample_count,
++    expand_smoke_manifest,
++    get_effective_config,
++    prepare_run_dir,
++    structural_mse,
++    structural_mse_from_predictions,
++)
++from scripts.run_abs_smoke import DEFAULT_MANIFEST, filter_variants, resolve_output_dir
++
++
++class LinearModel:
++    training = True
++
++    def eval(self):
++        self.training = False
++
++    def train(self):
++        self.training = True
++
++    def __call__(self, x):
++        return [2.0 * value for value in x]
++
++
++class ExperimentUtilsTest(unittest.TestCase):
++    def test_unique_output_directory_construction(self):
++        path = build_run_dir("results", "abs", "fedgda_d", 0, "smoke")
++        self.assertEqual(
++            path,
++            os.path.join("results", "abs", "fedgda_d", "seed_0", "smoke"),
++        )
++
++    def test_structural_mse_from_predictions(self):
++        self.assertEqual(
++            structural_mse_from_predictions([1.0, 3.0], [2.0, 1.0]),
++            2.5,
++        )
++
++    def test_structural_mse_on_mock_split(self):
++        split = SimpleNamespace(x=[1.0, 2.0, 3.0], g=[2.0, 5.0, 6.0])
++        self.assertAlmostEqual(structural_mse(LinearModel(), split), 1.0 / 3.0)
++
++    def test_config_defaults_and_overrides(self):
++        args = SimpleNamespace(
++            dataset="abs",
++            client_optimizer="ogda",
++            batch_size=0,
++            epochs=1,
++            comm_round=3,
++            client_num_in_total=1000,
++            client_num_per_round=2,
++            frequency_of_the_test=1,
++            learning_rate=0.001,
++            random_seed=7,
++            run_id="smoke",
++            output_dir="local_results",
++            partition_alpha=0.5,
++            weight_decay=0.1,
++            critic_multiplier=12,
++            server_learning_rate=0.75,
++            model="lr",
++            federated_optimizer="FedAvg",
++            partition_method="hetero",
++            data_cache_dir="data",
++            using_gpu=False,
++            gpu_id=0,
++            enable_legacy_outputs=False,
++            overwrite=True,
++        )
++        config = get_effective_config(args)
++        self.assertEqual(config["variant"], "fedogda_d")
++        self.assertEqual(config["f_learning_rate"], 0.012)
++        self.assertEqual(config["server_learning_rate"], 0.75)
++        for field in EFFECTIVE_CONFIG_FIELDS:
++            self.assertIn(field, config)
++
++    def test_exact_sample_count_with_partial_final_batch(self):
++        assigned_indices = list(range(257))
++        old_estimated_count = 3 * 128
++        self.assertEqual(exact_sample_count(assigned_indices), 257)
++        self.assertNotEqual(exact_sample_count(assigned_indices), old_estimated_count)
++
++    def test_output_path_is_stable_after_cwd_changes(self):
++        with tempfile.TemporaryDirectory() as tmpdir:
++            output_dir = resolve_output_dir("results")
++            original_cwd = os.getcwd()
++            try:
++                os.chdir(tmpdir)
++                run_dir = build_run_dir(output_dir, "abs", "fedgda_d", 0, "smoke")
++            finally:
++                os.chdir(original_cwd)
++        self.assertEqual(
++            run_dir,
++            os.path.join(output_dir, "abs", "fedgda_d", "seed_0", "smoke"),
++        )
++
++    def test_client_sampling_reproducible_for_same_seed_and_round(self):
++        first = client_indices_for_round(7, 2, 100, 10)
++        second = client_indices_for_round(7, 2, 100, 10)
++        self.assertEqual(first, second)
++
++    def test_client_sampling_changes_with_seed(self):
++        first = client_indices_for_round(7, 2, 100, 10)
++        second = client_indices_for_round(8, 2, 100, 10)
++        self.assertNotEqual(first, second)
++
++    def test_existing_run_directory_fails_without_overwrite(self):
++        with tempfile.TemporaryDirectory() as tmpdir:
++            run_dir = os.path.join(tmpdir, "results", "abs", "fedgda_d", "seed_0", "smoke")
++            os.makedirs(run_dir)
++            with open(os.path.join(run_dir, "metrics.json"), "w") as f:
++                f.write("{}\n")
++            with self.assertRaises(FileExistsError):
++                prepare_run_dir(run_dir, overwrite=False)
++
++    def test_overwrite_removes_existing_artifacts_only_when_explicit(self):
++        with tempfile.TemporaryDirectory() as tmpdir:
++            run_dir = os.path.join(tmpdir, "results", "abs", "fedgda_d", "seed_0", "smoke")
++            os.makedirs(run_dir)
++            with open(os.path.join(run_dir, "metrics.json"), "w") as f:
++                f.write("{}\n")
++            prepare_run_dir(run_dir, overwrite=True)
++            self.assertFalse(os.path.exists(run_dir))
++
++    def test_smoke_manifest_expands_four_variants(self):
++        manifest = {
++            "base": {"dataset": "abs", "comm_round": 3},
++            "variants": [
++                {"client_optimizer": "sgd", "batch_size": 0},
++                {"client_optimizer": "sgd", "batch_size": 256},
++                {"client_optimizer": "ogda", "batch_size": 0},
++                {"client_optimizer": "ogda", "batch_size": 256},
++            ],
++        }
++        variants = expand_smoke_manifest(manifest)
++        self.assertEqual(
++            [variant["variant"] for variant in variants],
++            ["fedgda_d", "fedgda_s", "fedogda_d", "fedogda_s"],
++        )
++
++    def test_abs_smoke_manifest_uses_two_epochs(self):
++        with open(DEFAULT_MANIFEST, "r") as f:
++            manifest = json.load(f)
++        variants = expand_smoke_manifest(manifest)
++        self.assertEqual(len(variants), 4)
++        self.assertTrue(all(variant["epochs"] == 2 for variant in variants))
++
++    def test_variant_filtering_selects_one_manifest_entry(self):
++        with open(DEFAULT_MANIFEST, "r") as f:
++            manifest = json.load(f)
++        variants = expand_smoke_manifest(manifest)
++        filtered = filter_variants(variants, "fedogda_s")
++        self.assertEqual(len(filtered), 1)
++        self.assertEqual(filtered[0]["variant"], "fedogda_s")
++
++    def test_prediction_output_keys_include_best_and_final(self):
++        self.assertIn("best_validation_prediction", PREDICTION_OUTPUT_KEYS)
++        self.assertIn("final_prediction", PREDICTION_OUTPUT_KEYS)
++        self.assertNotEqual(PREDICTION_OUTPUT_KEYS[0], PREDICTION_OUTPUT_KEYS[1])
++
++
++if __name__ == "__main__":
++    unittest.main()

@@ -1,0 +1,10 @@
+[
+  {
+    "best_validation_round": 11,
+    "final_test_mse": 0.5139006640398378,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/_profiling/highdim_stochastic_gpu_util/auxreg_skip50/cifar10_x/fedgda_s/seed_0/auxreg_skip50_highdim_abs_cifar10_x_fedgda_s_seed0_alpha1_rounds50",
+    "run_id": "auxreg_skip50_highdim_abs_cifar10_x_fedgda_s_seed0_alpha1_rounds50",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.15254380501636403
+  }
+]

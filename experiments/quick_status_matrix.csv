@@ -1,0 +1,45 @@
+category,scenario,display_name,method,expected_runs,completed_runs,missing_runs,seeds_present,alphas_present,metrics_json_present,mse_by_round_csv_present,predictions_npz_present,test_mse_by_round_csv_present,validation_status,notes
+lowdim_federated,abs,Absolute,fedgda_d,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,abs,Absolute,fedogda_d,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,abs,Absolute,fedgda_s,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,abs,Absolute,fedogda_s,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,step,Step,fedgda_d,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,step,Step,fedogda_d,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,step,Step,fedgda_s,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,step,Step,fedogda_s,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,linear,Linear,fedgda_d,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,linear,Linear,fedogda_d,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,linear,Linear,fedgda_s,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,linear,Linear,fedogda_s,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,sin,Sine,fedgda_d,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,sin,Sine,fedogda_d,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,sin,Sine,fedgda_s,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+lowdim_federated,sin,Sine,fedogda_s,9,9,0,0|1|2,0.1|0.5|1.0,9,9,9,0,validated_complete,legacy sweep lacks per-round Test MSE
+centralized_lowdim,abs|step|linear|sin,GDA,gda_d,12,0,12,,na,0,0,0,0,blocked_pending_runner_verification,manifest rows are blocked_pending_true_centralized_runner_verification; no validated result artifacts found
+centralized_lowdim,abs|step|linear|sin,SGDA/SGD,sgda_s,12,0,12,,na,0,0,0,0,blocked_pending_runner_verification,manifest rows are blocked_pending_true_centralized_runner_verification; no validated result artifacts found
+centralized_lowdim,abs|step|linear|sin,OAdam-D,oadam_d,12,0,12,,na,0,0,0,0,blocked_pending_runner_verification,manifest rows are blocked_pending_true_centralized_runner_verification; no validated result artifacts found
+centralized_lowdim,abs|step|linear|sin,OAdam-S,oadam_s,12,0,12,,na,0,0,0,0,blocked_pending_runner_verification,manifest rows are blocked_pending_true_centralized_runner_verification; no validated result artifacts found
+highdim_real_image,femnist_x,femnist-x,fedgda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_x,femnist-x,fedogda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_x,femnist-x,fedgda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_x,femnist-x,fedogda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_z,femnist-z,fedgda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_z,femnist-z,fedogda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_z,femnist-z,fedgda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_z,femnist-z,fedogda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_xz,femnist-xz,fedgda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_xz,femnist-xz,fedogda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_xz,femnist-xz,fedgda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,femnist_xz,femnist-xz,fedogda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_x,cifar10-x,fedgda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_x,cifar10-x,fedogda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_x,cifar10-x,fedgda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_x,cifar10-x,fedogda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_z,cifar10-z,fedgda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_z,cifar10-z,fedogda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_z,cifar10-z,fedgda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_z,cifar10-z,fedogda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_xz,cifar10-xz,fedgda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_xz,cifar10-xz,fedogda_d,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_xz,cifar10-xz,fedgda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found
+highdim_real_image,cifar10_xz,cifar10-xz,fedogda_s,3,0,3,,,0,0,0,0,pending_not_launched,manifest exists but run_status is not_started and no validated result artifacts were found

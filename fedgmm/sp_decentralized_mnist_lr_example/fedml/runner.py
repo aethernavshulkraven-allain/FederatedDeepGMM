@@ -15,6 +15,8 @@ from .constants import (
 )
 from .core import ClientTrainer, ServerAggregator, FedMLAlgorithmFlow
 
+FEDML_TRACE_DIR_ENV = "FEDGMM_FEDML_TRACE_DIR"
+
 
 class FedMLRunner:
     def __init__(
@@ -169,8 +171,15 @@ class FedMLRunner:
         return runner
 
     @staticmethod
+    def get_trace_dir():
+        local_trace_dir = os.getenv(FEDML_TRACE_DIR_ENV)
+        if local_trace_dir is not None and local_trace_dir != "":
+            return local_trace_dir
+        return os.path.join(expanduser("~"), ".fedml", "fedml_trace")
+
+    @staticmethod
     def log_runner_result():
-        log_runner_result_dir = os.path.join(expanduser("~"), ".fedml", "fedml_trace")
+        log_runner_result_dir = FedMLRunner.get_trace_dir()
         if not os.path.exists(log_runner_result_dir):
             os.makedirs(log_runner_result_dir, exist_ok=True)
 
@@ -181,4 +190,3 @@ class FedMLRunner:
     def run(self):
         self.runner.run()
         FedMLRunner.log_runner_result()
-
