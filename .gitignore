@@ -1,5 +1,41 @@
+# Python caches and test/build artifacts
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Editor, OS, and coding-assistant metadata
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+*.bak
+.idea/
+.vscode/
+.cursor/
+.claude/
+.codex/
+.agents/
+AGENTS.md
+CLAUDE.md
+
+# Local environments and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.secrets/
+credentials/
+
+# Downloaded/generated data and checkpoints
 fedgmm/sp_decentralized_mnist_lr_example/data/
 fedgmm/sp_decentralized_mnist_lr_example/checkpoints/
 *.npz
@@ -10,7 +46,12 @@ datasets/
 # large/generated experiment artifacts
 results/
 logs/
+generated_configs*/
+*.log
+*.pid
 nohup.out
+wandb/
+mlruns/
 
 # external data under PhysioNet Data Use Agreement - do not redistribute
 physionet.org/
@@ -26,5 +67,7 @@ high_dim_exp.md
 paper_ctxt.md
 todo-arnav.md
 worklog-*.md
-.claude/
-AGENTS.md
+
+# Local backups and downloaded installers
+local_backups/
+git-lfs-*.tar.gz
