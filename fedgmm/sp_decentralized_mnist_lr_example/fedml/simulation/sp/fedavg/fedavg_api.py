@@ -49,7 +49,12 @@ class FedAvgAPI(object):
             'burn_in': 0,
             'max_no_progress': 10000,
             'verbose': True,
-            'print_freq_mul': 1
+            'print_freq_mul': 1,
+            'server_learning_rate': 1.5,
+            'eg_predictor_server_lr': None,
+            'eg_corrector_server_lr': None,
+            'zo_mu': 1e-3,
+            'zo_num_directions': 1
         }
         for arg_name, default_value in research_args.items():
             if not hasattr(self.args, arg_name):
@@ -337,10 +342,76 @@ class FedAvgAPI(object):
             # update global weights
             w_agg = self._aggregate(w_locals)
             
-            if self.args.client_optimizer == "ogda":
+            if self.args.client_optimizer in ("fed_eg", "fed_zo_eg"):
+                # Phase 1 has evaluated the local SGD/FedAvg map at z_t.
+                # Build the server predictor from the aggregated displacement.
+                g_base = self.model_trainer.get_g_model_params()
+                f_base = self.model_trainer.get_f_model_params()
+                predictor_lr = self.args.eg_predictor_server_lr
+                corrector_lr = self.args.eg_corrector_server_lr
+                if predictor_lr is None:
+                    predictor_lr = self.args.server_learning_rate
+                if corrector_lr is None:
+                    corrector_lr = self.args.server_learning_rate
+
+                predictor_delta_g = {
+                    k: w_agg[0][k] - g_base[k] for k in g_base.keys()
+                }
+                predictor_delta_f = {
+                    k: w_agg[1][k] - f_base[k] for k in f_base.keys()
+                }
+                g_lookahead = {
+                    k: g_base[k] + predictor_lr * predictor_delta_g[k]
+                    for k in g_base.keys()
+                }
+                f_lookahead = {
+                    k: f_base[k] + predictor_lr * predictor_delta_f[k]
+                    for k in f_base.keys()
+                }
+
+                # Phase 2 uses the same sampled clients and local datasets, now
+                # initialized at the globally aggregated look-ahead model.
+                correction_locals = []
+                for client in self.client_list:
+                    if self.args.client_optimizer == "fed_zo_eg":
+                        correction = client.train_zo(
+                            copy.deepcopy(g_lookahead),
+                            copy.deepcopy(f_lookahead),
+                        )
+                    else:
+                        correction = client.train(
+                            copy.deepcopy(g_lookahead),
+                            copy.deepcopy(f_lookahead),
+                        )
+                    correction_locals.append(
+                        (client.get_sample_number(), copy.deepcopy(correction))
+                    )
+
+                correction_agg = self._aggregate(correction_locals)
+                correction_delta_g = {
+                    k: correction_agg[0][k] - g_lookahead[k]
+                    for k in g_base.keys()
+                }
+                correction_delta_f = {
+                    k: correction_agg[1][k] - f_lookahead[k]
+                    for k in f_base.keys()
+                }
+
+                # The EG corrector is anchored at z_t, not at z_bar.
+                g_new = {
+                    k: g_base[k] + corrector_lr * correction_delta_g[k]
+                    for k in g_base.keys()
+                }
+                f_new = {
+                    k: f_base[k] + corrector_lr * correction_delta_f[k]
+                    for k in f_base.keys()
+                }
+                w_global = [g_new, f_new]
+
+            elif self.args.client_optimizer == "ogda":
                 # Suitable beta (Server LR). 1.0 is standard for FedAvg. 
                 # Can be lowered (e.g., 0.5) for more stability.
-                server_lr = 1.5 
+                server_lr = self.args.server_learning_rate
 
                 # Current weights (theta_t)
                 g_old = self.model_trainer.get_g_model_params()
@@ -366,7 +437,7 @@ class FedAvgAPI(object):
                 w_global = [g_new, f_new]
             else:
                 # w_global = w_agg
-                server_lr = 1.5 
+                server_lr = self.args.server_learning_rate
 
                 # Current weights (theta_t)
                 g_old = self.model_trainer.get_g_model_params()

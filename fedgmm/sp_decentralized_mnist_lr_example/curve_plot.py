@@ -229,5 +229,77 @@ def generate_final_comparison():
     print("Graphs generated successfully as 'Final_Federated_Comparison_Results_All_3.png'")
     plt.show()
 
+def generate_abs_fedeg_comparison():
+    """Plot exact FedEG and zeroth-order FedEG on the absolute scenario."""
+    from pathlib import Path
+
+    result_dir = Path(__file__).resolve().parent
+
+    x_fedeg = np.load(result_dir / "results_abs_fed_eg_x.npy").squeeze()
+    y_fedeg = np.load(
+        result_dir / "results_abs_fed_eg_y_prednewtrial.npy"
+    ).squeeze()
+    y_true = np.load(result_dir / "results_abs_fed_eg_y_true.npy").squeeze()
+
+    x_zo_q1 = np.load(result_dir / "results_abs_fed_zo_eg_xq1.npy").squeeze()
+    y_zo_q1 = np.load(
+        result_dir / "results_abs_fed_zo_eg_y_prednewtrialq1.npy"
+    ).squeeze()
+
+    x_zo_q4 = np.load(result_dir / "results_abs_fed_zo_eg_x.npy").squeeze()
+    y_zo_q4 = np.load(
+        result_dir / "results_abs_fed_zo_eg_y_prednewtrial.npy"
+    ).squeeze()
+
+    # Sort each run independently in case their saved sample order differs.
+    fedeg_order = np.argsort(x_fedeg)
+    zo_q1_order = np.argsort(x_zo_q1)
+    zo_q4_order = np.argsort(x_zo_q4)
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.plot(
+        x_fedeg[fedeg_order],
+        y_true[fedeg_order],
+        label="Ground truth: absolute function",
+        color="black",
+        linewidth=2.5,
+    )
+    ax.plot(
+        x_fedeg[fedeg_order],
+        y_fedeg[fedeg_order],
+        label="FedEG (exact second pass)",
+        color="tab:blue",
+        linewidth=2,
+    )
+    ax.plot(
+        x_zo_q1[zo_q1_order],
+        y_zo_q1[zo_q1_order],
+        label="FedEG-ZO (zeroth-order second pass- Q1)",
+        color="tab:orange",
+        linestyle="--",
+        linewidth=2,
+    )
+    ax.plot(
+        x_zo_q4[zo_q4_order],
+        y_zo_q4[zo_q4_order],
+        label="FedEG-ZO (zeroth-order second pass- Q4)",
+        color="tab:red",
+        linestyle="--",
+        linewidth=2,
+    )
+
+    ax.set_title("Absolute Function: FedEG vs. FedEG-ZO")
+    ax.set_xlabel("x")
+    ax.set_ylabel("g(x)")
+    ax.grid(True, linestyle=":", alpha=0.4)
+    ax.legend()
+    fig.tight_layout()
+
+    output_path = result_dir / "abs_fedeg_vs_fedzoeg_q1_q4.png"
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print(f"Graph generated successfully: {output_path}")
+
+
 if __name__ == "__main__":
-    generate_final_comparison()
+    generate_abs_fedeg_comparison()

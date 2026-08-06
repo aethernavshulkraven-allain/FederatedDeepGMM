@@ -31,6 +31,15 @@ class Client:
         g = self.model_trainer.get_g_model_params()
         f = self.model_trainer.get_f_model_params()
         return [g, f]
+
+    def train_zo(self, g_global, f_global):
+        """Run forward-only zeroth-order local updates from server parameters."""
+        self.model_trainer.set_g_model_params(g_global)
+        self.model_trainer.set_f_model_params(f_global)
+        self.model_trainer.train_gmm_zo(self.local_training_data, self.device, self.args)
+        g = self.model_trainer.get_g_model_params()
+        f = self.model_trainer.get_f_model_params()
+        return [g, f]
     
     def train_reg(self, w_global):
         self.model_trainer.set_model_params(w_global)
