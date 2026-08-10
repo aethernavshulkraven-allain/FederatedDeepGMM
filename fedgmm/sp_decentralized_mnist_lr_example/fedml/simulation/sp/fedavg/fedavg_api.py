@@ -3,10 +3,12 @@ import logging
 import math
 import csv
 import os
+import time
 import numpy 
 import torch
 from fedml.ml.trainer.trainer_creator import create_model_trainer
 from .client import Client
+from .multiprocess_client import MultiprocessClientExecutor, _to_cpu, _to_device
 # from fedml.core.dp.mechanisms import 
 # from opacus.layers import 
 from model_selection.simple_model_eval import GradientDecentSimpleModelEval
@@ -25,6 +27,27 @@ from game_objectives.approximate_psi_objective import approx_psi_eval
 # from fedgmm.sp_decentralized_mnist_lr_example.plotting import PlotElement
 from plotting import PlotElement
 import matplotlib.pyplot as plt
+
+
+def prepare_curve_data(dataset, predictions, targets):
+    """Return scalar coordinates and aligned values for curve output.
+
+    Image-treatment scenarios keep their scalar causal coordinate in ``w``.
+    Sorting the image tensor itself creates one index per pixel and can expand
+    the result arrays by several orders of magnitude.
+    """
+    x = dataset.x.detach().cpu().numpy()
+    coordinate = dataset.w.detach().cpu().numpy() if x.ndim > 2 else x
+    coordinate = numpy.asarray(coordinate).reshape(coordinate.shape[0], -1)
+    if coordinate.shape[1] != 1:
+        raise ValueError(
+            "Curve plotting requires one scalar coordinate per observation; "
+            f"received shape {coordinate.shape}."
+        )
+
+    indices = numpy.argsort(coordinate[:, 0])
+    return coordinate[indices], predictions[indices], targets[indices]
+
 
 def log_results_to_csv(file_path, round_number, mse):
        if os.path.dirname(file_path):
@@ -54,7 +77,10 @@ class FedAvgAPI(object):
             'eg_predictor_server_lr': None,
             'eg_corrector_server_lr': None,
             'zo_mu': 1e-3,
-            'zo_num_directions': 1
+            'zo_num_directions': 1,
+            'enable_multiprocessing': False,
+            'multiprocessing_num_workers': 0,
+            'multiprocessing_gpu_ids': None,
         }
         for arg_name, default_value in research_args.items():
             if not hasattr(self.args, arg_name):
@@ -235,9 +261,164 @@ class FedAvgAPI(object):
         
         self.model_trainer = create_model_trainer([g_global, f_global, model[2][0]], learning_args, args)
 
-        self._setup_clients(
-            train_data_local_num_dict, train_data_local_dict, test_data_local_dict, self.model_trainer,
+        self.client_executor = self._create_client_executor()
+        if self.client_executor is None:
+            self._setup_clients(
+                train_data_local_num_dict, train_data_local_dict,
+                test_data_local_dict, self.model_trainer,
+            )
+
+    def _create_client_executor(self):
+        if not self.args.enable_multiprocessing:
+            return None
+        if not torch.cuda.is_available():
+            logging.warning("Multiprocessing requested without CUDA; using SP execution")
+            return None
+
+        gpu_ids = self.args.multiprocessing_gpu_ids
+        if gpu_ids is None:
+            gpu_ids = list(range(torch.cuda.device_count()))
+        elif isinstance(gpu_ids, str):
+            gpu_ids = [int(value.strip()) for value in gpu_ids.split(",") if value.strip()]
+        else:
+            gpu_ids = [int(value) for value in gpu_ids]
+
+        invalid_ids = [
+            value for value in gpu_ids
+            if value < 0 or value >= torch.cuda.device_count()
+        ]
+        if invalid_ids:
+            raise ValueError(
+                f"Invalid multiprocessing_gpu_ids {invalid_ids}; "
+                f"PyTorch sees {torch.cuda.device_count()} GPUs"
+            )
+        worker_limit = int(self.args.multiprocessing_num_workers)
+        if worker_limit > 0:
+            gpu_ids = gpu_ids[:worker_limit]
+        gpu_ids = gpu_ids[:self.args.client_num_per_round]
+        if len(gpu_ids) < 2:
+            logging.warning(
+                "Multiprocessing requires at least two GPU workers; using SP execution"
+            )
+            return None
+        return MultiprocessClientExecutor(self.model_trainer, self.args, gpu_ids)
+
+    @staticmethod
+    def _materialize_client_data(data_loader):
+        return [_to_cpu(batch) for batch in data_loader]
+
+    def _run_primary_client_updates(self, client_indexes, g_global, f_global, reg_global):
+        phase_start = time.perf_counter()
+        if self.client_executor is None:
+            w_locals = []
+            w_locals_reg = []
+            for idx, client in enumerate(self.client_list):
+                client_idx = client_indexes[idx]
+                client.update_local_dataset(
+                    client_idx,
+                    self.train_data_local_dict[client_idx],
+                    self.test_data_local_dict[client_idx],
+                    self.train_data_local_num_dict[client_idx],
+                )
+                weights = client.train(copy.deepcopy(g_global), copy.deepcopy(f_global))
+                reg_weights = client.train_reg(copy.deepcopy(reg_global))
+                sample_number = client.get_sample_number()
+                w_locals.append((sample_number, copy.deepcopy(weights)))
+                w_locals_reg.append((sample_number, copy.deepcopy(reg_weights)))
+            logging.info(
+                "Client primary phase mode=sp clients=%d elapsed_seconds=%.6f",
+                len(client_indexes), time.perf_counter() - phase_start,
+            )
+            return w_locals, w_locals_reg
+
+        tasks = []
+        cpu_g_global = _to_cpu(g_global)
+        cpu_f_global = _to_cpu(f_global)
+        cpu_reg_global = _to_cpu(reg_global)
+        for client_idx in client_indexes:
+            tasks.append(
+                {
+                    "phase": "primary",
+                    "client_idx": int(client_idx),
+                    "train_data": self._materialize_client_data(
+                        self.train_data_local_dict[client_idx]
+                    ),
+                    "sample_number": self.train_data_local_num_dict[client_idx],
+                    "g_global": cpu_g_global,
+                    "f_global": cpu_f_global,
+                    "reg_global": cpu_reg_global,
+                }
+            )
+        results = self.client_executor.run(tasks)
+        w_locals = []
+        w_locals_reg = []
+        for client_idx, result in zip(client_indexes, results):
+            sample_number = self.train_data_local_num_dict[client_idx]
+            w_locals.append(
+                (sample_number, _to_device(result["gmm"], self.device))
+            )
+            w_locals_reg.append((sample_number, result["reg"]))
+        logging.info(
+            "Client primary phase mode=mp clients=%d workers=%d elapsed_seconds=%.6f",
+            len(client_indexes), self.client_executor.worker_count,
+            time.perf_counter() - phase_start,
         )
+        return w_locals, w_locals_reg
+
+    def _run_correction_client_updates(self, client_indexes, g_global, f_global):
+        phase_start = time.perf_counter()
+        use_zeroth_order = self.args.client_optimizer == "fed_zo_eg"
+        if self.client_executor is None:
+            correction_locals = []
+            for client in self.client_list:
+                if use_zeroth_order:
+                    correction = client.train_zo(
+                        copy.deepcopy(g_global), copy.deepcopy(f_global)
+                    )
+                else:
+                    correction = client.train(
+                        copy.deepcopy(g_global), copy.deepcopy(f_global)
+                    )
+                correction_locals.append(
+                    (client.get_sample_number(), copy.deepcopy(correction))
+                )
+            logging.info(
+                "Client correction phase mode=sp clients=%d elapsed_seconds=%.6f",
+                len(client_indexes), time.perf_counter() - phase_start,
+            )
+            return correction_locals
+
+        tasks = []
+        cpu_g_global = _to_cpu(g_global)
+        cpu_f_global = _to_cpu(f_global)
+        for client_idx in client_indexes:
+            tasks.append(
+                {
+                    "phase": "correction",
+                    "use_zeroth_order": use_zeroth_order,
+                    "client_idx": int(client_idx),
+                    "train_data": self._materialize_client_data(
+                        self.train_data_local_dict[client_idx]
+                    ),
+                    "sample_number": self.train_data_local_num_dict[client_idx],
+                    "g_global": cpu_g_global,
+                    "f_global": cpu_f_global,
+                }
+            )
+        results = self.client_executor.run(tasks)
+        correction_locals = [
+            (
+                self.train_data_local_num_dict[client_idx],
+                _to_device(result["gmm"], self.device),
+            )
+            for client_idx, result in zip(client_indexes, results)
+        ]
+        logging.info(
+            "Client correction phase mode=mp clients=%d workers=%d elapsed_seconds=%.6f",
+            len(client_indexes), self.client_executor.worker_count,
+            time.perf_counter() - phase_start,
+        )
+        return correction_locals
 
     def _setup_clients(
         self, train_data_local_num_dict, train_data_local_dict, test_data_local_dict, model_trainer,
@@ -313,32 +494,9 @@ class FedAvgAPI(object):
             )
             # logging.info("client_indexes = " + str(client_indexes))
 
-            for idx, client in enumerate(self.client_list):
-                # update dataset
-                client_idx = client_indexes[idx]
-                client.update_local_dataset(
-                    client_idx,
-                    self.train_data_local_dict[client_idx],
-                    self.test_data_local_dict[client_idx],
-                    self.train_data_local_num_dict[client_idx],
-                )
-                # mlops.event("train", event_started=True, event_value="{}_{}".format(str(round_idx), str(idx)))
-                # w = client.train(copy.deepcopy(g_global), copy.deepcopy(f_global),copy.deepcopy(w_locals_prev))
-                # optimizer_g = CustomSGD(self.model_trainer.g.parameters(), lr=0.3)
-                # optimizer_f = CustomSGD(self.model_trainer.f.parameters(), lr=0.3)
-                # scheduler_g = CosineAnnealingLR(optimizer_g, T_max=6000)
-                # scheduler_f = CosineAnnealingLR(optimizer_f, T_max=6000)
-                w = client.train(copy.deepcopy(g_global), copy.deepcopy(f_global))
-
-                # w = client.train()
-                # w=client.train(copy.deepcopy(g_global),copy.deepcopy(f_global))
-                # t=[w[0],w[1]]
-                w_reg = client.train_reg(copy.deepcopy(reg_global))
-                # mlops.event("train", event_started=False, event_value="{}_{}".format(str(round_idx), str(idx)))
-                # self.logging.info("local weights = " + str(w))
-                w_locals.append((client.get_sample_number(), copy.deepcopy(w)))
-                w_locals_reg.append((client.get_sample_number(), copy.deepcopy(w_reg)))
-                # w_locals_prev = t
+            w_locals, w_locals_reg = self._run_primary_client_updates(
+                client_indexes, g_global, f_global, reg_global
+            )
             # update global weights
             w_agg = self._aggregate(w_locals)
             
@@ -371,21 +529,9 @@ class FedAvgAPI(object):
 
                 # Phase 2 uses the same sampled clients and local datasets, now
                 # initialized at the globally aggregated look-ahead model.
-                correction_locals = []
-                for client in self.client_list:
-                    if self.args.client_optimizer == "fed_zo_eg":
-                        correction = client.train_zo(
-                            copy.deepcopy(g_lookahead),
-                            copy.deepcopy(f_lookahead),
-                        )
-                    else:
-                        correction = client.train(
-                            copy.deepcopy(g_lookahead),
-                            copy.deepcopy(f_lookahead),
-                        )
-                    correction_locals.append(
-                        (client.get_sample_number(), copy.deepcopy(correction))
-                    )
+                correction_locals = self._run_correction_client_updates(
+                    client_indexes, g_lookahead, f_lookahead
+                )
 
                 correction_agg = self._aggregate(correction_locals)
                 correction_delta_g = {
@@ -524,6 +670,10 @@ class FedAvgAPI(object):
 
                     if current_no_progress >= self.args.max_no_progress:
                         break
+        if self.client_executor is not None:
+            self.client_executor.close()
+            self.client_executor = None
+
         # plot relationship between MSE and eval
         # if self.args.video_plotter:
         #     plt.figure()
@@ -566,7 +716,6 @@ class FedAvgAPI(object):
         print("MSE on test ------------------------------>>>>>>>>>>>>>>>>>>", mse)
         # print("")
         # print("saving results...")
-        x = self.test_global.x.detach().cpu().numpy()
         g_pred = g_pred.detach().cpu().numpy()
         g_true = self.test_global.g.detach().cpu().numpy()
         # gmm_pred = gmm_pred.detach().cpu().numpy()
@@ -575,13 +724,12 @@ class FedAvgAPI(object):
         # gmm_pred_sgd = gmm_pred_sgd.detach().cpu().numpy()
         # fedavg_sgd = fedavg_sgd.detach().cpu().numpy()
 
-        indices = numpy.argsort(x, axis = 0).flatten() 
-        x_sort = x[indices]
+        x_sort, g_pred_sort, g_true_sort = prepare_curve_data(
+            self.test_global, g_pred, g_true
+        )
         x_label =[]
         for i in range(20):
             x_label.append(i)
-        g_pred_sort = g_pred[indices]
-        g_true_sort = g_true[indices]
         
         # Save the data for later plotting
         numpy.save(f"results_{self.args.dataset}_{self.args.client_optimizer}_x.npy", x_sort)
@@ -598,7 +746,6 @@ class FedAvgAPI(object):
         #     log_results_to_csv("/home/somya/thesis/new_DeepGMM-SMDA.csv", x_sort[i][0], gmm_sgd_sort[i][0])
         #     log_results_to_csv("/home/somya/thesis/new_FedDeepGMM-SMDA.csv", x_sort[i][0], fedavg_sgd_sort[i][0])
         #     log_results_to_csv("/home/somya/thesis/new_DeepGMM-SGDA.csv", x_sort[i][0], sgd_plain_sort[i][0])
-        reg_pred_sort = reg_pred[indices]
         pred_plot = PlotElement(x_sort, g_pred_sort, "FedDeepGMM-SGDA")
         true_plot = PlotElement(x_sort, g_true_sort, "Actual Causal Effect")
         # gmm_plot = PlotElement(x_sort, gmm_true_sort, "DeepGMM-OAdam")
