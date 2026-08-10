@@ -32,26 +32,30 @@ fedml/simulation/simulator.py
             │   └── create_model_trainer()
             │       └── fedml/ml/trainer/my_model_trainer_classification.py
             │           └── ModelTrainerCLS()                      [current/default datasets]
-            └── fedml/simulation/sp/fedavg/client.py
-                └── Client() for each client in the round
+            ├── fedml/simulation/sp/fedavg/client.py
+            │   └── Client() for each serial client slot            [SP fallback]
+            └── fedml/simulation/sp/fedavg/multiprocess_client.py
+                └── MultiprocessClientExecutor()                    [MP enabled]
+                    └── one persistent spawned worker per GPU
 
 fedml/simulation/simulator.py
 └── SimulatorSingleProcess.run()
     └── FedAvgAPI.train()
         ├── FedAvgAPI._client_sampling()
-        ├── client.py -> Client.update_local_dataset()
-        ├── client.py -> Client.train()
-        │   └── my_model_trainer_classification.py
-        │       └── ModelTrainerCLS.train_gmm()
-        │           ├── OptimalMomentObjective.calc_objective()
-        │           └── CustomSGD.step() or OGDA.step()
-        ├── client.py -> Client.train_reg()
-        │   └── ModelTrainerCLS.train()
+        ├── FedAvgAPI._run_primary_client_updates()
+        │   ├── serial: Client.update_local_dataset()/train()/train_reg()
+        │   └── parallel: MultiprocessClientExecutor.run()
+        │       └── worker -> Client.train() and Client.train_reg()
+        │           └── my_model_trainer_classification.py
+        │               ├── ModelTrainerCLS.train_gmm()
+        │               │   ├── OptimalMomentObjective.calc_objective()
+        │               │   └── CustomSGD.step() or OGDA.step()
+        │               └── ModelTrainerCLS.train()
         ├── FedAvgAPI._aggregate()
-        ├── second server phase                                 [fed_eg or fed_zo_eg]
-        │   ├── Client.train()                                  [fed_eg]
+        ├── synchronized second client phase                    [fed_eg or fed_zo_eg]
+        │   ├── serial/worker -> Client.train()                                  [fed_eg]
         │   │   └── ModelTrainerCLS.train_gmm()
-        │   └── Client.train_zo()                               [fed_zo_eg]
+        │   └── serial/worker -> Client.train_zo()                               [fed_zo_eg]
         │       └── ModelTrainerCLS.train_gmm_zo()
         ├── FedAvgAPI._aggregate_reg()
         ├── FedAvgAPI.eval_global_model()
