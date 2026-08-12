@@ -17,7 +17,7 @@ class ClientTrainer(ABC):
     def __init__(self, model, learning_args, args):
         self.g = model[0]
         self.f = model[1]
-        self.reg_model = model[2]
+        self.reg_model = model[2] if len(model) > 2 else None
         self.g_optimizer = learning_args["g_optimizer_factory"](model[0])
         self.f_optimizer = learning_args["f_optimizer_factory"](model[1])
         self.game_objective = learning_args["game_objective"]

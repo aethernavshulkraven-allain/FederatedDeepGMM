@@ -9,6 +9,14 @@ import numpy
 import torch
 from fedml.ml.trainer.trainer_creator import create_model_trainer
 from .client import Client
+from .multiprocess_client import (
+    MultiprocessClientExecutor,
+    SingleGPUMultiprocessClientExecutor,
+    _to_cpu,
+    _to_device,
+)
+from .single_gpu_client import SingleGPUClientExecutor
+
 # from fedml.core.dp.mechanisms import 
 # from opacus.layers import 
 from model_selection.simple_model_eval import GradientDecentSimpleModelEval
@@ -69,6 +77,27 @@ from experiment_utils import (
     write_test_mse_by_round,
 )
 
+
+def prepare_curve_data(dataset, predictions, targets):
+    """Return scalar coordinates and aligned values for curve output.
+
+    Image-treatment scenarios keep their scalar causal coordinate in ``w``.
+    Sorting the image tensor itself creates one index per pixel and can expand
+    the result arrays by several orders of magnitude.
+    """
+    x = dataset.x.detach().cpu().numpy()
+    coordinate = dataset.w.detach().cpu().numpy() if x.ndim > 2 else x
+    coordinate = numpy.asarray(coordinate).reshape(coordinate.shape[0], -1)
+    if coordinate.shape[1] != 1:
+        raise ValueError(
+            "Curve plotting requires one scalar coordinate per observation; "
+            f"received shape {coordinate.shape}."
+        )
+
+    indices = numpy.argsort(coordinate[:, 0])
+    return coordinate[indices], predictions[indices], targets[indices]
+
+
 def log_results_to_csv(file_path, round_number, mse):
        if os.path.dirname(file_path):
            os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -92,7 +121,20 @@ class FedAvgAPI(object):
             'burn_in': 0,
             'max_no_progress': 10000,
             'verbose': True,
-            'print_freq_mul': 1
+            'print_freq_mul': 1,
+            'server_learning_rate': 1.5,
+            'eg_predictor_server_lr': None,
+            'eg_corrector_server_lr': None,
+            'zo_mu': 1e-3,
+            'zo_num_directions': 1,
+            'enable_multiprocessing': False,
+            'multiprocessing_num_workers': 0,
+            'multiprocessing_gpu_ids': None,
+            'client_execution_mode': None,
+            'single_gpu_num_slots': 0,
+            'single_gpu_id': None,
+            'multiprocessingsinglegpu_num_workers': 2,
+            'multiprocessingsinglegpu_gpu_id': None,
         }
         for arg_name, default_value in research_args.items():
             if not hasattr(self.args, arg_name):
@@ -281,6 +323,13 @@ class FedAvgAPI(object):
         self.val_data_local_dict = val_data_local_dict
 
 
+        # The FedAvg parallel-execution path (multi/single-GPU client
+        # executors) only carries g and f between server and clients, so it
+        # can't service the auxiliary regression model. Only drop the legacy
+        # direct-regression model when that diagnostic path is actually off;
+        # eICU/Study A runs set auxiliary_regression=true and need model[2].
+        if not bool(self.args.auxiliary_regression):
+            model = model[:2]
         logging.info("model = {}".format(model))
         self.model = model
         self.device = device
@@ -436,7 +485,6 @@ class FedAvgAPI(object):
         # g_simple_model_eval = SGDSimpleModelEval()
         # f_simple_model_eval = SGDSimpleModelEval()
         # learning_eval = FHistoryLearningEvalSGDNoStop(num_epochs=args.epochs_model_selection, eval_freq=args.eval_freq, print_freq=args.print_freq, batch_size=args.batch_size)
-        self.reg_model = model[2][0]
         # self.model_selection = FHistoryModelSelectionV3(
         #     g_model_list=model[0],
         #     f_model_list=model[1],
@@ -514,12 +562,280 @@ class FedAvgAPI(object):
         self.e_dev_tilde = e_dev_tilde
         
         with self.profiler.span("create_model_trainer"):
-            self.model_trainer = create_model_trainer([g_global, f_global, model[2][0]], learning_args, args)
+            model_trainer_inputs = [g_global, f_global]
+            if not self.skip_auxiliary_regression:
+                model_trainer_inputs.append(model[2][0])
+            self.model_trainer = create_model_trainer(model_trainer_inputs, learning_args, args)
 
-        with self.profiler.span("setup_clients"):
-            self._setup_clients(
-                train_data_local_num_dict, train_data_local_dict, test_data_local_dict, self.model_trainer,
+        self.client_executor = self._create_client_executor()
+        if self.client_executor is not None and not self.skip_auxiliary_regression:
+            # The parallel client executors only ship g/f between server and
+            # workers (see _run_primary_client_updates below), so they can't
+            # service the auxiliary regression model.
+            raise ValueError(
+                "auxiliary_regression is not supported together with a "
+                "parallel client_execution_mode; set auxiliary_regression: "
+                "false or use client_execution_mode: sp"
             )
+        if self.client_executor is None:
+            with self.profiler.span("setup_clients"):
+                self._setup_clients(
+                    train_data_local_num_dict, train_data_local_dict,
+                    test_data_local_dict, self.model_trainer,
+                )
+
+    def _create_client_executor(self):
+        execution_mode = self.args.client_execution_mode
+        if execution_mode is None or not str(execution_mode).strip():
+            execution_mode = (
+                "multi_gpu_processes"
+                if self.args.enable_multiprocessing else "sp"
+            )
+        execution_mode = str(execution_mode).strip().lower()
+        valid_modes = {
+            "sp",
+            "multi_gpu_processes",
+            "single_gpu_streams",
+            "multiprocessingsinglegpu",
+        }
+        if execution_mode not in valid_modes:
+            raise ValueError(
+                f"Unknown client_execution_mode {execution_mode!r}; "
+                f"expected one of {sorted(valid_modes)}"
+            )
+        self.client_execution_mode = execution_mode
+
+        if execution_mode == "sp":
+            return None
+        if not torch.cuda.is_available():
+            logging.warning(
+                "%s requested without CUDA; using SP execution",
+                execution_mode,
+            )
+            self.client_execution_mode = "sp"
+            return None
+
+        if execution_mode == "multiprocessingsinglegpu":
+            gpu_id = self.args.multiprocessingsinglegpu_gpu_id
+            if gpu_id is None:
+                gpu_id = self.device.index
+                if gpu_id is None:
+                    gpu_id = torch.cuda.current_device()
+            gpu_id = int(gpu_id)
+            if gpu_id < 0 or gpu_id >= torch.cuda.device_count():
+                raise ValueError(
+                    f"Invalid multiprocessingsinglegpu_gpu_id {gpu_id}; "
+                    f"PyTorch sees {torch.cuda.device_count()} GPUs"
+                )
+            coordinator_id = self.device.index
+            if coordinator_id is None:
+                coordinator_id = torch.cuda.current_device()
+            if gpu_id != coordinator_id:
+                raise ValueError(
+                    "multiprocessingsinglegpu_gpu_id must match "
+                    "device_args.gpu_id so the entire run stays on one GPU"
+                )
+            worker_count = min(
+                int(self.args.multiprocessingsinglegpu_num_workers),
+                int(self.args.client_num_per_round),
+            )
+            if worker_count < 2:
+                logging.warning(
+                    "Single-GPU multiprocessing requires at least two "
+                    "workers; using SP execution"
+                )
+                self.client_execution_mode = "sp"
+                return None
+            return SingleGPUMultiprocessClientExecutor(
+                self.model_trainer,
+                self.args,
+                gpu_id,
+                worker_count,
+            )
+
+        if execution_mode == "single_gpu_streams":
+            gpu_id = self.args.single_gpu_id
+            if gpu_id is None:
+                gpu_id = self.device.index
+                if gpu_id is None:
+                    gpu_id = torch.cuda.current_device()
+            gpu_id = int(gpu_id)
+            if gpu_id < 0 or gpu_id >= torch.cuda.device_count():
+                raise ValueError(
+                    f"Invalid single_gpu_id {gpu_id}; PyTorch sees "
+                    f"{torch.cuda.device_count()} GPUs"
+                )
+            coordinator_id = self.device.index
+            if coordinator_id is None:
+                coordinator_id = torch.cuda.current_device()
+            if gpu_id != coordinator_id:
+                raise ValueError(
+                    "single_gpu_id must match device_args.gpu_id so the "
+                    "entire run stays on one GPU"
+                )
+            slot_count = min(
+                int(self.args.single_gpu_num_slots),
+                int(self.args.client_num_per_round),
+            )
+            if slot_count < 2:
+                logging.warning(
+                    "Single-GPU concurrency requires at least two slots; "
+                    "using SP execution"
+                )
+                self.client_execution_mode = "sp"
+                return None
+            return SingleGPUClientExecutor(
+                self.model_trainer,
+                self.args,
+                torch.device("cuda", gpu_id),
+                slot_count,
+            )
+
+        gpu_ids = self.args.multiprocessing_gpu_ids
+        if gpu_ids is None:
+            gpu_ids = list(range(torch.cuda.device_count()))
+        elif isinstance(gpu_ids, str):
+            gpu_ids = [
+                int(value.strip())
+                for value in gpu_ids.split(",") if value.strip()
+            ]
+        else:
+            gpu_ids = [int(value) for value in gpu_ids]
+
+        invalid_ids = [
+            value for value in gpu_ids
+            if value < 0 or value >= torch.cuda.device_count()
+        ]
+        if invalid_ids:
+            raise ValueError(
+                f"Invalid multiprocessing_gpu_ids {invalid_ids}; "
+                f"PyTorch sees {torch.cuda.device_count()} GPUs"
+            )
+        worker_limit = int(self.args.multiprocessing_num_workers)
+        if worker_limit > 0:
+            gpu_ids = gpu_ids[:worker_limit]
+        gpu_ids = gpu_ids[:self.args.client_num_per_round]
+        if len(gpu_ids) < 2:
+            logging.warning(
+                "Multiprocessing requires at least two GPU workers; using SP execution"
+            )
+            self.client_execution_mode = "sp"
+            return None
+        return MultiprocessClientExecutor(self.model_trainer, self.args, gpu_ids)
+
+    @staticmethod
+    def _materialize_client_data(data_loader):
+        return [_to_cpu(batch) for batch in data_loader]
+
+    def _run_primary_client_updates(self, client_indexes, g_global, f_global):
+        phase_start = time.perf_counter()
+        if self.client_executor is None:
+            w_locals = []
+            for idx, client in enumerate(self.client_list):
+                client_idx = client_indexes[idx]
+                client.update_local_dataset(
+                    client_idx,
+                    self.train_data_local_dict[client_idx],
+                    self.test_data_local_dict[client_idx],
+                    self.train_data_local_num_dict[client_idx],
+                )
+                weights = client.train(copy.deepcopy(g_global), copy.deepcopy(f_global))
+                sample_number = client.get_sample_number()
+                w_locals.append((sample_number, copy.deepcopy(weights)))
+            logging.info(
+                "Client primary phase mode=sp clients=%d elapsed_seconds=%.6f",
+                len(client_indexes), time.perf_counter() - phase_start,
+            )
+            return w_locals
+
+        tasks = []
+        cpu_g_global = _to_cpu(g_global)
+        cpu_f_global = _to_cpu(f_global)
+        for client_idx in client_indexes:
+            tasks.append(
+                {
+                    "phase": "primary",
+                    "client_idx": int(client_idx),
+                    "train_data": self._materialize_client_data(
+                        self.train_data_local_dict[client_idx]
+                    ),
+                    "sample_number": self.train_data_local_num_dict[client_idx],
+                    "g_global": cpu_g_global,
+                    "f_global": cpu_f_global,
+                }
+            )
+        results = self.client_executor.run(tasks)
+        w_locals = []
+        for client_idx, result in zip(client_indexes, results):
+            sample_number = self.train_data_local_num_dict[client_idx]
+            w_locals.append(
+                (sample_number, _to_device(result["gmm"], self.device))
+            )
+        logging.info(
+            "Client primary phase mode=%s clients=%d workers=%d "
+            "elapsed_seconds=%.6f",
+            self.client_executor.execution_mode,
+            len(client_indexes), self.client_executor.worker_count,
+            time.perf_counter() - phase_start,
+        )
+        return w_locals
+
+    def _run_correction_client_updates(self, client_indexes, g_global, f_global):
+        phase_start = time.perf_counter()
+        use_zeroth_order = self.args.client_optimizer == "fed_zo_eg"
+        if self.client_executor is None:
+            correction_locals = []
+            for client in self.client_list:
+                if use_zeroth_order:
+                    correction = client.train_zo(
+                        copy.deepcopy(g_global), copy.deepcopy(f_global)
+                    )
+                else:
+                    correction = client.train(
+                        copy.deepcopy(g_global), copy.deepcopy(f_global)
+                    )
+                correction_locals.append(
+                    (client.get_sample_number(), copy.deepcopy(correction))
+                )
+            logging.info(
+                "Client correction phase mode=sp clients=%d elapsed_seconds=%.6f",
+                len(client_indexes), time.perf_counter() - phase_start,
+            )
+            return correction_locals
+
+        tasks = []
+        cpu_g_global = _to_cpu(g_global)
+        cpu_f_global = _to_cpu(f_global)
+        for client_idx in client_indexes:
+            tasks.append(
+                {
+                    "phase": "correction",
+                    "use_zeroth_order": use_zeroth_order,
+                    "client_idx": int(client_idx),
+                    "train_data": self._materialize_client_data(
+                        self.train_data_local_dict[client_idx]
+                    ),
+                    "sample_number": self.train_data_local_num_dict[client_idx],
+                    "g_global": cpu_g_global,
+                    "f_global": cpu_f_global,
+                }
+            )
+        results = self.client_executor.run(tasks)
+        correction_locals = [
+            (
+                self.train_data_local_num_dict[client_idx],
+                _to_device(result["gmm"], self.device),
+            )
+            for client_idx, result in zip(client_indexes, results)
+        ]
+        logging.info(
+            "Client correction phase mode=%s clients=%d workers=%d "
+            "elapsed_seconds=%.6f",
+            self.client_executor.execution_mode,
+            len(client_indexes), self.client_executor.worker_count,
+            time.perf_counter() - phase_start,
+        )
+        return correction_locals
 
     def _setup_clients(
         self, train_data_local_num_dict, train_data_local_dict, test_data_local_dict, model_trainer,
@@ -587,7 +903,7 @@ class FedAvgAPI(object):
             # logging.info("################Communication round : {}".format(round_idx))
 
             w_locals = []
-            w_locals_reg = []
+            w_locals_reg = [] if not self.skip_auxiliary_regression else None
             w_locals_prev = []
             # obj_sum=[]
             """
@@ -602,46 +918,56 @@ class FedAvgAPI(object):
             with self.profiler.span("record_stochastic_batching", round_idx=round_idx):
                 self._record_stochastic_batching(round_idx, client_indexes)
 
-            for idx, client in enumerate(self.client_list):
-                # update dataset
-                client_idx = client_indexes[idx]
-                with self.profiler.span("client_update_dataset", round_idx=round_idx, client_id=client_idx):
-                    client.update_local_dataset(
-                        client_idx,
-                        self.train_data_local_dict[client_idx],
-                        self.test_data_local_dict[client_idx],
-                        self.train_data_local_num_dict[client_idx],
-                    )
-                # mlops.event("train", event_started=True, event_value="{}_{}".format(str(round_idx), str(idx)))
-                # w = client.train(copy.deepcopy(g_global), copy.deepcopy(f_global),copy.deepcopy(w_locals_prev))
-                # optimizer_g = CustomSGD(self.model_trainer.g.parameters(), lr=0.3)
-                # optimizer_f = CustomSGD(self.model_trainer.f.parameters(), lr=0.3)
-                # scheduler_g = CosineAnnealingLR(optimizer_g, T_max=6000)
-                # scheduler_f = CosineAnnealingLR(optimizer_f, T_max=6000)
-                with self.profiler.span("client_train_gmm", round_idx=round_idx, client_id=client_idx):
-                    w = client.train(g_global, f_global)
+            if self.client_executor is None:
+                for idx, client in enumerate(self.client_list):
+                    # update dataset
+                    client_idx = client_indexes[idx]
+                    with self.profiler.span("client_update_dataset", round_idx=round_idx, client_id=client_idx):
+                        client.update_local_dataset(
+                            client_idx,
+                            self.train_data_local_dict[client_idx],
+                            self.test_data_local_dict[client_idx],
+                            self.train_data_local_num_dict[client_idx],
+                        )
+                    # mlops.event("train", event_started=True, event_value="{}_{}".format(str(round_idx), str(idx)))
+                    # w = client.train(copy.deepcopy(g_global), copy.deepcopy(f_global),copy.deepcopy(w_locals_prev))
+                    # optimizer_g = CustomSGD(self.model_trainer.g.parameters(), lr=0.3)
+                    # optimizer_f = CustomSGD(self.model_trainer.f.parameters(), lr=0.3)
+                    # scheduler_g = CosineAnnealingLR(optimizer_g, T_max=6000)
+                    # scheduler_f = CosineAnnealingLR(optimizer_f, T_max=6000)
+                    with self.profiler.span("client_train_gmm", round_idx=round_idx, client_id=client_idx):
+                        w = client.train(g_global, f_global)
 
-                # w = client.train()
-                # w=client.train(copy.deepcopy(g_global),copy.deepcopy(f_global))
-                # t=[w[0],w[1]]
-                w_reg = None
-                if self.skip_auxiliary_regression:
-                    self.profiler.record(
-                        "client_train_reg_skipped",
-                        round_idx=round_idx,
-                        client_id=client_idx,
-                        detail="auxiliary_regression=false",
+                    # w = client.train()
+                    # w=client.train(copy.deepcopy(g_global),copy.deepcopy(f_global))
+                    # t=[w[0],w[1]]
+                    w_reg = None
+                    if self.skip_auxiliary_regression:
+                        self.profiler.record(
+                            "client_train_reg_skipped",
+                            round_idx=round_idx,
+                            client_id=client_idx,
+                            detail="auxiliary_regression=false",
+                        )
+                    else:
+                        with self.profiler.span("client_train_reg", round_idx=round_idx, client_id=client_idx):
+                            w_reg = client.train_reg(reg_global)
+                    # mlops.event("train", event_started=False, event_value="{}_{}".format(str(round_idx), str(idx)))
+                    # self.logging.info("local weights = " + str(w))
+                    with self.profiler.span("client_collect_state", round_idx=round_idx, client_id=client_idx):
+                        w_locals.append((client.get_sample_number(), w))
+                        if not self.skip_auxiliary_regression:
+                            w_locals_reg.append((client.get_sample_number(), w_reg))
+                    # w_locals_prev = t
+            else:
+                # Parallel client execution (multi-GPU / single-GPU streams).
+                # auxiliary_regression is guaranteed off here -- enforced
+                # when the executor was constructed -- so there is no reg
+                # model to dispatch alongside g/f.
+                with self.profiler.span("client_train_gmm_parallel", round_idx=round_idx):
+                    w_locals = self._run_primary_client_updates(
+                        client_indexes, g_global, f_global
                     )
-                else:
-                    with self.profiler.span("client_train_reg", round_idx=round_idx, client_id=client_idx):
-                        w_reg = client.train_reg(reg_global)
-                # mlops.event("train", event_started=False, event_value="{}_{}".format(str(round_idx), str(idx)))
-                # self.logging.info("local weights = " + str(w))
-                with self.profiler.span("client_collect_state", round_idx=round_idx, client_id=client_idx):
-                    w_locals.append((client.get_sample_number(), w))
-                    if not self.skip_auxiliary_regression:
-                        w_locals_reg.append((client.get_sample_number(), w_reg))
-                # w_locals_prev = t
             with self.profiler.span("record_aggregation_weights", round_idx=round_idx):
                 self._record_aggregation_weights(round_idx, client_indexes, w_locals)
             # update global weights
@@ -649,7 +975,61 @@ class FedAvgAPI(object):
                 w_agg = self._aggregate(w_locals)
 
             with self.profiler.span("server_update_gmm", round_idx=round_idx):
-                if self.args.client_optimizer == "ogda":
+                if self.args.client_optimizer in ("fed_eg", "fed_zo_eg"):
+                    # Phase 1 (w_locals/w_agg above) evaluated the local
+                    # SGD/FedAvg map at z_t. Build the server predictor from
+                    # the aggregated displacement.
+                    g_base = self.model_trainer.get_g_model_params()
+                    f_base = self.model_trainer.get_f_model_params()
+                    predictor_lr = self.args.eg_predictor_server_lr
+                    corrector_lr = self.args.eg_corrector_server_lr
+                    if predictor_lr is None:
+                        predictor_lr = self.server_learning_rate
+                    if corrector_lr is None:
+                        corrector_lr = self.server_learning_rate
+
+                    predictor_delta_g = {
+                        k: w_agg[0][k] - g_base[k] for k in g_base.keys()
+                    }
+                    predictor_delta_f = {
+                        k: w_agg[1][k] - f_base[k] for k in f_base.keys()
+                    }
+                    g_lookahead = {
+                        k: g_base[k] + predictor_lr * predictor_delta_g[k]
+                        for k in g_base.keys()
+                    }
+                    f_lookahead = {
+                        k: f_base[k] + predictor_lr * predictor_delta_f[k]
+                        for k in f_base.keys()
+                    }
+
+                    # Phase 2 uses the same sampled clients and local
+                    # datasets, now initialized at the look-ahead model.
+                    correction_locals = self._run_correction_client_updates(
+                        client_indexes, g_lookahead, f_lookahead
+                    )
+
+                    correction_agg = self._aggregate(correction_locals)
+                    correction_delta_g = {
+                        k: correction_agg[0][k] - g_lookahead[k]
+                        for k in g_base.keys()
+                    }
+                    correction_delta_f = {
+                        k: correction_agg[1][k] - f_lookahead[k]
+                        for k in f_base.keys()
+                    }
+
+                    # The EG corrector is anchored at z_t, not at z_bar.
+                    g_new = {
+                        k: g_base[k] + corrector_lr * correction_delta_g[k]
+                        for k in g_base.keys()
+                    }
+                    f_new = {
+                        k: f_base[k] + corrector_lr * correction_delta_f[k]
+                        for k in f_base.keys()
+                    }
+                    w_global = [g_new, f_new]
+                elif self.args.client_optimizer == "ogda":
                     server_lr = self.server_learning_rate
 
                     # Current weights (theta_t)
@@ -903,6 +1283,9 @@ class FedAvgAPI(object):
 
                 if current_no_progress >= self.args.max_no_progress:
                     break
+        if self.client_executor is not None:
+            self.client_executor.close()
+            self.client_executor = None
         self.profiler.record(
             "training_total",
             time.perf_counter() - training_profile_wall,
@@ -1180,13 +1563,13 @@ class FedAvgAPI(object):
 
         if getattr(self.args, "enable_legacy_outputs", True) or getattr(self.args, "enable_legacy_plot", False):
             with self.profiler.span("legacy_plot"):
-                x = self.test_global.x.detach().cpu().numpy()
                 best_pred_np = best_prediction.detach().cpu().numpy()
                 g_true = self.test_global.g.detach().cpu().numpy()
-                indices = numpy.argsort(x, axis=0).flatten()
-                x_sort = x[indices]
-                pred_plot = PlotElement(x_sort, best_pred_np[indices], "FedDeepGMM-SGDA")
-                true_plot = PlotElement(x_sort, g_true[indices], "Actual Causal Effect")
+                x_sort, best_pred_sort, g_true_sort = prepare_curve_data(
+                    self.test_global, best_pred_np, g_true
+                )
+                pred_plot = PlotElement(x_sort, best_pred_sort, "FedDeepGMM-SGDA")
+                true_plot = PlotElement(x_sort, g_true_sort, "Actual Causal Effect")
                 plot_dir = "plots" if getattr(self.args, "enable_legacy_outputs", True) else os.path.join(self.run_dir, "plots")
                 os.makedirs(plot_dir, exist_ok=True)
                 fig, ax = plt.subplots()

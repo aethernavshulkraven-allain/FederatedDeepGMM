@@ -487,7 +487,96 @@ class ModelTrainerCLS(ClientTrainer):
         
         self.set_g_model_params(g.state_dict())
         self.set_f_model_params(f.state_dict())
-        
+
+    @staticmethod
+    def _rademacher_directions(parameters):
+        """Generate independent SPSA directions with entries in {-1, +1}."""
+        return [
+            torch.empty_like(param).bernoulli_(0.5).mul_(2.0).sub_(1.0)
+            for param in parameters
+        ]
+
+    @staticmethod
+    def _apply_perturbation(parameters, directions, scale):
+        with torch.no_grad():
+            for param, direction in zip(parameters, directions):
+                param.add_(direction, alpha=scale)
+
+    @staticmethod
+    def _clip_and_apply_zo_update(parameters, estimates, learning_rate, max_norm=1.0):
+        """Apply an SGD step using estimated gradients without backward()."""
+        if not estimates:
+            return
+        total_norm_sq = sum(estimate.pow(2).sum() for estimate in estimates)
+        total_norm = total_norm_sq.sqrt()
+        clip_scale = min(1.0, max_norm / (total_norm.item() + 1e-12))
+        with torch.no_grad():
+            for param, estimate in zip(parameters, estimates):
+                param.add_(estimate, alpha=-learning_rate * clip_scale)
+
+    def train_gmm_zo(self, client_data, device, args):
+        """Forward-only SPSA updates for phase two of server FedZO-EG.
+
+        Both player blocks are perturbed simultaneously. Independent Rademacher
+        directions isolate each block in expectation and need two objective
+        forward evaluations per direction.
+        """
+        g = self.g.to(device)
+        f = self.f.to(device)
+        g.train()
+        f.train()
+
+        mu = float(getattr(args, "zo_mu", 1e-3))
+        num_directions = int(getattr(args, "zo_num_directions", 1))
+        if mu <= 0.0:
+            raise ValueError("zo_mu must be positive")
+        if num_directions < 1:
+            raise ValueError("zo_num_directions must be at least 1")
+
+        g_lr = float(self.g_optimizer.param_groups[0]["lr"])
+        f_lr = float(self.f_optimizer.param_groups[0]["lr"])
+        g_parameters = [p for p in g.parameters() if p.requires_grad]
+        f_parameters = [p for p in f.parameters() if p.requires_grad]
+
+        for _ in range(args.epochs):
+            for batch in client_data:
+                x_batch, y_batch, z_batch = batch[2], batch[3], batch[4]
+                g_estimates = [torch.zeros_like(p) for p in g_parameters]
+                f_estimates = [torch.zeros_like(p) for p in f_parameters]
+
+                for _ in range(num_directions):
+                    g_directions = self._rademacher_directions(g_parameters)
+                    f_directions = self._rademacher_directions(f_parameters)
+
+                    self._apply_perturbation(g_parameters, g_directions, mu)
+                    self._apply_perturbation(f_parameters, f_directions, mu)
+                    with torch.no_grad():
+                        g_plus, f_plus = self.game_objective.calc_objective(
+                            g, f, x_batch, z_batch, y_batch)
+
+                    self._apply_perturbation(g_parameters, g_directions, -2.0 * mu)
+                    self._apply_perturbation(f_parameters, f_directions, -2.0 * mu)
+                    with torch.no_grad():
+                        g_minus, f_minus = self.game_objective.calc_objective(
+                            g, f, x_batch, z_batch, y_batch)
+
+                    # Restore the unperturbed look-ahead parameters.
+                    self._apply_perturbation(g_parameters, g_directions, mu)
+                    self._apply_perturbation(f_parameters, f_directions, mu)
+
+                    g_coeff = (g_plus.item() - g_minus.item()) / (2.0 * mu)
+                    f_coeff = (f_plus.item() - f_minus.item()) / (2.0 * mu)
+                    for estimate, direction in zip(g_estimates, g_directions):
+                        estimate.add_(direction, alpha=g_coeff / num_directions)
+                    for estimate, direction in zip(f_estimates, f_directions):
+                        estimate.add_(direction, alpha=f_coeff / num_directions)
+
+                self._clip_and_apply_zo_update(g_parameters, g_estimates, g_lr)
+                self._clip_and_apply_zo_update(f_parameters, f_estimates, f_lr)
+
+        self.set_g_model_params(g.state_dict())
+        self.set_f_model_params(f.state_dict())
+
     def train_iterations(self, train_data, device, args):
         model = self.reg_model
 

@@ -4,7 +4,7 @@
 #   using_mlops: false
 #   random_seed: 0
 #   config_version: "release"
-#   mlops_api_key: f5b88f5dca344e6faf17809139b89c48
+#   mlops_api_key: ""
 #   mlops_project_name: sp_fedavg_test
 #   mlops_run_name: fedml_torch_fedavg_mnist_lr
 
@@ -55,7 +55,7 @@
 #   batch_size: 256
 #   # client_optimizer: ogda
 #   client_optimizer: sgd
-#   learning_rate: 0.03 
+#   learning_rate: 0.03
 #   weight_decay: 0.02 #critic_multiplier was 15 and server lr= 1.5
 
 
@@ -88,7 +88,7 @@
 #   enable_tracking: false
 #    # When running on MLOps platform(open.fedml.ai), the default log path is at ~/.fedml/fedml-client/fedml/logs/ and ~/.fedml/fedml-server/fedml/logs/
 #   enable_wandb: false
-#   wandb_key: ee0b5f53d949c84cee7decbe7a629e63fb2f8408
+#   wandb_key: ""
 #   wandb_entity: fedml-ai
 #   wandb_project: simulation
 #   run_name: fedml_torch_fedavg_mnist_lr
@@ -100,7 +100,7 @@ common_args:
   using_mlops: false
   random_seed: 0
   config_version: "release"
-  mlops_api_key: \"\"
+  mlops_api_key: ""
   mlops_project_name: sp_fedavg_test
   mlops_run_name: fedml_torch_fedavg_mnist_lr
 
@@ -139,7 +139,7 @@ model_args:
 #   client_optimizer: ogda
 #   # client_optimizer: sgd
 #   learning_rate: 0.001
-#   weight_decay: 0.05  #save file-prednew0_001wd0_05.npy critic multiplier was 10 and server_lr=1.5 
+#   weight_decay: 0.05  #save file-prednew0_001wd0_05.npy critic multiplier was 10 and server_lr=1.5
 
 # train_args: #OGDA-FB
 #   federated_optimizer: "FedAvg"
@@ -161,19 +161,6 @@ train_args: #OGDA-MINIBATCH
   client_id_list: "[]"
   client_num_in_total: 1000
   client_num_per_round: 10
-  # Parallelize independent client-local updates without changing server logic.
-  # GPU IDs are logical indices visible to this Python process.
-  enable_multiprocessing: true
-  multiprocessing_num_workers: 4
-  multiprocessing_gpu_ids: [0, 1, 2, 3]
-  # Optional third execution mode; use in a copied YAML for one-GPU tests:
-  # client_execution_mode: single_gpu_streams
-  # single_gpu_num_slots: 4
-  # single_gpu_id: 3
-  # True multiprocessing with persistent client workers on one GPU:
-  # client_execution_mode: multiprocessingsinglegpu
-  # multiprocessingsinglegpu_num_workers: 2
-  # multiprocessingsinglegpu_gpu_id: 3
   comm_round: 500
   epochs: 7
   batch_size: 256
@@ -182,15 +169,15 @@ train_args: #OGDA-MINIBATCH
   learning_rate: 0.001
   weight_decay: 0.1  #save file-prednew0_001wd0_1.npy critic multiplier was 10 and server_lr=1.5 weight decay 0.01 earlier
   # Two-phase server methods (choose one instead of ogda above):
-  client_optimizer: fed_eg     # exact SGD correction at server look-ahead
-  # client_optimizer: fed_zo_eg  # forward-only SPSA correction at look-ahead
+  # client_optimizer: fed_eg     # exact SGD correction at server look-ahead
+  client_optimizer: fed_zo_eg  # forward-only SPSA correction at look-ahead
   server_learning_rate: 1.5
   # null means use server_learning_rate for that phase.
   eg_predictor_server_lr: null
   eg_corrector_server_lr: null
   # Used only by fed_zo_eg; each direction costs two objective forwards.
   zo_mu: 0.001
-  zo_num_directions: 1
+  zo_num_directions: 4
 # next try 0.03
 validation_args:
   frequency_of_the_test: 5
@@ -206,7 +193,7 @@ tracking_args:
   enable_tracking: false
    # When running on MLOps platform(open.fedml.ai), the default log path is at ~/.fedml/fedml-client/fedml/logs/ and ~/.fedml/fedml-server/fedml/logs/
   enable_wandb: false
-  wandb_key: \"\"
+  wandb_key: ""
   wandb_entity: fedml-ai
   wandb_project: simulation
   run_name: fedml_torch_fedavg_mnist_lr

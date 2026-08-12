@@ -49,6 +49,18 @@ def _eicu_activation(value):
     return choices[name]
 
 
+def _wants_auxiliary_regression(args):
+    """Whether the caller still needs the legacy direct-regression model.
+
+    federated_optimizer is always "FedAvg" in this codebase (it is the only
+    coordinator that reaches this factory), so it can't distinguish the new
+    multi/single-GPU client-execution paths -- which only ship g/f and never
+    touch a third model -- from FedAvgAPI's own auxiliary_regression
+    diagnostic, which does. Gate on that flag instead; it defaults to True.
+    """
+    return bool(getattr(args, "auxiliary_regression", True))
+
+
 def create(args, output_dim):
     global model
     model_name = args.model
@@ -88,7 +100,7 @@ def create(args, output_dim):
             MLPModel(input_dim=input_dim_f, layer_widths=layer_widths,
                      activation=activation).double(),
         ]
-        reg_models = [
+        reg_models = [] if not _wants_auxiliary_regression(args) else [
             MLPModel(input_dim=input_dim_g, layer_widths=layer_widths,
                      activation=activation).double(),
         ]
@@ -119,7 +131,7 @@ def create(args, output_dim):
         f_models = [
             DefaultCNN(cuda=torch.cuda.is_available()),
         ]
-        reg_models = [
+        reg_models = [] if not _wants_auxiliary_regression(args) else [
             DefaultCNN(cuda=torch.cuda.is_available()),
         ]
         if torch.cuda.is_available():
@@ -138,7 +150,7 @@ def create(args, output_dim):
              MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
-        reg_models = [
+        reg_models = [] if not _wants_auxiliary_regression(args) else [
             DefaultCNN(cuda=torch.cuda.is_available()),
         ]
         if torch.cuda.is_available():
@@ -157,7 +169,7 @@ def create(args, output_dim):
         f_models = [
             DefaultCNN(cuda=torch.cuda.is_available()),
         ]
-        reg_models = [
+        reg_models = [] if not _wants_auxiliary_regression(args) else [
            MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
@@ -205,7 +217,7 @@ def create(args, output_dim):
         f_models = [
             CIFAR10CNN(cuda=torch.cuda.is_available()),
         ]
-        reg_models = [
+        reg_models = [] if not _wants_auxiliary_regression(args) else [
             CIFAR10CNN(cuda=torch.cuda.is_available()),
         ]
         if torch.cuda.is_available():
@@ -224,7 +236,7 @@ def create(args, output_dim):
              MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
-        reg_models = [
+        reg_models = [] if not _wants_auxiliary_regression(args) else [
             CIFAR10CNN(cuda=torch.cuda.is_available()),
         ]
         if torch.cuda.is_available():
@@ -243,7 +255,7 @@ def create(args, output_dim):
         f_models = [
             CIFAR10CNN(cuda=torch.cuda.is_available()),
         ]
-        reg_models = [
+        reg_models = [] if not _wants_auxiliary_regression(args) else [
            MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
@@ -266,7 +278,7 @@ def create(args, output_dim):
                      activation=nn.LeakyReLU).double(),
                     # DefaultCNN(cuda=True),
         ]
-        reg_models = [
+        reg_models = [] if not _wants_auxiliary_regression(args) else [
            DefaultCNN(cuda=True),
         # MLPModel(input_dim=1, layer_widths=[20],
         #              activation=nn.LeakyReLU).double(),

@@ -50,6 +50,12 @@ if __name__ == "__main__":
 
         with runtime_profiler.span("model_create"):
             model = fedml.model.create(args, output_dim)
+            if not bool(getattr(args, "auxiliary_regression", True)):
+                # auxiliary_regression=false: model_hub already returned an
+                # empty reg_models list in this case, so this just drops the
+                # placeholder. FedAvgAPI itself re-derives the same trim from
+                # this same flag (see its skip_auxiliary_regression guard).
+                model = model[:2]
 
         # # start training
         with runtime_profiler.span("runner_init"):
