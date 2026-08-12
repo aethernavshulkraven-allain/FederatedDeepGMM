@@ -8,7 +8,14 @@ import numpy
 import torch
 from fedml.ml.trainer.trainer_creator import create_model_trainer
 from .client import Client
-from .multiprocess_client import MultiprocessClientExecutor, _to_cpu, _to_device
+from .multiprocess_client import (
+    MultiprocessClientExecutor,
+    SingleGPUMultiprocessClientExecutor,
+    _to_cpu,
+    _to_device,
+)
+from .single_gpu_client import SingleGPUClientExecutor
+
 # from fedml.core.dp.mechanisms import 
 # from opacus.layers import 
 from model_selection.simple_model_eval import GradientDecentSimpleModelEval
@@ -81,6 +88,11 @@ class FedAvgAPI(object):
             'enable_multiprocessing': False,
             'multiprocessing_num_workers': 0,
             'multiprocessing_gpu_ids': None,
+            'client_execution_mode': None,
+            'single_gpu_num_slots': 0,
+            'single_gpu_id': None,
+            'multiprocessingsinglegpu_num_workers': 2,
+            'multiprocessingsinglegpu_gpu_id': None,
         }
         for arg_name, default_value in research_args.items():
             if not hasattr(self.args, arg_name):
@@ -113,6 +125,10 @@ class FedAvgAPI(object):
         self.val_data_local_dict = val_data_local_dict
 
 
+        # The supported FedAvg path optimizes only the DeepGMM structural and
+        # critic models. Drop the legacy direct-regression model returned by
+        # the shared model factory before constructing client executors.
+        model = model[:2]
         logging.info("model = {}".format(model))
         self.model = model
         self.device = device
@@ -226,7 +242,6 @@ class FedAvgAPI(object):
         # g_simple_model_eval = SGDSimpleModelEval()
         # f_simple_model_eval = SGDSimpleModelEval()
         # learning_eval = FHistoryLearningEvalSGDNoStop(num_epochs=args.epochs_model_selection, eval_freq=args.eval_freq, print_freq=args.print_freq, batch_size=args.batch_size)
-        self.reg_model = model[2][0]
         # self.model_selection = FHistoryModelSelectionV3(
         #     g_model_list=model[0],
         #     f_model_list=model[1],
@@ -259,7 +274,7 @@ class FedAvgAPI(object):
         self.dev_f_collection = dev_f_collection
         self.e_dev_tilde = e_dev_tilde
         
-        self.model_trainer = create_model_trainer([g_global, f_global, model[2][0]], learning_args, args)
+        self.model_trainer = create_model_trainer([g_global, f_global], learning_args, args)
 
         self.client_executor = self._create_client_executor()
         if self.client_executor is None:
@@ -269,17 +284,120 @@ class FedAvgAPI(object):
             )
 
     def _create_client_executor(self):
-        if not self.args.enable_multiprocessing:
+        execution_mode = self.args.client_execution_mode
+        if execution_mode is None or not str(execution_mode).strip():
+            execution_mode = (
+                "multi_gpu_processes"
+                if self.args.enable_multiprocessing else "sp"
+            )
+        execution_mode = str(execution_mode).strip().lower()
+        valid_modes = {
+            "sp",
+            "multi_gpu_processes",
+            "single_gpu_streams",
+            "multiprocessingsinglegpu",
+        }
+        if execution_mode not in valid_modes:
+            raise ValueError(
+                f"Unknown client_execution_mode {execution_mode!r}; "
+                f"expected one of {sorted(valid_modes)}"
+            )
+        self.client_execution_mode = execution_mode
+
+        if execution_mode == "sp":
             return None
         if not torch.cuda.is_available():
-            logging.warning("Multiprocessing requested without CUDA; using SP execution")
+            logging.warning(
+                "%s requested without CUDA; using SP execution",
+                execution_mode,
+            )
+            self.client_execution_mode = "sp"
             return None
+
+        if execution_mode == "multiprocessingsinglegpu":
+            gpu_id = self.args.multiprocessingsinglegpu_gpu_id
+            if gpu_id is None:
+                gpu_id = self.device.index
+                if gpu_id is None:
+                    gpu_id = torch.cuda.current_device()
+            gpu_id = int(gpu_id)
+            if gpu_id < 0 or gpu_id >= torch.cuda.device_count():
+                raise ValueError(
+                    f"Invalid multiprocessingsinglegpu_gpu_id {gpu_id}; "
+                    f"PyTorch sees {torch.cuda.device_count()} GPUs"
+                )
+            coordinator_id = self.device.index
+            if coordinator_id is None:
+                coordinator_id = torch.cuda.current_device()
+            if gpu_id != coordinator_id:
+                raise ValueError(
+                    "multiprocessingsinglegpu_gpu_id must match "
+                    "device_args.gpu_id so the entire run stays on one GPU"
+                )
+            worker_count = min(
+                int(self.args.multiprocessingsinglegpu_num_workers),
+                int(self.args.client_num_per_round),
+            )
+            if worker_count < 2:
+                logging.warning(
+                    "Single-GPU multiprocessing requires at least two "
+                    "workers; using SP execution"
+                )
+                self.client_execution_mode = "sp"
+                return None
+            return SingleGPUMultiprocessClientExecutor(
+                self.model_trainer,
+                self.args,
+                gpu_id,
+                worker_count,
+            )
+
+        if execution_mode == "single_gpu_streams":
+            gpu_id = self.args.single_gpu_id
+            if gpu_id is None:
+                gpu_id = self.device.index
+                if gpu_id is None:
+                    gpu_id = torch.cuda.current_device()
+            gpu_id = int(gpu_id)
+            if gpu_id < 0 or gpu_id >= torch.cuda.device_count():
+                raise ValueError(
+                    f"Invalid single_gpu_id {gpu_id}; PyTorch sees "
+                    f"{torch.cuda.device_count()} GPUs"
+                )
+            coordinator_id = self.device.index
+            if coordinator_id is None:
+                coordinator_id = torch.cuda.current_device()
+            if gpu_id != coordinator_id:
+                raise ValueError(
+                    "single_gpu_id must match device_args.gpu_id so the "
+                    "entire run stays on one GPU"
+                )
+            slot_count = min(
+                int(self.args.single_gpu_num_slots),
+                int(self.args.client_num_per_round),
+            )
+            if slot_count < 2:
+                logging.warning(
+                    "Single-GPU concurrency requires at least two slots; "
+                    "using SP execution"
+                )
+                self.client_execution_mode = "sp"
+                return None
+            return SingleGPUClientExecutor(
+                self.model_trainer,
+                self.args,
+                torch.device("cuda", gpu_id),
+                slot_count,
+            )
 
         gpu_ids = self.args.multiprocessing_gpu_ids
         if gpu_ids is None:
             gpu_ids = list(range(torch.cuda.device_count()))
         elif isinstance(gpu_ids, str):
-            gpu_ids = [int(value.strip()) for value in gpu_ids.split(",") if value.strip()]
+            gpu_ids = [
+                int(value.strip())
+                for value in gpu_ids.split(",") if value.strip()
+            ]
         else:
             gpu_ids = [int(value) for value in gpu_ids]
 
@@ -300,6 +418,7 @@ class FedAvgAPI(object):
             logging.warning(
                 "Multiprocessing requires at least two GPU workers; using SP execution"
             )
+            self.client_execution_mode = "sp"
             return None
         return MultiprocessClientExecutor(self.model_trainer, self.args, gpu_ids)
 
@@ -307,11 +426,10 @@ class FedAvgAPI(object):
     def _materialize_client_data(data_loader):
         return [_to_cpu(batch) for batch in data_loader]
 
-    def _run_primary_client_updates(self, client_indexes, g_global, f_global, reg_global):
+    def _run_primary_client_updates(self, client_indexes, g_global, f_global):
         phase_start = time.perf_counter()
         if self.client_executor is None:
             w_locals = []
-            w_locals_reg = []
             for idx, client in enumerate(self.client_list):
                 client_idx = client_indexes[idx]
                 client.update_local_dataset(
@@ -321,20 +439,17 @@ class FedAvgAPI(object):
                     self.train_data_local_num_dict[client_idx],
                 )
                 weights = client.train(copy.deepcopy(g_global), copy.deepcopy(f_global))
-                reg_weights = client.train_reg(copy.deepcopy(reg_global))
                 sample_number = client.get_sample_number()
                 w_locals.append((sample_number, copy.deepcopy(weights)))
-                w_locals_reg.append((sample_number, copy.deepcopy(reg_weights)))
             logging.info(
                 "Client primary phase mode=sp clients=%d elapsed_seconds=%.6f",
                 len(client_indexes), time.perf_counter() - phase_start,
             )
-            return w_locals, w_locals_reg
+            return w_locals
 
         tasks = []
         cpu_g_global = _to_cpu(g_global)
         cpu_f_global = _to_cpu(f_global)
-        cpu_reg_global = _to_cpu(reg_global)
         for client_idx in client_indexes:
             tasks.append(
                 {
@@ -346,24 +461,23 @@ class FedAvgAPI(object):
                     "sample_number": self.train_data_local_num_dict[client_idx],
                     "g_global": cpu_g_global,
                     "f_global": cpu_f_global,
-                    "reg_global": cpu_reg_global,
                 }
             )
         results = self.client_executor.run(tasks)
         w_locals = []
-        w_locals_reg = []
         for client_idx, result in zip(client_indexes, results):
             sample_number = self.train_data_local_num_dict[client_idx]
             w_locals.append(
                 (sample_number, _to_device(result["gmm"], self.device))
             )
-            w_locals_reg.append((sample_number, result["reg"]))
         logging.info(
-            "Client primary phase mode=mp clients=%d workers=%d elapsed_seconds=%.6f",
+            "Client primary phase mode=%s clients=%d workers=%d "
+            "elapsed_seconds=%.6f",
+            self.client_executor.execution_mode,
             len(client_indexes), self.client_executor.worker_count,
             time.perf_counter() - phase_start,
         )
-        return w_locals, w_locals_reg
+        return w_locals
 
     def _run_correction_client_updates(self, client_indexes, g_global, f_global):
         phase_start = time.perf_counter()
@@ -414,7 +528,9 @@ class FedAvgAPI(object):
             for client_idx, result in zip(client_indexes, results)
         ]
         logging.info(
-            "Client correction phase mode=mp clients=%d workers=%d elapsed_seconds=%.6f",
+            "Client correction phase mode=%s clients=%d workers=%d "
+            "elapsed_seconds=%.6f",
+            self.client_executor.execution_mode,
             len(client_indexes), self.client_executor.worker_count,
             time.perf_counter() - phase_start,
         )
@@ -449,7 +565,6 @@ class FedAvgAPI(object):
         # print("Round"+" "+"mse")
         g_global = self.model_trainer.get_g_model_params()
         f_global = self.model_trainer.get_f_model_params()
-        reg_global = self.model_trainer.get_model_params() 
         fedAvg=[] 
         # mlops.log_training_status(mlops.ClientConstants.MSG_MLOPS_CLIENT_STATUS_TRAINING)
         # mlops.log_aggregation_status(mlops.ServerConstants.MSG_MLOPS_SERVER_STATUS_RUNNING)
@@ -482,7 +597,6 @@ class FedAvgAPI(object):
             # logging.info("################Communication round : {}".format(round_idx))
 
             w_locals = []
-            w_locals_reg = []
             w_locals_prev = []
             # obj_sum=[]
             """
@@ -494,8 +608,8 @@ class FedAvgAPI(object):
             )
             # logging.info("client_indexes = " + str(client_indexes))
 
-            w_locals, w_locals_reg = self._run_primary_client_updates(
-                client_indexes, g_global, f_global, reg_global
+            w_locals = self._run_primary_client_updates(
+                client_indexes, g_global, f_global
             )
             # update global weights
             w_agg = self._aggregate(w_locals)
@@ -600,10 +714,8 @@ class FedAvgAPI(object):
 
                 w_global = [g_new, f_new]
 
-            w_global_reg = self._aggregate_reg(w_locals_reg)
             self.model_trainer.set_g_model_params(w_global[0])
             self.model_trainer.set_f_model_params(w_global[1])
-            self.model_trainer.set_model_params(w_global_reg)
             # mlops.event("agg", event_started=False, event_value=str(round_idx))
 
             # at last round
@@ -689,12 +801,8 @@ class FedAvgAPI(object):
         self.model_trainer.set_g_model_params(self.g_state_history[max_i])
         g_final = self.g
         # torch.save(g_final,'/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_step_fedsgd')
-        reg_model_final = self.reg_model
         g_final.load_state_dict(self.model_trainer.get_g_model_params())
-        reg_model_final.load_state_dict(self.model_trainer.get_model_params())
         g_pred = g_final(self.test_global.x)
-        reg_model_final.to(self.device)
-        reg_pred = reg_model_final(self.test_global.x)
         # model_linear = torch.load('/home/somya/final/model_oldabs')
         # model_linear_sgd = torch.load('/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_abs')
         # model_linear_sgd_fedavg = torch.load('/home/somya/thesis/fedgmm/sp_decentralized_mnist_lr_example/model_abs_fedsgd')
@@ -719,7 +827,6 @@ class FedAvgAPI(object):
         g_pred = g_pred.detach().cpu().numpy()
         g_true = self.test_global.g.detach().cpu().numpy()
         # gmm_pred = gmm_pred.detach().cpu().numpy()
-        reg_pred = reg_pred.detach().cpu().numpy()
         # sgd_plain = sgd_plain.detach().cpu().numpy()
         # gmm_pred_sgd = gmm_pred_sgd.detach().cpu().numpy()
         # fedavg_sgd = fedavg_sgd.detach().cpu().numpy()
@@ -754,7 +861,6 @@ class FedAvgAPI(object):
         # sgd_plain_plot = PlotElement(x_sort,sgd_plain_sort,"DeepGMM-SGDA")
 
         # plot_Avg = PlotElement(x_label,fedAvg,"FedAvg")
-        # reg_NN_plot = PlotElement(x_sort, reg_pred_sort, "Direct predictions from Neural Network")
         
         os.makedirs("plots", exist_ok=True)
         fig, ax = plt.subplots()
@@ -764,7 +870,6 @@ class FedAvgAPI(object):
         # ax = gmm_sgd_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
         # ax = fedavg_sgd_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
         ax = pred_plot.plot(ax=ax, save_path=f'plots/aaaa_{self.args.run_name}_.png')
-        # ax = reg_NN_plot.plot(ax=ax, save_path=f'plots/aaaacomparison_{self.args.run_name}_.png')
         
         # mlops.log_training_finished_status()
         # mlops.log_aggregation_finished_status()
@@ -783,23 +888,6 @@ class FedAvgAPI(object):
         for i in obj_sum:
             total_sum+=i
         return total_sum/10
-    def _aggregate_reg(self, w_locals):
-        training_num = 0
-        for idx in range(len(w_locals)):
-            (sample_num, averaged_params) = w_locals[idx]
-            training_num += sample_num
-
-        (sample_num, averaged_params) = w_locals[0]
-        for k in averaged_params.keys():
-            for i in range(0, len(w_locals)):
-                local_sample_number, local_model_params = w_locals[i]
-                w = local_sample_number / training_num
-                if i == 0:
-                    averaged_params[k] = local_model_params[k] * w
-                else:
-                    averaged_params[k] += local_model_params[k] * w
-        return averaged_params
-    
     def _aggregate(self, w_locals):
         training_num = sum([num for num, (_) in w_locals])
 

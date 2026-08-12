@@ -1,4 +1,4 @@
-"""Persistent multi-GPU workers for independent federated client updates."""
+"""Persistent GPU processes for independent federated client updates."""
 
 import atexit
 import copy
@@ -12,6 +12,12 @@ import torch.multiprocessing as multiprocessing
 from .client import Client
 
 
+def _configure_cuda_determinism():
+    """Match the deterministic cuDNN settings applied by ``fedml.init``."""
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+
 def _to_cpu(value):
     if torch.is_tensor(value):
         return value.detach().cpu()
@@ -21,7 +27,6 @@ def _to_cpu(value):
         converted = [_to_cpu(item) for item in value]
         return type(value)(converted)
     return value
-
 
 
 def _to_device(value, device):
@@ -34,18 +39,62 @@ def _to_device(value, device):
         return type(value)(converted)
     return value
 
+
 def _move_trainer_to_cpu(trainer):
     trainer.g.cpu()
     trainer.f.cpu()
-    trainer.reg_model.cpu()
+    if trainer.reg_model is not None:
+        trainer.reg_model.cpu()
     trainer.g_optimizer.state.clear()
     trainer.f_optimizer.state.clear()
     return trainer
 
 
+def _release_worker_cuda_cache(device):
+    """Release per-client CUDA workspace before the server resumes."""
+    torch.cuda.synchronize(device)
+    torch.cuda.empty_cache()
+
+
+def _execute_worker_task(task, trainer, args, device):
+    """Execute one client task and return a CPU-only payload."""
+    client = Client(
+        task["client_idx"],
+        _to_device(task["train_data"], device),
+        None,
+        task["sample_number"],
+        args,
+        device,
+        trainer,
+    )
+    try:
+        phase = task["phase"]
+        if phase == "primary":
+            return {
+                "gmm": _to_cpu(
+                    client.train(task["g_global"], task["f_global"])
+                )
+            }
+        if phase == "correction":
+            if task["use_zeroth_order"]:
+                weights = client.train_zo(
+                    task["g_global"], task["f_global"]
+                )
+            else:
+                weights = client.train(
+                    task["g_global"], task["f_global"]
+                )
+            return {"gmm": _to_cpu(weights)}
+        raise ValueError(f"Unknown client phase: {phase}")
+    finally:
+        del client
+        _release_worker_cuda_cache(device)
+
+
 def _worker_loop(worker_id, gpu_id, trainer, args, task_queue, result_queue):
     try:
         torch.cuda.set_device(gpu_id)
+        _configure_cuda_determinism()
         device = torch.device("cuda", gpu_id)
         trainer = _move_trainer_to_cpu(trainer)
 
@@ -56,32 +105,9 @@ def _worker_loop(worker_id, gpu_id, trainer, args, task_queue, result_queue):
 
             task_id = task["task_id"]
             try:
-                client = Client(
-                    task["client_idx"],
-                    _to_device(task["train_data"], device),
-                    None,
-                    task["sample_number"],
-                    args,
-                    device,
-                    trainer,
+                payload = _execute_worker_task(
+                    task, trainer, args, device
                 )
-                phase = task["phase"]
-                if phase == "primary":
-                    gmm_weights = client.train(task["g_global"], task["f_global"])
-                    reg_weights = client.train_reg(task["reg_global"])
-                    payload = {
-                        "gmm": _to_cpu(gmm_weights),
-                        "reg": _to_cpu(reg_weights),
-                    }
-                elif phase == "correction":
-                    if task["use_zeroth_order"]:
-                        weights = client.train_zo(task["g_global"], task["f_global"])
-                    else:
-                        weights = client.train(task["g_global"], task["f_global"])
-                    payload = {"gmm": _to_cpu(weights)}
-                else:
-                    raise ValueError(f"Unknown client phase: {phase}")
-
                 result_queue.put(
                     {
                         "task_id": task_id,
@@ -113,6 +139,8 @@ def _worker_loop(worker_id, gpu_id, trainer, args, task_queue, result_queue):
 class MultiprocessClientExecutor:
     """Run independent client updates concurrently and return ordered results."""
 
+    execution_mode = "multi_gpu_processes"
+
     def __init__(self, trainer, args, gpu_ids):
         self.context = multiprocessing.get_context("spawn")
         self.result_queue = self.context.Queue()
@@ -143,9 +171,11 @@ class MultiprocessClientExecutor:
         self.worker_count = len(self.processes)
         atexit.register(self.close)
         logging.info(
-            "Started %d federated client workers on logical GPUs %s",
+            "Started %d federated client workers on logical GPUs %s "
+            "with PIDs %s",
             self.worker_count,
             gpu_ids,
+            [process.pid for process in self.processes],
         )
 
     def run(self, tasks):
@@ -224,3 +254,25 @@ class MultiprocessClientExecutor:
 
     def __exit__(self, exc_type, exc_value, traceback_value):
         self.close()
+
+
+def _single_gpu_worker_ids(gpu_id, worker_count):
+    """Return one logical CUDA device assignment per spawned worker."""
+    worker_count = int(worker_count)
+    if worker_count < 1:
+        raise ValueError("worker_count must be at least 1")
+    return [int(gpu_id)] * worker_count
+
+
+class SingleGPUMultiprocessClientExecutor(MultiprocessClientExecutor):
+    """Run persistent client processes that share one logical CUDA GPU."""
+
+    execution_mode = "multiprocessingsinglegpu"
+
+    def __init__(self, trainer, args, gpu_id, worker_count):
+        self.gpu_id = int(gpu_id)
+        super().__init__(
+            trainer,
+            args,
+            _single_gpu_worker_ids(self.gpu_id, worker_count),
+        )

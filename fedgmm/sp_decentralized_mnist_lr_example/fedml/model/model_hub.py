@@ -37,7 +37,7 @@ def create(args, output_dim):
             MLPModel(input_dim=input_dim_f, layer_widths=[20, 20],
                      activation=nn.LeakyReLU).double(),
         ]
-        reg_models = [
+        reg_models = [] if args.federated_optimizer == "FedAvg" else [
             MLPModel(input_dim=input_dim_g, layer_widths=[20, 20],
                      activation=nn.LeakyReLU).double(),
         ]
@@ -68,7 +68,7 @@ def create(args, output_dim):
         f_models = [
             DefaultCNN(cuda=True),
         ]
-        reg_models = [
+        reg_models = [] if args.federated_optimizer == "FedAvg" else [
             DefaultCNN(cuda=True),
         ]
         if torch.cuda.is_available():
@@ -87,7 +87,7 @@ def create(args, output_dim):
              MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
-        reg_models = [
+        reg_models = [] if args.federated_optimizer == "FedAvg" else [
             DefaultCNN(cuda=True),
         ]
         if torch.cuda.is_available():
@@ -106,7 +106,7 @@ def create(args, output_dim):
         f_models = [
             DefaultCNN(cuda=True),
         ]
-        reg_models = [
+        reg_models = [] if args.federated_optimizer == "FedAvg" else [
            MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
@@ -154,7 +154,7 @@ def create(args, output_dim):
         f_models = [
             CIFAR10CNN(cuda=torch.cuda.is_available()),
         ]
-        reg_models = [
+        reg_models = [] if args.federated_optimizer == "FedAvg" else [
             CIFAR10CNN(cuda=torch.cuda.is_available()),
         ]
         if torch.cuda.is_available():
@@ -173,7 +173,7 @@ def create(args, output_dim):
              MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
-        reg_models = [
+        reg_models = [] if args.federated_optimizer == "FedAvg" else [
             CIFAR10CNN(cuda=torch.cuda.is_available()),
         ]
         if torch.cuda.is_available():
@@ -192,7 +192,7 @@ def create(args, output_dim):
         f_models = [
             CIFAR10CNN(cuda=torch.cuda.is_available()),
         ]
-        reg_models = [
+        reg_models = [] if args.federated_optimizer == "FedAvg" else [
            MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
@@ -215,7 +215,7 @@ def create(args, output_dim):
                      activation=nn.LeakyReLU).double(),
                     # DefaultCNN(cuda=True),
         ]
-        reg_models = [
+        reg_models = [] if args.federated_optimizer == "FedAvg" else [
            DefaultCNN(cuda=True),
         # MLPModel(input_dim=1, layer_widths=[20],
         #              activation=nn.LeakyReLU).double(),

@@ -41,12 +41,6 @@ class Client:
         f = self.model_trainer.get_f_model_params()
         return [g, f]
     
-    def train_reg(self, w_global):
-        self.model_trainer.set_model_params(w_global)
-        self.model_trainer.train(self.local_training_data, self.device, self.args)
-        weights = self.model_trainer.get_model_params()
-        return weights
-
     def local_test(self, b_use_test_dataset):
         if b_use_test_dataset:
             test_data = self.local_test_data
