@@ -68,6 +68,18 @@ Regression coverage is in `tests/test_multiprocess_client.py` for routing, GPU a
 
 Start with `2` or `4`, then profile the real workload. On the validated CIFAR10-X test with 10 sampled clients, one round, two local epochs, and batch size 256, worker counts `2`, `4`, `6`, `8`, and `10` all completed on an RTX A6000. Four workers was fastest; more workers increased memory and overhead. Capacity depends on the model, batch size, and GPU. To change the count, make a reviewed copy of the manifest and edit `multiprocessingsinglegpu_num_workers`; do not alter a recorded study manifest in place.
 
+## Deterministic Full-Batch Recommendation
+
+Use SP for deterministic full-batch FEMNIST-X, FEMNIST-XZ, and CIFAR10-X runs on one GPU. Matched 20-round FedGDA-D benchmarks with 10/10 clients and three local steps found both two-worker and four-worker same-GPU multiprocessing slower than SP:
+
+| Dataset | SP | MP2 | MP4 |
+|---|---:|---:|---:|
+| FEMNIST-X | 3:10 | 3:20 | 3:20 |
+| FEMNIST-XZ | 6:15 | 6:40 | 6:45 |
+| CIFAR10-X | 5:50 | 6:15 | 6:20 |
+
+All MP checkpoints, predictions, and numerical metrics matched their SP baselines exactly; every `g` and `f` tensor passed `torch.equal`. The slowdown comes from process, serialization, and memory overhead while full-batch training already saturates the GPU. Use separate SP experiments on separate GPUs for deterministic campaign throughput. Reproducible manifests are under `experiments/multiprocessing_benchmark/`.
+
 ## Outputs and Verification
 
 Results are written beneath the configured `common_args.output_dir`, grouped by dataset, method, seed, and run ID. Check:
