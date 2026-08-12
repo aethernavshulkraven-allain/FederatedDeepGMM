@@ -166,7 +166,22 @@ train_args: #OGDA-MINIBATCH
   batch_size: 256
   client_optimizer: ogda
   # client_optimizer: sgd
+  # client_optimizer: fed_eg
+  # client_optimizer: fed_zo_eg
   learning_rate: 0.001
+  # FedEG/FedZO-EG use server_learning_rate when either phase LR is null.
+  eg_predictor_server_lr: null
+  eg_corrector_server_lr: null
+  # FedZO-EG only; each direction costs two forward objective evaluations.
+  zo_mu: 0.001
+  zo_num_directions: 1
+  # Parallel client execution; backend remains sp.
+  client_execution_mode: sp
+  enable_multiprocessing: false
+  multiprocessing_num_workers: 4
+  multiprocessing_gpu_ids: [0, 1, 2, 3]
+  multiprocessingsinglegpu_num_workers: 2
+  multiprocessingsinglegpu_gpu_id: 0
   weight_decay: 0.1  #save file-prednew0_001wd0_1.npy critic multiplier was 10 and server_lr=1.5 weight decay 0.01 earlier
 # next try 0.03
 validation_args:

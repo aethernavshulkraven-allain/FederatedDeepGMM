@@ -29,6 +29,10 @@ VARIANT_MAPPING = {
     "fedgda_s": {"client_optimizer": "sgd", "mode": "stochastic", "batching": "minibatch"},
     "fedogda_d": {"client_optimizer": "ogda", "mode": "deterministic", "batching": "full_batch"},
     "fedogda_s": {"client_optimizer": "ogda", "mode": "stochastic", "batching": "minibatch"},
+    "fed_eg_d": {"client_optimizer": "fed_eg", "mode": "deterministic", "batching": "full_batch"},
+    "fed_eg_s": {"client_optimizer": "fed_eg", "mode": "stochastic", "batching": "minibatch"},
+    "fed_zo_eg_d": {"client_optimizer": "fed_zo_eg", "mode": "deterministic", "batching": "full_batch"},
+    "fed_zo_eg_s": {"client_optimizer": "fed_zo_eg", "mode": "stochastic", "batching": "minibatch"},
 }
 FEDML_LOG_DIR_ENV = "FEDGMM_FEDML_LOG_DIR"
 FEDML_TRACE_DIR_ENV = "FEDGMM_FEDML_TRACE_DIR"
@@ -77,6 +81,16 @@ def write_config(path, config):
             "weight_decay": config["weight_decay"],
             "critic_multiplier": config["critic_multiplier"],
             "server_learning_rate": config["server_learning_rate"],
+            "eg_predictor_server_lr": config.get("eg_predictor_server_lr", config["server_learning_rate"]),
+            "eg_corrector_server_lr": config.get("eg_corrector_server_lr", config["server_learning_rate"]),
+            "zo_mu": config.get("zo_mu", 1e-3),
+            "zo_num_directions": config.get("zo_num_directions", 1),
+            "client_execution_mode": config.get("client_execution_mode", "sp"),
+            "enable_multiprocessing": config.get("enable_multiprocessing", False),
+            "multiprocessing_num_workers": config.get("multiprocessing_num_workers", 0),
+            "multiprocessing_gpu_ids": config.get("multiprocessing_gpu_ids", ""),
+            "multiprocessingsinglegpu_num_workers": config.get("multiprocessingsinglegpu_num_workers", 2),
+            "multiprocessingsinglegpu_gpu_id": config.get("multiprocessingsinglegpu_gpu_id", config["gpu_id"]),
             "gradient_clip_norm": config["gradient_clip_norm"],
             "simple_model_selection_epochs": config.get("simple_model_selection_epochs", 100),
             "f_history_model_selection_epochs": config.get("f_history_model_selection_epochs", 60),
@@ -189,7 +203,7 @@ def main():
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument(
         "--variant",
-        choices=["fedgda_d", "fedgda_s", "fedogda_d", "fedogda_s"],
+        choices=list(VARIANT_MAPPING),
         default=None,
         help="Run only one ABS smoke variant.",
     )

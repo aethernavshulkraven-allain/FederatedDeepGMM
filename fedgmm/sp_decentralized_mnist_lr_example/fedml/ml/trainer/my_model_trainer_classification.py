@@ -280,6 +280,8 @@ class ModelTrainerCLS(ClientTrainer):
     
     def get_model_params(self):
         with self._profile_span("trainer_get_reg_params"):
+            if self.reg_model is None:
+                return None
             args = getattr(self, "args", None)
             state_device = str(getattr(args, "auxiliary_regression_state_device", "device")).lower()
             if state_device == "cpu":
@@ -288,6 +290,10 @@ class ModelTrainerCLS(ClientTrainer):
 
     def set_model_params(self, model_parameters):
         with self._profile_span("trainer_set_reg_params"):
+            if self.reg_model is None:
+                if model_parameters is not None:
+                    raise ValueError("Cannot load regression state when auxiliary regression is disabled")
+                return
             self.reg_model.load_state_dict(model_parameters)
             self.reg_model = self.reg_model.train()
 
@@ -305,6 +311,8 @@ class ModelTrainerCLS(ClientTrainer):
         
     def train(self, client_data, device, args):
         model = self.reg_model
+        if model is None:
+            raise RuntimeError("Auxiliary regression training is disabled")
         # model = model.load_state_dict(self.get_model_params())
         profiler = self._profiler()
         profile_batches = bool(getattr(profiler, "profile_batches", False))
@@ -488,6 +496,103 @@ class ModelTrainerCLS(ClientTrainer):
         self.set_g_model_params(g.state_dict())
         self.set_f_model_params(f.state_dict())
         
+
+    @staticmethod
+    def _rademacher_directions(parameters):
+        """Generate independent SPSA directions with entries in {-1, +1}."""
+        return [
+            torch.empty_like(parameter).bernoulli_(0.5).mul_(2.0).sub_(1.0)
+            for parameter in parameters
+        ]
+
+
+    @staticmethod
+    def _apply_perturbation(parameters, directions, scale):
+        with torch.no_grad():
+            for parameter, direction in zip(parameters, directions):
+                parameter.add_(direction, alpha=scale)
+
+
+    @staticmethod
+    def _clip_and_apply_zo_update(parameters, estimates, learning_rate, max_norm=1.0):
+        if not estimates:
+            return
+        total_norm = sum(estimate.pow(2).sum() for estimate in estimates).sqrt()
+        clip_scale = min(1.0, max_norm / (total_norm.item() + 1e-12))
+        with torch.no_grad():
+            for parameter, estimate in zip(parameters, estimates):
+                parameter.add_(estimate, alpha=-learning_rate * clip_scale)
+
+    def train_gmm_zo(self, client_data, device, args):
+        """Apply forward-only SPSA updates for the FedZO-EG correction phase."""
+        g = self.g.to(device)
+        f = self.f.to(device)
+        g.train()
+        f.train()
+
+        mu = float(getattr(args, "zo_mu", 1e-3))
+        num_directions = int(getattr(args, "zo_num_directions", 1))
+        if mu <= 0.0:
+            raise ValueError("zo_mu must be positive")
+        if num_directions < 1:
+            raise ValueError("zo_num_directions must be at least 1")
+
+        gradient_clip_norm = float(getattr(args, "gradient_clip_norm", 1.0))
+        non_blocking = bool(getattr(args, "dataloader_pin_memory", False))
+        g_lr = float(self.g_optimizer.param_groups[0]["lr"])
+        f_lr = float(self.f_optimizer.param_groups[0]["lr"])
+        g_parameters = [parameter for parameter in g.parameters() if parameter.requires_grad]
+        f_parameters = [parameter for parameter in f.parameters() if parameter.requires_grad]
+
+        if hasattr(self.game_objective, "set_theta_tilde"):
+            self.game_objective.set_theta_tilde(g)
+
+        for _ in range(args.epochs):
+            for batch in client_data:
+                x_batch = batch[2].to(device, non_blocking=non_blocking)
+                y_batch = batch[3].to(device, non_blocking=non_blocking)
+                z_batch = batch[4].to(device, non_blocking=non_blocking)
+                g_estimates = [torch.zeros_like(parameter) for parameter in g_parameters]
+                f_estimates = [torch.zeros_like(parameter) for parameter in f_parameters]
+
+                for _ in range(num_directions):
+                    g_directions = self._rademacher_directions(g_parameters)
+                    f_directions = self._rademacher_directions(f_parameters)
+
+                    self._apply_perturbation(g_parameters, g_directions, mu)
+                    self._apply_perturbation(f_parameters, f_directions, mu)
+                    with torch.no_grad():
+                        g_plus, f_plus = self.game_objective.calc_objective(
+                            g, f, x_batch, z_batch, y_batch
+                        )
+
+                    self._apply_perturbation(g_parameters, g_directions, -2.0 * mu)
+                    self._apply_perturbation(f_parameters, f_directions, -2.0 * mu)
+                    with torch.no_grad():
+                        g_minus, f_minus = self.game_objective.calc_objective(
+                            g, f, x_batch, z_batch, y_batch
+                        )
+
+                    self._apply_perturbation(g_parameters, g_directions, mu)
+                    self._apply_perturbation(f_parameters, f_directions, mu)
+
+                    g_coefficient = (g_plus.item() - g_minus.item()) / (2.0 * mu)
+                    f_coefficient = (f_plus.item() - f_minus.item()) / (2.0 * mu)
+                    for estimate, direction in zip(g_estimates, g_directions):
+                        estimate.add_(direction, alpha=g_coefficient / num_directions)
+                    for estimate, direction in zip(f_estimates, f_directions):
+                        estimate.add_(direction, alpha=f_coefficient / num_directions)
+
+                self._clip_and_apply_zo_update(
+                    g_parameters, g_estimates, g_lr, gradient_clip_norm
+                )
+                self._clip_and_apply_zo_update(
+                    f_parameters, f_estimates, f_lr, gradient_clip_norm
+                )
+
+        self.set_g_model_params(g.state_dict())
+        self.set_f_model_params(f.state_dict())
+
     def train_iterations(self, train_data, device, args):
         model = self.reg_model
 

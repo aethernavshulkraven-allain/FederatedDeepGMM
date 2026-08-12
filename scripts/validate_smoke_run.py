@@ -152,14 +152,14 @@ def _assert_close(left, right, field, tolerance=1e-8):
         raise ValidationError(f"{field} mismatch: {left!r} != {right!r}")
 
 
-def _checkpoint_has_full_state(path):
+def _checkpoint_has_gf_state(path):
     try:
         import torch
         checkpoint = torch.load(path, map_location="cpu")
-        if all(key in checkpoint for key in ("g_state_dict", "f_state_dict", "reg_state_dict")):
+        if all(key in checkpoint for key in ("g_state_dict", "f_state_dict")):
             return True
         state = checkpoint.get("state", {})
-        return all(key in state for key in ("g", "f", "regression"))
+        return all(key in state for key in ("g", "f"))
     except Exception:
         pass
     with zipfile.ZipFile(path, "r") as archive:
@@ -167,18 +167,18 @@ def _checkpoint_has_full_state(path):
         if not data_files:
             raise ValidationError(f"Checkpoint has no data.pkl: {path}")
         payload = b"".join(archive.read(name) for name in data_files)
-    required = (b"g_state_dict", b"f_state_dict", b"reg_state_dict")
+    required = (b"g_state_dict", b"f_state_dict")
     if all(key in payload for key in required):
         return True
-    nested = (b"state", b"g", b"f", b"regression")
+    nested = (b"state", b"g", b"f")
     return all(key in payload for key in nested)
 
 
 def _assert_checkpoints(run_dir):
     for name in ("best_validation.pt", "final.pt"):
         path = os.path.join(run_dir, "checkpoints", name)
-        if not _checkpoint_has_full_state(path):
-            raise ValidationError(f"Checkpoint lacks full g/f/regression state: {path}")
+        if not _checkpoint_has_gf_state(path):
+            raise ValidationError(f"Checkpoint lacks required g/f state: {path}")
 
 
 def _stochastic_smoke_requires_batching_summary(config):
