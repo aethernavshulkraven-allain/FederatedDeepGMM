@@ -30,6 +30,7 @@ DEFAULT_AGGREGATION_WEIGHTING = "sample_size"
 # result stays reproducible.
 OBJECTIVE_MODE_CHOICES = ("legacy", "paper_aligned")
 DEFAULT_OBJECTIVE_MODE = "legacy"
+CLIENT_OPTIMIZER_CHOICES = ("sgd", "ogda", "fed_eg", "fed_zo_eg")
 PAPER_ALIGNED_LAMBDA = 0.25
 PROFILE_ENV_VAR = "FEDGMM_PROFILE_RUNTIME"
 PROFILE_ROOT_ENV_VAR = "FEDGMM_PROFILE_ROOT"
@@ -65,6 +66,10 @@ EFFECTIVE_CONFIG_FIELDS = (
     "critic_multiplier",
     "f_learning_rate",
     "server_learning_rate",
+    "eg_predictor_server_lr",
+    "eg_corrector_server_lr",
+    "zo_mu",
+    "zo_num_directions",
     "objective_lambda_1",
     "gradient_clip_norm",
     "weight_decay",
@@ -257,7 +262,17 @@ def get_effective_config(args):
     dataset = getattr(args, "dataset", "unknown")
     client_optimizer = getattr(args, "client_optimizer", "sgd")
     optimizer_name = str(client_optimizer).lower()
-    algorithm = "fedogda" if optimizer_name == "ogda" else "fedgda"
+    if optimizer_name not in CLIENT_OPTIMIZER_CHOICES:
+        raise ValueError(
+            f"client_optimizer must be one of {CLIENT_OPTIMIZER_CHOICES}, "
+            f"got {client_optimizer!r}"
+        )
+    algorithm = {
+        "sgd": "fedgda",
+        "ogda": "fedogda",
+        "fed_eg": "fed_eg",
+        "fed_zo_eg": "fed_zo_eg",
+    }[optimizer_name]
     batch_size = getattr(args, "batch_size", 0)
     mode = "d" if batch_size is None or int(batch_size) <= 0 else "s"
     seed = int(getattr(args, "random_seed", 0))
@@ -268,6 +283,19 @@ def get_effective_config(args):
         getattr(args, "critic_multiplier", default_critic_multiplier(dataset))
     )
     server_learning_rate = float(getattr(args, "server_learning_rate", 1.5))
+    eg_predictor_server_lr = getattr(args, "eg_predictor_server_lr", None)
+    eg_corrector_server_lr = getattr(args, "eg_corrector_server_lr", None)
+    if eg_predictor_server_lr is not None:
+        eg_predictor_server_lr = float(eg_predictor_server_lr)
+    if eg_corrector_server_lr is not None:
+        eg_corrector_server_lr = float(eg_corrector_server_lr)
+    zo_mu = float(getattr(args, "zo_mu", 1e-3))
+    zo_num_directions = int(getattr(args, "zo_num_directions", 1))
+    if optimizer_name == "fed_zo_eg":
+        if zo_mu <= 0.0:
+            raise ValueError("zo_mu must be positive")
+        if zo_num_directions < 1:
+            raise ValueError("zo_num_directions must be at least 1")
     objective_lambda_1 = float(getattr(args, "objective_lambda_1", 0.1))
     aggregation_weighting = str(
         getattr(args, "aggregation_weighting", DEFAULT_AGGREGATION_WEIGHTING)
@@ -287,9 +315,9 @@ def get_effective_config(args):
     log_test_mse_by_round = bool(getattr(args, "log_test_mse_by_round", False))
     test_mse_used_for_selection = bool(getattr(args, "test_mse_used_for_selection", False))
     selection_metric_source = str(getattr(args, "selection_metric_source", "validation"))
-    auxiliary_regression = bool(getattr(args, "auxiliary_regression", True))
+    auxiliary_regression = bool(getattr(args, "auxiliary_regression", False))
     auxiliary_regression_epochs = int(
-        getattr(args, "auxiliary_regression_epochs", int(getattr(args, "epochs", 0)))
+        getattr(args, "auxiliary_regression_epochs", int(getattr(args, "epochs", 0)) if auxiliary_regression else 0)
     )
     skip_model_selection = bool(getattr(args, "skip_model_selection", False))
     skip_gmm_eval = bool(getattr(args, "skip_gmm_eval", skip_model_selection))
@@ -341,6 +369,10 @@ def get_effective_config(args):
         "critic_multiplier": critic_multiplier,
         "f_learning_rate": critic_multiplier * learning_rate,
         "server_learning_rate": server_learning_rate,
+        "eg_predictor_server_lr": eg_predictor_server_lr,
+        "eg_corrector_server_lr": eg_corrector_server_lr,
+        "zo_mu": zo_mu,
+        "zo_num_directions": zo_num_directions,
         "objective_lambda_1": objective_lambda_1,
         "aggregation_weighting": aggregation_weighting,
         "objective_mode": objective_mode,

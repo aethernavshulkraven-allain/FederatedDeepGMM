@@ -95,7 +95,7 @@ def _write_fake_checkpoint(path):
     with zipfile.ZipFile(path, "w") as archive:
         archive.writestr(
             "checkpoint/data.pkl",
-            b"g_state_dict f_state_dict reg_state_dict state g f regression",
+            b"g_state_dict f_state_dict state g f",
         )
 
 

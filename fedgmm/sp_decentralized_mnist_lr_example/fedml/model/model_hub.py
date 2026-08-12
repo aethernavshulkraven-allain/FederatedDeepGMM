@@ -20,6 +20,12 @@ from fedml.model.nlp.rnn import RNN_OriginalFedAvg, RNN_StackOverFlow, RNN_FedSh
 from models.mlp_model import MLPModel
 
 
+def _create_auxiliary_model(enabled, factory):
+    """Consume the legacy initialization RNG; retain the model only when enabled."""
+    model = factory()
+    return model if enabled else None
+
+
 def _eicu_hidden_widths(value):
     """Parse a YAML list or a compact manifest value such as ``32,32``."""
     if value is None or value == "":
@@ -49,24 +55,13 @@ def _eicu_activation(value):
     return choices[name]
 
 
-def _wants_auxiliary_regression(args):
-    """Whether the caller still needs the legacy direct-regression model.
-
-    federated_optimizer is always "FedAvg" in this codebase (it is the only
-    coordinator that reaches this factory), so it can't distinguish the new
-    multi/single-GPU client-execution paths -- which only ship g/f and never
-    touch a third model -- from FedAvgAPI's own auxiliary_regression
-    diagnostic, which does. Gate on that flag instead; it defaults to True.
-    """
-    return bool(getattr(args, "auxiliary_regression", True))
-
-
 def create(args, output_dim):
     global model
     model_name = args.model
     logging.info("create_model. model_name = %s, output_dim = %s, dataset = %s" % (model_name, output_dim, args.dataset))
     zoo_datasets = ['linear', 'abs', 'sin', 'step', 'zoo']
     is_eicu = str(args.dataset).startswith("eicu")
+    auxiliary_regression = bool(getattr(args, "auxiliary_regression", False))
     if args.dataset in zoo_datasets or is_eicu:
         logging.info("MLPModel + DeepGMM for tabular dataset: %s" % args.dataset)
         if is_eicu:
@@ -100,9 +95,8 @@ def create(args, output_dim):
             MLPModel(input_dim=input_dim_f, layer_widths=layer_widths,
                      activation=activation).double(),
         ]
-        reg_models = [] if not _wants_auxiliary_regression(args) else [
-            MLPModel(input_dim=input_dim_g, layer_widths=layer_widths,
-                     activation=activation).double(),
+        reg_models = [
+            _create_auxiliary_model(auxiliary_regression, lambda: MLPModel(input_dim=input_dim_g, layer_widths=layer_widths, activation=activation).double()),
         ]
         
         if torch.cuda.is_available():
@@ -111,7 +105,8 @@ def create(args, output_dim):
             for i, f in enumerate(f_models):
                 f_models[i] = f.cuda()
             for i, reg in enumerate(reg_models):
-                reg_models[i] = reg.cuda()
+                if reg is not None:
+                    reg_models[i] = reg.cuda()
         return [g_models, f_models, reg_models]
     
     elif model_name == "lr" and args.dataset == "mnist":
@@ -122,7 +117,7 @@ def create(args, output_dim):
         model = [
             [LogisticRegression(input_dim_g, 1)],
             [LogisticRegression(input_dim_f, 1)],
-            [LogisticRegression(input_dim_g, 1)]
+            [_create_auxiliary_model(auxiliary_regression, lambda: LogisticRegression(input_dim_g, 1))]
         ]
     elif args.dataset in ['mnist_xz', 'femnist_xz']:
         g_models = [
@@ -131,8 +126,8 @@ def create(args, output_dim):
         f_models = [
             DefaultCNN(cuda=torch.cuda.is_available()),
         ]
-        reg_models = [] if not _wants_auxiliary_regression(args) else [
-            DefaultCNN(cuda=torch.cuda.is_available()),
+        reg_models = [
+            _create_auxiliary_model(auxiliary_regression, lambda: DefaultCNN(cuda=torch.cuda.is_available())),
         ]
         if torch.cuda.is_available():
             for i, g in enumerate(g_models):
@@ -140,7 +135,8 @@ def create(args, output_dim):
             for i, f in enumerate(f_models):
                 f_models[i] = f.cuda()
             for i, reg in enumerate(reg_models):
-                reg_models[i] = reg.cuda()
+                if reg is not None:
+                    reg_models[i] = reg.cuda()
         return [g_models, f_models, reg_models]
     elif args.dataset in ["mnist_x", "femnist_x"]:
         g_models = [
@@ -150,8 +146,8 @@ def create(args, output_dim):
              MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
-        reg_models = [] if not _wants_auxiliary_regression(args) else [
-            DefaultCNN(cuda=torch.cuda.is_available()),
+        reg_models = [
+            _create_auxiliary_model(auxiliary_regression, lambda: DefaultCNN(cuda=torch.cuda.is_available())),
         ]
         if torch.cuda.is_available():
             for i, g in enumerate(g_models):
@@ -159,7 +155,8 @@ def create(args, output_dim):
             for i, f in enumerate(f_models):
                 f_models[i] = f.cuda()
             for i, reg in enumerate(reg_models):
-                reg_models[i] = reg.cuda()
+                if reg is not None:
+                    reg_models[i] = reg.cuda()
         return [g_models, f_models, reg_models]
     elif args.dataset in ["mnist_z", "femnist_z"]:
         g_models = [
@@ -169,9 +166,8 @@ def create(args, output_dim):
         f_models = [
             DefaultCNN(cuda=torch.cuda.is_available()),
         ]
-        reg_models = [] if not _wants_auxiliary_regression(args) else [
-           MLPModel(input_dim=1, layer_widths=[20],
-                     activation=nn.LeakyReLU).double(),
+        reg_models = [
+           _create_auxiliary_model(auxiliary_regression, lambda: MLPModel(input_dim=1, layer_widths=[20], activation=nn.LeakyReLU).double()),
         ]
         if torch.cuda.is_available():
             for i, g in enumerate(g_models):
@@ -179,7 +175,8 @@ def create(args, output_dim):
             for i, f in enumerate(f_models):
                 f_models[i] = f.cuda()
             for i, reg in enumerate(reg_models):
-                reg_models[i] = reg.cuda()
+                if reg is not None:
+                    reg_models[i] = reg.cuda()
         return [g_models, f_models, reg_models]
     # elif args.dataset == "cifar_x":
     #     g_models=[
@@ -217,8 +214,8 @@ def create(args, output_dim):
         f_models = [
             CIFAR10CNN(cuda=torch.cuda.is_available()),
         ]
-        reg_models = [] if not _wants_auxiliary_regression(args) else [
-            CIFAR10CNN(cuda=torch.cuda.is_available()),
+        reg_models = [
+            _create_auxiliary_model(auxiliary_regression, lambda: CIFAR10CNN(cuda=torch.cuda.is_available())),
         ]
         if torch.cuda.is_available():
             for i, g in enumerate(g_models):
@@ -226,7 +223,8 @@ def create(args, output_dim):
             for i, f in enumerate(f_models):
                 f_models[i] = f.cuda()
             for i, reg in enumerate(reg_models):
-                reg_models[i] = reg.cuda()
+                if reg is not None:
+                    reg_models[i] = reg.cuda()
         return [g_models, f_models, reg_models]
     elif args.dataset in ["cifar10_x", "cifar_x"]:
         g_models = [
@@ -236,8 +234,8 @@ def create(args, output_dim):
              MLPModel(input_dim=1, layer_widths=[20],
                      activation=nn.LeakyReLU).double(),
         ]
-        reg_models = [] if not _wants_auxiliary_regression(args) else [
-            CIFAR10CNN(cuda=torch.cuda.is_available()),
+        reg_models = [
+            _create_auxiliary_model(auxiliary_regression, lambda: CIFAR10CNN(cuda=torch.cuda.is_available())),
         ]
         if torch.cuda.is_available():
             for i, g in enumerate(g_models):
@@ -245,7 +243,8 @@ def create(args, output_dim):
             for i, f in enumerate(f_models):
                 f_models[i] = f.cuda()
             for i, reg in enumerate(reg_models):
-                reg_models[i] = reg.cuda()
+                if reg is not None:
+                    reg_models[i] = reg.cuda()
         return [g_models, f_models, reg_models]
     elif args.dataset in ["cifar10_z", "cifar_z"]:
         g_models = [
@@ -255,9 +254,8 @@ def create(args, output_dim):
         f_models = [
             CIFAR10CNN(cuda=torch.cuda.is_available()),
         ]
-        reg_models = [] if not _wants_auxiliary_regression(args) else [
-           MLPModel(input_dim=1, layer_widths=[20],
-                     activation=nn.LeakyReLU).double(),
+        reg_models = [
+           _create_auxiliary_model(auxiliary_regression, lambda: MLPModel(input_dim=1, layer_widths=[20], activation=nn.LeakyReLU).double()),
         ]
         if torch.cuda.is_available():
             for i, g in enumerate(g_models):
@@ -265,7 +263,8 @@ def create(args, output_dim):
             for i, f in enumerate(f_models):
                 f_models[i] = f.cuda()
             for i, reg in enumerate(reg_models):
-                reg_models[i] = reg.cuda()
+                if reg is not None:
+                    reg_models[i] = reg.cuda()
         return [g_models, f_models, reg_models]
     elif args.dataset == "cifar_x_old": # Kept for reference but renamed
         g_models=[
@@ -278,8 +277,8 @@ def create(args, output_dim):
                      activation=nn.LeakyReLU).double(),
                     # DefaultCNN(cuda=True),
         ]
-        reg_models = [] if not _wants_auxiliary_regression(args) else [
-           DefaultCNN(cuda=True),
+        reg_models = [
+           _create_auxiliary_model(auxiliary_regression, lambda: DefaultCNN(cuda=True)),
         # MLPModel(input_dim=1, layer_widths=[20],
         #              activation=nn.LeakyReLU).double(),
         ]
@@ -294,7 +293,8 @@ def create(args, output_dim):
             for i, f in enumerate(f_models):
                 f_models[i] = f.cuda()
             for i, reg in enumerate(reg_models):
-                reg_models[i] = reg.cuda()
+                if reg is not None:
+                    reg_models[i] = reg.cuda()
         return [g_models, f_models, reg_models]
 
     elif model_name == "cnn_web" and args.dataset == "cifar10":
@@ -305,7 +305,7 @@ def create(args, output_dim):
         model = [
             [LogisticRegression_Cifar10(32 * 32 * 3, output_dim)],
             [LogisticRegression_Cifar10(32 * 32 * 3, output_dim)],
-            [LogisticRegression_Cifar10(32 * 32 * 3, output_dim)]
+            [_create_auxiliary_model(auxiliary_regression, lambda: LogisticRegression_Cifar10(32 * 32 * 3, output_dim))]
         ]
     elif model_name == "cnn" and args.dataset == "mnist":
         logging.info("CNN + MNIST")

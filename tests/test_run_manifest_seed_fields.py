@@ -88,6 +88,17 @@ class BuildConfigSeedFieldsTest(unittest.TestCase):
         self.assertEqual(config["campaign_role"], "aggregation_ablation")
         self.assertEqual(config["aggregation_weighting"], "sample_size")
 
+    def test_auxiliary_regression_is_opt_in(self):
+        config = self._build(_minimal_row())
+        self.assertFalse(config["auxiliary_regression"])
+        self.assertEqual(config["auxiliary_regression_epochs"], 0)
+
+        enabled = self._build(
+            _minimal_row(auxiliary_regression="true", auxiliary_regression_epochs="2")
+        )
+        self.assertTrue(enabled["auxiliary_regression"])
+        self.assertEqual(enabled["auxiliary_regression_epochs"], 2)
+
     def test_write_config_emits_seed_fields_into_train_args(self):
         row = _minimal_row(seed="1101", scenario_seed="101", seed_pair_id="confirmatory_01")
         config = self._build(row)

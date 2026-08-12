@@ -49,13 +49,12 @@ if __name__ == "__main__":
             dataset, output_dim = fedml.data.load(args)
 
         with runtime_profiler.span("model_create"):
+            # Always pass the full [g, f, reg] structure through. When
+            # auxiliary_regression is disabled, model_hub still returns a
+            # third slot holding None (it constructs and discards the model so
+            # the initialization RNG stream stays aligned with aux-on runs);
+            # FedAvgAPI reads model[2][0] and expects that slot to exist.
             model = fedml.model.create(args, output_dim)
-            if not bool(getattr(args, "auxiliary_regression", True)):
-                # auxiliary_regression=false: model_hub already returned an
-                # empty reg_models list in this case, so this just drops the
-                # placeholder. FedAvgAPI itself re-derives the same trim from
-                # this same flag (see its skip_auxiliary_regression guard).
-                model = model[:2]
 
         # # start training
         with runtime_profiler.span("runner_init"):

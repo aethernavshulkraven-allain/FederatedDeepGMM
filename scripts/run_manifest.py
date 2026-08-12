@@ -31,7 +31,10 @@ DEFAULT_MAIN = REPO_ROOT / "fedgmm" / "sp_decentralized_mnist_lr_example" / "mai
 FEDML_LOG_DIR_ENV = "FEDGMM_FEDML_LOG_DIR"
 FEDML_TRACE_DIR_ENV = "FEDGMM_FEDML_TRACE_DIR"
 
-SUPPORTED_FEDERATED_METHODS = {"fedgda_d", "fedgda_s", "fedogda_d", "fedogda_s"}
+SUPPORTED_FEDERATED_METHODS = {
+    "fedgda_d", "fedgda_s", "fedogda_d", "fedogda_s",
+    "fed_eg_d", "fed_eg_s", "fed_zo_eg_d", "fed_zo_eg_s",
+}
 EXPECTED_ARTIFACTS = (
     "effective_config.json",
     "mse_by_round.csv",
@@ -219,7 +222,7 @@ def build_config(
     if skip_model_selection:
         skip_gmm_eval = True
     auxiliary_regression = (
-        _truthy(_config_value(row, "auxiliary_regression", True))
+        _truthy(_config_value(row, "auxiliary_regression", False))
         if override_auxiliary_regression is None
         else bool(override_auxiliary_regression)
     )
@@ -278,6 +281,22 @@ def build_config(
         "weight_decay": weight_decay,
         "critic_multiplier": _as_float(_config_value(row, "critic_multiplier", 10.0), "critic_multiplier"),
         "server_learning_rate": _as_float(_config_value(row, "server_learning_rate", 1.5), "server_learning_rate"),
+        "eg_predictor_server_lr": _as_float(
+            _config_value(row, "eg_predictor_server_lr", _config_value(row, "server_learning_rate", 1.5)),
+            "eg_predictor_server_lr",
+        ),
+        "eg_corrector_server_lr": _as_float(
+            _config_value(row, "eg_corrector_server_lr", _config_value(row, "server_learning_rate", 1.5)),
+            "eg_corrector_server_lr",
+        ),
+        "zo_mu": _as_float(_config_value(row, "zo_mu", 1e-3), "zo_mu"),
+        "zo_num_directions": _as_int(_config_value(row, "zo_num_directions", 1), "zo_num_directions"),
+        "client_execution_mode": str(_config_value(row, "client_execution_mode", "sp")),
+        "enable_multiprocessing": _truthy(_config_value(row, "enable_multiprocessing", False)),
+        "multiprocessing_num_workers": _as_int(_config_value(row, "multiprocessing_num_workers", 0), "multiprocessing_num_workers"),
+        "multiprocessing_gpu_ids": str(_config_value(row, "multiprocessing_gpu_ids", "")),
+        "multiprocessingsinglegpu_num_workers": _as_int(_config_value(row, "multiprocessingsinglegpu_num_workers", 2), "multiprocessingsinglegpu_num_workers"),
+        "multiprocessingsinglegpu_gpu_id": _as_int(_config_value(row, "multiprocessingsinglegpu_gpu_id", gpu_id), "multiprocessingsinglegpu_gpu_id"),
         "objective_lambda_1": _as_float(_config_value(row, "objective_lambda_1", 0.1), "objective_lambda_1"),
         "gradient_clip_norm": _as_float(_config_value(row, "gradient_clip_norm", 1.0), "gradient_clip_norm"),
         "simple_model_selection_epochs": (
@@ -412,6 +431,16 @@ def write_config(path: Path, config: dict[str, Any]) -> None:
             "weight_decay": config["weight_decay"],
             "critic_multiplier": config["critic_multiplier"],
             "server_learning_rate": config["server_learning_rate"],
+            "eg_predictor_server_lr": config["eg_predictor_server_lr"],
+            "eg_corrector_server_lr": config["eg_corrector_server_lr"],
+            "zo_mu": config["zo_mu"],
+            "zo_num_directions": config["zo_num_directions"],
+            "client_execution_mode": config["client_execution_mode"],
+            "enable_multiprocessing": config["enable_multiprocessing"],
+            "multiprocessing_num_workers": config["multiprocessing_num_workers"],
+            "multiprocessing_gpu_ids": config["multiprocessing_gpu_ids"],
+            "multiprocessingsinglegpu_num_workers": config["multiprocessingsinglegpu_num_workers"],
+            "multiprocessingsinglegpu_gpu_id": config["multiprocessingsinglegpu_gpu_id"],
             "objective_lambda_1": config["objective_lambda_1"],
             "gradient_clip_norm": config["gradient_clip_norm"],
             "simple_model_selection_epochs": config["simple_model_selection_epochs"],

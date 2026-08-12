@@ -103,7 +103,7 @@ def materialize_manifest(
         elif row.get("skip_gmm_eval"):
             new_row["skip_gmm_eval"] = row.get("skip_gmm_eval", "")
             new_row["gmm_eval_proxy"] = row.get("gmm_eval_proxy", "")
-        new_row["auxiliary_regression"] = "false" if disable_aux_reg else row.get("auxiliary_regression", "true")
+        new_row["auxiliary_regression"] = "false" if disable_aux_reg else row.get("auxiliary_regression", "false")
         if disable_aux_reg:
             new_row["auxiliary_regression_epochs"] = "0"
         elif aux_reg_epochs is not None:
