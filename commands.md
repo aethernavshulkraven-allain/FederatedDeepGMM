@@ -1,206 +1,225 @@
-# Fork Migration and Cleanup Commands
+# Updated-Fork Reconciliation, Multiprocessing, and Cleanup Guide
 
-Use this document as the task specification for the coding agent working on
-the fork of the Federated DeepGMM repository. Execute the phases in order. Do
-not skip validation gates or delete files merely because their purpose is not
-immediately obvious.
+Use this as the task specification for the agent working on the updated fork.
+The fork contains important work added after the validated multiprocessing
+implementation, so reconcile it file by file rather than replacing it.
+
+## Repositories and observed baseline
+
+- Target to modify: `/mnt/disk1/geetika/FedDeepGMM`
+- Validated reference: `/mnt/disk1/geetika/project`
+- Target branch observed 2026-08-10: `experimentsrerun`
+- Target HEAD observed 2026-08-10: `38436db` (`cleanup`)
+
+These hashes are audit records, not instructions to reset. If the remote has
+advanced, inspect and use its new clean HEAD.
 
 ## Objective
 
-Bring the fork to functional parity with the validated implementation in
-`fedgmm/sp_decentralized_mnist_lr_example/` by:
+1. Understand and test the fork before editing it.
+2. Preserve its eICU Study A work, centralized GDA/SGDA/OAdam baselines,
+   manifests, gates, plots, provenance, and campaign tooling.
+3. Port exact `fed_eg` and `fed_zo_eg` behavior where it is still missing.
+4. Port persistent multi-GPU client execution without changing FedGDA,
+   FedOGDA, FedEG, or FedZO-EG algorithm logic.
+5. Preserve compact CIFAR/FEMNIST result serialization.
+6. Build a new dependency inventory before proposing cleanup. Never reuse the
+   previous repository's deletion list without revalidation.
 
-1. Porting exact two-phase `fed_eg` and forward-only `fed_zo_eg` support.
-2. Porting configurable, persistent multi-GPU client multiprocessing.
-3. Preserving the mathematical behavior of FedGDA/SGD, FedOGDA, FedEG, and
-   FedZO-EG.
-4. Verifying SP and MP correctness on toy and image datasets.
-5. Inventorying, archiving, and removing genuinely unused files without
-   deleting training inputs or experiment results.
-6. Updating `AGENTS.md` and call-path documentation after the executable path
-   is verified.
+## Safety rules
 
-## Non-negotiable safety rules
+- Work in `/mnt/disk1/geetika/FedDeepGMM`; keep the reference read-only.
+- Begin with a read-only audit. Do not copy, cherry-pick, edit, or delete until
+  the compatibility report has been shown to the user.
+- Never replace `fedavg_api.py`, `client.py`, the trainer, `main.py`, YAMLs, or
+  centralized scripts wholesale. Reconcile behavior manually.
+- Preserve tracked and untracked artifacts. Never stash, reset, clean, rebase,
+  or discard changes without explicit approval.
+- Do not cherry-pick cleanup commits from the reference repository.
+- Preserve CSV/JSON reports, compact NPYs, manifests, resolved configs,
+  validation contracts, plots, and provenance separately from generated data.
+- Before deletion, show exact paths, sizes, Git status, dependency evidence,
+  archive/recovery plan, and expected freed space; then obtain approval.
+- After every `AGENTS.md` edit, show its complete diff and explicitly ask the
+  user to approve it or request corrections.
 
-- Start with read-only inspection. Do not delete or overwrite anything during
-  the pull, dependency audit, or comparison phases.
-- Preserve all existing user changes and untracked experiment artifacts.
-- Before every deletion, provide an explicit path list, dependency evidence,
-  total size, and recovery/archive plan, then obtain user approval.
-- Archive CSV and compact NPY results separately before cleanup. Never treat
-  generated NPZ datasets as result arrays.
-- Never recreate raw image-sized plotting arrays for CIFAR/FEMNIST X or XZ.
-  Save the compact scenario coordinate `w`, predictions, and ground truth.
-- Do not terminate or share GPUs occupied by another user without explicit
-  permission.
-- After every `AGENTS.md` edit, show its diff and ask the user to approve it.
-- Do not present the generic vendored MPI FedAvg implementation as this
-  project’s multiprocessing implementation. The supported launcher remains
-  `main.py` with `backend: sp`; client multiprocessing is internal to
-  `FedAvgAPI`.
-
-## Phase 1: Pull and establish the baseline
-
-Run from the fork’s repository root:
+## Phase 1: Audit the updated fork without modifying it
 
 ```bash
+cd /mnt/disk1/geetika/FedDeepGMM
 git status --short --branch
 git remote -v
 git branch --show-current
+git log --oneline --decorate -n 30
+find .. -name AGENTS.md -print
+```
+
+The observed checkout has no `AGENTS.md`: commit `38436db` removed it after
+ignore rules for local instructions were added. Record this; do not silently
+recreate or force-add an ignored instruction file.
+
+If the worktree is clean:
+
+```bash
 git fetch --all --prune
 git pull --ff-only
 git status --short --branch
 ```
 
-If `git pull --ff-only` cannot proceed because of local changes or divergent
-history, stop and report the exact condition. Do not stash, reset, rebase, or
-discard changes without the user’s approval.
-
-Record repository size and largest paths before changing anything:
+If fast-forward pull cannot proceed, report why and stop. Do not reset or
+force-checkout. Inspect fork-specific work and disk usage:
 
 ```bash
+git show --stat --summary 2c37c69
+git show --stat --summary 38436db
+rg --files scripts tests experiments | sort
+rg -n "eICU|Study A|centralized|OAdam|SGDA|preflight|validation|manifest" \
+  scripts tests experiments fedgmm/sp_decentralized_mnist_lr_example
 du -sh .
 du -h --max-depth=3 . | sort -h | tail -n 100
 find . -type f -printf '%s %p\n' | sort -n | tail -n 100
 ```
 
-Locate instructions, launchers, configurations, datasets, imports, and result
-artifacts:
+### Required compatibility report
 
-```bash
-find .. -name AGENTS.md -print
-rg -n "FedAvgAPI|client_optimizer|fed_eg|fed_zo_eg|train_gmm_zo|OGDA|CustomSGD" .
-rg -n "cifar10_(x|z|xz)|femnist_(x|z|xz)|mnist_(x|z|xz)" .
-rg --files | rg '\.(csv|npy|npz|pt|pth|log|png|pdf)$'
-```
+Produce this table with exact paths and evidence:
 
-Read every applicable `AGENTS.md` before editing. Confirm the supported
-launcher and active nested experiment directory through imports and runtime
-dispatch; do not assume the fork has the same layout.
+| Area | Updated fork | Validated reference | Decision |
+|---|---|---|---|
+| FL launcher/dispatch | call chain | call chain | keep/reconcile |
+| FedGDA/SGD | code and labels | code | preserve/reconcile |
+| FedOGDA | client/server state | code | preserve/reconcile |
+| FedEG | present/missing | code | keep/port manually |
+| FedZO-EG | present/missing | code | keep/port manually |
+| Client multiprocessing | present/missing | code | keep/port manually |
+| Image serialization | shapes/coordinate | compact behavior | preserve/fix |
+| Centralized low-dimensional | runner/tests/results | reference | protect fork |
+| eICU Study A | runner/tests/contracts | reference | protect fork |
+| Dataset loaders/generators | dependencies | dependencies | reconcile |
+| Cleanup candidates | fork evidence | old inventory only | re-audit |
 
-## Phase 2: Produce a dependency and artifact inventory
+Show this report and ask the user to review it before implementation.
 
-Create an inventory document, for example
-`.codex/experiment_file_inventory.md`, with these categories:
+## Phase 2: Compare algorithm-sensitive files
 
-- Required launch and configuration files.
-- Active server, client, trainer, model, objective, optimizer, scenario,
-  loader, plotting, and model-selection dependencies.
-- Dataset generators and generated NPZ training inputs.
-- CIFAR/MNIST/FEMNIST source datasets used by generators or loaders.
-- Federated and centralized result CSVs.
-- Compact result NPYs.
-- Checkpoints, plots, and logs.
-- Reference-only code.
-- Candidate removable files with proof that no active import, config, script,
-  or documented workflow uses them.
-
-Use import tracing and text searches, not filenames alone. Pay special
-attention to eager imports in the nested FedML dispatcher: apparently unused
-packages may still be required at module import time.
-
-Do not remove root or nested `fedml/`, `models/`, dataset directories, CSVs,
-NPYs, checkpoints, or archives during this phase.
-
-## Phase 3: Port FedEG and FedZO-EG
-
-Use the validated implementation in the source working repository as the
-behavioral reference. Compare at least these files:
+Use these roots for read-only diffs:
 
 ```text
+TARGET=/mnt/disk1/geetika/FedDeepGMM/fedgmm/sp_decentralized_mnist_lr_example
+REFERENCE=/mnt/disk1/geetika/project/fedgmm/sp_decentralized_mnist_lr_example
+```
+
+Compare at least:
+
+```text
+main.py
+fedml/config/simulation_sp/fedml_config.yaml
 fedml/simulation/sp/fedavg/fedavg_api.py
 fedml/simulation/sp/fedavg/client.py
 fedml/ml/trainer/my_model_trainer_classification.py
-fedml/config/simulation_sp/fedml_config.yaml
+scenarios/abstract_scenario.py
+game_objectives/simple_moment_objective.py
 optimizers/Customsgd.py
 optimizers/ogda.py
+optimizers/oadam.py
 optimizers/optimizer_factory.py
-game_objectives/simple_moment_objective.py
 ```
 
-Required optimizer names in YAML:
+Protect and test the fork-owned centralized paths:
 
-- `sgd`: FedGDA-style local simultaneous descent/ascent.
-- `ogda`: local OGDA plus the existing server optimistic-delta branch.
-- `fed_eg`: exact two-phase client correction.
-- `fed_zo_eg`: exact predictor phase followed by SPSA forward-only correction.
+```text
+scripts/run_centralized_lowdim.py
+scripts/run_eicu_centralized_baselines.py
+scripts/run_eicu_study_a_v2_centralized.py
+scripts/validate_centralized_run.py
+scripts/preflight_eicu_release.py
+tests/test_run_centralized_lowdim_eicu.py
+tests/test_run_centralized_lowdim_eicu_gate4.py
+tests/test_run_eicu_centralized_baselines.py
+```
 
-Do not silently introduce aliases such as `fedgda` or `fedogda`. Unknown
-optimizer values must not silently select a different algorithm; ideally add
-explicit validation.
+Search symbols across both repositories; do not assume equal line numbers:
 
-FedEG must retain this barrier sequence:
+```bash
+rg -n "fed_eg|fed_zo_eg|train_gmm_zo|train_zo|zo_mu|zo_num_directions" \
+  /mnt/disk1/geetika/FedDeepGMM /mnt/disk1/geetika/project
+rg -n "enable_multiprocessing|multiprocessing_num_workers|multiprocessing_gpu_ids|MultiprocessClient" \
+  /mnt/disk1/geetika/FedDeepGMM /mnt/disk1/geetika/project
+```
+
+The initial audit found OGDA in the fork but no executable `fed_eg`,
+`fed_zo_eg`, `train_gmm_zo`, or client-multiprocessing symbols. Reconfirm after
+pulling. Inspect reference commits for intent, but never blindly cherry-pick or
+copy an entire algorithm-sensitive file.
+
+## Phase 3: Establish a protected baseline
+
+Before editing, run the fork's focused tests and smallest documented
+preflights. Discover exact flags from `--help`, tests, manifests, and reports.
+Capture:
+
+- Import/compile status for the active FL path.
+- Low-dimensional centralized GDA, SGDA, and OAdam smoke status.
+- eICU centralized/federated unit and preflight status.
+- One existing federated toy smoke.
+- Current output schemas and golden-smoke checksums.
+
+Start with:
+
+```bash
+python -m compileall \
+  fedgmm/sp_decentralized_mnist_lr_example/main.py \
+  fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg \
+  fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/my_model_trainer_classification.py \
+  scripts tests
+pytest -q \
+  tests/test_run_centralized_lowdim_eicu.py \
+  tests/test_run_centralized_lowdim_eicu_gate4.py \
+  tests/test_run_eicu_centralized_baselines.py
+```
+
+Add tests referenced by the fork's reports. If a dependency is unavailable,
+report it; do not claim an incomplete suite passed.
+
+## Phase 4: Reconcile FedEG and FedZO-EG
+
+Port focused behavior into current fork files while preserving fork logic.
+Explicit YAML values should be `sgd`, `ogda`, `fed_eg`, and `fed_zo_eg`.
+Unknown values should fail instead of silently falling back to SGD.
+
+Preserve this barrier sequence:
 
 ```text
 sample clients once
-  -> all predictor local updates from server state z_t
-  -> weighted predictor aggregation
-  -> construct global look-ahead state
-  -> the same sampled clients run correction from the look-ahead
-  -> weighted correction aggregation
-  -> anchor the corrector update at z_t, not the look-ahead
+  -> all predictor updates from server state z_t
+  -> weighted predictor aggregation and look-ahead
+  -> same clients correct from the look-ahead
+  -> weighted correction aggregation anchored at z_t
 ```
 
-`fed_zo_eg` must use the same phase structure, but its correction calls
-`Client.train_zo()` / `ModelTrainerCLS.train_gmm_zo()`. Preserve:
+Do not alter critic signs or learning-rate multipliers, clipping, sample
+weights, server learning rates, optimizer state, or aggregation. For FedZO-EG,
+preserve positive `zo_mu`, one or more directions, independent Rademacher
+directions for `g` and `f`, two forward evaluations per direction, parameter
+restoration, and estimate averaging. Use copied immutable YAMLs and unique
+result namespaces.
 
-- `zo_mu > 0`.
-- `zo_num_directions >= 1`.
-- Independent Rademacher directions for `g` and `f`.
-- Two objective forward evaluations per direction.
-- Restoration of unperturbed parameters before applying the update.
-- Gradient-estimate averaging, clipping, and the configured learning rates.
+## Phase 5: Reconcile persistent multi-GPU client execution
 
-Do not alter critic multipliers, gradient signs, clipping, server learning
-rates, predictor/corrector anchoring, optimizer-state clearing, client sample
-weights, or aggregation equations while porting.
-
-Required YAML keys include:
-
-```yaml
-client_optimizer: fed_eg  # or fed_zo_eg
-server_learning_rate: 1.5
-eg_predictor_server_lr: null
-eg_corrector_server_lr: null
-zo_mu: 0.001
-zo_num_directions: 1
-```
-
-## Phase 4: Port multi-GPU client multiprocessing
-
-Port or recreate the validated worker module:
+Add validated worker behavior to the active nested SP path, normally via:
 
 ```text
 fedml/simulation/sp/fedavg/multiprocess_client.py
+fedml/simulation/sp/fedavg/fedavg_api.py
 ```
 
-Integrate it only at the independent client-update boundary in `FedAvgAPI`.
-The coordinator must retain:
+Keep `backend: sp`. Parallelize only independent client-local updates. The
+coordinator retains sampling, order, aggregation, server learning rates, OGDA
+history, EG barriers, evaluation, checkpointing, and output generation.
 
-- Client sampling.
-- Global state and sampled-client order.
-- Weighted aggregation.
-- Server learning-rate application.
-- OGDA previous-delta history.
-- FedEG/FedZO-EG predictor and corrector barriers.
-- Evaluation, early stopping, CSV output, checkpoints, NPY output, and plots.
-
-Each persistent spawned worker must:
-
-1. Own one logical CUDA GPU.
-2. Receive CPU batches and CPU global state dictionaries.
-3. Move its task to its assigned GPU.
-4. Call the unchanged `Client.train()`, `Client.train_reg()`, or
-   `Client.train_zo()` method.
-5. Detach and return CPU state dictionaries.
-
-The coordinator must restore results to sampled-client order, move GMM states
-to its device, and invoke the existing aggregators. Do not aggregate in
-workers. Use the `spawn` multiprocessing context for CUDA safety. Keep workers
-persistent across rounds, make shutdown idempotent, and avoid blocking forever
-when a worker fails with a full task queue.
-
-Configuration belongs under `train_args`:
+Use persistent spawned processes, one per logical GPU. Workers receive CPU
+batches/states, move a task to their GPU, invoke unchanged client methods, and
+return detached CPU states. Restore results to sampled-client order.
 
 ```yaml
 enable_multiprocessing: true
@@ -208,77 +227,156 @@ multiprocessing_num_workers: 4
 multiprocessing_gpu_ids: [0, 1, 2, 3]
 ```
 
-GPU IDs are logical indices visible to the Python process. Use one worker per
-GPU. For three or two available GPUs, shorten both the list and count. With
-fewer than two selected workers, log the reason and use the original SP path.
-Also ensure `device_args.gpu_id` names an available coordinator GPU. Do not
-start multiple CUDA workers on a single GPU merely to increase process count.
+Use only assigned GPUs. Fewer than two workers must log and fall back to the
+serial path. Do not apply this client pool to centralized runs; centralized
+multi-GPU/DDP is a separate, profiled project.
 
-Keep phase-level timing logs for:
 
-- SP primary client phase.
-- MP primary client phase and worker count.
-- SP correction client phase.
-- MP correction client phase and worker count.
+### Phase 5A: Add true multiprocessing within one GPU
 
-The first MP phase includes worker startup. Evaluate speed from later rounds.
+After the Phase 1 through 3 review gate and while reconciling Phase 5, add the
+validated same-GPU process mode. Do not port the separate thread/CUDA-stream
+executor or describe stream concurrency as multiprocessing.
 
-## Phase 5: Correct compact image result serialization
+First make process-worker determinism explicit. Every spawned CUDA worker must
+set deterministic cuDNN behavior equivalent to the coordinator:
 
-Before running CIFAR/FEMNIST X or XZ, inspect final sorting and serialization.
-Predictions must still be computed from image-valued `x`, but plotting and
-saved curve coordinates must use the scalar scenario coordinate `w` whenever
-`x` is image-shaped. Sort predictions and targets with the same one-dimensional
-index. Validate that the coordinate has one scalar per observation.
-
-Expected output for 10,000 test observations:
-
-```text
-results_<dataset>_<optimizer>_x.npy             shape (10000, 1)
-results_<dataset>_<optimizer>_y_pred*.npy       shape (10000, 1)
-results_<dataset>_<optimizer>_y_true.npy        shape (10000, 1)
+```python
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
 ```
 
-Each float64 file should be approximately 80 KB, not tens of gigabytes.
+Preserve input task order when collecting results. For deterministic methods,
+the later validation must compare every returned `g` and `f` checkpoint tensor
+against SP with `torch.equal`, not only compare rounded metrics.
 
-## Phase 6: Validation gates
+Add explicit `client_execution_mode` routing for:
 
-First run syntax and focused tests:
+```text
+sp
+multi_gpu_processes
+multiprocessingsinglegpu
+```
+
+Retain backward compatibility with `enable_multiprocessing` only when
+`client_execution_mode` is absent. Reject unknown explicit mode names. If the
+selected worker count is less than two, log the reason and use the original SP
+path.
+
+Implement `multiprocessingsinglegpu` with persistent processes created through
+the CUDA-safe `spawn` context. Reuse a common process executor where practical,
+but deliberately assign the same logical CUDA GPU ID to every same-GPU worker.
+Each worker must own an isolated trainer, optimizer state, CUDA context, and at
+most one active client task. Cap the worker count at
+`client_num_per_round`. Require the worker GPU ID to equal the coordinator GPU
+ID and validate it against `torch.cuda.device_count()`.
+
+Do not move algorithm-sensitive coordinator work into the executor. Sampling,
+sampled-client order, weighted aggregation, server learning rates, OGDA
+previous-delta history, FedEG/FedZO-EG phase barriers, evaluation,
+checkpointing, and result generation remain coordinator-owned.
+
+At the end of each worker task, convert returned states to detached CPU data,
+synchronize the assigned device, drop per-client references, and release
+unused CUDA cache before publishing task completion. Log worker PIDs and their
+logical GPU assignments. Keep shutdown idempotent and preserve persistent
+workers across communication rounds.
+
+Before modifying the auxiliary direct-regression path, audit whether its model,
+training, or aggregation contributes to any fork result: `g`, `f`, MSE,
+objective metrics, CSV/JSON, checkpoints, NPY predictions, or plots. If it is
+genuinely unused, remove its FedAvg client training and aggregation and let the
+supported FedAvg trainer/model list contain only `g` and `f`, while preserving
+the legacy third model for any other coordinator that still uses it. If the
+fork uses regression anywhere, do not remove or serialize it differently;
+report the dependency and reconcile the process task contract around it.
+
+Before changing `CUDA_VISIBLE_DEVICES`, inspect launcher behavior and verify
+whether a shell-supplied value is currently overwritten. Change it only if
+that issue exists. The corrected launcher must establish environment defaults
+before importing CUDA-aware libraries, preserve a user-supplied value, and
+default to the repository's intended GPU list when the variable is absent.
+Verify physical-to-logical remapping: when only physical GPU 2 is exposed with
+`CUDA_VISIBLE_DEVICES=2`, Python sees it as logical `cuda:0`, so both the
+coordinator and same-GPU worker configuration use GPU ID 0.
+
+Do not require a dedicated YAML file merely for this mode. Instead, update the
+fork's `README.md` with the exact YAML keys and executable commands for running
+true same-GPU multiprocessing. Include at least one isolated physical-GPU
+example and explain logical remapping, for example:
+
+```yaml
+train_args:
+  client_execution_mode: multiprocessingsinglegpu
+  enable_multiprocessing: false
+  multiprocessingsinglegpu_num_workers: 2
+  multiprocessingsinglegpu_gpu_id: 0
+
+device_args:
+  gpu_id: 0
+```
 
 ```bash
 cd fedgmm/sp_decentralized_mnist_lr_example
-python -m compileall \
-  main.py \
-  fedml/simulation/sp/fedavg/fedavg_api.py \
-  fedml/simulation/sp/fedavg/multiprocess_client.py \
-  fedml/ml/trainer/my_model_trainer_classification.py \
-  scenarios learning optimizers
-pytest -q tests/test_multiprocess_client.py
+CUDA_VISIBLE_DEVICES=2 python main.py --cf <reviewed-config.yaml>
 ```
 
-If `pytest` is unavailable, report that dependency instead of claiming the
-suite passed. A direct invocation of test functions is only a temporary
-diagnostic, not a substitute for the documented pytest run.
+State clearly that `2` selects the physical GPU in the shell and `0` selects
+the remapped logical device inside Python/YAML. Also document behavior when
+`CUDA_VISIBLE_DEVICES` is omitted.
 
-Run matched SP and MP smoke configurations. Use copied immutable YAMLs and
-unique run names. At minimum validate:
+Once implementation and documentation are complete, explicitly remind the
+user that these follow-up gates are ready but require their review/timing:
 
-- `step` with `sgd`.
-- `step` with `ogda`.
-- `step` with `fed_eg`.
-- `step` with `fed_zo_eg`.
-- One CIFAR X/XZ case.
-- One FEMNIST X/XZ case.
-- A four-worker launch on GPUs `[0, 1, 2, 3]` when those GPUs are free.
-- A one-GPU configuration that logs and takes the SP fallback.
+1. Run focused unit tests for routing, worker-count capping, GPU mismatch,
+   deterministic cuDNN settings, ordered CPU results, synchronization, cache
+   release, and safe shutdown. Use `python -m pytest` so the repository package
+   wins over any site-installed FedML package.
+2. Run deterministic SP-versus-`multiprocessingsinglegpu` equivalence on
+   CIFAR10-X and compare all `g`/`f` tensors, metrics, predictions, and complete
+   checkpoint hashes.
+3. Validate only on an isolated GPU. Check `nvidia-smi` first and do not call an
+   OOM a worker-capacity limit if unrelated processes occupy GPU memory.
+4. When the user confirms a GPU is free, benchmark CIFAR10-X with 10 sampled
+   clients, one communication round, two local epochs, batch size 256, and
+   worker counts `2, 4, 6, 8`. Record peak memory, utilization, client-phase
+   time, finite outputs, and the first isolated-GPU OOM; stop increasing after
+   that genuine failure.
 
-For deterministic methods, compare final MSE and prediction arrays. FedGDA,
-FedOGDA, and FedEG should be bit-for-bit equal under matched deterministic
-conditions. For FedZO-EG, verify successful two-phase execution, finite
-metrics, seed behavior, and comparable distributions; do not demand bitwise
-equality across worker schedules.
+After all changes, update every affected document to match executable behavior,
+including `README.md`, fork-local `AGENTS.md`, configuration guidance,
+validation instructions, and the static call tree. Remove stale claims rather
+than leaving contradictory modes or GPU mappings. Show the complete
+`AGENTS.md` diff and explicitly ask the user to approve it or request
+corrections.
 
-Before using GPUs:
+## Phase 6: Preserve compact image outputs
+
+For CIFAR/FEMNIST X and XZ, predictions use image-valued `x`, but saved curve
+coordinates must use one scalar `w` or sample ID per observation. Apply one
+1-D sort index to coordinate, prediction, and truth.
+
+For 10,000 float64 observations, each compact array should be about 80 KB:
+
+```text
+results_<dataset>_<optimizer>_x.npy       shape (10000, 1)
+results_<dataset>_<optimizer>_y_pred*.npy shape (10000, 1)
+results_<dataset>_<optimizer>_y_true.npy  shape (10000, 1)
+```
+
+Inspect huge NPY candidates with memory mapping, not full loads.
+
+## Phase 7: Regression and equivalence gates
+
+After compile/unit tests, use copied configs and unique output names for:
+
+- `step` with `sgd`, `ogda`, `fed_eg`, and `fed_zo_eg`.
+- One CIFAR X/XZ and one FEMNIST X/XZ case.
+- Four workers on `[0, 1, 2, 3]` when free.
+- One worker proving serial fallback.
+- All protected centralized/eICU regression gates.
+
+Check GPUs first:
 
 ```bash
 nvidia-smi --query-gpu=index,name,memory.used,memory.total,utilization.gpu \
@@ -287,105 +385,61 @@ nvidia-smi --query-compute-apps=pid,gpu_uuid,process_name,used_memory \
   --format=csv,noheader
 ```
 
-Do not launch MP workers on GPUs occupied by another user.
+Matched deterministic SP/MP FedGDA, FedOGDA, and FedEG should produce the same
+predictions and MSE. FedZO-EG is stochastic: check finite metrics, seed
+behavior, and comparable distributions instead of demanding bitwise identity.
 
-Benchmark at least five rounds. Exclude the first MP round when estimating
-steady-state performance because it includes worker startup. Report model
-selection, first-round, median steady-round, evaluation, and total wall time.
-Estimate 1,000 rounds with:
+Benchmark at least five rounds. Exclude worker startup from steady-state timing
+and report model-selection, first-round, median later-round, evaluation, and
+total times. Do not promise a speedup before measurement.
 
-```text
-SP = model_selection + 1000 * median_steady_sp_round
-MP = model_selection + worker_startup + 1000 * median_steady_mp_round
-```
+## Phase 8: Build a new cleanup inventory
 
-Do not promise a speedup if local clients are too small for transfer overhead
-to be amortized.
+Only after all functionality passes, inventory:
 
-## Phase 7: Archive results before cleanup
+- FL and centralized launchers and complete import/call dependencies.
+- eICU inputs, contracts, manifests, provenance, gates, and reports.
+- Scenarios, generators, source inputs, and generated NPZs.
+- Shared CIFAR10 and FEMNIST/MNIST X/Z/XZ dependencies.
+- CSV, JSON, NPY, plots, checkpoints, configs, logs, and checksums.
+- Candidate removals with path-specific evidence.
 
-Create a dated archive outside generated dataset directories. Keep categories
-separate:
+Treat `experiments/`, `scripts/`, and `tests/` as active until their
+reproduction relationships are disproved. The large research history added in
+`2c37c69` may be intentional provenance and is not removable based on size.
+
+Archive categories separately before cleanup:
 
 ```text
 .codex/results_archive/<date>/csv/
+.codex/results_archive/<date>/json/
 .codex/results_archive/<date>/npy/
 .codex/results_archive/<date>/configs/
 .codex/results_archive/<date>/plots/
 .codex/results_archive/<date>/checksums/
 ```
 
-Copy, do not move, existing CSVs and compact NPYs first. Record SHA-256 checks:
+Do not remove nested FedML based on filenames. Eager imports can make unrelated
+modules runtime dependencies. Show the keep/archive/remove map and ask for
+approval. After approval, remove only listed paths in small batches and rerun
+relevant FL, centralized, and eICU gates after each batch.
 
-```bash
-find csv -type f -name '*.csv' -print0 | sort -z | xargs -0 sha256sum
-find . -maxdepth 1 -type f -name 'results_*.npy' -print0 | \
-  sort -z | xargs -0 sha256sum
-```
+## Phase 9: Documentation and staged Git handoff
 
-Inspect NPY shape/dtype with memory mapping before classifying it. Never load a
-multi-gigabyte array fully into RAM merely to inspect its header.
+After behavior is verified:
 
-## Phase 8: Safe cleanup procedure
+1. Update fork-local instructions and the executable call tree.
+2. Show each `AGENTS.md` diff and ask for review.
+3. Separate implementation, tests/configs, docs, and cleanup commits.
+4. Inspect staged contents and large files before each commit.
+5. Push only after the user approves the sequence.
 
-Prepare, but do not execute, a cleanup proposal containing:
+The final report must list modified files, preserved fork features, algorithm
+invariants, tests, SP/MP equivalence, GPU mapping, timings, output shapes/sizes,
+archives, deleted paths, reclaimed space, and remaining limitations.
 
-- Exact path.
-- Tracked/untracked/ignored status.
-- Size.
-- Why it is unused.
-- Searches/import traces proving it is unused.
-- Whether it is archived or reproducible.
-- Exact proposed removal command.
+## Immediate stop point
 
-Potential categories include duplicate dataset caches, obsolete installers,
-stale logs, Python bytecode caches, superseded raw image result arrays, and
-framework subsystems unreachable after lazy-import refactoring. A category is
-not automatically safe; validate every concrete path.
-
-Before deleting dataset files, confirm they are not shared by any of:
-
-- `cifar10_x`, `cifar10_z`, `cifar10_xz`.
-- `mnist_x`, `mnist_z`, `mnist_xz`.
-- `femnist_x`, `femnist_z`, `femnist_xz`.
-- Dataset generators.
-- Loader fallbacks or download/extraction paths.
-
-Do not remove the nested FedML tree merely because only a few experiment files
-are edited. First make eager dispatcher imports lazy and then run the supported
-SP/MP DeepGMM smoke suite. Retain generic MPI/NCCL files only if the fork still
-intends to support those paths; document the decision.
-
-After the user approves the exact removal list, delete only those explicit
-paths. Re-run imports and smoke tests after each logical cleanup batch instead
-of deleting everything at once.
-
-## Phase 9: Final documentation and handoff
-
-Update `AGENTS.md` with the verified launcher, algorithms, multiprocessing
-configuration, compact result contract, validation commands, and cleanup
-constraints. Update `.codex/fedavg_api_call_tree.md` whenever executable
-dispatch changes. Show the complete `AGENTS.md` diff and explicitly ask the
-user to approve or request corrections.
-
-The final report must include:
-
-- Files added and modified.
-- Algorithm invariants preserved.
-- SP/MP equivalence results.
-- Stochastic FedZO-EG validation results.
-- GPU mapping used.
-- First-round and steady-state timings.
-- Image output shapes and sizes.
-- Archived artifacts and checksum locations.
-- Deleted paths and reclaimed disk space.
-- Remaining limitations, especially serial model selection and centralized
-  DeepGMM work.
-
-## Centralized runs
-
-Do not apply federated client multiprocessing to centralized DeepGMM. A
-centralized run has no independent clients to distribute. Use batching and
-data-loader workers first; consider DDP only after profiling proves a single
-GPU is saturated. Keep centralized GDA/OAdam/SGDA work in a separate entry
-point and result namespace.
+In the next agent session, perform only Phases 1 through 3. Deliver the
+compatibility report and baseline test evidence, then ask the user to review.
+Do not port code or delete files until that review is complete.

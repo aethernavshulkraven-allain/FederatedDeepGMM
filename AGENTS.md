@@ -2,21 +2,22 @@
 
 ## Scope and Supported Entry Point
 
-The working experiment is `fedgmm/sp_decentralized_mnist_lr_example/`. Run all Federated DeepGMM experiments from that directory through `main.py`; it calls `fedml.init()`, loads the configured data and model, constructs `FedMLRunner`, and dispatches the SP-backend coordinator to `fedml/simulation/sp/fedavg/fedavg_api.py::FedAvgAPI`. That coordinator can execute client-local work serially or through its configured multi-GPU worker pool.
+The working experiment is `fedgmm/sp_decentralized_mnist_lr_example/`. Run all Federated DeepGMM experiments from that directory through `main.py`; it calls `fedml.init()`, loads the configured data and model, constructs `FedMLRunner`, and dispatches the SP-backend coordinator to `fedml/simulation/sp/fedavg/fedavg_api.py::FedAvgAPI`. That coordinator can execute client-local work serially, through spawned processes across multiple GPUs or within one GPU, or concurrently on CUDA streams within one GPU.
 
 ```bash
 cd fedgmm/sp_decentralized_mnist_lr_example
-CUDA_VISIBLE_DEVICES=3 python main.py --cf fedml/config/simulation_sp/fedml_config.yaml
+CUDA_VISIBLE_DEVICES=0,1,2,3 python main.py --cf fedml/config/simulation_sp/fedml_config.yaml
 ```
 
-For a detached run, add `nohup` and redirect stdout/stderr to a distinct log. Although `main.py` currently assigns `CUDA_VISIBLE_DEVICES` internally, use the shell command above as the repository convention and avoid changing device behavior unless requested. `Toy_Example/` is an independent two-variable FedGDA/FedOGDA demonstration, not the DeepGMM execution path.
+For a detached run, add `nohup` and redirect stdout/stderr to a distinct log. `main.py` preserves a shell-supplied `CUDA_VISIBLE_DEVICES` and otherwise defaults to `0,1,2,3`. `Toy_Example/` is an independent two-variable FedGDA/FedOGDA demonstration, not the DeepGMM execution path.
 
 ## Project Structure
 
 - `main.py`: supported FL launcher.
 - `fedml/config/simulation_sp/fedml_config.yaml`: active experiment configuration. Use copied YAML files for simultaneous or comparison runs.
 - `fedml/simulation/sp/fedavg/fedavg_api.py`: server orchestration, client sampling, aggregation, model selection, evaluation, CSV logging, and checkpoints.
-- `fedml/simulation/sp/fedavg/multiprocess_client.py`: persistent spawned GPU workers for parallel client-local updates.
+- `fedml/simulation/sp/fedavg/multiprocess_client.py`: persistent spawned GPU workers for multi-GPU and single-GPU multiprocessing.
+- `fedml/simulation/sp/fedavg/single_gpu_client.py`: isolated trainer slots and CUDA streams for concurrent client-local updates within one process and GPU.
 - `fedml/simulation/sp/fedavg/client.py` and `fedml/ml/trainer/my_model_trainer_classification.py`: client dataset assignment and local DeepGMM updates.
 - `scenarios/`: data-generating processes for low-dimensional, MNIST, EMNIST, and CIFAR variants.
 - `generate_zoo_data.py`, `generate_mnist_data.py`, `generate_emnist_data.py`, and `generate_cifar10_data.py`: materialize scenario data under `data/`.
@@ -80,13 +81,23 @@ The FL flow is:
 4. The server aggregates parameters/deltas and applies the algorithm-specific OGDA or extragradient phase.
 5. It evaluates the global structural model and writes `csv/<client_optimizer>_<dataset>newtrial.csv`, periodic `checkpoints/<client_optimizer>_<dataset>_round_<round>.pt`, and final result arrays/plots when enabled.
 
-### Federated Client Multiprocessing
+### Federated Client Execution Modes
 
-Keep `backend: sp`; multiprocessing is an internal client-execution option of
-`FedAvgAPI`, not the generic vendored MPI FedAvg implementation. Configure it
-inside `train_args`:
+Keep `backend: sp`; client concurrency is internal to `FedAvgAPI`, not the
+generic vendored MPI FedAvg implementation. Select one explicit mode inside
+`train_args`. The legacy `enable_multiprocessing` switch remains backward
+compatible when `client_execution_mode` is omitted.
+
+Serial client execution:
 
 ```yaml
+client_execution_mode: sp
+```
+
+Persistent multi-GPU processes:
+
+```yaml
+client_execution_mode: multi_gpu_processes
 enable_multiprocessing: true
 multiprocessing_num_workers: 4
 multiprocessing_gpu_ids: [0, 1, 2, 3]
@@ -96,35 +107,118 @@ GPU IDs are logical CUDA indices visible to the Python process. Use one worker
 per GPU and list only GPUs assigned to the run. For two or three available
 GPUs, shorten both the list and worker count. With fewer than two selected
 workers, the implementation logs a warning and uses the original serial client
-path. Never start multiple workers on one GPU merely to increase the process
-count.
+path.
+
+True multiprocessing within one GPU:
+
+```yaml
+client_execution_mode: multiprocessingsinglegpu
+enable_multiprocessing: false
+multiprocessingsinglegpu_num_workers: 2
+multiprocessingsinglegpu_gpu_id: 0
+```
+
+This mode creates persistent spawned Python processes and assigns every worker
+the same logical CUDA GPU. Each worker owns an isolated trainer, optimizer
+state, CUDA context, and one client task at a time. The GPU ID must match
+`device_args.gpu_id`; the worker count is capped at `client_num_per_round`, and
+fewer than two workers falls back to SP. When exposing one physical GPU
+(for example `CUDA_VISIBLE_DEVICES=3`), CUDA remaps it to logical GPU 0, so
+set both `device_args.gpu_id: 0` and
+`multiprocessingsinglegpu_gpu_id: 0` in the copied run YAML. Start with two
+workers, then benchmark two, four, and six because every process adds
+CUDA-context and model memory.
+The implementation works with standard CUDA and is compatible with an
+externally managed NVIDIA MPS service, but it never starts, configures, or stops
+MPS itself.
+
+Single-process CUDA-stream concurrency on one GPU (not multiprocessing):
+
+```yaml
+client_execution_mode: single_gpu_streams
+enable_multiprocessing: false
+single_gpu_num_slots: 4
+single_gpu_id: 0
+```
+
+`single_gpu_id` must match `device_args.gpu_id`, and the shell should expose
+only that assigned GPU when isolation is required. With fewer than two slots,
+the coordinator logs a warning and falls back to SP. This mode uses a Python
+thread pool only to submit independent work to separate CUDA streams; all client
+updates remain in one OS process and one CUDA context, so call it stream
+concurrency rather than multiprocessing. Benchmark two, four, and six slots for
+each high-dimensional workload because memory use and kernel contention are
+workload dependent.
 
 `fedml/simulation/sp/fedavg/multiprocess_client.py` owns persistent spawned
-workers. The coordinator samples clients and materializes their batches on CPU;
-each worker moves its assigned batch and model state to its GPU, calls the
-unchanged `Client.train()`, `Client.train_reg()`, or `Client.train_zo()` method,
-and returns CPU state dictionaries. Results are restored to sampled-client
-order and moved to the coordinator device before the existing aggregation and
-server optimizer branches execute. FedEG/FedZO-EG complete all predictor-phase
-client tasks before the look-ahead aggregation and all correction-phase tasks
-before the corrector aggregation.
+workers. `MultiprocessClientExecutor` assigns the configured GPU list, while
+`SingleGPUMultiprocessClientExecutor` deliberately repeats one GPU ID for all
+workers. Each worker applies deterministic cuDNN settings, moves CPU task
+payloads to its device, calls the unchanged client methods, converts results
+to CPU, synchronizes, and releases unused CUDA cache before notifying the
+coordinator. Preserve that completion barrier so server evaluation never races
+worker kernels. Each persistent worker still retains its trainer and CUDA
+context, so isolate the selected GPU from unrelated jobs and ensure the combined
+worker memory fits before increasing the worker count.
 
-Do not move sampling, aggregation, OGDA previous-delta state, EG
-predictor/corrector arithmetic, evaluation, checkpointing, or plotting into
-workers. Treat changes to task ordering, synchronization barriers, optimizer
-state clearing, or CPU/GPU state conversion as algorithm-sensitive changes.
-For deterministic methods, compare SP and multiprocessing predictions and MSE;
-current SGD/FedGDA, OGDA, and FedEG smoke comparisons are bit-for-bit equal.
-FedZO-EG is stochastic and requires distributional/reproducibility validation
-rather than assuming bit-for-bit equality across worker schedules.
+`fedml/simulation/sp/fedavg/single_gpu_client.py` owns one deep-copied `g`/`f`
+trainer and one CUDA stream per slot. It schedules DeepGMM client work in
+bounded waves with at most one active task per slot, synchronizes each wave,
+and restores results to sampled-client order. Trainer and optimizer state are
+never shared between concurrent slots. The supported FedAvg task contract has
+no auxiliary direct-regression phase: an audit confirmed that baseline did not
+feed MSE, checkpoints, CSVs, NPY predictions, or plots, so its per-client
+training and aggregation were removed from SP, multi-GPU, and single-GPU
+execution. The shared model factory constructs the legacy third model only for
+other vendored coordinators; supported FedAvg runs return an empty third entry,
+and `main.py`/`FedAvgAPI` retain only `g` and `f` before constructing trainers
+or executors.
 
-Multiprocessing accelerates only independent federated client updates. Worker
-startup is paid in the first client phase; use later-round timing to assess
-speedup rather than a one-round wall-clock comparison. The 60-epoch
-model-selection phase remains serial and can dominate short runs.
-Do not apply this client pool to centralized DeepGMM: centralized training has
-no independent client dimension. Optimize centralized runs with batching,
-data-loader workers, and later DDP only when one GPU is demonstrably saturated.
+All concurrent modes reuse the same coordinator task contract. The coordinator
+retains client sampling, sampled-client order, weighted aggregation, server
+learning rates, OGDA previous-delta history, FedEG/FedZO-EG predictor/corrector
+barriers, evaluation, checkpointing, and plotting. Do not move any of those
+operations into executors. Treat changes to ordering, barriers, optimizer-state
+clearing, or CPU/GPU conversion as algorithm-sensitive.
+
+For deterministic methods, compare every `g` and `f` checkpoint tensor, metric,
+and final prediction against SP. The deterministic CIFAR10-X FedGDA checks were
+bit-for-bit equal across SP, four-GPU multiprocessing, and single-GPU stream
+execution; two-, four-, and six-stream schedules also matched the SP algorithm
+state in the earlier equivalence runs. FedZO-EG is stochastic and requires
+seed-aware distributional validation rather than assumed bitwise equality
+across schedules.
+
+After removing the unused direct-regression path, a fresh deterministic
+CIFAR10-X FedGDA check compared SP with four single-GPU streams using seed 0,
+four clients, one full-batch local epoch, and one communication round. All 15
+`g` tensors and all four `f` tensors matched with `torch.equal`, maximum
+absolute difference was zero, checkpoint MSE was identical, and the complete
+checkpoint files had the same SHA-256 hash. The client phases measured 0.899 s
+for SP and 4.903 s for four streams in this single trial; treat this only as a
+correctness smoke test, not a slot-count performance benchmark.
+
+A fresh isolated-GPU test also compared the same deterministic SP reference
+with `multiprocessingsinglegpu`, using two spawned workers for four clients.
+Both workers were observed as distinct PIDs on logical GPU 0. All 19 `g` and
+`f` checkpoint tensors matched with `torch.equal`, maximum absolute difference
+was zero, both checkpoint MSE values were 0.20649527556843192, the final test
+MSE was 0.2488411918148422, and both complete checkpoints had SHA-256
+`9f1ccbc5fe8b8b515c10b3d2805fcaf2c0e2f4dc90a8dbf6e8301ea86ca2bab7`.
+The client phase took 10.241 s in this correctness run. A prior attempt while
+an unrelated Ray job occupied about 22 GiB correctly failed with CUDA OOM; run
+this mode only on an isolated GPU with enough memory for every worker.
+
+Do not reuse the earlier two-, four-, and six-slot timing numbers to select a
+default: those measurements included the now-removed auxiliary regression
+work. Re-benchmark the g/f-only path for CIFAR10 X/XZ and FEMNIST before
+choosing a slot count. The 60-epoch model-selection phase remains serial and
+can dominate short end-to-end runs.
+
+These executors accelerate only independent federated client updates. Do not
+apply them to centralized DeepGMM, which has no independent client dimension.
+Optimize centralized runs with batching, data-loader workers, and later DDP
+only when one GPU is demonstrably saturated.
 
 ## Centralized DeepGMM Workflow
 
@@ -182,8 +276,8 @@ DeepGMM and the retained MPI FedAvg path pass smoke tests.
 There is no repository-wide acceptance suite. At minimum, run:
 
 ```bash
-python -m compileall main.py fedml/simulation/sp/fedavg/fedavg_api.py fedml/simulation/sp/fedavg/multiprocess_client.py fedml/ml/trainer/my_model_trainer_classification.py scenarios learning optimizers
-pytest -q tests/test_multiprocess_client.py
+python -m compileall main.py fedml/simulation/sp/fedavg/fedavg_api.py fedml/simulation/sp/fedavg/multiprocess_client.py fedml/simulation/sp/fedavg/single_gpu_client.py fedml/ml/trainer/my_model_trainer_classification.py scenarios learning optimizers
+python -m pytest -q tests/test_multiprocess_client.py
 ```
 
 For algorithm or configuration changes, run the smallest relevant smoke experiment, check for NaNs/divergence, and verify the expected CSV/checkpoint/result names. Add deterministic `test_*.py` tests for new centralized plumbing or optimizer behavior.

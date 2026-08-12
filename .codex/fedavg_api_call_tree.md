@@ -33,31 +33,37 @@ fedml/simulation/simulator.py
             │       └── fedml/ml/trainer/my_model_trainer_classification.py
             │           └── ModelTrainerCLS()                      [current/default datasets]
             ├── fedml/simulation/sp/fedavg/client.py
-            │   └── Client() for each serial client slot            [SP fallback]
-            └── fedml/simulation/sp/fedavg/multiprocess_client.py
-                └── MultiprocessClientExecutor()                    [MP enabled]
-                    └── one persistent spawned worker per GPU
+            │   └── Client() for each serial client slot            [SP mode]
+            ├── fedml/simulation/sp/fedavg/multiprocess_client.py
+            │   ├── MultiprocessClientExecutor()                    [multi-GPU mode]
+            │   │   └── one persistent spawned worker per GPU
+            │   └── SingleGPUMultiprocessClientExecutor()           [one-GPU process mode]
+            │       └── persistent spawned workers sharing one GPU
+            └── fedml/simulation/sp/fedavg/single_gpu_client.py
+                └── SingleGPUClientExecutor()                      [single-GPU mode]
+                    └── one isolated g/f trainer and CUDA stream per concurrent slot
 
 fedml/simulation/simulator.py
 └── SimulatorSingleProcess.run()
     └── FedAvgAPI.train()
         ├── FedAvgAPI._client_sampling()
         ├── FedAvgAPI._run_primary_client_updates()
-        │   ├── serial: Client.update_local_dataset()/train()/train_reg()
-        │   └── parallel: MultiprocessClientExecutor.run()
-        │       └── worker -> Client.train() and Client.train_reg()
-        │           └── my_model_trainer_classification.py
-        │               ├── ModelTrainerCLS.train_gmm()
-        │               │   ├── OptimalMomentObjective.calc_objective()
-        │               │   └── CustomSGD.step() or OGDA.step()
-        │               └── ModelTrainerCLS.train()
+        │   ├── SP: Client.update_local_dataset()/train()
+        │   ├── multi-GPU: MultiprocessClientExecutor.run()
+        │   │   └── spawned worker -> Client.train()
+        │   ├── one-GPU processes: SingleGPUMultiprocessClientExecutor.run()
+        │   │   └── same-GPU spawned worker -> Client.train()
+        │   └── single-GPU: SingleGPUClientExecutor.run()
+        │       └── stream slot -> Client.train()
+        │           └── ModelTrainerCLS.train_gmm()
+        │               ├── OptimalMomentObjective.calc_objective()
+        │               └── CustomSGD.step() or OGDA.step()
         ├── FedAvgAPI._aggregate()
         ├── synchronized second client phase                    [fed_eg or fed_zo_eg]
-        │   ├── serial/worker -> Client.train()                                  [fed_eg]
+        │   ├── serial/worker/stream -> Client.train()                                  [fed_eg]
         │   │   └── ModelTrainerCLS.train_gmm()
-        │   └── serial/worker -> Client.train_zo()                               [fed_zo_eg]
+        │   └── serial/worker/stream -> Client.train_zo()                               [fed_zo_eg]
         │       └── ModelTrainerCLS.train_gmm_zo()
-        ├── FedAvgAPI._aggregate_reg()
         ├── FedAvgAPI.eval_global_model()
         │   ├── FedAvgAPI.calc_f_g_obj()
         │   │   └── OptimalMomentObjective.calc_objective()
