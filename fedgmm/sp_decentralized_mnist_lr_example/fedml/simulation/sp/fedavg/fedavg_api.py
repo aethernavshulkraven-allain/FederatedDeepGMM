@@ -49,6 +49,7 @@ from experiment_utils import (
     equal_client_structural_mse,
     get_effective_config,
     moment_violation,
+    metric_values_are_finite,
     prepare_run_dir,
     predictions_for_split,
     run_dir_from_config,
@@ -726,7 +727,28 @@ class FedAvgAPI(object):
             max_recent_eval = eval_result["max_recent_gmm_eval"]
             f_of_z_train = eval_result["f_of_z_train"]
             f_of_z_dev = eval_result["f_of_z_dev"]
-            finite = state_is_finite(self.model_trainer.get_g_model_params()) and state_is_finite(self.model_trainer.get_f_model_params())
+            state_finite = (
+                state_is_finite(self.model_trainer.get_g_model_params())
+                and state_is_finite(self.model_trainer.get_f_model_params())
+            )
+            metrics_finite = metric_values_are_finite(
+                eval_result[key]
+                for key in (
+                    "train_mse",
+                    "val_mse",
+                    "primary_val_mse",
+                    "equal_client_val_mse",
+                    "sample_weighted_val_mse",
+                    "train_moment_violation",
+                    "val_moment_violation",
+                    "equal_client_val_moment_violation",
+                    "sample_weighted_val_moment_violation",
+                    "gmm_train_objective",
+                    "gmm_val_objective",
+                    "gmm_eval",
+                )
+            )
+            finite = state_finite and metrics_finite
             diverged = not finite
             if diverged and self.nonfinite_first_round is None:
                 self.nonfinite_first_round = round_idx

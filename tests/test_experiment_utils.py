@@ -24,6 +24,7 @@ from fedgmm.sp_decentralized_mnist_lr_example.experiment_utils import (
     expand_smoke_manifest,
     format_no_valid_model_selection_error,
     get_effective_config,
+    metric_values_are_finite,
     per_client_equal_and_sample_weighted,
     prepare_run_dir,
     save_predictions_npz,
@@ -160,6 +161,12 @@ def _write_valid_run(
 
 
 class ExperimentUtilsTest(unittest.TestCase):
+    def test_metric_values_are_finite_checks_every_present_number(self):
+        self.assertTrue(metric_values_are_finite([1.0, None, [2.0, -3.0]]))
+        self.assertFalse(metric_values_are_finite([1.0, float("nan")]))
+        self.assertFalse(metric_values_are_finite([float("inf")]))
+        self.assertFalse(metric_values_are_finite([float("-inf")]))
+
     def test_unique_output_directory_construction(self):
         path = build_run_dir("results", "abs", "fedgda_d", 0, "smoke")
         self.assertEqual(

@@ -1105,6 +1105,19 @@ def state_is_finite(state_dict):
     return True
 
 
+def metric_values_are_finite(values):
+    """Return whether every present numeric metric is finite."""
+    try:
+        return all(
+            math.isfinite(number)
+            for value in values
+            if value is not None
+            for number in _flatten_numbers(value)
+        )
+    except (TypeError, ValueError):
+        return False
+
+
 def config_checksum(config):
     """Deterministic sha256 over a JSON-safe config, for cross-artifact provenance."""
     import hashlib
