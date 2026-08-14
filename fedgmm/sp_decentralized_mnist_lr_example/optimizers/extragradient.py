@@ -29,7 +29,20 @@ class ExtraGradient(Optimizer):
 
     @torch.no_grad()
     def extrapolation(self):
-        """Save the base iterate and move to the predictor point."""
+        """Save the base iterate and move to the predictor point.
+
+        Writes go through ``.data`` rather than an autograd-tracked in-place
+        op. Every other optimizer in this repo (CustomSGD, SGDA, OGDA) does
+        the same -- their objectives are evaluated jointly (f's loss graph
+        traces back through g's forward output, e.g.
+        ``game_objectives/simple_moment_objective.py``), and the model-
+        selection and client-training loops both call ``g_optimizer.step()``
+        before ``f_obj.backward()``. A version-tracked write there makes
+        autograd correctly refuse to run that second backward. ``.data``
+        keeps this optimizer a drop-in match for the others' behavior in
+        those shared call sites instead of being the first one to surface
+        that ordering.
+        """
         for group in self.param_groups:
             for parameter in group["params"]:
                 if parameter.grad is None:
@@ -40,7 +53,7 @@ class ExtraGradient(Optimizer):
                         "ExtraGradient extrapolation called twice without correction"
                     )
                 state["eg_base"] = parameter.detach().clone()
-                parameter.add_(
+                parameter.data.add_(
                     self._direction(parameter, group), alpha=-group["lr"]
                 )
 
@@ -56,5 +69,5 @@ class ExtraGradient(Optimizer):
                 base = state.pop("eg_base", None)
                 direction = self._direction(parameter, group)
                 if base is not None:
-                    parameter.copy_(base)
-                parameter.add_(direction, alpha=-group["lr"])
+                    parameter.data.copy_(base)
+                parameter.data.add_(direction, alpha=-group["lr"])
