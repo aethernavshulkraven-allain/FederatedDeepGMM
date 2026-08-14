@@ -180,9 +180,10 @@ train_args: #OGDA-MINIBATCH
   # client_optimizer: ogda
   # client_optimizer: sgd
   # client_optimizer: fed_eg
+  # client_optimizer: fed_eg_double
   # client_optimizer: fed_zo_eg
   learning_rate: 0.001
-  # FedEG/FedZO-EG use server_learning_rate when either phase LR is null.
+  # FedEG/FedEG_double/FedZO-EG use server_learning_rate when either phase LR is null.
   eg_predictor_server_lr: null
   eg_corrector_server_lr: null
   # FedZO-EG only; each direction costs two forward objective evaluations.

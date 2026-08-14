@@ -31,6 +31,8 @@ VARIANT_MAPPING = {
     "fedogda_s": {"client_optimizer": "ogda", "mode": "stochastic", "batching": "minibatch"},
     "fed_eg_d": {"client_optimizer": "fed_eg", "mode": "deterministic", "batching": "full_batch"},
     "fed_eg_s": {"client_optimizer": "fed_eg", "mode": "stochastic", "batching": "minibatch"},
+    "fed_eg_double_d": {"client_optimizer": "fed_eg_double", "mode": "deterministic", "batching": "full_batch"},
+    "fed_eg_double_s": {"client_optimizer": "fed_eg_double", "mode": "stochastic", "batching": "minibatch"},
     "fed_zo_eg_d": {"client_optimizer": "fed_zo_eg", "mode": "deterministic", "batching": "full_batch"},
     "fed_zo_eg_s": {"client_optimizer": "fed_zo_eg", "mode": "stochastic", "batching": "minibatch"},
 }
