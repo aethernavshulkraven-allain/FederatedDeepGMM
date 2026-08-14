@@ -11,6 +11,8 @@ EXAMPLE_ROOT = os.path.join(REPO_ROOT, "fedgmm", "sp_decentralized_mnist_lr_exam
 sys.path.insert(0, EXAMPLE_ROOT)
 
 from experiment_utils import get_effective_config  # noqa: E402
+from optimizers.extragradient import ExtraGradient  # noqa: E402
+from fedml.simulation.sp.fedavg.client import Client  # noqa: E402
 from fedml.ml.trainer.my_model_trainer_classification import ModelTrainerCLS  # noqa: E402
 from fedml.simulation.sp.fedavg.fedavg_api import FedAvgAPI  # noqa: E402
 
@@ -62,6 +64,7 @@ class EffectiveConfigDispatchTest(unittest.TestCase):
             "sgd": "fedgda_d",
             "ogda": "fedogda_d",
             "fed_eg": "fed_eg_d",
+            "fed_eg_double": "fed_eg_double_d",
             "fed_zo_eg": "fed_zo_eg_d",
         }
         for optimizer, variant in expected.items():
@@ -133,6 +136,62 @@ class ZerothOrderTrainerTest(unittest.TestCase):
         self.assertFalse(torch.equal(first, second))
 
 
+class LocalExtraGradientTest(unittest.TestCase):
+    def test_correction_gradient_is_applied_from_original_parameters(self):
+        trainer = build_zo_trainer(learning_rate=0.1)
+        trainer.g_optimizer = ExtraGradient(trainer.g.parameters(), lr=0.1)
+        trainer.f_optimizer = ExtraGradient(trainer.f.parameters(), lr=0.1)
+        args = SimpleNamespace(
+            epochs=1,
+            gradient_clip_norm=100.0,
+            dataloader_pin_memory=False,
+        )
+
+        trainer.train_gmm_eg(one_batch(), torch.device("cpu"), args)
+
+        self.assertEqual(trainer.game_objective.calls, 2)
+        torch.testing.assert_close(
+            trainer.g.weight, torch.tensor([[0.3]], dtype=torch.float64)
+        )
+        torch.testing.assert_close(
+            trainer.f.weight, torch.tensor([[-0.525]], dtype=torch.float64)
+        )
+
+    def test_client_dispatch_keeps_fedeg_and_double_distinct(self):
+        class Trainer:
+            def __init__(self):
+                self.calls = []
+
+            def set_g_model_params(self, params):
+                pass
+
+            def set_f_model_params(self, params):
+                pass
+
+            def train_gmm(self, data, device, args):
+                self.calls.append("gda")
+
+            def train_gmm_eg(self, data, device, args):
+                self.calls.append("eg")
+
+            def get_g_model_params(self):
+                return {}
+
+            def get_f_model_params(self):
+                return {}
+
+        for optimizer, expected in (("fed_eg", "gda"), ("fed_eg_double", "eg")):
+            with self.subTest(optimizer=optimizer):
+                trainer = Trainer()
+                client = Client(
+                    0, [], None, 1,
+                    SimpleNamespace(client_optimizer=optimizer),
+                    torch.device("cpu"), trainer,
+                )
+                client.train({}, {})
+                self.assertEqual(trainer.calls, [expected])
+
+
 class FakeClient:
     def __init__(self, client_idx):
         self.client_idx = client_idx
@@ -152,7 +211,11 @@ class FakeClient:
 
 class CorrectionBarrierTest(unittest.TestCase):
     def test_exact_and_zo_corrections_reuse_sampled_client_order(self):
-        for optimizer, expected_call in (("fed_eg", "exact"), ("fed_zo_eg", "zo")):
+        for optimizer, expected_call in (
+            ("fed_eg", "exact"),
+            ("fed_eg_double", "exact"),
+            ("fed_zo_eg", "zo"),
+        ):
             with self.subTest(optimizer=optimizer):
                 api = object.__new__(FedAvgAPI)
                 api.args = SimpleNamespace(client_optimizer=optimizer)

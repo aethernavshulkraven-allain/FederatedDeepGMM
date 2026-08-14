@@ -495,6 +495,76 @@ class ModelTrainerCLS(ClientTrainer):
         
         self.set_g_model_params(g.state_dict())
         self.set_f_model_params(f.state_dict())
+
+    @staticmethod
+    def _set_objective_gradients(loss, parameters, retain_graph=False):
+        gradients = torch.autograd.grad(
+            loss, parameters, retain_graph=retain_graph, allow_unused=True
+        )
+        for parameter, gradient in zip(parameters, gradients):
+            parameter.grad = None if gradient is None else gradient.detach()
+
+    def train_gmm_eg(self, client_data, device, args):
+        """Apply local ExtraGradient for every FedEG_double client batch."""
+        g = self.g.to(device)
+        f = self.f.to(device)
+        g.train()
+        f.train()
+        if not hasattr(self.g_optimizer, "extrapolation") or not hasattr(
+            self.f_optimizer, "extrapolation"
+        ):
+            raise TypeError("FedEG_double requires ExtraGradient optimizers")
+
+        self.g_optimizer.state.clear()
+        self.f_optimizer.state.clear()
+        g_parameters = [
+            parameter for parameter in g.parameters() if parameter.requires_grad
+        ]
+        f_parameters = [
+            parameter for parameter in f.parameters() if parameter.requires_grad
+        ]
+        gradient_clip_norm = float(getattr(args, "gradient_clip_norm", 1.0))
+        non_blocking = bool(getattr(args, "dataloader_pin_memory", False))
+
+        if hasattr(self.game_objective, "set_theta_tilde"):
+            self.game_objective.set_theta_tilde(g)
+
+        for _ in range(args.epochs):
+            for batch in client_data:
+                x_batch = batch[2].to(device, non_blocking=non_blocking)
+                y_batch = batch[3].to(device, non_blocking=non_blocking)
+                z_batch = batch[4].to(device, non_blocking=non_blocking)
+
+                self.g_optimizer.zero_grad(set_to_none=True)
+                self.f_optimizer.zero_grad(set_to_none=True)
+                predictor_g_obj, predictor_f_obj = self.game_objective.calc_objective(
+                    g, f, x_batch, z_batch, y_batch
+                )
+                self._set_objective_gradients(
+                    predictor_g_obj, g_parameters, retain_graph=True
+                )
+                self._set_objective_gradients(predictor_f_obj, f_parameters)
+                torch.nn.utils.clip_grad_norm_(g_parameters, gradient_clip_norm)
+                torch.nn.utils.clip_grad_norm_(f_parameters, gradient_clip_norm)
+                self.g_optimizer.extrapolation()
+                self.f_optimizer.extrapolation()
+
+                self.g_optimizer.zero_grad(set_to_none=True)
+                self.f_optimizer.zero_grad(set_to_none=True)
+                corrector_g_obj, corrector_f_obj = self.game_objective.calc_objective(
+                    g, f, x_batch, z_batch, y_batch
+                )
+                self._set_objective_gradients(
+                    corrector_g_obj, g_parameters, retain_graph=True
+                )
+                self._set_objective_gradients(corrector_f_obj, f_parameters)
+                torch.nn.utils.clip_grad_norm_(g_parameters, gradient_clip_norm)
+                torch.nn.utils.clip_grad_norm_(f_parameters, gradient_clip_norm)
+                self.g_optimizer.step()
+                self.f_optimizer.step()
+
+        self.set_g_model_params(g.state_dict())
+        self.set_f_model_params(f.state_dict())
         
 
     @staticmethod

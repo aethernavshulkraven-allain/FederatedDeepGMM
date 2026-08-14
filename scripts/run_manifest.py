@@ -33,7 +33,8 @@ FEDML_TRACE_DIR_ENV = "FEDGMM_FEDML_TRACE_DIR"
 
 SUPPORTED_FEDERATED_METHODS = {
     "fedgda_d", "fedgda_s", "fedogda_d", "fedogda_s",
-    "fed_eg_d", "fed_eg_s", "fed_zo_eg_d", "fed_zo_eg_s",
+    "fed_eg_d", "fed_eg_s", "fed_eg_double_d", "fed_eg_double_s",
+    "fed_zo_eg_d", "fed_zo_eg_s",
 }
 EXPECTED_ARTIFACTS = (
     "effective_config.json",

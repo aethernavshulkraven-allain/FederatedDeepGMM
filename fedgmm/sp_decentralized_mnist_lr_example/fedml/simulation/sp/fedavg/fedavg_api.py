@@ -20,6 +20,7 @@ from game_objectives.simple_moment_objective import (
 )
 from optimizers.oadam import OAdam
 from optimizers.Customsgd import CustomSGD
+from optimizers.extragradient import ExtraGradient
 from optimizers.ogda import OGDA
 from optimizers.optimizer_factory import OptimizerFactory
 # from optimizers.optimizer_factory import DPOAdam
@@ -376,6 +377,14 @@ class FedAvgAPI(object):
                             OGDA, lr=critic_multiplier*float(g_lr)),
                         "game_objective": game_objective
                     }
+                elif args.client_optimizer == "fed_eg_double":
+                    learning_setup = {
+                        "g_optimizer_factory": OptimizerFactory(
+                            ExtraGradient, lr=float(g_lr)),
+                        "f_optimizer_factory": OptimizerFactory(
+                            ExtraGradient, lr=critic_multiplier*float(g_lr)),
+                        "game_objective": game_objective
+                    }
                 else:
                     learning_setup = {
                         "g_optimizer_factory": OptimizerFactory(
@@ -397,6 +406,11 @@ class FedAvgAPI(object):
             default_g_opt_factory = OptimizerFactory(OGDA, lr=0.01)
             # default_f_opt_factory = OptimizerFactory(OGDA, lr=0.01)
             default_f_opt_factory = OptimizerFactory(OGDA, lr=critic_multiplier*args.learning_rate)
+        elif args.client_optimizer == "fed_eg_double":
+            default_g_opt_factory = OptimizerFactory(ExtraGradient, lr=0.01)
+            default_f_opt_factory = OptimizerFactory(
+                ExtraGradient, lr=critic_multiplier*args.learning_rate
+            )
         else:
             default_g_opt_factory = OptimizerFactory(CustomSGD, lr=0.01, momentum=0.0)
             # default_f_opt_factory = OptimizerFactory(CustomSGD, lr=0.01, momentum=0.0)
@@ -778,7 +792,9 @@ class FedAvgAPI(object):
                 w_agg = self._aggregate(w_locals)
 
             with self.profiler.span("server_update_gmm", round_idx=round_idx):
-                if self.args.client_optimizer in ("fed_eg", "fed_zo_eg"):
+                if self.args.client_optimizer in (
+                    "fed_eg", "fed_eg_double", "fed_zo_eg"
+                ):
                     g_base = self.model_trainer.get_g_model_params()
                     f_base = self.model_trainer.get_f_model_params()
                     predictor_lr = self.args.eg_predictor_server_lr

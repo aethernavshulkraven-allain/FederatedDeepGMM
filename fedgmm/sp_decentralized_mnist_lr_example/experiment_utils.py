@@ -30,7 +30,9 @@ DEFAULT_AGGREGATION_WEIGHTING = "sample_size"
 # result stays reproducible.
 OBJECTIVE_MODE_CHOICES = ("legacy", "paper_aligned")
 DEFAULT_OBJECTIVE_MODE = "legacy"
-CLIENT_OPTIMIZER_CHOICES = ("sgd", "ogda", "fed_eg", "fed_zo_eg")
+CLIENT_OPTIMIZER_CHOICES = (
+    "sgd", "ogda", "fed_eg", "fed_eg_double", "fed_zo_eg",
+)
 PAPER_ALIGNED_LAMBDA = 0.25
 PROFILE_ENV_VAR = "FEDGMM_PROFILE_RUNTIME"
 PROFILE_ROOT_ENV_VAR = "FEDGMM_PROFILE_ROOT"
@@ -271,6 +273,7 @@ def get_effective_config(args):
         "sgd": "fedgda",
         "ogda": "fedogda",
         "fed_eg": "fed_eg",
+        "fed_eg_double": "fed_eg_double",
         "fed_zo_eg": "fed_zo_eg",
     }[optimizer_name]
     batch_size = getattr(args, "batch_size", 0)
@@ -1421,7 +1424,13 @@ def expand_smoke_manifest(manifest):
         item.update(variant)
         optimizer = item.get("client_optimizer", "sgd")
         batch_size = int(item.get("batch_size", 0))
-        algorithm = "fedogda" if str(optimizer).lower() == "ogda" else "fedgda"
+        algorithm = {
+            "sgd": "fedgda",
+            "ogda": "fedogda",
+            "fed_eg": "fed_eg",
+            "fed_eg_double": "fed_eg_double",
+            "fed_zo_eg": "fed_zo_eg",
+        }[str(optimizer).lower()]
         suffix = "d" if batch_size <= 0 else "s"
         item["variant"] = variant.get("variant", f"{algorithm}_{suffix}")
         expanded.append(item)
