@@ -36,6 +36,35 @@ SUPPORTED_FEDERATED_METHODS = {
     "fed_eg_d", "fed_eg_s", "fed_eg_double_d", "fed_eg_double_s",
     "fed_zo_eg_d", "fed_zo_eg_s",
 }
+
+# Ground truth for method<->optimizer, mirrored from the `algorithm` map in
+# experiment_utils.get_effective_config() (the training code's own inverse
+# derivation of client_optimizer -> output-directory variant). Kept here so
+# run_manifest.py can catch a mismatch BEFORE launching a job, not after a
+# full run completes and writes real artifacts to a variant-derived path
+# that silently differs from what the manifest's "method" column implied.
+# See QUARANTINE_20260819_mislabeled_fedogda_expand2/ for the incident this
+# check exists to prevent: a template-lookup bug left ten "fedogda_d" rows
+# with client_optimizer="sgd", so they trained and completed in full as
+# fedgda_d and landed in the fedgda_d results tree under fedogda_d run_ids.
+METHOD_TO_OPTIMIZER = {
+    "fedgda_d": "sgd", "fedgda_s": "sgd",
+    "fedogda_d": "ogda", "fedogda_s": "ogda",
+    "fed_eg_d": "fed_eg", "fed_eg_s": "fed_eg",
+    "fed_eg_double_d": "fed_eg_double", "fed_eg_double_s": "fed_eg_double",
+    "fed_zo_eg_d": "fed_zo_eg", "fed_zo_eg_s": "fed_zo_eg",
+}
+
+# Cosmetic (not read by any training code path), but a wrong method_label is
+# the same template-copy bug showing up in reports/dashboards even where it
+# doesn't affect what actually trains -- checked for the same reason.
+METHOD_LABEL = {
+    "fedgda_d": "FedGDA-D", "fedgda_s": "FedGDA-S",
+    "fedogda_d": "FedOGDA-D", "fedogda_s": "FedOGDA-S",
+    "fed_eg_d": "FedEG-D", "fed_eg_s": "FedEG-S",
+    "fed_eg_double_d": "FedEG-Double-D", "fed_eg_double_s": "FedEG-Double-S",
+    "fed_zo_eg_d": "FedZOEG-D", "fed_zo_eg_s": "FedZOEG-S",
+}
 EXPECTED_ARTIFACTS = (
     "effective_config.json",
     "mse_by_round.csv",
@@ -199,6 +228,21 @@ def build_config(
     override_dataloader_num_workers: int | None,
     override_dataloader_pin_memory: bool | None,
 ) -> dict[str, Any]:
+    expected_optimizer = METHOD_TO_OPTIMIZER.get(row["method"])
+    if expected_optimizer is None:
+        raise ManifestLaunchError(f"{row['run_id']}: unknown method {row['method']!r}, cannot verify client_optimizer")
+    if row.get("client_optimizer") != expected_optimizer:
+        raise ManifestLaunchError(
+            f"{row['run_id']}: method={row['method']!r} requires client_optimizer="
+            f"{expected_optimizer!r}, got {row.get('client_optimizer')!r}"
+        )
+    expected_label = METHOD_LABEL.get(row["method"])
+    actual_label = _config_value(row, "method_label")
+    if actual_label is not None and actual_label != expected_label:
+        raise ManifestLaunchError(
+            f"{row['run_id']}: method={row['method']!r} requires method_label="
+            f"{expected_label!r}, got {actual_label!r}"
+        )
     learning_rate = _resolve_learning_rate(row, default_learning_rate)
     weight_decay = _resolve_weight_decay(row, default_weight_decay)
     test_mse_used_for_selection = _truthy(_config_value(row, "test_mse_used_for_selection", False))
