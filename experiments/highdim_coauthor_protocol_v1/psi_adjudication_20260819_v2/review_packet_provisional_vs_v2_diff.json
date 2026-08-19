@@ -1,0 +1,144 @@
+{
+  "signal": {
+    "added": [
+      [
+        "cifar10_xz",
+        "fedgda_d",
+        "0",
+        0.003,
+        10.0
+      ],
+      [
+        "cifar10_xz",
+        "fedgda_d",
+        "1",
+        0.003,
+        10.0
+      ],
+      [
+        "cifar10_xz",
+        "fedgda_d",
+        "2",
+        0.003,
+        10.0
+      ],
+      [
+        "cifar10_z",
+        "fedgda_d",
+        "0",
+        0.01,
+        20.0
+      ],
+      [
+        "cifar10_z",
+        "fedgda_d",
+        "1",
+        0.01,
+        20.0
+      ],
+      [
+        "cifar10_z",
+        "fedgda_d",
+        "2",
+        0.01,
+        20.0
+      ],
+      [
+        "femnist_z",
+        "fedogda_d",
+        "0",
+        0.001,
+        10.0
+      ],
+      [
+        "femnist_z",
+        "fedogda_d",
+        "1",
+        0.001,
+        10.0
+      ],
+      [
+        "femnist_z",
+        "fedogda_d",
+        "2",
+        0.001,
+        10.0
+      ]
+    ],
+    "removed": [
+      [
+        "cifar10_xz",
+        "fedgda_d",
+        "0",
+        0.003,
+        1.0
+      ],
+      [
+        "cifar10_xz",
+        "fedgda_d",
+        "1",
+        0.003,
+        1.0
+      ],
+      [
+        "cifar10_xz",
+        "fedgda_d",
+        "2",
+        0.003,
+        1.0
+      ],
+      [
+        "cifar10_z",
+        "fedgda_d",
+        "0",
+        0.03,
+        1.0
+      ],
+      [
+        "cifar10_z",
+        "fedgda_d",
+        "1",
+        0.03,
+        1.0
+      ],
+      [
+        "cifar10_z",
+        "fedgda_d",
+        "2",
+        0.03,
+        1.0
+      ],
+      [
+        "femnist_z",
+        "fedogda_d",
+        "0",
+        0.001,
+        1.0
+      ],
+      [
+        "femnist_z",
+        "fedogda_d",
+        "1",
+        0.001,
+        1.0
+      ],
+      [
+        "femnist_z",
+        "fedogda_d",
+        "2",
+        0.001,
+        1.0
+      ]
+    ],
+    "unchanged_n": 33,
+    "v1_rows": 42,
+    "v2_rows": 42
+  },
+  "x": {
+    "added": [],
+    "removed": [],
+    "unchanged_n": 21,
+    "v1_rows": 21,
+    "v2_rows": 21
+  }
+}

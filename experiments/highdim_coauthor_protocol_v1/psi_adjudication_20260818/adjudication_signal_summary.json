@@ -1,0 +1,233 @@
+{
+  "campaign": "highdim_psi_adjudication_20260818_signal",
+  "existing_finals_root_reused": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_finals_20260813",
+  "new_runs": 42,
+  "plan": [
+    {
+      "candidates": [
+        {
+          "cm": 1.0,
+          "labels": [
+            "mse_winner",
+            "psi_rank2"
+          ],
+          "lr": 0.03,
+          "reused_from_finals": true
+        },
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.03,
+          "reused_from_finals": false
+        }
+      ],
+      "dataset": "femnist_z",
+      "method": "fedgda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 1.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.001,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.001,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": true
+        }
+      ],
+      "dataset": "femnist_z",
+      "method": "fedogda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 1.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.03,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 5.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.1,
+          "reused_from_finals": true
+        }
+      ],
+      "dataset": "femnist_xz",
+      "method": "fedgda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.001,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": true
+        }
+      ],
+      "dataset": "femnist_xz",
+      "method": "fedogda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": true
+        },
+        {
+          "cm": 10.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.03,
+          "reused_from_finals": false
+        }
+      ],
+      "dataset": "cifar10_z",
+      "method": "fedgda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 1.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.001,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "mse_winner",
+            "psi_rank1"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": true
+        }
+      ],
+      "dataset": "cifar10_z",
+      "method": "fedogda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 1.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 5.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": true
+        }
+      ],
+      "dataset": "cifar10_xz",
+      "method": "fedgda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.001,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": true
+        },
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": false
+        }
+      ],
+      "dataset": "cifar10_xz",
+      "method": "fedogda_d"
+    }
+  ]
+}

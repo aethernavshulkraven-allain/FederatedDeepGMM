@@ -1,0 +1,77 @@
+{
+  "campaign": "highdim_deterministic_screen_20260813_expand2_corrected_v1",
+  "corrected_pairs": [
+    {
+      "cm": 5.0,
+      "dataset": "cifar10_xz",
+      "lr": 0.009,
+      "new_run_id": "det_screen_expand2corr_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p009_cm5",
+      "old_run_id": "det_screen_expand2_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p009_cm5"
+    },
+    {
+      "cm": 10.0,
+      "dataset": "cifar10_xz",
+      "lr": 0.003,
+      "new_run_id": "det_screen_expand2corr_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm10",
+      "old_run_id": "det_screen_expand2_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm10"
+    },
+    {
+      "cm": 10.0,
+      "dataset": "cifar10_xz",
+      "lr": 0.009,
+      "new_run_id": "det_screen_expand2corr_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p009_cm10",
+      "old_run_id": "det_screen_expand2_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p009_cm10"
+    },
+    {
+      "cm": 40.0,
+      "dataset": "cifar10_x",
+      "lr": 0.01,
+      "new_run_id": "det_screen_expand2corr_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p01_cm40",
+      "old_run_id": "det_screen_expand2_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p01_cm40"
+    },
+    {
+      "cm": 1.0,
+      "dataset": "cifar10_z",
+      "lr": 0.009,
+      "new_run_id": "det_screen_expand2corr_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm1",
+      "old_run_id": "det_screen_expand2_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm1"
+    },
+    {
+      "cm": 2.0,
+      "dataset": "cifar10_z",
+      "lr": 0.003,
+      "new_run_id": "det_screen_expand2corr_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm2",
+      "old_run_id": "det_screen_expand2_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm2"
+    },
+    {
+      "cm": 2.0,
+      "dataset": "cifar10_z",
+      "lr": 0.009,
+      "new_run_id": "det_screen_expand2corr_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm2",
+      "old_run_id": "det_screen_expand2_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm2"
+    },
+    {
+      "cm": 10.0,
+      "dataset": "femnist_xz",
+      "lr": 0.001,
+      "new_run_id": "det_screen_expand2corr_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+      "old_run_id": "det_screen_expand2_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm10"
+    },
+    {
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "lr": 0.09,
+      "new_run_id": "det_screen_expand2corr_femnist_x_fedogda_d_seed0_alpha0p5_lr0p09_cm10",
+      "old_run_id": "det_screen_expand2_femnist_x_fedogda_d_seed0_alpha0p5_lr0p09_cm10"
+    },
+    {
+      "cm": 10.0,
+      "dataset": "femnist_z",
+      "lr": 0.001,
+      "new_run_id": "det_screen_expand2corr_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+      "old_run_id": "det_screen_expand2_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm10"
+    }
+  ],
+  "corrects": "screen_expand2_manifest.csv fedogda_d rows (client_optimizer template-lookup bug)",
+  "runs": 10
+}

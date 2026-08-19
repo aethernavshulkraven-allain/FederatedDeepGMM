@@ -1,0 +1,102 @@
+{
+  "breakdown": [
+    {
+      "dataset": "cifar10_x",
+      "est_h": 1.754,
+      "manifest": "x",
+      "method": "fedgda_d",
+      "n_runs": 3,
+      "rate_h_per_run": 0.5846
+    },
+    {
+      "dataset": "cifar10_x",
+      "est_h": 3.519,
+      "manifest": "x",
+      "method": "fedogda_d",
+      "n_runs": 6,
+      "rate_h_per_run": 0.5865
+    },
+    {
+      "dataset": "femnist_x",
+      "est_h": 2.08,
+      "manifest": "x",
+      "method": "fedgda_d",
+      "n_runs": 6,
+      "rate_h_per_run": 0.3467
+    },
+    {
+      "dataset": "femnist_x",
+      "est_h": 2.093,
+      "manifest": "x",
+      "method": "fedogda_d",
+      "n_runs": 6,
+      "rate_h_per_run": 0.3489
+    },
+    {
+      "dataset": "cifar10_xz",
+      "est_h": 6.944,
+      "manifest": "signal",
+      "method": "fedgda_d",
+      "n_runs": 6,
+      "rate_h_per_run": 1.1573
+    },
+    {
+      "dataset": "cifar10_xz",
+      "est_h": 6.96,
+      "manifest": "signal",
+      "method": "fedogda_d",
+      "n_runs": 6,
+      "rate_h_per_run": 1.16
+    },
+    {
+      "dataset": "cifar10_z",
+      "est_h": 3.508,
+      "manifest": "signal",
+      "method": "fedgda_d",
+      "n_runs": 6,
+      "rate_h_per_run": 0.5847
+    },
+    {
+      "dataset": "cifar10_z",
+      "est_h": 1.759,
+      "manifest": "signal",
+      "method": "fedogda_d",
+      "n_runs": 3,
+      "rate_h_per_run": 0.5864
+    },
+    {
+      "dataset": "femnist_xz",
+      "est_h": 4.061,
+      "manifest": "signal",
+      "method": "fedgda_d",
+      "n_runs": 6,
+      "rate_h_per_run": 0.6768
+    },
+    {
+      "dataset": "femnist_xz",
+      "est_h": 4.072,
+      "manifest": "signal",
+      "method": "fedogda_d",
+      "n_runs": 6,
+      "rate_h_per_run": 0.6786
+    },
+    {
+      "dataset": "femnist_z",
+      "est_h": 1.041,
+      "manifest": "signal",
+      "method": "fedgda_d",
+      "n_runs": 3,
+      "rate_h_per_run": 0.3471
+    },
+    {
+      "dataset": "femnist_z",
+      "est_h": 2.095,
+      "manifest": "signal",
+      "method": "fedogda_d",
+      "n_runs": 6,
+      "rate_h_per_run": 0.3492
+    }
+  ],
+  "method": "scenario-specific measured 500-round runtime from deterministic_finals_20260813 (108 runs, mean per (dataset,method) cell), NOT the flat 47.9h provisional estimate from 2026-08-18",
+  "total_estimated_gpu_hours": 39.89
+}

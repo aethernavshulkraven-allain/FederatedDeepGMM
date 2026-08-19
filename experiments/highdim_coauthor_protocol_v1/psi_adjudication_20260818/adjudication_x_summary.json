@@ -1,0 +1,120 @@
+{
+  "campaign": "highdim_psi_adjudication_20260818_x",
+  "existing_finals_root_reused": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_finals_20260813",
+  "new_runs": 21,
+  "plan": [
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.03,
+          "reused_from_finals": true
+        },
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.1,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 10.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.1,
+          "reused_from_finals": false
+        }
+      ],
+      "dataset": "femnist_x",
+      "method": "fedgda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 10.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 20.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": true
+        },
+        {
+          "cm": 10.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.03,
+          "reused_from_finals": false
+        }
+      ],
+      "dataset": "femnist_x",
+      "method": "fedogda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 10.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.1,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 20.0,
+          "labels": [
+            "mse_winner",
+            "psi_rank2"
+          ],
+          "lr": 0.1,
+          "reused_from_finals": true
+        }
+      ],
+      "dataset": "cifar10_x",
+      "method": "fedgda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false
+        },
+        {
+          "cm": 10.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": true
+        },
+        {
+          "cm": 20.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false
+        }
+      ],
+      "dataset": "cifar10_x",
+      "method": "fedogda_d"
+    }
+  ]
+}

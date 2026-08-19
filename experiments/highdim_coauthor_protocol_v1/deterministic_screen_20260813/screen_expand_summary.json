@@ -1,0 +1,22 @@
+{
+  "auxiliary_regression": false,
+  "batch_size": 0,
+  "campaign": "highdim_deterministic_screen_20260813_expand",
+  "cells_expanded": [
+    "femnist_z/fedgda_d",
+    "femnist_z/fedogda_d",
+    "femnist_xz/fedgda_d",
+    "femnist_x/fedgda_d",
+    "femnist_x/fedogda_d",
+    "cifar10_x/fedgda_d",
+    "cifar10_x/fedogda_d",
+    "cifar10_z/fedgda_d"
+  ],
+  "client_num_in_total": 10,
+  "client_num_per_round": 10,
+  "comm_round": 150,
+  "next_step": "Combine with the original screen's 63 valid results, re-pick the winner per (scenario, method) cell across the union, re-check boundaries, then build the Option 2 final-evaluation manifest from the frozen winners.",
+  "parent_campaign": "highdim_deterministic_screen_20260813",
+  "reason": "8 of 12 cells from the original screen had their winning lr/critic_multiplier at the grid edge with a clearly still-improving trend, not a marginal touch. Re-screening those cells with one extra rung per flagged axis before freezing any config for the final stage.",
+  "runs": 19
+}

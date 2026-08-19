@@ -1,0 +1,112 @@
+[
+  {
+    "best_validation_round": 14,
+    "final_test_mse": 0.4882335735053678,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/cifar10_xz/fedgda_d/seed_0/det_screen_expand2_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm10",
+    "run_id": "det_screen_expand2_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm10",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.14282700028584117
+  },
+  {
+    "error": "missing artifacts: effective_config.json, mse_by_round.csv, metrics.json, predictions.npz, checkpoints/best_validation.pt, checkpoints/final.pt",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/cifar10_xz/fedogda_d/seed_0/det_screen_expand2_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p009_cm5",
+    "run_id": "det_screen_expand2_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p009_cm5",
+    "status": "failed_validation"
+  },
+  {
+    "error": "missing artifacts: effective_config.json, mse_by_round.csv, metrics.json, predictions.npz, checkpoints/best_validation.pt, checkpoints/final.pt",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/cifar10_xz/fedogda_d/seed_0/det_screen_expand2_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm10",
+    "run_id": "det_screen_expand2_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm10",
+    "status": "failed_validation"
+  },
+  {
+    "error": "missing artifacts: effective_config.json, mse_by_round.csv, metrics.json, predictions.npz, checkpoints/best_validation.pt, checkpoints/final.pt",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/cifar10_xz/fedogda_d/seed_0/det_screen_expand2_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p009_cm10",
+    "run_id": "det_screen_expand2_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p009_cm10",
+    "status": "failed_validation"
+  },
+  {
+    "returncode": 1,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/cifar10_x/fedgda_d/seed_0/det_screen_expand2_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10",
+    "run_id": "det_screen_expand2_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10",
+    "status": "failed_process"
+  },
+  {
+    "error": "missing artifacts: effective_config.json, mse_by_round.csv, metrics.json, predictions.npz, checkpoints/best_validation.pt, checkpoints/final.pt",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/cifar10_x/fedogda_d/seed_0/det_screen_expand2_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p01_cm40",
+    "run_id": "det_screen_expand2_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p01_cm40",
+    "status": "failed_validation"
+  },
+  {
+    "best_validation_round": 103,
+    "final_test_mse": 0.263580007683277,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/cifar10_z/fedgda_d/seed_0/det_screen_expand2_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm20",
+    "run_id": "det_screen_expand2_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm20",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.2102499105111272
+  },
+  {
+    "error": "missing artifacts: effective_config.json, mse_by_round.csv, metrics.json, predictions.npz, checkpoints/best_validation.pt, checkpoints/final.pt",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/cifar10_z/fedogda_d/seed_0/det_screen_expand2_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm1",
+    "run_id": "det_screen_expand2_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm1",
+    "status": "failed_validation"
+  },
+  {
+    "error": "missing artifacts: effective_config.json, mse_by_round.csv, metrics.json, predictions.npz, checkpoints/best_validation.pt, checkpoints/final.pt",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/cifar10_z/fedogda_d/seed_0/det_screen_expand2_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm2",
+    "run_id": "det_screen_expand2_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm2",
+    "status": "failed_validation"
+  },
+  {
+    "error": "missing artifacts: effective_config.json, mse_by_round.csv, metrics.json, predictions.npz, checkpoints/best_validation.pt, checkpoints/final.pt",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/cifar10_z/fedogda_d/seed_0/det_screen_expand2_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm2",
+    "run_id": "det_screen_expand2_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm2",
+    "status": "failed_validation"
+  },
+  {
+    "returncode": 1,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/femnist_x/fedgda_d/seed_0/det_screen_expand2_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10",
+    "run_id": "det_screen_expand2_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10",
+    "status": "failed_process"
+  },
+  {
+    "error": "missing artifacts: effective_config.json, mse_by_round.csv, metrics.json, predictions.npz, checkpoints/best_validation.pt, checkpoints/final.pt",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/femnist_xz/fedogda_d/seed_0/det_screen_expand2_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+    "run_id": "det_screen_expand2_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+    "status": "failed_validation"
+  },
+  {
+    "returncode": 1,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/femnist_x/fedgda_d/seed_0/det_screen_expand2_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm20",
+    "run_id": "det_screen_expand2_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm20",
+    "status": "failed_process"
+  },
+  {
+    "best_validation_round": 108,
+    "final_test_mse": 0.22597873728478893,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/femnist_x/fedgda_d/seed_0/det_screen_expand2_femnist_x_fedgda_d_seed0_alpha0p5_lr0p1_cm20",
+    "run_id": "det_screen_expand2_femnist_x_fedgda_d_seed0_alpha0p5_lr0p1_cm20",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.1208974133170855
+  },
+  {
+    "error": "missing artifacts: effective_config.json, mse_by_round.csv, metrics.json, predictions.npz, checkpoints/best_validation.pt, checkpoints/final.pt",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/femnist_x/fedogda_d/seed_0/det_screen_expand2_femnist_x_fedogda_d_seed0_alpha0p5_lr0p09_cm10",
+    "run_id": "det_screen_expand2_femnist_x_fedogda_d_seed0_alpha0p5_lr0p09_cm10",
+    "status": "failed_validation"
+  },
+  {
+    "best_validation_round": 132,
+    "final_test_mse": 0.5917996257578567,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/femnist_z/fedgda_d/seed_0/det_screen_expand2_femnist_z_fedgda_d_seed0_alpha0p5_lr0p03_cm10",
+    "run_id": "det_screen_expand2_femnist_z_fedgda_d_seed0_alpha0p5_lr0p03_cm10",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.14648295628286778
+  },
+  {
+    "error": "missing artifacts: effective_config.json, mse_by_round.csv, metrics.json, predictions.npz, checkpoints/best_validation.pt, checkpoints/final.pt",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_screen_20260813/femnist_z/fedogda_d/seed_0/det_screen_expand2_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+    "run_id": "det_screen_expand2_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+    "status": "failed_validation"
+  }
+]

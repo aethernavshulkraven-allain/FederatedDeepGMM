@@ -1,0 +1,105 @@
+
+====================================================================================================
+cifar10_x / fedgda_d
+====================================================================================================
+  lr=0.003   cm=5       best_psi=-0.000422@r35   final_psi=-0.037497  traj[min=-0.20436,max=-0.00042]  last50(mean=-0.031514,std=0.052073)
+                    moment_viol(best=3.78e-09, last50 mean=1.12e-04 std=1.72e-04)  val_mse=0.210555  f(z)_dev(mean=+0.0905, std=0.1290, norm=15.76)
+  lr=0.003   cm=10      best_psi=-0.000414@r62   final_psi=-0.005553  traj[min=-0.21831,max=-0.00041]  last50(mean=-0.020480,std=0.024915)
+                    moment_viol(best=8.24e-13, last50 mean=1.09e-04 std=1.64e-04)  val_mse=0.210542  f(z)_dev(mean=+0.0564, std=0.0707, norm=9.05)
+  lr=0.01    cm=5       best_psi=-0.000024@r124  final_psi=-0.000322  traj[min=-0.23393,max=-0.00002]  last50(mean=-0.001037,std=0.001166)
+                    moment_viol(best=2.80e-15, last50 mean=9.22e-08 std=2.66e-07)  val_mse=0.184743  f(z)_dev(mean=+0.0910, std=0.1723, norm=19.49)
+  lr=0.01    cm=10      best_psi=-0.000014@r77   final_psi=-0.000107  traj[min=-0.13977,max=-0.00001]  last50(mean=-0.000089,std=0.000018)
+                    moment_viol(best=1.95e-12, last50 mean=1.95e-09 std=1.22e-09)  val_mse=0.158100  f(z)_dev(mean=+0.1947, std=0.1176, norm=22.75)
+  lr=0.03    cm=5       best_psi=-0.000119@r143  final_psi=-0.000675  traj[min=-0.20538,max=-0.00012]  last50(mean=-0.000239,std=0.000120)
+                    moment_viol(best=9.95e-11, last50 mean=1.09e-07 std=4.59e-08)  val_mse=0.151126  f(z)_dev(mean=+0.1531, std=0.2169, norm=26.55)
+  lr=0.03    cm=10      best_psi=-0.000039@r117  final_psi=-0.067289  traj[min=-0.12122,max=-0.00004]  last50(mean=-0.010977,std=0.022037)
+                    moment_viol(best=2.93e-12, last50 mean=2.38e-05 std=8.62e-05)  val_mse=0.146729  f(z)_dev(mean=+0.0592, std=0.1725, norm=18.24)
+  lr=0.1     cm=10      best_psi=+0.000031@r70   final_psi=-0.009837  traj[min=-0.28227,max=+0.00003]  last50(mean=-0.025650,std=0.024806)
+                    moment_viol(best=6.12e-11, last50 mean=1.52e-05 std=3.97e-05)  val_mse=0.147305  f(z)_dev(mean=+0.5016, std=0.6013, norm=78.31)
+  lr=0.03    cm=20      best_psi=-0.000164@r47   final_psi=-0.033782  traj[min=-0.47219,max=-0.00016]  last50(mean=-0.068691,std=0.087675)
+                    moment_viol(best=1.91e-09, last50 mean=4.25e-04 std=1.30e-03)  val_mse=0.153656  f(z)_dev(mean=+0.1482, std=0.3824, norm=41.01)
+  lr=0.1     cm=20      best_psi=+0.000008@r145  final_psi=-0.000041  traj[min=-0.34050,max=+0.00001]  last50(mean=-0.000041,std=0.000088)
+                    moment_viol(best=2.55e-11, last50 mean=1.76e-09 std=7.22e-10)  val_mse=0.145887  f(z)_dev(mean=+1.4124, std=0.9605, norm=170.81)
+
+  RANK-1 by best_gmm_eval: (0.1, 10.0)
+  RANK-1 by final round gmm_eval: (0.1, 20.0)
+  RANK-1 by last-50-round mean gmm_eval: (0.1, 20.0)
+  STABLE ACROSS CRITERIA: False
+
+====================================================================================================
+cifar10_x / fedogda_d
+====================================================================================================
+  lr=0.001   cm=5       best_psi=-0.000743@r149  final_psi=-0.000743  traj[min=-0.06454,max=-0.00074]  last50(mean=-0.000778,std=0.000026)
+                    moment_viol(best=1.45e-09, last50 mean=1.24e-05 std=1.44e-05)  val_mse=0.209891  f(z)_dev(mean=+0.1179, std=0.1701, norm=20.70)
+  lr=0.001   cm=10      best_psi=-0.000880@r96   final_psi=-0.001283  traj[min=-0.03410,max=-0.00088]  last50(mean=-0.001027,std=0.000142)
+                    moment_viol(best=7.21e-11, last50 mean=1.69e-06 std=2.25e-06)  val_mse=0.209891  f(z)_dev(mean=+0.1047, std=0.1510, norm=18.38)
+  lr=0.003   cm=5       best_psi=-0.000305@r144  final_psi=-0.001888  traj[min=-0.05496,max=-0.00030]  last50(mean=-0.008824,std=0.013349)
+                    moment_viol(best=3.67e-11, last50 mean=1.45e-05 std=2.57e-05)  val_mse=0.188195  f(z)_dev(mean=+0.1448, std=0.0389, norm=14.99)
+  lr=0.003   cm=10      best_psi=-0.001241@r81   final_psi=-0.018003  traj[min=-0.20104,max=-0.00124]  last50(mean=-0.066206,std=0.053860)
+                    moment_viol(best=4.07e-09, last50 mean=1.34e-04 std=2.89e-04)  val_mse=0.155829  f(z)_dev(mean=+0.2271, std=0.0780, norm=24.01)
+  lr=0.01    cm=5       best_psi=+0.000002@r54   final_psi=-0.024436  traj[min=-0.28332,max=+0.00000]  last50(mean=-0.018492,std=0.014828)
+                    moment_viol(best=2.01e-08, last50 mean=2.81e-05 std=4.17e-05)  val_mse=0.166913  f(z)_dev(mean=+0.2297, std=0.1440, norm=27.11)
+  lr=0.01    cm=10      best_psi=-0.000127@r149  final_psi=-0.000127  traj[min=-0.12014,max=-0.00013]  last50(mean=-0.000258,std=0.000093)
+                    moment_viol(best=8.71e-11, last50 mean=3.39e-08 std=3.24e-08)  val_mse=0.144360  f(z)_dev(mean=+0.3275, std=0.3580, norm=48.52)
+  lr=0.03    cm=10      best_psi=-0.000020@r48   final_psi=-0.003135  traj[min=-1.52265,max=-0.00002]  last50(mean=-0.004054,std=0.003784)
+                    moment_viol(best=1.81e-11, last50 mean=7.15e-06 std=1.55e-05)  val_mse=0.163375  f(z)_dev(mean=+0.1845, std=0.2781, norm=33.37)
+  lr=0.01    cm=20      best_psi=+0.000065@r130  final_psi=-0.002988  traj[min=-0.16772,max=+0.00007]  last50(mean=-0.018631,std=0.011845)
+                    moment_viol(best=5.57e-11, last50 mean=3.22e-05 std=4.23e-05)  val_mse=0.146946  f(z)_dev(mean=+0.0929, std=0.2137, norm=23.30)
+  lr=0.03    cm=20      best_psi=-0.000016@r64   final_psi=-0.000257  traj[min=-0.09045,max=-0.00002]  last50(mean=-0.000427,std=0.000400)
+                    moment_viol(best=2.98e-12, last50 mean=5.22e-09 std=5.79e-09)  val_mse=0.160100  f(z)_dev(mean=-0.5564, std=0.0125, norm=55.65)
+
+  RANK-1 by best_gmm_eval: (0.01, 20.0)
+  RANK-1 by final round gmm_eval: (0.01, 10.0)
+  RANK-1 by last-50-round mean gmm_eval: (0.01, 10.0)
+  STABLE ACROSS CRITERIA: False
+
+====================================================================================================
+femnist_x / fedgda_d
+====================================================================================================
+  lr=0.003   cm=5       best_psi=-0.013551@r147  final_psi=-0.015213  traj[min=-0.49866,max=-0.01355]  last50(mean=-0.219018,std=0.141736)
+                    moment_viol(best=8.96e-10, last50 mean=5.09e-02 std=5.49e-02)  val_mse=0.218276  f(z)_dev(mean=+0.1802, std=0.1604, norm=24.13)
+  lr=0.003   cm=10      best_psi=-0.014939@r122  final_psi=-0.044188  traj[min=-0.79454,max=-0.01494]  last50(mean=-0.059187,std=0.026264)
+                    moment_viol(best=9.09e-07, last50 mean=3.34e-03 std=3.58e-03)  val_mse=0.192171  f(z)_dev(mean=+0.3091, std=0.1578, norm=34.70)
+  lr=0.01    cm=5       best_psi=-0.003069@r147  final_psi=-0.027841  traj[min=-1.41871,max=-0.00307]  last50(mean=-0.143606,std=0.134910)
+                    moment_viol(best=4.60e-07, last50 mean=4.54e-03 std=7.82e-03)  val_mse=0.173393  f(z)_dev(mean=+0.1694, std=0.2023, norm=26.39)
+  lr=0.01    cm=10      best_psi=-0.002005@r147  final_psi=-0.030775  traj[min=-3.02323,max=-0.00201]  last50(mean=-0.113781,std=0.099713)
+                    moment_viol(best=4.26e-08, last50 mean=1.79e-03 std=2.53e-03)  val_mse=0.176919  f(z)_dev(mean=+0.1863, std=0.2955, norm=34.94)
+  lr=0.03    cm=5       best_psi=-0.006049@r0    final_psi=-0.095910  traj[min=-7.68321,max=-0.00605]  last50(mean=-1.256117,std=1.307228)
+                    moment_viol(best=1.71e-05, last50 mean=1.43e-01 std=2.18e-01)  val_mse=0.117750  f(z)_dev(mean=-0.1643, std=0.1082, norm=19.67)
+  lr=0.03    cm=10      best_psi=-0.011442@r101  final_psi=-0.054745  traj[min=-1.81720,max=-0.01144]  last50(mean=-0.108116,std=0.087833)
+                    moment_viol(best=5.42e-08, last50 mean=4.29e-04 std=9.25e-04)  val_mse=0.181217  f(z)_dev(mean=+0.1345, std=0.5563, norm=57.23)
+  lr=0.1     cm=5       best_psi=-0.000357@r135  final_psi=-0.021844  traj[min=-3.80373,max=-0.00036]  last50(mean=-0.201192,std=0.469711)
+                    moment_viol(best=1.75e-05, last50 mean=2.53e+00 std=1.12e+01)  val_mse=0.132971  f(z)_dev(mean=-1.3201, std=0.0362, norm=132.06)
+  lr=0.1     cm=10      best_psi=+0.000054@r108  final_psi=-0.089392  traj[min=-1.48712,max=+0.00005]  last50(mean=-0.058046,std=0.053530)
+                    moment_viol(best=3.64e-07, last50 mean=1.98e-01 std=3.02e-01)  val_mse=0.127175  f(z)_dev(mean=-1.3563, std=0.0218, norm=135.65)
+
+  RANK-1 by best_gmm_eval: (0.1, 10.0)
+  RANK-1 by final round gmm_eval: (0.003, 5.0)
+  RANK-1 by last-50-round mean gmm_eval: (0.1, 10.0)
+  STABLE ACROSS CRITERIA: False
+
+====================================================================================================
+femnist_x / fedogda_d
+====================================================================================================
+  lr=0.001   cm=5       best_psi=-0.029441@r149  final_psi=-0.029441  traj[min=-0.08040,max=-0.02944]  last50(mean=-0.033588,std=0.004229)
+                    moment_viol(best=7.12e-08, last50 mean=1.03e-03 std=5.44e-04)  val_mse=0.186684  f(z)_dev(mean=+0.1130, std=0.1784, norm=21.12)
+  lr=0.001   cm=10      best_psi=-0.025335@r100  final_psi=-0.126197  traj[min=-0.12620,max=-0.02533]  last50(mean=-0.066869,std=0.027360)
+                    moment_viol(best=1.79e-11, last50 mean=4.14e-04 std=3.21e-04)  val_mse=0.192861  f(z)_dev(mean=+0.1994, std=0.2109, norm=29.02)
+  lr=0.003   cm=5       best_psi=-0.032020@r36   final_psi=-0.042565  traj[min=-0.38088,max=-0.03202]  last50(mean=-0.141928,std=0.067913)
+                    moment_viol(best=1.87e-08, last50 mean=1.10e-02 std=1.12e-02)  val_mse=0.193519  f(z)_dev(mean=+0.1999, std=0.0764, norm=21.40)
+  lr=0.003   cm=10      best_psi=-0.009837@r122  final_psi=-0.032179  traj[min=-0.80325,max=-0.00984]  last50(mean=-0.049030,std=0.032387)
+                    moment_viol(best=3.75e-08, last50 mean=3.35e-03 std=5.01e-03)  val_mse=0.173511  f(z)_dev(mean=+0.2269, std=0.1734, norm=28.56)
+  lr=0.01    cm=5       best_psi=-0.001099@r90   final_psi=-0.012269  traj[min=-0.83914,max=-0.00110]  last50(mean=-0.057671,std=0.039225)
+                    moment_viol(best=1.34e-08, last50 mean=6.97e-04 std=1.05e-03)  val_mse=0.173797  f(z)_dev(mean=+0.0687, std=0.2063, norm=21.75)
+  lr=0.01    cm=10      best_psi=-0.000221@r123  final_psi=-0.000739  traj[min=-1.12221,max=-0.00022]  last50(mean=-0.025342,std=0.017911)
+                    moment_viol(best=8.20e-11, last50 mean=1.56e-05 std=2.51e-05)  val_mse=0.140997  f(z)_dev(mean=-0.0080, std=0.3164, norm=31.65)
+  lr=0.03    cm=10      best_psi=-0.000020@r101  final_psi=-0.000132  traj[min=-1.76482,max=-0.00002]  last50(mean=-0.000469,std=0.000568)
+                    moment_viol(best=8.27e-09, last50 mean=2.35e-07 std=1.88e-08)  val_mse=0.171830  f(z)_dev(mean=-0.0341, std=0.8192, norm=81.99)
+  lr=0.01    cm=20      best_psi=-0.000474@r149  final_psi=-0.000474  traj[min=-0.55773,max=-0.00047]  last50(mean=-0.000647,std=0.000158)
+                    moment_viol(best=3.25e-10, last50 mean=1.96e-07 std=6.75e-08)  val_mse=0.131510  f(z)_dev(mean=-0.1961, std=0.4350, norm=47.71)
+  lr=0.03    cm=20      EXCLUDED(metrics.last_50_validation_mse_std is not finite: nan)
+
+  RANK-1 by best_gmm_eval: (0.03, 10.0)
+  RANK-1 by final round gmm_eval: (0.03, 10.0)
+  RANK-1 by last-50-round mean gmm_eval: (0.03, 10.0)
+  STABLE ACROSS CRITERIA: True

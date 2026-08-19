@@ -35,8 +35,6 @@ SOURCE_MANIFEST = (
 )
 SCREEN_DIR = REPO_ROOT / "experiments/highdim_coauthor_protocol_v1/deterministic_screen_20260813"
 FINALS_DIR = REPO_ROOT / "experiments/highdim_coauthor_protocol_v1/deterministic_finals_20260813"
-CAMPAIGN_DIR = REPO_ROOT / "experiments/highdim_coauthor_protocol_v1/psi_adjudication_20260818"
-OUTPUT_ROOT = REPO_ROOT / "results/highdim_psi_adjudication_20260818"
 EXISTING_FINALS_ROOT = REPO_ROOT / "results/highdim_deterministic_finals_20260813"
 
 X_CELLS = [("femnist_x", "fedgda_d"), ("femnist_x", "fedogda_d"),
@@ -86,11 +84,11 @@ def reference_row(rows, dataset, method):
     return matches[0]
 
 
-def common_row(source):
+def common_row(source, protocol_version, run_group):
     row = dict(source)
     row.update({
-        "protocol_version": "highdim_psi_adjudication_v1",
-        "run_group": "highdim_psi_adjudication_20260818",
+        "protocol_version": protocol_version,
+        "run_group": run_group,
         "training_scope": "federated",
         "alpha": f"{ALPHA:g}",
         "partition_alpha": f"{ALPHA:g}",
@@ -123,10 +121,19 @@ def common_row(source):
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--cells", choices=["x", "signal"], required=True)
+    parser.add_argument("--psi-rescore", default=str(SCREEN_DIR / "psi_rescore.json"))
+    parser.add_argument("--campaign-dir", default=str(REPO_ROOT / "experiments/highdim_coauthor_protocol_v1/psi_adjudication_20260818"))
+    parser.add_argument("--output-root", default=str(REPO_ROOT / "results/highdim_psi_adjudication_20260818"))
+    parser.add_argument("--protocol-version", default="highdim_psi_adjudication_v1")
+    parser.add_argument("--run-group", default="highdim_psi_adjudication_20260818")
+    parser.add_argument("--manifest-name", default=None, help="Override output filename stem (default: adjudication_<cells>)")
     args = parser.parse_args()
 
+    campaign_dir = Path(args.campaign_dir)
+    output_root = Path(args.output_root)
+
     cell_list = X_CELLS if args.cells == "x" else SIGNAL_CELLS
-    psi = json.load(open(SCREEN_DIR / "psi_rescore.json"))
+    psi = json.load(open(args.psi_rescore))
     mse_winners = json.load(open(FINALS_DIR / "frozen_winners.json"))
     source_fields, source_rows = load_source()
     fieldnames = source_fields + [f for f in EXTRA_FIELDS if f not in source_fields]
@@ -155,7 +162,7 @@ def main() -> int:
                 continue  # already have 500rd/alpha0.5/seeds0-2 data in deterministic_finals_20260813
             source = reference_row(source_rows, ds, method)
             for seed in SEEDS:
-                row = common_row(source)
+                row = common_row(source, args.protocol_version, args.run_group)
                 run_id = (
                     f"det_adjudicate_{ds}_{method}_seed{seed}_alpha0p5"
                     f"_lr{token(lr)}_cm{token(cm)}"
@@ -166,18 +173,20 @@ def main() -> int:
                     "method_label": METHOD_LABEL[method],
                     "learning_rate": f"{lr:g}", "learning_rate_status": "psi_adjudication_candidate",
                     "critic_multiplier": f"{cm:g}",
-                    "output_root": str(OUTPUT_ROOT),
-                    "final_result_dir": str(OUTPUT_ROOT / ds / method / f"seed_{seed}" / run_id),
+                    "output_root": str(output_root),
+                    "final_result_dir": str(output_root / ds / method / f"seed_{seed}" / run_id),
                     "notes": (
                         f"Psi-vs-MSE adjudication candidate ({','.join(sorted(labels))}). "
-                        f"500 rounds, alpha=0.5. Promote by median validation Psi across "
-                        f"seeds 0-2, not seed-0-only."
+                        f"500 rounds, alpha=0.5. Promote by cross-seed median of "
+                        f"last-50-round mean Psi, not seed-0-only or best-round. "
+                        f"See PSI_SUMMARY_STATISTIC_AMENDMENT_20260819.md."
                     ),
                 })
                 rows.append(row)
         plan.append(cell_plan)
 
-    manifest_path = CAMPAIGN_DIR / f"adjudication_{args.cells}_manifest.csv"
+    manifest_name = args.manifest_name or f"adjudication_{args.cells}_manifest"
+    manifest_path = campaign_dir / f"{manifest_name}.csv"
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     with manifest_path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
@@ -185,12 +194,13 @@ def main() -> int:
         writer.writerows(rows)
 
     summary = {
-        "campaign": f"highdim_psi_adjudication_20260818_{args.cells}",
+        "campaign": f"{args.run_group}_{args.cells}",
+        "psi_rescore_source": str(args.psi_rescore),
         "new_runs": len(rows),
         "existing_finals_root_reused": str(EXISTING_FINALS_ROOT),
         "plan": plan,
     }
-    with (CAMPAIGN_DIR / f"adjudication_{args.cells}_summary.json").open("w") as handle:
+    with (campaign_dir / f"{manifest_name.replace('_manifest', '')}_summary.json").open("w") as handle:
         json.dump(summary, handle, indent=2, sort_keys=True)
         handle.write("\n")
     print(json.dumps(summary, indent=2, sort_keys=True))

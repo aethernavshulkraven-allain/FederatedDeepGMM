@@ -1,0 +1,62 @@
+{
+  "cifar10_x/fedgda_d": {
+    "cm": 20.0,
+    "lr": 0.1,
+    "val_mse": 0.14588661986283688
+  },
+  "cifar10_x/fedogda_d": {
+    "cm": 10.0,
+    "lr": 0.01,
+    "val_mse": 0.14435996505851953
+  },
+  "cifar10_xz/fedgda_d": {
+    "cm": 5.0,
+    "lr": 0.01,
+    "val_mse": 0.137273
+  },
+  "cifar10_xz/fedogda_d": {
+    "cm": 1.0,
+    "lr": 0.003,
+    "val_mse": 0.14461
+  },
+  "cifar10_z/fedgda_d": {
+    "cm": 5.0,
+    "lr": 0.01,
+    "val_mse": 0.182017
+  },
+  "cifar10_z/fedogda_d": {
+    "cm": 1.0,
+    "lr": 0.003,
+    "val_mse": 0.233771
+  },
+  "femnist_x/fedgda_d": {
+    "cm": 5.0,
+    "lr": 0.03,
+    "val_mse": 0.11775
+  },
+  "femnist_x/fedogda_d": {
+    "cm": 20.0,
+    "lr": 0.01,
+    "val_mse": 0.13151
+  },
+  "femnist_xz/fedgda_d": {
+    "cm": 5.0,
+    "lr": 0.1,
+    "val_mse": 0.097181
+  },
+  "femnist_xz/fedogda_d": {
+    "cm": 1.0,
+    "lr": 0.01,
+    "val_mse": 0.137973
+  },
+  "femnist_z/fedgda_d": {
+    "cm": 1.0,
+    "lr": 0.03,
+    "val_mse": 0.0438
+  },
+  "femnist_z/fedogda_d": {
+    "cm": 1.0,
+    "lr": 0.01,
+    "val_mse": 0.165541
+  }
+}
