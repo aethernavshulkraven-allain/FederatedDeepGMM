@@ -725,12 +725,26 @@ def run_jobs(
     resume_skip_completed: bool,
     overwrite_incomplete: bool,
     stop_on_failure: bool,
+    results_json: Path | None = None,
 ) -> list[dict[str, Any]]:
+    # If results_json is given, written after every job resolves (not just
+    # once at the end) -- so a hard kill mid-manifest (e.g. broker
+    # preemption) still leaves an accurate results file for whatever
+    # completed before the kill, instead of losing the launcher's own
+    # bookkeeping for a manifest that was mostly finished. The training
+    # artifacts themselves (metrics.json, checkpoints) are always written
+    # directly to run_dir by the training process on completion regardless
+    # of this -- this only protects the summary/bookkeeping layer.
     pending = list(jobs)
     active: list[tuple[Job, subprocess.Popen[str]]] = []
     results: list[dict[str, Any]] = []
     stop_starting = False
     parallel_limit = min(int(max_parallel), len(gpu_ids))
+
+    def record(entry: dict[str, Any]) -> None:
+        results.append(entry)
+        if results_json is not None:
+            _write_results(results_json, results)
 
     while pending or active:
         while pending and len(active) < parallel_limit and not stop_starting:
@@ -742,14 +756,14 @@ def run_jobs(
             if resume_skip_completed and has_completed_artifacts(job.run_dir):
                 try:
                     validation = validate_artifacts(job.run_dir, job.row)
-                    results.append({"run_id": job.row["run_id"], "status": "skipped_completed", **validation})
+                    record({"run_id": job.row["run_id"], "status": "skipped_completed", **validation})
                     print(f"SKIP completed {job.row['run_id']}")
                     continue
                 except ManifestLaunchError as exc:
                     print(f"Existing artifacts invalid for {job.row['run_id']}: {exc}; rerunning")
             if has_any_artifacts(job.run_dir):
                 if not overwrite_incomplete:
-                    results.append({
+                    record({
                         "run_id": job.row["run_id"],
                         "status": "failed_incomplete_artifacts",
                         "error": "run directory contains incomplete artifacts; pass --overwrite-incomplete to rerun",
@@ -780,7 +794,7 @@ def run_jobs(
                 still_active.append((job, process))
                 continue
             if returncode != 0:
-                results.append({
+                record({
                     "run_id": job.row["run_id"],
                     "status": "failed_process",
                     "returncode": returncode,
@@ -792,10 +806,10 @@ def run_jobs(
                 continue
             try:
                 validation = validate_artifacts(job.run_dir, job.row)
-                results.append({"run_id": job.row["run_id"], "status": "passed", **validation})
+                record({"run_id": job.row["run_id"], "status": "passed", **validation})
                 print(f"PASS {job.row['run_id']}")
             except ManifestLaunchError as exc:
-                results.append({
+                record({
                     "run_id": job.row["run_id"],
                     "status": "failed_validation",
                     "error": str(exc),
@@ -807,7 +821,7 @@ def run_jobs(
         active = still_active
         if stop_starting and not active:
             for job in pending:
-                results.append({
+                record({
                     "run_id": job.row["run_id"],
                     "status": "not_started_after_failure",
                     "run_dir": str(job.run_dir),
@@ -935,6 +949,7 @@ def main() -> int:
         resume_skip_completed=bool(args.resume_skip_completed),
         overwrite_incomplete=bool(args.overwrite_incomplete),
         stop_on_failure=bool(args.stop_on_failure),
+        results_json=results_json,
     )
     _write_results(results_json, results)
     failed = [row for row in results if row.get("status") not in {"passed", "skipped_completed"}]
