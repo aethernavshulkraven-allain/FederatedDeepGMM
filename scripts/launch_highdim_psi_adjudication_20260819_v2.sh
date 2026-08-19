@@ -4,19 +4,23 @@
 # never bare:
 #
 #   gpurun -g 2 bash scripts/launch_highdim_psi_adjudication_20260819_v2.sh
+#   gpurun -g 1 bash scripts/launch_highdim_psi_adjudication_20260819_v2.sh
 #
-# This requires exactly two broker-assigned GPUs. Running the script
-# directly (without gpurun) would use whatever raw device indices happen
-# to be requested without going through the broker's accounting or
+# Accepts 1 or 2 broker-assigned GPUs -- use 1 when the other GPU belongs
+# to someone else's job (check `gpurun --status` first: if GPU 0 isn't
+# running under your own user, request -g 1, not -g 2). Running this
+# script directly (without gpurun) would use whatever raw device indices
+# happen to be requested without going through the broker's accounting or
 # exclusivity guarantees -- e.g. it could collide with another user's job
 # on a GPU the broker never actually granted us. The guard below refuses
-# to proceed unless it detects it is running inside a broker job with
-# exactly two visible devices.
+# to proceed unless it detects it is running inside a broker job with 1 or
+# 2 visible devices.
 #
-# Device indices are always 0,1 from inside the job: gpurun/main.py preset
-# CUDA_VISIBLE_DEVICES to whichever physical GPU(s) the broker granted, so
-# the visible devices are renumbered starting at 0 regardless of which
-# physical GPUs were actually assigned.
+# Device indices are always 0 (single-GPU) or 0,1 (two-GPU) from inside
+# the job: gpurun/main.py preset CUDA_VISIBLE_DEVICES to whichever
+# physical GPU(s) the broker granted, so the visible devices are
+# renumbered starting at 0 regardless of which physical GPUs were
+# actually assigned.
 #
 # Progress safety: run_manifest.py writes --results-json after every job
 # resolves (not just once at the end), so a hard kill (e.g. broker
@@ -46,25 +50,29 @@ if [ -z "${GPU_BROKER_JOB:-}" ]; then
   exit 1
 fi
 visible_count=$(( $(echo "${CUDA_VISIBLE_DEVICES:-}" | tr ',' '\n' | grep -c '[0-9]') ))
-if [ "$visible_count" -ne 2 ]; then
-  echo "REFUSING TO RUN: expected exactly 2 broker-assigned GPUs, but" >&2
+if [ "$visible_count" -lt 1 ] || [ "$visible_count" -gt 2 ]; then
+  echo "REFUSING TO RUN: expected 1 or 2 broker-assigned GPUs, but" >&2
   echo "CUDA_VISIBLE_DEVICES='${CUDA_VISIBLE_DEVICES:-}' exposes ${visible_count}." >&2
-  echo "Re-invoke as: gpurun -g 2 bash scripts/launch_highdim_psi_adjudication_20260819_v2.sh" >&2
+  echo "Re-invoke as: gpurun -g <1 or 2> bash scripts/launch_highdim_psi_adjudication_20260819_v2.sh" >&2
   exit 1
 fi
-gpu_ids="0,1"
+if [ "$visible_count" -eq 2 ]; then
+  gpu_ids="0,1"
+else
+  gpu_ids="0"
+fi
 
 cd "$repo_root"
 export WANDB_MODE=disabled
 
-echo "Running under broker job ${GPU_BROKER_JOB}, device index list ${gpu_ids}."
+echo "Running under broker job ${GPU_BROKER_JOB}, device index list ${gpu_ids} (${visible_count} GPU(s))."
 
 echo "=== Stage 1/2: signal confirmation (8 cells, 42 rows) ==="
 "$python_bin" scripts/run_manifest.py \
   --manifest "$campaign/adjudication_signal_manifest.csv" \
   --config-dir "$campaign/generated_configs_signal" \
   --output-root "$result_root" \
-  --gpu-ids "$gpu_ids" --max-parallel 2 \
+  --gpu-ids "$gpu_ids" --max-parallel "$visible_count" \
   --resume-skip-completed --overwrite-incomplete --keep-going \
   --results-json "$campaign/adjudication_signal_launcher_results.json"
 
@@ -73,7 +81,7 @@ echo "=== Stage 2/2: _x adjudication (4 cells, 21 rows) ==="
   --manifest "$campaign/adjudication_x_manifest.csv" \
   --config-dir "$campaign/generated_configs_x" \
   --output-root "$result_root" \
-  --gpu-ids "$gpu_ids" --max-parallel 2 \
+  --gpu-ids "$gpu_ids" --max-parallel "$visible_count" \
   --resume-skip-completed --overwrite-incomplete --keep-going \
   --results-json "$campaign/adjudication_x_launcher_results.json"
 
