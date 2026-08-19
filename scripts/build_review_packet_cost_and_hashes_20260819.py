@@ -100,7 +100,9 @@ def main() -> int:
         REPO_ROOT / "scripts/prepare_highdim_psi_adjudication_20260818.py",
         REPO_ROOT / "scripts/score_highdim_screen_corrected_v2_20260819.py",
         REPO_ROOT / "scripts/score_highdim_adjudication_20260819.py",
+        REPO_ROOT / "scripts/launch_highdim_psi_adjudication_20260819_v2.sh",
         REPO_ROOT / "tests/test_adjudication_scorer_20260819.py",
+        REPO_ROOT / "tests/test_adjudication_scorer_integration_20260819.py",
     ]
     hashes = {}
     for p in frozen_inputs:

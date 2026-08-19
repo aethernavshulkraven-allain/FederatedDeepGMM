@@ -177,6 +177,46 @@ two good seeds are confirmed NOT averaged in), a single eligible candidate
 (promoted without ranking), and zero eligible candidates (retune_required,
 no winner).
 
+## 8. Two pre-launch gaps closed (2026-08-19, second review pass)
+
+**GPU allocation guard.** `launch_highdim_psi_adjudication_20260819_v2.sh`
+now refuses to run unless `GPU_BROKER_JOB` is set and `CUDA_VISIBLE_DEVICES`
+exposes exactly 2 devices — i.e. unless invoked as
+`gpurun -g 2 bash scripts/launch_highdim_psi_adjudication_20260819_v2.sh`.
+Verified all three cases directly: bare invocation refused, a faked
+1-GPU broker environment refused, a faked 2-GPU broker environment passes
+the guard and proceeds. The earlier adaptive "run on however many GPUs are
+idle" wrapper (`run_highdim_psi_adjudication_when_idle_20260819.sh`) is
+removed — this is now the single, fixed-2-GPU invocation path. Added
+`--overwrite-incomplete` to both stages so a partially-written run
+directory (e.g. left behind by an interrupted prior attempt) is redone
+cleanly rather than blocking.
+
+**Scorer CLI wired end-to-end.** `score_highdim_adjudication_20260819.py`
+now reads the real completed/reused runs (new-run candidates from
+`results/highdim_psi_adjudication_20260819_v2/`, `reused_from_finals`
+candidates from `results/highdim_deterministic_finals_20260813/` via
+`finals_manifest.csv`), computes last-50-round mean Ψ/MSE per seed from
+the actual `mse_by_round.csv`, and writes final per-cell outcomes —
+not just a library tested against synthetic `Candidate` objects.
+
+Verified two ways before freezing:
+- **Integration tests** (`tests/test_adjudication_scorer_integration_20260819.py`,
+  2 tests, both passing) against a fixture tree: a 3-candidate cell mixing
+  a reused-from-finals candidate and two new-run candidates (one clearly
+  eligible and winning, one excluded by a diverged seed 2), and a
+  candidate whose run directory doesn't exist at all (must come back
+  ineligible, not crash).
+- **Run against real production paths** (no synthetic data): with no
+  adjudication runs launched yet, every `_x` and `_signal` cell correctly
+  falls back to its single already-eligible candidate — the reused MSE
+  winner — EXCEPT `cifar10_xz/fedogda_d`, which correctly comes back
+  `retune_required` because its only currently-available candidate (the
+  known-diverged-seed-2 MSE winner) fails the eligibility rule and no new
+  candidate exists yet to replace it. This is an independent confirmation,
+  via a completely different code path, of the same finding the reuse
+  ledger (§3) surfaced.
+
 ## Go/no-go
 
 All five requested pieces are complete, plus the four supplementary checks
