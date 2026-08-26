@@ -1,0 +1,39 @@
+{
+  "artifact_hashes": [
+    {
+      "path": "effective_config.json",
+      "sha256": "2c6aaab5374ac6f24c37d3d4e99abf02b349476aca89809608578328358c4697"
+    },
+    {
+      "path": "metrics.json",
+      "sha256": "7540ec2daf5523578918c175e1a85a5686ba85fd3eace2f8ced5695ea7a9d1b5"
+    },
+    {
+      "path": "mse_by_round.csv",
+      "sha256": "9da4de3b83869b5d3665a2cbff45a948c7e3064fde2007fbdb21012fc1c1e034"
+    },
+    {
+      "path": "predictions.npz",
+      "sha256": "f8bffd0a5bb4b43934adf45a2d42114d4f169c39cf95679a4e63dea593dc56fa"
+    },
+    {
+      "path": "checkpoints/best_validation.pt",
+      "sha256": "e0b317dfcdd36dfe3bc11f01b78b6b3b38cb641a8adc9d54cd7dc92d5992449c"
+    },
+    {
+      "path": "checkpoints/final.pt",
+      "sha256": "47d76e4b2ab7bfab193b09a36726d4216c8af16ea945a04ce5faf98cbf29c85d"
+    }
+  ],
+  "certification_status": "passed",
+  "criteria": {
+    "completed_and_nondivergent": true,
+    "exact_rounds_0_through_119": true,
+    "finite_critic_outputs": true,
+    "nonnegative_batchnorm_running_variance": true,
+    "server_buffer_policy": "direct_client_aggregate"
+  },
+  "launch_hash_record": "experiments/highdim_coauthor_protocol_v1/bn_diagnostic_fresh_20260826/diagnostic_launch_hashes.json",
+  "minimum_f_bn_running_variance": 9.897330425614937e-07,
+  "run_id": "bn_diagnostic_fresh_20260826_femnist_z_fedogda_d_seed1_lr0p001_cm10"
+}

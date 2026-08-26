@@ -1,0 +1,146 @@
+[
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/screen_failure_certification_20260826/screen_failure_certification_manifest.csv",
+    "sha256": "2392491be1e2179d18fcea6642ed555c3f218b04e277411f6b4faee0ae90314a"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_x/main.npz",
+    "sha256": "ca5aea225a2e5b72545b6664c8256d794460ea5b335144cba8e7685e6d23a84e"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_xz/main.npz",
+    "sha256": "ec0033d4773125937fc1c33c97eeefa57f033cd04af603d67d4cffb52425e7fd"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_z/main.npz",
+    "sha256": "28a986f9a521b3fb8b96df72455d30bb21da66fbfc18d4949abec98466786109"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_x/main.npz",
+    "sha256": "1f88d17b29d3e4cf4ec0951a7fab53e0c27f2207cdfd158df855835858992b44"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_xz/main.npz",
+    "sha256": "0cb3b5af2edc011fcf55bd1ad4cc1c3c6c58fb009333f2e62ca29832f4319b5c"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_z/main.npz",
+    "sha256": "582b49c9c64186a4660817a816312e214e51f897053cb560b517b89cb35da5c4"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/experiment_utils.py",
+    "sha256": "b8695dbbe1bdde08dfe5ac7a040e2d6033c50de095fe1cefe596acd1acf7627f"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/MNIST/data_loader.py",
+    "sha256": "d8b911aaf9ddab64a3bd412f9a25fe4152219b83d7e773ed618f0e8b235b7d10"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/cifar10/efficient_loader.py",
+    "sha256": "7682f97414822238caa6aea6504cb170f429c44460656a3c37d575c57cca2218"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/cifar10/without_reload.py",
+    "sha256": "0985d453ea89c662516b36c03e23d50cfbced5bc8a4d3370f362481879847fd3"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/data_loader.py",
+    "sha256": "c4ab465e0a770ed4cca2960449b611cc8a3bdea74933df1a1a28e35cdf9295ac"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/my_model_trainer_classification.py",
+    "sha256": "61284c228fef38911e29ed731f0cc11c29dd34ac7bad296633b3ff4908b78328"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/trainer_creator.py",
+    "sha256": "1107d8cecfdc6eb2bb2a2488d5e2fcb01a1b24793a064775fe4f92c3ed65dacc"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/model/model_hub.py",
+    "sha256": "1f0eb55d5b3ec50794f9f6af8bef73b02b618ad5fcef61a9ea405a5a44329a26"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py",
+    "sha256": "7091b04785d302b996474cd3ee0dd432925b97c9e45a514fe9dbf930e6e7eeb1"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/game_objectives/abstract_objective.py",
+    "sha256": "a7eda37d76b874122a178472afab4f664fa50ae07827174d29f1b62e3a53b218"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/game_objectives/approximate_psi_objective.py",
+    "sha256": "1e1980149b8a76eee2fd683af86874b1f5c39b609f432ac61296926258e444bb"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/game_objectives/simple_moment_objective.py",
+    "sha256": "cc0e2c0b68e34ece157ec87957e82e319c55cac48c50350d636804bd6f7b14dd"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/main.py",
+    "sha256": "08fa2fc68f7255babbfcc9e1b8e3a0494ab8681d473705dbc0e6b94735217774"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/abstract_learning_eval.py",
+    "sha256": "6b33e6760d197d2bf7fc6e3842578eac2d4a3acd5eb33fdd7918aa503a774e93"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/learning_eval_nostop.py",
+    "sha256": "a8b98e48282c2b510346cece8a05e0c4f7de9813956cb95a12d705e5e254fc8e"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/simple_model_eval.py",
+    "sha256": "3b5999b2d98fa5023fb45c46cee08008d46976a8906eaa35894c5b207e5a0e62"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection_class.py",
+    "sha256": "dfd392dbc27d4a2a006b5ea94202bd05581cdfaaff7fa5a42f8b5af7dfd925f4"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/models/cnn_models.py",
+    "sha256": "ec916ce4cf271061fc96cd601402a878e6241f234915e059535a9cfe995ce76a"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/models/mlp_model.py",
+    "sha256": "1c5ae0c0c7377fa007930605dfe38658bcab8b38b45f8203c08d5901a2dd642c"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/Customsgd.py",
+    "sha256": "911ef0e49ca3b75c8a09802603f68d3552e31522c07850d8fb2ae1ffc6630b5e"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/optimizer_factory.py",
+    "sha256": "205a74a0a8392366e8d7021e6f82d20d082869b008d6e2fe9b6b164780863031"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/abstract_scenario.py",
+    "sha256": "0598dbc94f79a744a9cbfd65386566b09e3d1510cc5933dad72a0eba35f24e18"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/cifar10_scenario.py",
+    "sha256": "d29848d73180e742eeb04a850a4f25f5977aedfbb14a80ea7bbe74dffbe90b57"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/mnist_scenarios.py",
+    "sha256": "ed7901dd66d957d201a0b033ffa8736ff4b7cb77f3c9a7d3db56b4aab7623f27"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/toy_scenarios.py",
+    "sha256": "a84fd99bb3a3fcbf352421fb735cea4de2cd8bb4ab866846446106ba77875efc"
+  },
+  {
+    "path": "scripts/check_manifest_stage_complete.py",
+    "sha256": "7e1d7de6a1cea0a9810ac8f21d8fc03a1fa9bf347250e8f2551111eeb0016a6d"
+  },
+  {
+    "path": "scripts/prepare_highdim_screen_failure_certification_20260826.py",
+    "sha256": "157bea259125202e122b0de2c69c73a57e0af3ea6465a854d897f1cb1fa2b390"
+  },
+  {
+    "path": "scripts/run_manifest.py",
+    "sha256": "0fcf61cf74d8b2545351ab18ecd2e77f5fd493a217ce08314131be0060f5dfc5"
+  },
+  {
+    "path": "scripts/verify_protocol_hashes.py",
+    "sha256": "470716d7b59f8ad4ec1cd32912c4af9b0af578a65c8f11cb32d8330b7cdf7c05"
+  }
+]
