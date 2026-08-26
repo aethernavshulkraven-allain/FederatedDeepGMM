@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from game_objectives.approximate_psi_objective import max_approx_psi_eval
 from model_selection.learning_eval import f_history_g_eval
-from experiment_utils import format_no_valid_model_selection_error
+from experiment_utils import format_no_valid_model_selection_error, ModelSelectionFailure
 
 
 class FHistoryModelSelectionV3(object):
@@ -35,7 +35,18 @@ class FHistoryModelSelectionV3(object):
         e_dev_collections = []
         g_f_args_list = list(itertools.product(
             self.g_model_list, self.f_model_list, self.learning_args_list))
+        assert len(g_f_args_list) == 1, (
+            "this campaign's frozen legacy-Psi arithmetic is only numerically "
+            "correct for exactly one (g, f, learning_args) combination -- "
+            "f_of_z_dev_list.extend(f_of_z_dev_list) below pools a candidate's "
+            "history into itself rather than across candidates, which is "
+            "inert only when there is a single candidate. Got "
+            f"{len(g_f_args_list)} combinations for "
+            f"{dict(self.failure_context)}. Multi-candidate model selection "
+            "requires a separately versioned, fixed pooling implementation."
+        )
 
+        per_candidate_diagnostics = []
         for i, (g, f, learning_args) in enumerate(g_f_args_list):
             if verbose:
                 print("starting learning args eval %d" % i)
@@ -51,6 +62,11 @@ class FHistoryModelSelectionV3(object):
                 game_objective=game_objective)
             f_of_z_dev_list.extend(f_of_z_dev_list)
             e_dev_collections.append(e_dev_list)
+            # Structured pretraining-failure evidence only (closeout plan
+            # SS4.2) -- purely observational, no effect on selection below.
+            per_candidate_diagnostics.append(
+                list(getattr(self.learning_eval, "last_eval_diagnostics", []))
+            )
 
         # now find best hyperparameter setup based on saved parameters
         best_learning_args = None
@@ -82,7 +98,15 @@ class FHistoryModelSelectionV3(object):
         if best_g_model is None or best_f_model is None or best_learning_args is None:
             context = dict(self.failure_context)
             context["best_score"] = max_learning_eval
-            raise RuntimeError(format_no_valid_model_selection_error(context))
+            message = format_no_valid_model_selection_error(context)
+            # len(g_f_args_list) == 1 is enforced above, so there is exactly
+            # one candidate's diagnostics to report.
+            diagnostics = per_candidate_diagnostics[0] if per_candidate_diagnostics else []
+            raise ModelSelectionFailure(message, {
+                "per_epoch": diagnostics,
+                "best_score": max_learning_eval,
+                "failure_context": dict(self.failure_context),
+            })
 
         best_g_model.initialize()
         best_f_model.initialize()

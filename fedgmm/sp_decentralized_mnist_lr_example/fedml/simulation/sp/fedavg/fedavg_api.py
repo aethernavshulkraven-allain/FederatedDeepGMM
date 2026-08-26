@@ -34,11 +34,15 @@ from plotting import PlotElement
 import matplotlib.pyplot as plt
 from experiment_utils import (
     AGGREGATION_WEIGHTING_CHOICES,
+    DEFAULT_SERVER_BUFFER_POLICY,
     OBJECTIVE_MODE_CHOICES,
     PAPER_ALIGNED_LAMBDA,
+    SERVER_BUFFER_POLICY_CHOICES,
+    apply_parameter_server_update,
     append_aggregation_weights_by_round,
     append_mse_by_round,
     append_test_mse_by_round,
+    batchnorm_running_var_min,
     check_eicu_aggregation_weighting,
     check_eicu_objective_mode,
     client_indices_for_round,
@@ -103,6 +107,12 @@ class FedAvgAPI(object):
             setattr(self.args, "critic_multiplier", default_critic_multiplier(args.dataset))
         if not hasattr(self.args, "server_learning_rate"):
             setattr(self.args, "server_learning_rate", 1.5)
+        if not hasattr(self.args, "server_buffer_policy"):
+            setattr(
+                self.args,
+                "server_buffer_policy",
+                DEFAULT_SERVER_BUFFER_POLICY,
+            )
         if not hasattr(self.args, "eg_predictor_server_lr"):
             setattr(self.args, "eg_predictor_server_lr", None)
         if not hasattr(self.args, "eg_corrector_server_lr"):
@@ -194,6 +204,14 @@ class FedAvgAPI(object):
                 f"objective_mode must be one of {OBJECTIVE_MODE_CHOICES}, "
                 f"got {_objective_mode!r}"
             )
+        _server_buffer_policy = str(
+            getattr(self.args, "server_buffer_policy", DEFAULT_SERVER_BUFFER_POLICY)
+        )
+        if _server_buffer_policy not in SERVER_BUFFER_POLICY_CHOICES:
+            raise ValueError(
+                f"server_buffer_policy must be one of {SERVER_BUFFER_POLICY_CHOICES}, "
+                f"got {_server_buffer_policy!r}"
+            )
         _campaign_role = str(getattr(self.args, "campaign_role", ""))
         check_eicu_aggregation_weighting(
             getattr(self.args, "dataset", ""), _aggregation_weighting, _campaign_role
@@ -241,6 +259,7 @@ class FedAvgAPI(object):
             ensure_run_dirs(self.run_dir)
             write_effective_config(self.run_dir, self.effective_config)
         self.server_learning_rate = float(self.effective_config["server_learning_rate"])
+        self.server_buffer_policy = str(self.effective_config["server_buffer_policy"])
         self.critic_multiplier = float(self.effective_config["critic_multiplier"])
         self.objective_lambda_1 = float(self.effective_config["objective_lambda_1"])
         self.aggregation_weighting = str(self.effective_config["aggregation_weighting"])
@@ -270,6 +289,7 @@ class FedAvgAPI(object):
         self.delta_f_prev = None
         self.diverged = False
         self.nonfinite_first_round = None
+        self.nonfinite_diagnostics = []
         self.batching_summary_rows = []
         self.start_time = now_seconds()
         [
@@ -550,6 +570,22 @@ class FedAvgAPI(object):
         
         with self.profiler.span("create_model_trainer"):
             self.model_trainer = create_model_trainer([g_global, f_global, model[2][0]], learning_args, args)
+        # named_parameters() alone would include a parameter someone froze
+        # (requires_grad=False) -- the server optimizer math (learning-rate
+        # interpolation, OGDA optimistic extrapolation) must only ever touch
+        # keys the client actually trains, for the same reason it must not
+        # touch BatchNorm buffers: a frozen parameter should be aggregated
+        # like a buffer (direct_client_aggregate), never extrapolated.
+        self.g_parameter_keys = frozenset(
+            name for name, param in self.model_trainer.g.named_parameters()
+            if param.requires_grad
+        )
+        self.f_parameter_keys = frozenset(
+            name for name, param in self.model_trainer.f.named_parameters()
+            if param.requires_grad
+        )
+        batchnorm_running_var_min(self.model_trainer.g, "g")
+        batchnorm_running_var_min(self.model_trainer.f, "f")
 
         with self.profiler.span("setup_clients"):
             self.client_executor = self._create_client_executor()
@@ -805,20 +841,20 @@ class FedAvgAPI(object):
                     if corrector_lr is None:
                         corrector_lr = self.server_learning_rate
 
-                    predictor_delta_g = {
-                        key: w_agg[0][key] - g_base[key] for key in g_base
-                    }
-                    predictor_delta_f = {
-                        key: w_agg[1][key] - f_base[key] for key in f_base
-                    }
-                    g_lookahead = {
-                        key: g_base[key] + predictor_lr * predictor_delta_g[key]
-                        for key in g_base
-                    }
-                    f_lookahead = {
-                        key: f_base[key] + predictor_lr * predictor_delta_f[key]
-                        for key in f_base
-                    }
+                    g_lookahead, _ = apply_parameter_server_update(
+                        g_base,
+                        w_agg[0],
+                        self.g_parameter_keys,
+                        predictor_lr,
+                        buffer_policy=self.server_buffer_policy,
+                    )
+                    f_lookahead, _ = apply_parameter_server_update(
+                        f_base,
+                        w_agg[1],
+                        self.f_parameter_keys,
+                        predictor_lr,
+                        buffer_policy=self.server_buffer_policy,
+                    )
 
                     with self.profiler.span(
                         "client_correction_gmm", round_idx=round_idx
@@ -827,22 +863,22 @@ class FedAvgAPI(object):
                             client_indexes, g_lookahead, f_lookahead
                         )
                     correction_agg = self._aggregate(correction_locals)
-                    correction_delta_g = {
-                        key: correction_agg[0][key] - g_lookahead[key]
-                        for key in g_base
-                    }
-                    correction_delta_f = {
-                        key: correction_agg[1][key] - f_lookahead[key]
-                        for key in f_base
-                    }
-                    g_new = {
-                        key: g_base[key] + corrector_lr * correction_delta_g[key]
-                        for key in g_base
-                    }
-                    f_new = {
-                        key: f_base[key] + corrector_lr * correction_delta_f[key]
-                        for key in f_base
-                    }
+                    g_new, _ = apply_parameter_server_update(
+                        g_base,
+                        correction_agg[0],
+                        self.g_parameter_keys,
+                        corrector_lr,
+                        delta_base_state=g_lookahead,
+                        buffer_policy=self.server_buffer_policy,
+                    )
+                    f_new, _ = apply_parameter_server_update(
+                        f_base,
+                        correction_agg[1],
+                        self.f_parameter_keys,
+                        corrector_lr,
+                        delta_base_state=f_lookahead,
+                        buffer_policy=self.server_buffer_policy,
+                    )
                     w_global = [g_new, f_new]
                 elif self.args.client_optimizer == "ogda":
                     server_lr = self.server_learning_rate
@@ -851,19 +887,27 @@ class FedAvgAPI(object):
                     g_old = self.model_trainer.get_g_model_params()
                     f_old = self.model_trainer.get_f_model_params()
 
-                    # Current updates (delta_t = w_agg - theta_t)
-                    delta_g = {k: w_agg[0][k] - g_old[k] for k in g_old.keys()}
-                    delta_f = {k: w_agg[1][k] - f_old[k] for k in f_old.keys()}
-
-                    if round_idx == start_round or self.delta_g_prev is None:
-                        # Round 1: theta_{t+1} = theta_t + beta * delta_t
-                        g_new = {k: g_old[k] + server_lr * delta_g[k] for k in g_old.keys()}
-                        f_new = {k: f_old[k] + server_lr * delta_f[k] for k in f_old.keys()}
-                    else:
-                        # Round t > 1: Optimistic Update
-                        # theta_{t+1} = theta_t + beta * (2*delta_t - delta_{t-1})
-                        g_new = {k: g_old[k] + server_lr * (2.0 * delta_g[k] - self.delta_g_prev[k]) for k in g_old.keys()}
-                        f_new = {k: f_old[k] + server_lr * (2.0 * delta_f[k] - self.delta_f_prev[k]) for k in f_old.keys()}
+                    use_optimistic_update = not (
+                        round_idx == start_round or self.delta_g_prev is None
+                    )
+                    g_new, delta_g = apply_parameter_server_update(
+                        g_old,
+                        w_agg[0],
+                        self.g_parameter_keys,
+                        server_lr,
+                        previous_parameter_delta=self.delta_g_prev,
+                        optimistic=use_optimistic_update,
+                        buffer_policy=self.server_buffer_policy,
+                    )
+                    f_new, delta_f = apply_parameter_server_update(
+                        f_old,
+                        w_agg[1],
+                        self.f_parameter_keys,
+                        server_lr,
+                        previous_parameter_delta=self.delta_f_prev,
+                        optimistic=use_optimistic_update,
+                        buffer_policy=self.server_buffer_policy,
+                    )
 
                     # Store deltas for the next round
                     self.delta_g_prev = delta_g
@@ -877,14 +921,20 @@ class FedAvgAPI(object):
                     g_old = self.model_trainer.get_g_model_params()
                     f_old = self.model_trainer.get_f_model_params()
 
-                    # Current updates (delta_t = w_agg - theta_t)
-                    delta_g = {k: w_agg[0][k] - g_old[k] for k in g_old.keys()}
-                    delta_f = {k: w_agg[1][k] - f_old[k] for k in f_old.keys()}
-
-
-                    #theta_{t+1} = theta_t + beta * delta_t
-                    g_new = {k: g_old[k] + server_lr * delta_g[k] for k in g_old.keys()}
-                    f_new = {k: f_old[k] + server_lr * delta_f[k] for k in f_old.keys()}
+                    g_new, _ = apply_parameter_server_update(
+                        g_old,
+                        w_agg[0],
+                        self.g_parameter_keys,
+                        server_lr,
+                        buffer_policy=self.server_buffer_policy,
+                    )
+                    f_new, _ = apply_parameter_server_update(
+                        f_old,
+                        w_agg[1],
+                        self.f_parameter_keys,
+                        server_lr,
+                        buffer_policy=self.server_buffer_policy,
+                    )
 
                     w_global = [g_new, f_new]
 
@@ -903,6 +953,12 @@ class FedAvgAPI(object):
                 self.model_trainer.set_f_model_params(w_global[1])
                 if not self.skip_auxiliary_regression:
                     self.model_trainer.set_model_params(w_global_reg)
+                g_bn_min_running_var = batchnorm_running_var_min(
+                    self.model_trainer.g, "g"
+                )
+                f_bn_min_running_var = batchnorm_running_var_min(
+                    self.model_trainer.f, "f"
+                )
                 g_global = self.model_trainer.get_g_model_params()
                 f_global = self.model_trainer.get_f_model_params()
                 if not self.skip_auxiliary_regression:
@@ -943,10 +999,24 @@ class FedAvgAPI(object):
                     "gmm_eval",
                 )
             )
-            finite = state_finite and metrics_finite
+            critic_outputs_finite = metric_values_are_finite(
+                (f_of_z_train, f_of_z_dev)
+            )
+            finite = state_finite and metrics_finite and critic_outputs_finite
             diverged = not finite
             if diverged and self.nonfinite_first_round is None:
                 self.nonfinite_first_round = round_idx
+            if diverged:
+                diagnostic = {
+                    "round": round_idx,
+                    "state_finite": state_finite,
+                    "metrics_finite": metrics_finite,
+                    "critic_outputs_finite": critic_outputs_finite,
+                    "g_bn_min_running_var": g_bn_min_running_var,
+                    "f_bn_min_running_var": f_bn_min_running_var,
+                }
+                self.nonfinite_diagnostics.append(diagnostic)
+                logging.error("Nonfinite global evaluation: %s", diagnostic)
             self.diverged = self.diverged or diverged
             mse_row = {
                 "round": round_idx,
@@ -959,6 +1029,8 @@ class FedAvgAPI(object):
                 "gmm_train_objective": obj_train,
                 "gmm_val_objective": obj_dev,
                 "gmm_eval": curr_eval,
+                "g_bn_min_running_var": g_bn_min_running_var,
+                "f_bn_min_running_var": f_bn_min_running_var,
                 "finite": finite,
                 "diverged": diverged,
             }
@@ -1290,6 +1362,16 @@ class FedAvgAPI(object):
         else:
             last_50_validation_mse_std = None
             last_50_validation_mse_range = None
+        g_bn_values = [
+            row["g_bn_min_running_var"]
+            for row in self.mse_rows
+            if row.get("g_bn_min_running_var") is not None
+        ]
+        f_bn_values = [
+            row["f_bn_min_running_var"]
+            for row in self.mse_rows
+            if row.get("f_bn_min_running_var") is not None
+        ]
 
         metrics = {
             "run_id": self.effective_config.get("run_id", ""),
@@ -1310,6 +1392,7 @@ class FedAvgAPI(object):
             "best_gmm_eval": self.eval_history[max_i],
             "diverged": self.diverged,
             "nonfinite_first_round": self.nonfinite_first_round,
+            "nonfinite_diagnostics": self.nonfinite_diagnostics,
             "run_status": "completed",
             "failure_reason": None,
             "rounds_completed": len(self.mse_rows),
@@ -1335,6 +1418,17 @@ class FedAvgAPI(object):
             "append_round_csv": self.append_round_csv,
             "periodic_checkpoint_interval": self.periodic_checkpoint_interval,
             "aggregation_weighting": self.aggregation_weighting,
+            "server_buffer_policy": self.server_buffer_policy,
+            "g_bn_min_running_var": min(g_bn_values) if g_bn_values else None,
+            "f_bn_min_running_var": min(f_bn_values) if f_bn_values else None,
+            # Variance of the validation target g -- the MSE a constant
+            # predictor (always predicting mean(g)) would achieve on this
+            # run's validation set. Used only by the alpha=0.1 stability
+            # check's constant-predictor escape hatch
+            # (doe_review_and_revised_grid.md's "reject worse than constant
+            # predictor"); never test-set-derived, so it cannot leak test MSE
+            # into a selection decision.
+            "val_target_variance": float(self._val_g_cpu.var(unbiased=False)),
             "objective_mode": self.objective_mode,
             "scenario_checksum": self.effective_config.get("scenario_checksum", ""),
             "config_checksum": config_checksum(self.effective_config),

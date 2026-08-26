@@ -1,0 +1,25 @@
+{
+  "campaign": "highdim_deterministic_screen_post_bn_20260822",
+  "diagnostic_certification": "experiments/highdim_coauthor_protocol_v1/psi_adjudication_20260822_v3/bn_buffer_diagnostic_certification.json",
+  "fresh_initialization": true,
+  "run_count": 108,
+  "server_buffer_policy": "direct_client_aggregate",
+  "source_rule": [
+    {
+      "manifest": "screen_manifest.csv",
+      "method_filter": null
+    },
+    {
+      "manifest": "screen_expand_manifest.csv",
+      "method_filter": null
+    },
+    {
+      "manifest": "screen_expand2_manifest.csv",
+      "method_filter": "fedgda_d"
+    },
+    {
+      "manifest": "screen_expand2_corrected_v1_manifest.csv",
+      "method_filter": null
+    }
+  ]
+}

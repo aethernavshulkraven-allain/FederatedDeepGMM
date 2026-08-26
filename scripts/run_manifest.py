@@ -16,6 +16,7 @@ import csv
 import json
 import math
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -30,6 +31,10 @@ DEFAULT_CONFIG_DIR = REPO_ROOT / "experiments" / "rerun_protocol_v1" / "generate
 DEFAULT_MAIN = REPO_ROOT / "fedgmm" / "sp_decentralized_mnist_lr_example" / "main.py"
 FEDML_LOG_DIR_ENV = "FEDGMM_FEDML_LOG_DIR"
 FEDML_TRACE_DIR_ENV = "FEDGMM_FEDML_TRACE_DIR"
+# Read by main.py's top-level exception handler so a pretraining_failure.json
+# it writes can record hashes of this job's own stdout/stderr as evidence.
+STDOUT_LOG_ENV = "FEDGMM_JOB_STDOUT_LOG"
+STDERR_LOG_ENV = "FEDGMM_JOB_STDERR_LOG"
 
 SUPPORTED_FEDERATED_METHODS = {
     "fedgda_d", "fedgda_s", "fedogda_d", "fedogda_s",
@@ -206,6 +211,54 @@ def _trace_dir(row: dict[str, str]) -> Path:
     return REPO_ROOT / "logs" / "fedml_trace" / row["method"] / row["run_id"]
 
 
+LEGACY_TRAJECTORY_REGISTRY = (
+    REPO_ROOT / "experiments/highdim_coauthor_protocol_v1/legacy_batchnorm_trajectories_20260822.json"
+)
+_legacy_ineligible_run_ids_cache: frozenset[str] | None = None
+
+
+def _legacy_ineligible_run_ids() -> frozenset[str]:
+    """Run IDs the BatchNorm-legacy audit has recorded as ineligible.
+
+    A manifest row's own `scientific_status` column defaults to "eligible"
+    when the column is absent entirely -- true of every pre-fix screen/
+    expand/finals/v2 manifest, since that column didn't exist when they were
+    written. Relying on that column alone would let those legacy manifests
+    launch again via a direct run_manifest.py invocation that doesn't go
+    through one of the retired wrapper scripts. Cross-checking run_id
+    against the audit registry closes that gap centrally, independent of
+    what any given manifest CSV does or doesn't say.
+    """
+    global _legacy_ineligible_run_ids_cache
+    if _legacy_ineligible_run_ids_cache is not None:
+        return _legacy_ineligible_run_ids_cache
+    try:
+        registry = json.loads(LEGACY_TRAJECTORY_REGISTRY.read_text())
+    except (OSError, json.JSONDecodeError):
+        _legacy_ineligible_run_ids_cache = frozenset()
+        return _legacy_ineligible_run_ids_cache
+    _legacy_ineligible_run_ids_cache = frozenset(
+        str(record["run_id"])
+        for record in registry.get("records", [])
+        if str(record.get("scientific_status", "")) != "eligible"
+    )
+    return _legacy_ineligible_run_ids_cache
+
+
+def _require_launch_eligible(row: dict[str, str]) -> None:
+    run_id = str(row.get("run_id", "<unknown>"))
+    scientific_status = str(_config_value(row, "scientific_status", "eligible"))
+    if scientific_status != "eligible":
+        raise ManifestLaunchError(
+            f"run {run_id} is not launch-eligible: scientific_status={scientific_status!r}"
+        )
+    if run_id in _legacy_ineligible_run_ids():
+        raise ManifestLaunchError(
+            f"run {run_id} is a registered pre-BatchNorm-fix legacy trajectory "
+            f"({LEGACY_TRAJECTORY_REGISTRY.relative_to(REPO_ROOT)}); not launch-eligible"
+        )
+
+
 def build_config(
     row: dict[str, str],
     *,
@@ -228,6 +281,7 @@ def build_config(
     override_dataloader_num_workers: int | None,
     override_dataloader_pin_memory: bool | None,
 ) -> dict[str, Any]:
+    _require_launch_eligible(row)
     expected_optimizer = METHOD_TO_OPTIMIZER.get(row["method"])
     if expected_optimizer is None:
         raise ManifestLaunchError(f"{row['run_id']}: unknown method {row['method']!r}, cannot verify client_optimizer")
@@ -311,6 +365,14 @@ def build_config(
         if override_dataloader_pin_memory is None
         else bool(override_dataloader_pin_memory)
     )
+    server_buffer_policy = str(
+        _config_value(row, "server_buffer_policy", "direct_client_aggregate")
+    )
+    if server_buffer_policy != "direct_client_aggregate":
+        raise ManifestLaunchError(
+            "server_buffer_policy must be 'direct_client_aggregate', "
+            f"got {server_buffer_policy!r}"
+        )
     return {
         "dataset": row["dataset"],
         "model": _config_value(row, "model", "lr"),
@@ -326,6 +388,7 @@ def build_config(
         "weight_decay": weight_decay,
         "critic_multiplier": _as_float(_config_value(row, "critic_multiplier", 10.0), "critic_multiplier"),
         "server_learning_rate": _as_float(_config_value(row, "server_learning_rate", 1.5), "server_learning_rate"),
+        "server_buffer_policy": server_buffer_policy,
         "eg_predictor_server_lr": _as_float(
             _config_value(row, "eg_predictor_server_lr", _config_value(row, "server_learning_rate", 1.5)),
             "eg_predictor_server_lr",
@@ -419,8 +482,16 @@ def build_config(
         "role": _config_value(row, "role", ""),
         "g0": _config_value(row, "g0", ""),
         "alignment_label": _config_value(row, "alignment_label", ""),
+        # Checkpoint selection always actually runs on primary_val_mse (see
+        # _validate_round_curve's required_numeric and fedavg_api.py's
+        # evaluate()), which is a pooled validation MSE, not an equal-client
+        # one -- equal_client_val_mse is populated only for eICU runs, whose
+        # manifest generators already set this metadata explicitly per row.
+        # "pooled_validation_mse" is the accurate default for every other
+        # dataset (FEMNIST/CIFAR/MNIST/zoo/...), whose validation data
+        # carries no client_id to compute an equal-client statistic from.
         "primary_selection_metric": _config_value(
-            row, "primary_selection_metric", "equal_client_validation_mse"
+            row, "primary_selection_metric", "pooled_validation_mse"
         ),
         "selection_source": _config_value(row, "selection_source", "validation_only"),
         "scenario_scope": _config_value(row, "scenario_scope", ""),
@@ -476,6 +547,7 @@ def write_config(path: Path, config: dict[str, Any]) -> None:
             "weight_decay": config["weight_decay"],
             "critic_multiplier": config["critic_multiplier"],
             "server_learning_rate": config["server_learning_rate"],
+            "server_buffer_policy": config["server_buffer_policy"],
             "eg_predictor_server_lr": config["eg_predictor_server_lr"],
             "eg_corrector_server_lr": config["eg_corrector_server_lr"],
             "zo_mu": config["zo_mu"],
@@ -550,30 +622,395 @@ def _json_numbers_are_finite(value: Any) -> bool:
     return True
 
 
-def validate_artifacts(run_dir: Path, row: dict[str, str]) -> dict[str, Any]:
-    missing = [name for name in EXPECTED_ARTIFACTS if not (run_dir / name).exists()]
-    if missing:
-        raise ManifestLaunchError(f"missing artifacts: {', '.join(missing)}")
-    with (run_dir / "effective_config.json").open("r") as f:
-        config = json.load(f)
-    with (run_dir / "metrics.json").open("r") as f:
-        metrics = json.load(f)
-    if config.get("dataset") != row["dataset"]:
-        raise ManifestLaunchError(f"dataset mismatch: {config.get('dataset')} != {row['dataset']}")
-    if config.get("variant") != row["method"]:
-        raise ManifestLaunchError(f"variant mismatch: {config.get('variant')} != {row['method']}")
-    if int(config.get("random_seed")) != int(row["seed"]):
-        raise ManifestLaunchError(f"seed mismatch: {config.get('random_seed')} != {row['seed']}")
-    if str(config.get("run_id")) != row["run_id"]:
-        raise ManifestLaunchError(f"run_id mismatch: {config.get('run_id')} != {row['run_id']}")
-    if not _json_numbers_are_finite(metrics):
-        raise ManifestLaunchError("metrics contain non-finite numeric values")
-    if bool(metrics.get("diverged", False)):
-        raise ManifestLaunchError("metrics.diverged is true")
+def _finite_or_none(value: Any) -> float | int | None:
+    if isinstance(value, bool) or value is None:
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return value if math.isfinite(number) else None
+
+
+def _load_json_object(path: Path) -> dict[str, Any]:
+    try:
+        with path.open("r") as f:
+            value = json.load(f)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ManifestLaunchError(f"cannot read {path.name}: {exc}") from exc
+    if not isinstance(value, dict):
+        raise ManifestLaunchError(f"{path.name} must contain a JSON object")
+    return value
+
+
+def _expected_value(
+    expected_config: dict[str, Any] | None,
+    config_field: str,
+    row: dict[str, str],
+    row_field: str,
+) -> Any:
+    """Prefer an explicit expected config value, otherwise use the manifest.
+
+    Scorers often know only a strict subset of the resolved configuration.  A
+    missing key in that subset must not erase the corresponding manifest
+    constraint by turning its expected value into ``None``.
+    """
+
+    if expected_config is not None:
+        value = expected_config.get(config_field)
+        if not _blank(value):
+            return value
+    return row.get(row_field)
+
+
+def _validate_effective_config(
+    config: dict[str, Any],
+    row: dict[str, str],
+    expected_config: dict[str, Any] | None = None,
+) -> None:
+    exact_fields = {
+        "dataset": "dataset",
+        "variant": "method",
+        "run_id": "run_id",
+        "client_optimizer": "client_optimizer",
+    }
+    for config_field, row_field in exact_fields.items():
+        expected = _expected_value(expected_config, config_field, row, row_field)
+        if str(config.get(config_field)) != str(expected):
+            raise ManifestLaunchError(
+                f"{config_field} mismatch: {config.get(config_field)!r} != {expected!r}"
+            )
+
+    integer_fields = {
+        "random_seed": "seed",
+        "client_num_in_total": "client_num_in_total",
+        "client_num_per_round": "client_num_per_round",
+        "comm_round": "comm_round",
+        "epochs": "epochs",
+        "batch_size": "batch_size",
+    }
+    for config_field, row_field in integer_fields.items():
+        expected = _expected_value(expected_config, config_field, row, row_field)
+        if _blank(expected):
+            continue
+        try:
+            actual_int = int(config.get(config_field))
+            expected_int = int(str(expected))
+        except (TypeError, ValueError) as exc:
+            raise ManifestLaunchError(
+                f"{config_field} is not an integer in config or manifest"
+            ) from exc
+        if actual_int != expected_int:
+            raise ManifestLaunchError(
+                f"{config_field} mismatch: {actual_int} != {expected_int}"
+            )
+
+    numeric_fields = {
+        "learning_rate": "learning_rate",
+        "critic_multiplier": "critic_multiplier",
+        "weight_decay": "weight_decay",
+        "server_learning_rate": "server_learning_rate",
+        "partition_alpha": "partition_alpha",
+    }
+    for config_field, row_field in numeric_fields.items():
+        expected = _expected_value(expected_config, config_field, row, row_field)
+        if _blank(expected):
+            continue
+        try:
+            actual_float = float(config.get(config_field))
+            expected_float = float(str(expected))
+        except (TypeError, ValueError) as exc:
+            raise ManifestLaunchError(
+                f"{config_field} is not numeric in config or manifest"
+            ) from exc
+        if not math.isclose(actual_float, expected_float, rel_tol=1e-12, abs_tol=0.0):
+            raise ManifestLaunchError(
+                f"{config_field} mismatch: {actual_float} != {expected_float}"
+            )
+
+    expected_buffer_policy = _expected_value(
+        expected_config,
+        "server_buffer_policy",
+        row,
+        "server_buffer_policy",
+    )
+    if not _blank(expected_buffer_policy):
+        if str(config.get("server_buffer_policy")) != str(expected_buffer_policy):
+            raise ManifestLaunchError(
+                "server_buffer_policy mismatch: "
+                f"{config.get('server_buffer_policy')!r} != {expected_buffer_policy!r}"
+            )
     if bool(config.get("test_mse_used_for_selection", False)):
         raise ManifestLaunchError("config.test_mse_used_for_selection must be false")
     if str(config.get("selection_metric_source", "validation")).lower() != "validation":
         raise ManifestLaunchError("config.selection_metric_source must be validation")
+
+
+def _required_bn_fields(dataset: str) -> tuple[str, ...]:
+    """Return BatchNorm telemetry required by an image dataset's model path."""
+
+    normalized = dataset.lower()
+    if not normalized.startswith(("mnist_", "femnist_", "cifar10_", "cifar_")):
+        return ()
+    if normalized.endswith("_xz"):
+        return ("g_bn_min_running_var", "f_bn_min_running_var")
+    if normalized.endswith("_x"):
+        return ("g_bn_min_running_var",)
+    if normalized.endswith("_z"):
+        return ("f_bn_min_running_var",)
+    return ()
+
+
+def _validate_round_curve(
+    path: Path,
+    comm_round: int,
+    dataset: str,
+) -> tuple[list[dict[str, str]], bool]:
+    try:
+        with path.open("r", newline="") as f:
+            rows = list(csv.DictReader(f))
+    except OSError as exc:
+        raise ManifestLaunchError(f"cannot read {path.name}: {exc}") from exc
+    if len(rows) != comm_round:
+        raise ManifestLaunchError(
+            f"{path.name} row count {len(rows)} != comm_round {comm_round}"
+        )
+
+    terminal_ineligible = False
+    required_bn_fields = _required_bn_fields(dataset)
+    # equal_client_val_mse is populated only for eICU runs (val_global carries
+    # a client_id there and nowhere else -- see fedavg_api.py's evaluate()) --
+    # legacy datasets like this campaign's FEMNIST/CIFAR10 leave it blank by
+    # design, so it is checked separately below as an optional numeric field
+    # rather than required here.
+    required_numeric = (
+        "train_mse",
+        "val_mse",
+        "primary_val_mse",
+        "train_moment_violation",
+        "val_moment_violation",
+        "gmm_train_objective",
+        "gmm_val_objective",
+        "gmm_eval",
+    )
+    for index, curve_row in enumerate(rows):
+        try:
+            round_index = int(curve_row.get("round", ""))
+        except (TypeError, ValueError) as exc:
+            raise ManifestLaunchError(f"{path.name}[{index}].round is not an integer") from exc
+        if round_index != index:
+            raise ManifestLaunchError(
+                f"{path.name}[{index}].round is {round_index}; expected {index}"
+            )
+
+        finite_text = str(curve_row.get("finite", ""))
+        diverged_text = str(curve_row.get("diverged", ""))
+        if finite_text not in {"True", "False"}:
+            raise ManifestLaunchError(f"{path.name}[{index}].finite is not a boolean")
+        if diverged_text not in {"True", "False"}:
+            raise ManifestLaunchError(f"{path.name}[{index}].diverged is not a boolean")
+        if finite_text == "False" or diverged_text == "True":
+            terminal_ineligible = True
+
+        for field in required_numeric:
+            raw_value = curve_row.get(field)
+            if _blank(raw_value):
+                raise ManifestLaunchError(f"{path.name}[{index}].{field} is blank")
+            try:
+                number = float(raw_value)
+            except (TypeError, ValueError) as exc:
+                raise ManifestLaunchError(
+                    f"{path.name}[{index}].{field} is not numeric"
+                ) from exc
+            if not math.isfinite(number):
+                terminal_ineligible = True
+
+        for field in ("g_bn_min_running_var", "f_bn_min_running_var"):
+            raw_value = curve_row.get(field)
+            if _blank(raw_value):
+                if field in required_bn_fields:
+                    raise ManifestLaunchError(
+                        f"{path.name}[{index}].{field} is blank for {dataset}"
+                    )
+                continue
+            try:
+                number = float(raw_value)
+            except (TypeError, ValueError) as exc:
+                raise ManifestLaunchError(
+                    f"{path.name}[{index}].{field} is not numeric"
+                ) from exc
+            if not math.isfinite(number) or number < 0.0:
+                terminal_ineligible = True
+
+        equal_client_val_mse = curve_row.get("equal_client_val_mse")
+        if _blank(equal_client_val_mse) and dataset.lower().startswith("eicu"):
+            raise ManifestLaunchError(
+                f"{path.name}[{index}].equal_client_val_mse is blank for {dataset}"
+            )
+        if not _blank(equal_client_val_mse):
+            try:
+                number = float(equal_client_val_mse)
+            except (TypeError, ValueError) as exc:
+                raise ManifestLaunchError(
+                    f"{path.name}[{index}].equal_client_val_mse is not numeric"
+                ) from exc
+            if not math.isfinite(number):
+                terminal_ineligible = True
+    return rows, terminal_ineligible
+
+
+def validate_pretraining_failure_artifact(
+    run_dir: Path,
+    row: dict[str, str],
+) -> dict[str, Any]:
+    """Validates pretraining_failure.json -- the only artifact that may
+    classify a run whose training process never wrote round-curve artifacts
+    as terminal_pretraining_ineligible rather than an unexplained process
+    failure. Structural/consistency validation only; the recorded
+    effective_config_checksum is cross-verified at protocol hash-freeze time,
+    not here."""
+    payload = _load_json_object(run_dir / "pretraining_failure.json")
+    if payload.get("schema_version") != 1:
+        raise ManifestLaunchError("pretraining_failure.json schema_version must be 1")
+    if str(payload.get("run_id")) != str(row["run_id"]):
+        raise ManifestLaunchError(
+            "pretraining_failure.json run_id does not match manifest row"
+        )
+    if payload.get("failure_phase") != "model_selection":
+        raise ManifestLaunchError(
+            "pretraining_failure.json failure_phase must be 'model_selection'"
+        )
+    if payload.get("federated_rounds_started") != 0:
+        raise ManifestLaunchError(
+            "pretraining_failure.json federated_rounds_started must be 0"
+        )
+    epochs_attempted = payload.get("model_selection_epochs_attempted")
+    if (
+        not isinstance(epochs_attempted, int)
+        or isinstance(epochs_attempted, bool)
+        or epochs_attempted < 0
+    ):
+        raise ManifestLaunchError(
+            "pretraining_failure.json model_selection_epochs_attempted must be "
+            "a non-negative integer"
+        )
+    if not isinstance(payload.get("per_epoch_finite_status"), list):
+        raise ManifestLaunchError(
+            "pretraining_failure.json per_epoch_finite_status must be a list"
+        )
+    best_score = payload.get("best_model_selection_score")
+    if best_score is not None and (
+        not isinstance(best_score, (int, float)) or isinstance(best_score, bool)
+    ):
+        raise ManifestLaunchError(
+            "pretraining_failure.json best_model_selection_score must be numeric or null"
+        )
+    terminal_reason = payload.get("terminal_reason")
+    if not isinstance(terminal_reason, str) or not terminal_reason.strip():
+        raise ManifestLaunchError(
+            "pretraining_failure.json terminal_reason must be a non-empty string"
+        )
+    traceback_text = payload.get("traceback")
+    if not isinstance(traceback_text, str) or not traceback_text.strip():
+        raise ManifestLaunchError(
+            "pretraining_failure.json traceback must be a non-empty string"
+        )
+    checksum = payload.get("effective_config_checksum")
+    if not isinstance(checksum, str) or not checksum.strip():
+        raise ManifestLaunchError(
+            "pretraining_failure.json effective_config_checksum must be a non-empty string"
+        )
+    if "hash_bundle_id" not in payload:
+        raise ManifestLaunchError("pretraining_failure.json is missing hash_bundle_id")
+    return {
+        "run_dir": str(run_dir),
+        "test_mse_at_best_validation": None,
+        "final_test_mse": None,
+        "best_validation_round": None,
+        "terminal_ineligible": True,
+        "terminal_pretraining_ineligible": True,
+        "terminal_reason": terminal_reason,
+    }
+
+
+def validate_artifacts(
+    run_dir: Path,
+    row: dict[str, str],
+    expected_config: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    if (run_dir / "pretraining_failure.json").exists():
+        return validate_pretraining_failure_artifact(run_dir, row)
+    missing = [name for name in EXPECTED_ARTIFACTS if not (run_dir / name).exists()]
+    if missing:
+        raise ManifestLaunchError(f"missing artifacts: {', '.join(missing)}")
+    config = _load_json_object(run_dir / "effective_config.json")
+    metrics = _load_json_object(run_dir / "metrics.json")
+    _validate_effective_config(config, row, expected_config)
+    try:
+        comm_round = int(config.get("comm_round"))
+    except (TypeError, ValueError) as exc:
+        raise ManifestLaunchError("config.comm_round is not an integer") from exc
+    if comm_round < 1:
+        raise ManifestLaunchError("config.comm_round must be positive")
+    _, terminal_ineligible = _validate_round_curve(
+        run_dir / "mse_by_round.csv", comm_round, str(config.get("dataset", ""))
+    )
+    if str(metrics.get("run_status")) != "completed":
+        raise ManifestLaunchError("metrics.run_status must be 'completed'")
+    try:
+        rounds_completed = int(metrics.get("rounds_completed"))
+    except (TypeError, ValueError) as exc:
+        raise ManifestLaunchError("metrics.rounds_completed is not an integer") from exc
+    if rounds_completed != comm_round:
+        raise ManifestLaunchError(
+            f"metrics.rounds_completed {rounds_completed} != comm_round {comm_round}"
+        )
+    terminal_ineligible = terminal_ineligible or bool(metrics.get("diverged", False))
+    if str(metrics.get("server_buffer_policy")) != str(
+        config.get("server_buffer_policy")
+    ):
+        raise ManifestLaunchError(
+            "metrics.server_buffer_policy must match effective_config.json"
+        )
+    if str(metrics.get("server_buffer_policy")) != "direct_client_aggregate":
+        raise ManifestLaunchError(
+            "metrics.server_buffer_policy must be 'direct_client_aggregate'"
+        )
+
+    if "nonfinite_first_round" not in metrics:
+        raise ManifestLaunchError("metrics.nonfinite_first_round is required")
+    nonfinite_first_round = metrics.get("nonfinite_first_round")
+    if nonfinite_first_round is not None:
+        if isinstance(nonfinite_first_round, bool):
+            raise ManifestLaunchError("metrics.nonfinite_first_round must be an integer or null")
+        try:
+            first_round = int(nonfinite_first_round)
+        except (TypeError, ValueError) as exc:
+            raise ManifestLaunchError(
+                "metrics.nonfinite_first_round must be an integer or null"
+            ) from exc
+        if first_round < 0 or first_round >= comm_round:
+            raise ManifestLaunchError(
+                "metrics.nonfinite_first_round is outside the completed round range"
+            )
+        terminal_ineligible = True
+
+    nonfinite_diagnostics = metrics.get("nonfinite_diagnostics")
+    if not isinstance(nonfinite_diagnostics, list):
+        raise ManifestLaunchError("metrics.nonfinite_diagnostics must be a list")
+    if nonfinite_diagnostics:
+        terminal_ineligible = True
+
+    for field in _required_bn_fields(str(config.get("dataset", ""))):
+        raw_value = metrics.get(field)
+        if raw_value is None:
+            raise ManifestLaunchError(f"metrics.{field} is required for this dataset")
+        try:
+            number = float(raw_value)
+        except (TypeError, ValueError) as exc:
+            raise ManifestLaunchError(f"metrics.{field} is not numeric") from exc
+        if not math.isfinite(number) or number < 0.0:
+            terminal_ineligible = True
     if bool(config.get("log_test_mse_by_round", False)):
         test_curve_path = run_dir / "test_mse_by_round.csv"
         if not test_curve_path.exists():
@@ -590,23 +1027,43 @@ def validate_artifacts(run_dir: Path, row: dict[str, str]) -> dict[str, Any]:
             raise ManifestLaunchError("metrics.selection_metric_source must be validation")
         for index, test_row in enumerate(test_rows):
             try:
+                test_round = int(test_row.get("round", ""))
+            except (TypeError, ValueError) as exc:
+                raise ManifestLaunchError(
+                    f"test_mse_by_round[{index}].round is not an integer"
+                ) from exc
+            if test_round != index:
+                raise ManifestLaunchError(
+                    f"test_mse_by_round[{index}].round is {test_round}; expected {index}"
+                )
+            try:
                 test_mse = float(test_row.get("test_mse"))
             except (TypeError, ValueError):
                 raise ManifestLaunchError(f"test_mse_by_round[{index}].test_mse is not numeric")
             if not math.isfinite(test_mse):
-                raise ManifestLaunchError(f"test_mse_by_round[{index}].test_mse is not finite")
-            if str(test_row.get("finite")) != "True":
-                raise ManifestLaunchError(f"test_mse_by_round[{index}].finite is not True")
-            if str(test_row.get("diverged")) != "False":
-                raise ManifestLaunchError(f"test_mse_by_round[{index}].diverged is not False")
-    for key in ("test_mse_at_best_validation", "final_test_mse"):
-        if key in metrics and not math.isfinite(float(metrics[key])):
-            raise ManifestLaunchError(f"{key} is not finite")
+                terminal_ineligible = True
+            finite_text = str(test_row.get("finite"))
+            diverged_text = str(test_row.get("diverged"))
+            if finite_text not in {"True", "False"}:
+                raise ManifestLaunchError(f"test_mse_by_round[{index}].finite is not a boolean")
+            if diverged_text not in {"True", "False"}:
+                raise ManifestLaunchError(f"test_mse_by_round[{index}].diverged is not a boolean")
+            if finite_text == "False" or diverged_text == "True":
+                terminal_ineligible = True
+    if not _json_numbers_are_finite(metrics):
+        terminal_ineligible = True
     return {
         "run_dir": str(run_dir),
-        "test_mse_at_best_validation": metrics.get("test_mse_at_best_validation"),
-        "final_test_mse": metrics.get("final_test_mse"),
-        "best_validation_round": metrics.get("best_validation_round"),
+        "test_mse_at_best_validation": _finite_or_none(
+            metrics.get("test_mse_at_best_validation")
+        ),
+        "final_test_mse": _finite_or_none(metrics.get("final_test_mse")),
+        "best_validation_round": _finite_or_none(metrics.get("best_validation_round")),
+        "terminal_ineligible": terminal_ineligible,
+        "terminal_pretraining_ineligible": False,
+        "terminal_reason": metrics.get("failure_reason") or (
+            "sticky divergence/nonfinite evidence" if terminal_ineligible else None
+        ),
     }
 
 
@@ -686,12 +1143,13 @@ def build_jobs(
             skipped.append({"run_id": row.get("run_id", ""), "reason": str(exc)})
             continue
         config_path = config_dir / row["dataset"] / row["method"] / f"seed_{int(row['seed'])}" / f"{row['run_id']}.yaml"
-        write_config(config_path, config)
         run_dir = _run_dir(output_root, row)
         command = [python_executable, str(main_path), "--cf", str(config_path)]
         env = dict(os.environ)
         env[FEDML_LOG_DIR_ENV] = str(_log_dir(row))
         env[FEDML_TRACE_DIR_ENV] = str(_trace_dir(row))
+        env[STDOUT_LOG_ENV] = str(run_dir / "stdout.log")
+        env[STDERR_LOG_ENV] = str(run_dir / "stderr.log")
         jobs.append(Job(row=row, config=config, config_path=config_path, run_dir=run_dir, command=command, env=env, gpu_id=gpu_id))
     return jobs, skipped
 
@@ -699,6 +1157,7 @@ def build_jobs(
 def dry_run(jobs: list[Job], skipped: list[dict[str, str]], limit: int | None) -> None:
     shown = jobs if limit is None else jobs[:limit]
     for job in shown:
+        write_config(job.config_path, job.config)
         print(f"{job.row['run_id']} -> {job.run_dir}")
         print(f"gpu_id={job.gpu_id}")
         print(f"config={job.config_path}")
@@ -736,31 +1195,71 @@ def run_jobs(
     # directly to run_dir by the training process on completion regardless
     # of this -- this only protects the summary/bookkeeping layer.
     pending = list(jobs)
-    active: list[tuple[Job, subprocess.Popen[str]]] = []
+    active: list[tuple[Job, subprocess.Popen[str], Any, Any]] = []
     results: list[dict[str, Any]] = []
     stop_starting = False
     parallel_limit = min(int(max_parallel), len(gpu_ids))
+    attempt_id = f"{time.time_ns()}-{os.getpid()}"
+    ledger_path = _attempt_ledger_path(results_json) if results_json is not None else None
+    if ledger_path is not None:
+        _append_attempt_event(ledger_path, {
+            "attempt_id": attempt_id,
+            "event": "invocation_started",
+            "job_count": len(jobs),
+            "timestamp_ns": time.time_ns(),
+        })
 
     def record(entry: dict[str, Any]) -> None:
-        results.append(entry)
+        resolved_entry = {
+            **entry,
+            "attempt_id": attempt_id,
+            "resolved_timestamp_ns": time.time_ns(),
+        }
+        results.append(resolved_entry)
+        if ledger_path is not None:
+            _append_attempt_event(ledger_path, {
+                **resolved_entry,
+                "event": "job_resolved",
+            })
         if results_json is not None:
             _write_results(results_json, results)
 
     while pending or active:
         while pending and len(active) < parallel_limit and not stop_starting:
-            active_gpu_ids = {job.gpu_id for job, _ in active}
+            active_gpu_ids = {active_job.gpu_id for active_job, *_rest in active}
             free_gpu_ids = [gpu_id for gpu_id in gpu_ids if gpu_id not in active_gpu_ids]
             if not free_gpu_ids:
                 break
             job = pending.pop(0)
-            if resume_skip_completed and has_completed_artifacts(job.run_dir):
+            already_resolved = has_completed_artifacts(job.run_dir) or (
+                job.run_dir / "pretraining_failure.json"
+            ).exists()
+            if resume_skip_completed and already_resolved:
                 try:
-                    validation = validate_artifacts(job.run_dir, job.row)
-                    record({"run_id": job.row["run_id"], "status": "skipped_completed", **validation})
-                    print(f"SKIP completed {job.row['run_id']}")
+                    validation = validate_artifacts(
+                        job.run_dir, job.row, expected_config=job.config
+                    )
+                    status = (
+                        "skipped_terminal_ineligible"
+                        if validation["terminal_ineligible"]
+                        else "skipped_completed"
+                    )
+                    record({"run_id": job.row["run_id"], "status": status, **validation})
+                    print(f"SKIP {status.removeprefix('skipped_')} {job.row['run_id']}")
                     continue
                 except ManifestLaunchError as exc:
-                    print(f"Existing artifacts invalid for {job.row['run_id']}: {exc}; rerunning")
+                    record({
+                        "run_id": job.row["run_id"],
+                        "status": "failed_existing_artifacts",
+                        "error": str(exc),
+                        "run_dir": str(job.run_dir),
+                    })
+                    print(
+                        f"FAIL {job.row['run_id']} completed artifacts are invalid and were preserved: {exc}"
+                    )
+                    if stop_on_failure:
+                        stop_starting = True
+                    continue
             if has_any_artifacts(job.run_dir):
                 if not overwrite_incomplete:
                     record({
@@ -773,41 +1272,107 @@ def run_jobs(
                     if stop_on_failure:
                         stop_starting = True
                     continue
-                job.config["overwrite"] = True
+                try:
+                    archived_run_dir = _archive_partial_run(job.run_dir, attempt_id)
+                except (ManifestLaunchError, OSError) as exc:
+                    record({
+                        "run_id": job.row["run_id"],
+                        "status": "failed_partial_archive",
+                        "error": str(exc),
+                        "run_dir": str(job.run_dir),
+                    })
+                    print(f"FAIL {job.row['run_id']} could not archive partial artifacts: {exc}")
+                    if stop_on_failure:
+                        stop_starting = True
+                    continue
+                job.config["overwrite"] = False
+                if ledger_path is not None:
+                    _append_attempt_event(ledger_path, {
+                        "attempt_id": attempt_id,
+                        "event": "partial_archived",
+                        "run_id": job.row["run_id"],
+                        "source": str(job.run_dir),
+                        "destination": str(archived_run_dir),
+                        "timestamp_ns": time.time_ns(),
+                    })
+                print(f"ARCHIVE partial {job.row['run_id']} -> {archived_run_dir}")
             job.run_dir.parent.mkdir(parents=True, exist_ok=True)
+            job.run_dir.mkdir(parents=True, exist_ok=True)
             _log_dir(job.row).mkdir(parents=True, exist_ok=True)
             _trace_dir(job.row).mkdir(parents=True, exist_ok=True)
             assign_job_gpu(job, free_gpu_ids[0])
             print(f"START {job.row['run_id']} gpu={job.gpu_id}")
+            if ledger_path is not None:
+                _append_attempt_event(ledger_path, {
+                    "attempt_id": attempt_id,
+                    "command": job.command,
+                    "config": str(job.config_path),
+                    "event": "job_started",
+                    "gpu_id": job.gpu_id,
+                    "run_dir": str(job.run_dir),
+                    "run_id": job.row["run_id"],
+                    "timestamp_ns": time.time_ns(),
+                })
+            # Captured so a pretraining_failure.json written by the job can
+            # record stdout/stderr hashes as evidence (closeout plan SS4.2) --
+            # previously discarded entirely.
+            stdout_handle = open(job.run_dir / "stdout.log", "w")
+            stderr_handle = open(job.run_dir / "stderr.log", "w")
             process = subprocess.Popen(
                 job.command,
                 cwd=str(REPO_ROOT),
                 env=job.env,
                 text=True,
+                stdout=stdout_handle,
+                stderr=stderr_handle,
             )
-            active.append((job, process))
+            active.append((job, process, stdout_handle, stderr_handle))
 
-        still_active: list[tuple[Job, subprocess.Popen[str]]] = []
-        for job, process in active:
+        still_active: list[tuple[Job, subprocess.Popen[str], Any, Any]] = []
+        for job, process, stdout_handle, stderr_handle in active:
             returncode = process.poll()
             if returncode is None:
-                still_active.append((job, process))
+                still_active.append((job, process, stdout_handle, stderr_handle))
                 continue
+            stdout_handle.close()
+            stderr_handle.close()
             if returncode != 0:
-                record({
-                    "run_id": job.row["run_id"],
-                    "status": "failed_process",
-                    "returncode": returncode,
-                    "run_dir": str(job.run_dir),
-                })
-                print(f"FAIL {job.row['run_id']} returncode={returncode}")
+                try:
+                    pretraining_validation = validate_artifacts(
+                        job.run_dir, job.row, expected_config=job.config
+                    )
+                except ManifestLaunchError:
+                    pretraining_validation = None
+                if pretraining_validation is not None and pretraining_validation.get(
+                    "terminal_pretraining_ineligible"
+                ):
+                    record({
+                        "run_id": job.row["run_id"],
+                        "status": "terminal_ineligible",
+                        "returncode": returncode,
+                        **pretraining_validation,
+                    })
+                    print(f"TERMINAL_PRETRAINING_INELIGIBLE {job.row['run_id']}")
+                else:
+                    # No valid pretraining_failure.json -- an unexplained
+                    # process failure, not a certified terminal outcome.
+                    record({
+                        "run_id": job.row["run_id"],
+                        "status": "failed_process",
+                        "returncode": returncode,
+                        "run_dir": str(job.run_dir),
+                    })
+                    print(f"FAIL {job.row['run_id']} returncode={returncode}")
                 if stop_on_failure:
                     stop_starting = True
                 continue
             try:
-                validation = validate_artifacts(job.run_dir, job.row)
-                record({"run_id": job.row["run_id"], "status": "passed", **validation})
-                print(f"PASS {job.row['run_id']}")
+                validation = validate_artifacts(
+                    job.run_dir, job.row, expected_config=job.config
+                )
+                status = "terminal_ineligible" if validation["terminal_ineligible"] else "passed"
+                record({"run_id": job.row["run_id"], "status": status, **validation})
+                print(f"{status.upper()} {job.row['run_id']}")
             except ManifestLaunchError as exc:
                 record({
                     "run_id": job.row["run_id"],
@@ -830,14 +1395,50 @@ def run_jobs(
         if active:
             time.sleep(5)
 
+    if ledger_path is not None:
+        _append_attempt_event(ledger_path, {
+            "attempt_id": attempt_id,
+            "event": "invocation_resolved",
+            "result_count": len(results),
+            "timestamp_ns": time.time_ns(),
+        })
     return results
 
 
 def _write_results(path: Path, results: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w") as f:
+    temporary_path = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    with temporary_path.open("w") as f:
         json.dump(results, f, indent=2, sort_keys=True)
         f.write("\n")
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(temporary_path, path)
+
+
+def _attempt_ledger_path(results_json: Path) -> Path:
+    return results_json.with_name(f"{results_json.stem}_attempts.jsonl")
+
+
+def _append_attempt_event(path: Path, event: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(event, sort_keys=True) + "\n"
+    descriptor = os.open(path, os.O_APPEND | os.O_CREAT | os.O_WRONLY, 0o644)
+    try:
+        os.write(descriptor, payload.encode("utf-8"))
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _archive_partial_run(run_dir: Path, attempt_id: str) -> Path:
+    archive_root = run_dir.parent / "_interrupted_attempts"
+    archive_root.mkdir(parents=True, exist_ok=True)
+    destination = archive_root / f"{run_dir.name}.{attempt_id}"
+    if destination.exists():
+        raise ManifestLaunchError(f"partial-run archive already exists: {destination}")
+    shutil.move(str(run_dir), str(destination))
+    return destination
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -952,12 +1553,22 @@ def main() -> int:
         results_json=results_json,
     )
     _write_results(results_json, results)
-    failed = [row for row in results if row.get("status") not in {"passed", "skipped_completed"}]
+    resolved_statuses = {
+        "passed",
+        "skipped_completed",
+        "terminal_ineligible",
+        "skipped_terminal_ineligible",
+    }
+    failed = [row for row in results if row.get("status") not in resolved_statuses]
     print(json.dumps({
         "jobs": len(jobs),
         "results_json": str(results_json.relative_to(REPO_ROOT)),
         "passed": sum(row.get("status") == "passed" for row in results),
         "skipped_completed": sum(row.get("status") == "skipped_completed" for row in results),
+        "terminal_ineligible": sum(
+            row.get("status") in {"terminal_ineligible", "skipped_terminal_ineligible"}
+            for row in results
+        ),
         "failed": len(failed),
     }, indent=2, sort_keys=True))
     return 0 if not failed else 1

@@ -1,0 +1,102 @@
+[
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/screen_manifest.csv",
+    "sha256": "f4d2636495a2e20e6e979df210926e99fc23849fdfecd3ab9866e36f64eaa66b"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/screen_summary.json",
+    "sha256": "9297d636e6a323b5c9b952ad442db307f1d71edbc779e531e93986fc64e59742"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/psi_adjudication_20260822_v3/bn_buffer_diagnostic_certification.json",
+    "sha256": "64b1cd5175cfd779db8878dd0508d1d858c618d4e16d9060359f2cc0f2f06adc"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/experiment_utils.py",
+    "sha256": "6197ccbfe04037e4f9b5e2f7fafda1bf6b0be89d02e12ab1c5ea9a2d7725a78e"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/my_model_trainer_classification.py",
+    "sha256": "61284c228fef38911e29ed731f0cc11c29dd34ac7bad296633b3ff4908b78328"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/trainer_creator.py",
+    "sha256": "1107d8cecfdc6eb2bb2a2488d5e2fcb01a1b24793a064775fe4f92c3ed65dacc"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/model/model_hub.py",
+    "sha256": "1f0eb55d5b3ec50794f9f6af8bef73b02b618ad5fcef61a9ea405a5a44329a26"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py",
+    "sha256": "eb6f3f8d19a24dcf68ca13984412a9486dcf1659c86964e29f8c2b42e2a3b720"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/main.py",
+    "sha256": "246bdb6c31ade4875d08c308894e3d71f8baa5e50e53a29375b0a8806c6df906"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection_class.py",
+    "sha256": "77095906fd98ca17fd9d8b7315113fddea8a36c6a1f010245e7a5d28faae7db7"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/models/cnn_models.py",
+    "sha256": "ec916ce4cf271061fc96cd601402a878e6241f234915e059535a9cfe995ce76a"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/models/mlp_model.py",
+    "sha256": "1c5ae0c0c7377fa007930605dfe38658bcab8b38b45f8203c08d5901a2dd642c"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/abstract_scenario.py",
+    "sha256": "0598dbc94f79a744a9cbfd65386566b09e3d1510cc5933dad72a0eba35f24e18"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/cifar10_scenario.py",
+    "sha256": "d29848d73180e742eeb04a850a4f25f5977aedfbb14a80ea7bbe74dffbe90b57"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/mnist_scenarios.py",
+    "sha256": "ed7901dd66d957d201a0b033ffa8736ff4b7cb77f3c9a7d3db56b4aab7623f27"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/toy_scenarios.py",
+    "sha256": "a84fd99bb3a3fcbf352421fb735cea4de2cd8bb4ab866846446106ba77875efc"
+  },
+  {
+    "path": "scripts/certify_highdim_bn_diagnostic_20260822.py",
+    "sha256": "2da77cd3c7dfb9e476e01d44877576c297a7ad8825cff28fc5f5644258eb903f"
+  },
+  {
+    "path": "scripts/check_manifest_stage_complete.py",
+    "sha256": "7e1d7de6a1cea0a9810ac8f21d8fc03a1fa9bf347250e8f2551111eeb0016a6d"
+  },
+  {
+    "path": "scripts/launch_highdim_deterministic_screen_post_bn_20260822.sh",
+    "sha256": "bb0453ae9ca0a876da537987a51b5060e6826005e054da7528f4e0991407933d"
+  },
+  {
+    "path": "scripts/prepare_highdim_deterministic_screen_post_bn_20260822.py",
+    "sha256": "f184937285e01f6607b30cc982cba48346177938a2c75dba5dd7585fc08024ca"
+  },
+  {
+    "path": "scripts/run_manifest.py",
+    "sha256": "c54aa62ecdcb7ea702a678e9731da4cd222562d152c87ec1c5b393c679a11c35"
+  },
+  {
+    "path": "scripts/score_highdim_screen_by_psi.py",
+    "sha256": "505972f5f238ec635f0b073f2fd9408e5f11ed4209609ae3ddb63cc77b9a2561"
+  },
+  {
+    "path": "scripts/score_highdim_screen_post_bn_20260822.py",
+    "sha256": "0f9dc9e0256b45d39e2e4a505dad31cddfc21a67e4c42eadbcc327d04da5929a"
+  },
+  {
+    "path": "scripts/verify_highdim_bn_diagnostic_certification_20260822.py",
+    "sha256": "4e98525c0d147ce417487df26a3b6b1bfa28776fc4f7bbb65f737d6b73fda49e"
+  },
+  {
+    "path": "scripts/verify_protocol_hashes.py",
+    "sha256": "840898e1180b60794a72b8249c3fd38916cc19634190983b05240ff561a42a46"
+  }
+]

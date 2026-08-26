@@ -1,4 +1,6 @@
 import os
+import sys
+import traceback
 
 # Every model trained through this entry point is a tiny 1-2 hidden-layer MLP
 # over at most a few thousand rows; PyTorch's CPU default is one BLAS thread
@@ -14,7 +16,12 @@ for _env_var in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
 import fedml
 from fedml import FedMLRunner
 import torch
-from experiment_utils import RuntimeProfiler, get_effective_config, run_dir_from_config
+from experiment_utils import (
+    RuntimeProfiler,
+    get_effective_config,
+    run_dir_from_config,
+    write_pretraining_failure_artifact,
+)
 
 torch.set_num_threads(int(os.environ["OMP_NUM_THREADS"]))
 # Only claim all local GPUs when nothing upstream has scoped us to a subset.
@@ -32,8 +39,9 @@ if __name__ == "__main__":
     args = fedml.init()
     print("DEBUG: fedml.init() successful.")
     profile_config = get_effective_config(args)
+    actual_run_dir = run_dir_from_config(profile_config)
     runtime_profiler = RuntimeProfiler.from_config(profile_config)
-    runtime_profiler.configure(profile_config, run_dir_from_config(profile_config))
+    runtime_profiler.configure(profile_config, actual_run_dir)
     setattr(args, "_fedgmm_runtime_profiler", runtime_profiler)
     runtime_profiler.record_environment(profile_config)
     runtime_profiler.start_telemetry()
@@ -65,4 +73,24 @@ if __name__ == "__main__":
         runtime_profiler.stop(extra={"exit_status": "completed"})
     except Exception as exc:
         runtime_profiler.stop(extra={"exit_status": "exception", "exception": repr(exc)})
+        # A ModelSelectionFailure (closeout plan Phase 1 SS4.2) is the only
+        # exception type that may classify this run as
+        # terminal_pretraining_ineligible; every other exception stays an
+        # unexplained process failure with no such artifact written.
+        diagnostics = getattr(exc, "diagnostics", None)
+        if isinstance(diagnostics, dict):
+            sys.stdout.flush()
+            sys.stderr.flush()
+            write_pretraining_failure_artifact(
+                actual_run_dir,
+                run_id=str(getattr(args, "run_id", "")),
+                effective_config=profile_config,
+                per_epoch_diagnostics=diagnostics.get("per_epoch"),
+                best_score=diagnostics.get("best_score"),
+                terminal_reason=str(exc),
+                traceback_text=traceback.format_exc(),
+                stdout_path=os.environ.get("FEDGMM_JOB_STDOUT_LOG"),
+                stderr_path=os.environ.get("FEDGMM_JOB_STDERR_LOG"),
+                hash_bundle_id=os.environ.get("FEDGMM_HASH_BUNDLE_ID"),
+            )
         raise

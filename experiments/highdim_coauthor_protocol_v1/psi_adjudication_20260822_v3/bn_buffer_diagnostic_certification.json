@@ -1,0 +1,39 @@
+{
+  "artifact_hashes": [
+    {
+      "path": "effective_config.json",
+      "sha256": "86ef93a52c42897dbd5cc0c0ffaca868304e30abb37861aa41b413bcb8aa2607"
+    },
+    {
+      "path": "metrics.json",
+      "sha256": "913122b7c5f3b713074cefb0c27ed6b76a36be6bce6fc776fe01926ef26f9d25"
+    },
+    {
+      "path": "mse_by_round.csv",
+      "sha256": "9da4de3b83869b5d3665a2cbff45a948c7e3064fde2007fbdb21012fc1c1e034"
+    },
+    {
+      "path": "predictions.npz",
+      "sha256": "2a9b1c0b08b91bfecc95b20db1c6abef61525df1f7248b923e3504d58513c038"
+    },
+    {
+      "path": "checkpoints/best_validation.pt",
+      "sha256": "a7f67b4eb5df068d16c7341e8e1bd0dadd87ddb535c1a0242ddfc51a4c8f414b"
+    },
+    {
+      "path": "checkpoints/final.pt",
+      "sha256": "05f1555a071d26348453a6df1c3e3e5fcd3ade246dda4eebd440ada0c7cc49ba"
+    }
+  ],
+  "certification_status": "passed",
+  "criteria": {
+    "completed_and_nondivergent": true,
+    "exact_rounds_0_through_119": true,
+    "finite_critic_outputs": true,
+    "nonnegative_batchnorm_running_variance": true,
+    "server_buffer_policy": "direct_client_aggregate"
+  },
+  "launch_hash_record": "experiments/highdim_coauthor_protocol_v1/psi_adjudication_20260822_v3/diagnostic_launch_hashes.json",
+  "minimum_f_bn_running_variance": 9.897330425614937e-07,
+  "run_id": "bn_buffer_diagnostic_v3_femnist_z_fedogda_d_seed1_lr0p001_cm10"
+}

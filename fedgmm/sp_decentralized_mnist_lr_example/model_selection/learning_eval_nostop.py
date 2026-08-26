@@ -23,6 +23,13 @@ class FHistoryLearningEvalNoStop(AbstractLearningEval):
         epsilon_dev_history = []
         f_of_z_dev_history = []
         y_dev_cpu = y_dev.cpu()
+        # Structured pretraining-failure evidence (does not affect the
+        # returned histories or any Psi/tilde-residual arithmetic): a bare
+        # per-checkpoint finite/nonfinite record that do_model_selection
+        # reads back via this attribute after eval() returns, so a
+        # pre-round-0 model-selection failure can be diagnosed without
+        # touching legacy-Psi math.
+        self.last_eval_diagnostics = []
 
         for i in range(self.num_iter):
             self.do_training_update(x_train, z_train, y_train, g, f,
@@ -39,6 +46,14 @@ class FHistoryLearningEvalNoStop(AbstractLearningEval):
 
                 f_of_z_dev = self.calc_function_batched(f, z_dev)
                 f_of_z_dev_history.append(f_of_z_dev)
+
+                epsilon_dev_finite = bool(torch.isfinite(epsilon_dev).all())
+                f_of_z_dev_finite = bool(torch.isfinite(f_of_z_dev).all())
+                self.last_eval_diagnostics.append({
+                    "epoch": i,
+                    "epsilon_dev_finite": epsilon_dev_finite,
+                    "f_of_z_dev_finite": f_of_z_dev_finite,
+                })
 
                 f = f.train()
                 g = g.train()

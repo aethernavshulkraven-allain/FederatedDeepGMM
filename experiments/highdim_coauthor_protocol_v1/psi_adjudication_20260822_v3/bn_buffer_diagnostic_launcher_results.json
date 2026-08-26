@@ -1,0 +1,14 @@
+[
+  {
+    "attempt_id": "1787408732208176589-2036166",
+    "best_validation_round": 86,
+    "final_test_mse": 1.2269210751991824,
+    "resolved_timestamp_ns": 1787408732211085345,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_bn_buffer_diagnostic_20260822_v3/femnist_z/fedogda_d/seed_1/bn_buffer_diagnostic_v3_femnist_z_fedogda_d_seed1_lr0p001_cm10",
+    "run_id": "bn_buffer_diagnostic_v3_femnist_z_fedogda_d_seed1_lr0p001_cm10",
+    "status": "skipped_completed",
+    "terminal_ineligible": false,
+    "terminal_reason": null,
+    "test_mse_at_best_validation": 0.22122414004744173
+  }
+]

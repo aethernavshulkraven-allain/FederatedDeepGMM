@@ -25,6 +25,7 @@ from fedgmm.sp_decentralized_mnist_lr_example.experiment_utils import (
     format_no_valid_model_selection_error,
     get_effective_config,
     metric_values_are_finite,
+    ModelSelectionFailure,
     per_client_equal_and_sample_weighted,
     prepare_run_dir,
     save_predictions_npz,
@@ -34,6 +35,9 @@ from fedgmm.sp_decentralized_mnist_lr_example.experiment_utils import (
     write_effective_config,
     write_mse_by_round,
     write_per_client_metrics,
+    save_predictions_npz_compact,
+    verify_compact_predictions_numerically_equal,
+    write_pretraining_failure_artifact,
     write_test_mse_by_round,
 )
 from scripts.run_abs_smoke import (
@@ -1064,6 +1068,158 @@ class WriteEffectiveConfigProvenanceGuardTest(unittest.TestCase):
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         self.assertEqual(tuple(CAMPAIGN_PROVENANCE_FIELDS), tuple(module.PROVENANCE_FIELDS))
+
+
+class CompactPredictionArtifactTest(unittest.TestCase):
+    """save_predictions_npz_compact (closeout plan Phase 1 SS4.4): must drop
+    the full test-input tensor (the ~10 GiB-across-the-campaign cost) while
+    keeping every retained field numerically identical to the full writer's
+    output, so a compact copy is never a silent approximation."""
+
+    def test_compact_omits_x_but_matches_full_writer_on_retained_fields(self):
+        import numpy as np
+
+        x = np.arange(4 * 3 * 2 * 2, dtype=np.float32).reshape(4, 3, 2, 2)
+        split = SimpleNamespace(x=x, g=np.asarray([[1.0], [2.0], [3.0], [4.0]]))
+        best = np.asarray([[1.1], [2.1], [3.1], [4.1]])
+        final = np.asarray([[1.2], [2.2], [3.2], [4.2]])
+        metadata = {
+            "dataset": "cifar10_x", "algorithm": "fedgda_d", "variant": "fedgda_d",
+            "random_seed": 0, "run_id": "fixture_run",
+        }
+        with tempfile.TemporaryDirectory() as run_dir:
+            save_predictions_npz(run_dir, split, best, final, metadata)
+            compact_path = save_predictions_npz_compact(run_dir, split, best, final, metadata)
+            with np.load(compact_path) as saved:
+                self.assertNotIn("x", saved.files)
+                self.assertEqual(saved["schema_version"].item(), 1)
+                np.testing.assert_array_equal(saved["sample_id"], np.arange(4))
+                np.testing.assert_array_equal(saved["true_g"], split.g)
+                self.assertEqual(str(saved["dataset"]), "cifar10_x")
+            result = verify_compact_predictions_numerically_equal(run_dir)
+            self.assertEqual(set(result["verified_fields"]), {
+                "best_validation_prediction", "final_prediction", "true_g",
+            })
+
+    def test_low_dim_compact_uses_sorted_scalar_coordinate(self):
+        import numpy as np
+
+        # Unsorted on purpose -- both writers must sort by x identically.
+        x = np.asarray([3.0, 1.0, 2.0])
+        split = SimpleNamespace(x=x, g=np.asarray([30.0, 10.0, 20.0]))
+        best = np.asarray([31.0, 11.0, 21.0])
+        final = np.asarray([32.0, 12.0, 22.0])
+        metadata = {"dataset": "abs", "random_seed": 0, "run_id": "fixture"}
+        with tempfile.TemporaryDirectory() as run_dir:
+            save_predictions_npz(run_dir, split, best, final, metadata)
+            compact_path = save_predictions_npz_compact(run_dir, split, best, final, metadata)
+            with np.load(compact_path) as saved:
+                np.testing.assert_array_equal(saved["sample_coordinate"], [1.0, 2.0, 3.0])
+                np.testing.assert_array_equal(saved["true_g"], [10.0, 20.0, 30.0])
+            verify_compact_predictions_numerically_equal(run_dir)  # must not raise
+
+    def test_tampered_compact_copy_is_rejected(self):
+        import numpy as np
+
+        x = np.asarray([1.0, 2.0, 3.0])
+        split = SimpleNamespace(x=x, g=np.asarray([1.0, 2.0, 3.0]))
+        best = np.asarray([1.0, 2.0, 3.0])
+        final = np.asarray([1.0, 2.0, 3.0])
+        metadata = {"random_seed": 0, "run_id": "fixture"}
+        with tempfile.TemporaryDirectory() as run_dir:
+            save_predictions_npz(run_dir, split, best, final, metadata)
+            compact_path = save_predictions_npz_compact(run_dir, split, best, final, metadata)
+            payload = dict(np.load(compact_path))
+            payload["true_g"] = payload["true_g"] + 1.0  # corrupt one field
+            np.savez(compact_path, **payload)
+            with self.assertRaisesRegex(ValueError, "true_g"):
+                verify_compact_predictions_numerically_equal(run_dir)
+
+
+class WritePretrainingFailureArtifactTest(unittest.TestCase):
+    """write_pretraining_failure_artifact (closeout plan Phase 1 SS4.2): the
+    only artifact that may classify a run as terminal_pretraining_ineligible,
+    so its schema must be exactly what run_manifest.py's
+    validate_pretraining_failure_artifact expects."""
+
+    def test_writes_expected_schema_and_derives_first_nonfinite_epoch(self):
+        diagnostics = [
+            {"epoch": 0, "epsilon_dev_finite": True, "f_of_z_dev_finite": True},
+            {"epoch": 20, "epsilon_dev_finite": False, "f_of_z_dev_finite": True},
+            {"epoch": 40, "epsilon_dev_finite": False, "f_of_z_dev_finite": False},
+        ]
+        with tempfile.TemporaryDirectory() as tmpdir:
+            run_dir = os.path.join(tmpdir, "run")
+            os.makedirs(run_dir)
+            path = write_pretraining_failure_artifact(
+                run_dir,
+                run_id="fixture_run",
+                effective_config={"dataset": "femnist_z", "run_id": "fixture_run"},
+                per_epoch_diagnostics=diagnostics,
+                best_score=float("-inf"),
+                terminal_reason="No valid model-selection candidate was selected",
+                traceback_text="Traceback (most recent call last):\n  ...\nRuntimeError: x",
+                stdout_path=None,
+                stderr_path=None,
+                hash_bundle_id="bundle-123",
+            )
+            self.assertTrue(os.path.exists(path))
+            payload = json.loads(open(path).read())
+        self.assertEqual(payload["schema_version"], 1)
+        self.assertEqual(payload["run_id"], "fixture_run")
+        self.assertEqual(payload["failure_phase"], "model_selection")
+        self.assertEqual(payload["federated_rounds_started"], 0)
+        self.assertEqual(payload["model_selection_epochs_attempted"], 3)
+        # best_score=-inf is not JSON-finite, so it must be normalized to null,
+        # never written as a literal -Infinity token.
+        self.assertIsNone(payload["best_model_selection_score"])
+        self.assertEqual(payload["first_nonfinite_epoch"]["epoch"], 20)
+        self.assertEqual(payload["first_nonfinite_epoch"]["components"], ["epsilon_dev_finite"])
+        self.assertEqual(payload["hash_bundle_id"], "bundle-123")
+        self.assertIsNotNone(payload["effective_config_checksum"])
+        self.assertEqual(
+            payload["effective_config_checksum"],
+            config_checksum({"dataset": "femnist_z", "run_id": "fixture_run"}),
+        )
+
+    def test_all_finite_epochs_report_no_first_nonfinite_epoch(self):
+        diagnostics = [{"epoch": 0, "epsilon_dev_finite": True, "f_of_z_dev_finite": True}]
+        with tempfile.TemporaryDirectory() as tmpdir:
+            run_dir = os.path.join(tmpdir, "run")
+            os.makedirs(run_dir)
+            path = write_pretraining_failure_artifact(
+                run_dir, run_id="fixture_run", effective_config={"run_id": "fixture_run"},
+                per_epoch_diagnostics=diagnostics, best_score=1.5,
+                terminal_reason="reason", traceback_text="tb",
+            )
+            payload = json.loads(open(path).read())
+        self.assertIsNone(payload["first_nonfinite_epoch"])
+        self.assertEqual(payload["best_model_selection_score"], 1.5)
+
+    def test_stdout_stderr_hashes_recorded_when_paths_given(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            stdout_path = os.path.join(tmpdir, "stdout.log")
+            with open(stdout_path, "w") as handle:
+                handle.write("hello")
+            run_dir = os.path.join(tmpdir, "run")
+            os.makedirs(run_dir)
+            path = write_pretraining_failure_artifact(
+                run_dir, run_id="fixture_run", effective_config={"run_id": "fixture_run"},
+                per_epoch_diagnostics=[], best_score=None,
+                terminal_reason="reason", traceback_text="tb",
+                stdout_path=stdout_path, stderr_path=os.path.join(tmpdir, "missing.log"),
+            )
+            payload = json.loads(open(path).read())
+        self.assertIsNotNone(payload["stdout_sha256"])
+        self.assertIsNone(payload["stderr_sha256"])  # missing file -> None, not an error
+
+
+class ModelSelectionFailureExceptionTest(unittest.TestCase):
+    def test_carries_diagnostics_and_message(self):
+        exc = ModelSelectionFailure("bad candidate", {"per_epoch": [], "best_score": float("-inf")})
+        self.assertEqual(str(exc), "bad candidate")
+        self.assertEqual(exc.diagnostics["best_score"], float("-inf"))
+        self.assertIsInstance(exc, RuntimeError)
 
 
 if __name__ == "__main__":

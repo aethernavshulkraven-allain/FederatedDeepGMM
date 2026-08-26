@@ -1,5 +1,7 @@
+import copy
 import csv
 import json
+import logging
 import math
 import os
 import platform
@@ -30,6 +32,8 @@ DEFAULT_AGGREGATION_WEIGHTING = "sample_size"
 # result stays reproducible.
 OBJECTIVE_MODE_CHOICES = ("legacy", "paper_aligned")
 DEFAULT_OBJECTIVE_MODE = "legacy"
+SERVER_BUFFER_POLICY_CHOICES = ("direct_client_aggregate",)
+DEFAULT_SERVER_BUFFER_POLICY = "direct_client_aggregate"
 CLIENT_OPTIMIZER_CHOICES = (
     "sgd", "ogda", "fed_eg", "fed_eg_double", "fed_zo_eg",
 )
@@ -68,6 +72,7 @@ EFFECTIVE_CONFIG_FIELDS = (
     "critic_multiplier",
     "f_learning_rate",
     "server_learning_rate",
+    "server_buffer_policy",
     "eg_predictor_server_lr",
     "eg_corrector_server_lr",
     "zo_mu",
@@ -170,12 +175,14 @@ def compute_client_weights(sample_counts, mode):
 
 
 def weighted_average_state_dicts(state_dicts, weights):
-    """Weighted sum of same-keyed mappings (torch state dicts or plain numbers).
+    """Aggregate same-keyed state mappings without averaging integer counters.
 
     This is the single function both FedGDA's direct aggregation and FedOGDA's
     pseudogradient/delta aggregation rely on (the delta is computed as
     ``weighted_average(...) - theta_t``), so fixing the weighting here fixes
     both optimizers identically rather than needing two separate patches.
+    Floating and complex values use the requested weights. Nonfloating values
+    use an elementwise maximum so counters retain their dtype and semantics.
     """
     if len(state_dicts) != len(weights):
         raise ValueError(
@@ -185,14 +192,121 @@ def weighted_average_state_dicts(state_dicts, weights):
     if not state_dicts:
         raise ValueError("weighted_average_state_dicts requires at least one entry")
 
+    try:
+        import torch
+    except Exception:
+        torch = None
+
     result = {}
     for key in state_dicts[0].keys():
+        first = state_dicts[0][key]
+        if torch is not None and torch.is_tensor(first) and not (
+            torch.is_floating_point(first) or torch.is_complex(first)
+        ):
+            values = torch.stack([state_dict[key] for state_dict in state_dicts])
+            if first.dtype == torch.bool:
+                result[key] = values.any(dim=0)
+            else:
+                result[key] = values.amax(dim=0)
+            continue
+        if isinstance(first, (bool, int)):
+            result[key] = max(state_dict[key] for state_dict in state_dicts)
+            continue
         acc = None
         for state_dict, weight in zip(state_dicts, weights):
             term = state_dict[key] * weight
             acc = term if acc is None else acc + term
         result[key] = acc
     return result
+
+
+def apply_parameter_server_update(
+    base_state,
+    aggregated_state,
+    parameter_keys,
+    learning_rate,
+    *,
+    previous_parameter_delta=None,
+    optimistic=False,
+    delta_base_state=None,
+    buffer_policy=DEFAULT_SERVER_BUFFER_POLICY,
+):
+    """Apply server optimizer math to parameters and direct aggregation to buffers.
+
+    PyTorch ``state_dict`` mappings contain both trainable parameters and model
+    buffers. BatchNorm running statistics and integer counters are state, but
+    they are not optimizer variables and must never receive server learning-rate
+    interpolation or optimistic extrapolation.
+    """
+    if buffer_policy not in SERVER_BUFFER_POLICY_CHOICES:
+        raise ValueError(
+            f"server buffer policy must be one of {SERVER_BUFFER_POLICY_CHOICES}, "
+            f"got {buffer_policy!r}"
+        )
+    base_keys = set(base_state)
+    aggregate_keys = set(aggregated_state)
+    if base_keys != aggregate_keys:
+        raise ValueError("base and aggregated state dictionaries must have identical keys")
+    parameter_keys = set(parameter_keys)
+    unknown_parameter_keys = parameter_keys - base_keys
+    if unknown_parameter_keys:
+        raise ValueError(
+            f"parameter keys are absent from the state dictionary: {sorted(unknown_parameter_keys)}"
+        )
+    if delta_base_state is None:
+        delta_base_state = base_state
+    if set(delta_base_state) != base_keys:
+        raise ValueError("delta-base and base state dictionaries must have identical keys")
+    if optimistic and previous_parameter_delta is None:
+        raise ValueError("optimistic update requires previous_parameter_delta")
+    if previous_parameter_delta is not None and set(previous_parameter_delta) != parameter_keys:
+        raise ValueError("previous_parameter_delta must contain exactly the trainable parameter keys")
+
+    updated = {}
+    parameter_delta = {}
+    learning_rate = float(learning_rate)
+    for key in base_state:
+        if key not in parameter_keys:
+            value = aggregated_state[key]
+            updated[key] = value.clone() if hasattr(value, "clone") else copy.deepcopy(value)
+            continue
+        delta = aggregated_state[key] - delta_base_state[key]
+        parameter_delta[key] = delta
+        direction = delta
+        if optimistic:
+            direction = 2.0 * delta - previous_parameter_delta[key]
+        updated[key] = base_state[key] + learning_rate * direction
+    return updated, parameter_delta
+
+
+def batchnorm_running_var_min(model, model_name="model"):
+    """Return the minimum BatchNorm running variance and enforce its domain."""
+    try:
+        import torch
+    except Exception as exc:
+        raise RuntimeError("BatchNorm validation requires torch") from exc
+
+    minimum = None
+    for module_name, module in model.named_modules():
+        if not isinstance(module, torch.nn.modules.batchnorm._BatchNorm):
+            continue
+        running_var = module.running_var
+        if running_var is None:
+            continue
+        qualified_name = f"{model_name}.{module_name}" if module_name else model_name
+        if not bool(torch.isfinite(running_var).all().item()):
+            message = f"{qualified_name}.running_var contains non-finite values"
+            logging.error(message)
+            raise FloatingPointError(message)
+        current_minimum = float(running_var.min().detach().cpu())
+        if current_minimum < 0.0:
+            message = (
+                f"{qualified_name}.running_var is negative: minimum={current_minimum}"
+            )
+            logging.error(message)
+            raise FloatingPointError(message)
+        minimum = current_minimum if minimum is None else min(minimum, current_minimum)
+    return minimum
 
 
 def check_eicu_aggregation_weighting(dataset, aggregation_weighting, campaign_role):
@@ -286,6 +400,14 @@ def get_effective_config(args):
         getattr(args, "critic_multiplier", default_critic_multiplier(dataset))
     )
     server_learning_rate = float(getattr(args, "server_learning_rate", 1.5))
+    server_buffer_policy = str(
+        getattr(args, "server_buffer_policy", DEFAULT_SERVER_BUFFER_POLICY)
+    )
+    if server_buffer_policy not in SERVER_BUFFER_POLICY_CHOICES:
+        raise ValueError(
+            f"server_buffer_policy must be one of {SERVER_BUFFER_POLICY_CHOICES}, "
+            f"got {server_buffer_policy!r}"
+        )
     eg_predictor_server_lr = getattr(args, "eg_predictor_server_lr", None)
     eg_corrector_server_lr = getattr(args, "eg_corrector_server_lr", None)
     if eg_predictor_server_lr is not None:
@@ -372,6 +494,7 @@ def get_effective_config(args):
         "critic_multiplier": critic_multiplier,
         "f_learning_rate": critic_multiplier * learning_rate,
         "server_learning_rate": server_learning_rate,
+        "server_buffer_policy": server_buffer_policy,
         "eg_predictor_server_lr": eg_predictor_server_lr,
         "eg_corrector_server_lr": eg_corrector_server_lr,
         "zo_mu": zo_mu,
@@ -927,6 +1050,91 @@ def format_no_valid_model_selection_error(context):
     )
 
 
+class ModelSelectionFailure(RuntimeError):
+    """Raised instead of a bare RuntimeError when model selection cannot
+    select a valid candidate before federated round 0. Carries structured
+    diagnostics so main.py's top-level exception handler can write a
+    pretraining_failure.json artifact; a plain exception without this type
+    stays an unexplained process failure (closeout plan Phase 1 SS4.2)."""
+
+    def __init__(self, message, diagnostics):
+        super().__init__(message)
+        self.diagnostics = diagnostics
+
+
+def _sha256_file_or_none(path):
+    if not path or not os.path.exists(path):
+        return None
+    import hashlib
+
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def write_pretraining_failure_artifact(
+    run_dir,
+    *,
+    run_id,
+    effective_config,
+    per_epoch_diagnostics,
+    best_score,
+    terminal_reason,
+    traceback_text,
+    stdout_path=None,
+    stderr_path=None,
+    hash_bundle_id=None,
+):
+    """Writes pretraining_failure.json: the only artifact that may classify a
+    pre-round-0 model-selection failure as terminal_pretraining_ineligible
+    (see run_manifest.py's validate_artifacts). A bare nonzero return code
+    with no such artifact must remain an unexplained process failure."""
+    per_epoch_diagnostics = list(per_epoch_diagnostics or [])
+    first_nonfinite_epoch = None
+    for record in per_epoch_diagnostics:
+        bad_components = [
+            component for component in ("epsilon_dev_finite", "f_of_z_dev_finite")
+            if not record.get(component, True)
+        ]
+        if bad_components:
+            first_nonfinite_epoch = {
+                "epoch": record.get("epoch"),
+                "components": bad_components,
+            }
+            break
+    try:
+        best_score_value = float(best_score)
+        if not math.isfinite(best_score_value):
+            best_score_value = None
+    except (TypeError, ValueError):
+        best_score_value = None
+    payload = {
+        "schema_version": 1,
+        "run_id": run_id,
+        "effective_config_checksum": (
+            config_checksum(effective_config) if effective_config else None
+        ),
+        "failure_phase": "model_selection",
+        "federated_rounds_started": 0,
+        "model_selection_epochs_attempted": len(per_epoch_diagnostics),
+        "best_model_selection_score": best_score_value,
+        "per_epoch_finite_status": per_epoch_diagnostics,
+        "first_nonfinite_epoch": first_nonfinite_epoch,
+        "terminal_reason": terminal_reason,
+        "traceback": traceback_text,
+        "stdout_sha256": _sha256_file_or_none(stdout_path),
+        "stderr_sha256": _sha256_file_or_none(stderr_path),
+        "hash_bundle_id": hash_bundle_id,
+    }
+    path = os.path.join(run_dir, "pretraining_failure.json")
+    with open(path, "w") as f:
+        json.dump(json_safe(payload), f, indent=2, sort_keys=True)
+        f.write("\n")
+    return path
+
+
 def structural_mse_from_predictions(prediction, true_g):
     pred_values = _flatten_numbers(prediction)
     true_values = _flatten_numbers(true_g)
@@ -1255,6 +1463,8 @@ def write_mse_by_round(run_dir, rows):
         "gmm_train_objective",
         "gmm_val_objective",
         "gmm_eval",
+        "g_bn_min_running_var",
+        "f_bn_min_running_var",
         "finite",
         "diverged",
     ]
@@ -1279,6 +1489,8 @@ def append_mse_by_round(run_dir, row):
         "gmm_train_objective",
         "gmm_val_objective",
         "gmm_eval",
+        "g_bn_min_running_var",
+        "f_bn_min_running_var",
         "finite",
         "diverged",
     ]
@@ -1422,6 +1634,85 @@ def save_predictions_npz(
         run_id=np.asarray(str(metadata.get("run_id", ""))),
     )
     return path
+
+
+COMPACT_PREDICTION_SCHEMA_VERSION = 1
+
+
+def save_predictions_npz_compact(
+    run_dir,
+    test_split,
+    best_prediction,
+    final_prediction,
+    metadata,
+):
+    """Versioned compact prediction artifact (closeout plan Phase 1 SS4.4):
+    sample IDs/coordinate, ground truth, best/final prediction, and run
+    metadata -- deliberately omits the full test input tensor that makes
+    save_predictions_npz's predictions.npz ~10 GiB across an image campaign.
+    Additive only: writes predictions_compact.npz alongside the existing
+    predictions.npz, which keeps its current schema unchanged for every
+    downstream script that already reads it."""
+    import numpy as np
+
+    x = _to_numpy(test_split.x)
+    true_g = _to_numpy(test_split.g)
+    best_pred = _to_numpy(best_prediction)
+    final_pred = _to_numpy(final_prediction)
+    if x.ndim == 1 or (x.ndim == 2 and x.shape[1] == 1):
+        indices = np.argsort(x.reshape(x.shape[0], -1)[:, 0])
+        sample_coordinate = x.reshape(x.shape[0], -1)[:, 0][indices]
+    else:
+        # Images have too many feature axes for a per-sample scalar
+        # coordinate; a stable sample index is the compact identifier.
+        indices = np.arange(x.shape[0])
+        sample_coordinate = indices.astype(np.int64)
+    path = os.path.join(run_dir, "predictions_compact.npz")
+    np.savez(
+        path,
+        schema_version=np.asarray(COMPACT_PREDICTION_SCHEMA_VERSION),
+        sample_id=indices.astype(np.int64),
+        sample_coordinate=sample_coordinate,
+        true_g=true_g[indices],
+        **{
+            PREDICTION_OUTPUT_KEYS[0]: best_pred[indices],
+            PREDICTION_OUTPUT_KEYS[1]: final_pred[indices],
+        },
+        dataset=np.asarray(str(metadata.get("dataset", ""))),
+        algorithm=np.asarray(str(metadata.get("algorithm", ""))),
+        variant=np.asarray(str(metadata.get("variant", ""))),
+        seed=np.asarray(int(metadata.get("random_seed", 0))),
+        run_id=np.asarray(str(metadata.get("run_id", ""))),
+    )
+    return path
+
+
+def verify_compact_predictions_numerically_equal(run_dir):
+    """Loads both predictions.npz and predictions_compact.npz from run_dir
+    and raises ValueError unless every retained field agrees exactly. Used to
+    validate a derived compact copy before it is ever treated as a substitute
+    for the original (closeout plan SS4.4) -- never deletes the original."""
+    import numpy as np
+
+    full_path = os.path.join(run_dir, "predictions.npz")
+    compact_path = os.path.join(run_dir, "predictions_compact.npz")
+    with np.load(full_path) as full, np.load(compact_path) as compact:
+        # Both writers independently sort by the same rule (argsort(x) for
+        # low-dim, identity for images) and store each field in that same
+        # final order, so the two arrays already line up row-for-row --
+        # sample_id records provenance (which original sample each row was),
+        # it is not an index to re-apply to the already-sorted full array.
+        for key in (*PREDICTION_OUTPUT_KEYS, "true_g"):
+            full_values = full[key]
+            compact_values = compact[key]
+            if full_values.shape != compact_values.shape:
+                raise ValueError(
+                    f"{key} shape mismatch: full {full_values.shape} vs "
+                    f"compact {compact_values.shape}"
+                )
+            if not np.array_equal(full_values, compact_values, equal_nan=True):
+                raise ValueError(f"{key} values differ between full and compact artifacts")
+    return {"run_dir": run_dir, "verified_fields": [*PREDICTION_OUTPUT_KEYS, "true_g"]}
 
 
 def now_seconds():
