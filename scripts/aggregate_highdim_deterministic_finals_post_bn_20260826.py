@@ -5,6 +5,12 @@
 this script refuses to report anything, including validation-only fields,
 while any row is unresolved, so a partial run can never be read as if it
 were the frozen final table.
+
+Reads finals_evidence_ledger.json (produced by
+prepare_highdim_deterministic_finals_post_bn_20260826.py), not a flat
+manifest CSV: reused entries carry their real, original run_id, which is
+what lets validate_artifacts() succeed for them (it requires the on-disk
+effective_config.json's run_id to equal the row's run_id exactly).
 """
 
 from __future__ import annotations
@@ -52,15 +58,27 @@ def _bn_min_running_var(metrics: dict) -> float | None:
     return min(float(v) for v in values)
 
 
-def _row_report(run_dir: Path, row: dict[str, str]) -> dict:
+def _row_report(run_dir: Path, entry: dict) -> dict:
+    # Minimal row: validate_artifacts only hard-requires dataset/method
+    # ("variant")/run_id/client_optimizer to match exactly (_validate_
+    # effective_config's exact_fields); every numeric field it might also
+    # check is optional and read from the real on-disk config when absent
+    # here (see _expected_value's fallback), so this deliberately does not
+    # try to reconstruct the full manifest row.
+    row = {
+        "run_id": entry["run_id"],
+        "dataset": entry["dataset"],
+        "method": entry["method"],
+        "client_optimizer": entry["client_optimizer"],
+    }
     validation = validate_artifacts(run_dir, row)
-    entry = {
-        "run_id": row["run_id"],
-        "dataset": row["dataset"],
-        "method": row["method"],
-        "alpha": float(row["alpha"]),
-        "seed": int(row["seed"]),
-        "reused": row.get("reused") == "True",
+    report = {
+        "run_id": entry["run_id"],
+        "dataset": entry["dataset"],
+        "method": entry["method"],
+        "alpha": float(entry["alpha"]),
+        "seed": int(entry["seed"]),
+        "reused": bool(entry["reused"]),
         "terminal_ineligible": validation["terminal_ineligible"],
         "terminal_reason": validation["terminal_reason"],
     }
@@ -68,7 +86,7 @@ def _row_report(run_dir: Path, row: dict[str, str]) -> dict:
         # A terminal-divergent trajectory is a reportable result, not
         # something to silently rerun (closeout plan SS9.4) -- report what
         # is knowable and stop there.
-        entry.update({
+        report.update({
             "best_validation_test_mse": None,
             "final_test_mse": None,
             "last50_psi": None,
@@ -76,10 +94,10 @@ def _row_report(run_dir: Path, row: dict[str, str]) -> dict:
             "min_bn_running_var": None,
             "full_curve_stable": False,
         })
-        return entry
+        return report
     metrics = _load_json(run_dir / "metrics.json")
     comm_round = int(metrics["rounds_completed"])
-    entry.update({
+    report.update({
         "best_validation_test_mse": validation["test_mse_at_best_validation"],
         "final_test_mse": validation["final_test_mse"],
         "last50_psi": _last50_mean(run_dir, comm_round, "gmm_eval"),
@@ -87,28 +105,33 @@ def _row_report(run_dir: Path, row: dict[str, str]) -> dict:
         "min_bn_running_var": _bn_min_running_var(metrics),
         "full_curve_stable": True,
     })
-    return entry
+    return report
 
 
-def aggregate(manifest_path: Path) -> dict:
-    with manifest_path.open(newline="") as handle:
-        rows = list(csv.DictReader(handle))
-    if len(rows) != 180:
-        raise ValueError(f"final manifest must contain exactly 180 rows, got {len(rows)}")
-    run_ids = [row["run_id"] for row in rows]
+def aggregate(ledger_path: Path) -> dict:
+    ledger = _load_json(ledger_path)
+    if ledger.get("status") != "complete":
+        raise ValueError("finals evidence ledger is absent or incomplete")
+    trajectories = ledger.get("trajectories")
+    if not isinstance(trajectories, list) or len(trajectories) != 180:
+        raise ValueError(
+            f"finals evidence ledger must list exactly 180 trajectories, "
+            f"got {len(trajectories) if isinstance(trajectories, list) else 'invalid'}"
+        )
+    run_ids = [entry["run_id"] for entry in trajectories]
     if len(set(run_ids)) != len(run_ids):
-        raise ValueError("final manifest contains duplicate run_ids")
+        raise ValueError("finals evidence ledger contains duplicate run_ids")
 
     unresolved = []
     entries = []
-    for row in rows:
-        run_dir = Path(row["final_result_dir"])
+    for trajectory in trajectories:
+        run_dir = Path(trajectory["final_result_dir"])
         if not run_dir.is_absolute():
             run_dir = REPO_ROOT / run_dir
         try:
-            entries.append(_row_report(run_dir, row))
+            entries.append(_row_report(run_dir, trajectory))
         except (ManifestLaunchError, OSError, KeyError, ValueError) as exc:
-            unresolved.append({"run_id": row["run_id"], "reason": str(exc)})
+            unresolved.append({"run_id": trajectory["run_id"], "reason": str(exc)})
 
     if unresolved:
         raise ValueError(
@@ -141,7 +164,7 @@ def aggregate(manifest_path: Path) -> dict:
 
     return {
         "status": "complete",
-        "manifest": str(manifest_path.relative_to(REPO_ROOT)),
+        "ledger": str(ledger_path.relative_to(REPO_ROOT)) if ledger_path.is_absolute() else str(ledger_path),
         "trajectories": entries,
         "cross_seed_summary": cross_seed_summary,
     }
@@ -149,11 +172,11 @@ def aggregate(manifest_path: Path) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--ledger", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     try:
-        result = aggregate(args.manifest.resolve())
+        result = aggregate(args.ledger.resolve())
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         print(f"FINAL AGGREGATION BLOCKED: {exc}")
         return 2

@@ -24,6 +24,15 @@ Whatever V4 finalization step is eventually built must emit exactly this
 shape (or a thin adapter must translate to it) before this preparer can run
 for real. Until then it fails closed -- there are no real 12 frozen winners
 yet, so no stability manifest should be generated for real.
+
+Each row is built from a real screen-manifest template row for the same
+(dataset, method) cell -- not a hand-picked field subset -- so every column
+run_manifest.py's build_config() requires without a default (epochs,
+client_num_in_total, client_num_per_round, batch_size, partition_alpha, ...)
+is carried forward unchanged from an already-launched-successfully row,
+exactly like prepare_highdim_psi_adjudication_post_bn_v4.py's templates
+already do. Only the fields that must actually change for this stage are
+overridden.
 """
 
 from __future__ import annotations
@@ -40,14 +49,12 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from highdim_protocol_hash_closure_20260822 import CORE_DATASET_FILES, CORE_SOURCES  # noqa: E402
 
 PROTOCOL_ROOT = REPO_ROOT / "experiments/highdim_coauthor_protocol_v1"
+DEFAULT_SCREEN_MANIFEST = (
+    PROTOCOL_ROOT / "deterministic_screen_post_bn_20260822" / "screen_manifest.csv"
+)
 DEFAULT_OUTPUT_DIR = PROTOCOL_ROOT / "deterministic_stability_alpha0p1_20260826"
 RESULT_ROOT = "results/highdim_deterministic_stability_alpha0p1_20260826"
-FIELDNAMES = [
-    "run_id", "dataset", "method", "seed", "alpha", "learning_rate",
-    "critic_multiplier", "client_optimizer", "comm_round", "final_result_dir",
-    "server_buffer_policy", "source_v4_run_id",
-]
-METHOD_OPTIMIZERS = {"fedgda_d": "sgd", "fedogda_d": "ogda"}
+EXTRA_FIELDS = ("source_v4_run_id",)
 
 
 def _token(value: float) -> str:
@@ -73,7 +80,7 @@ def _load_json(path: Path) -> dict:
     return value
 
 
-def prepare(winners_path: Path, output_dir: Path) -> dict:
+def prepare(winners_path: Path, screen_manifest_path: Path, output_dir: Path) -> dict:
     winners = _load_json(winners_path)
     if winners.get("status") != "complete":
         raise ValueError("V4 winners are absent or incomplete")
@@ -85,6 +92,16 @@ def prepare(winners_path: Path, output_dir: Path) -> dict:
     if not isinstance(cells, dict) or len(cells) != 12:
         raise ValueError(f"V4 winners must contain exactly 12 cells, got {len(cells) if isinstance(cells, dict) else 'invalid'}")
 
+    with screen_manifest_path.open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = list(reader.fieldnames or [])
+        templates: dict[tuple[str, str], dict[str, str]] = {}
+        for row in reader:
+            templates.setdefault((row["dataset"], row["method"]), row)
+    for field in EXTRA_FIELDS:
+        if field not in fieldnames:
+            fieldnames.append(field)
+
     output_dir.mkdir(parents=True, exist_ok=True)
     rows = []
     for cell_name in sorted(cells):
@@ -92,8 +109,9 @@ def prepare(winners_path: Path, output_dir: Path) -> dict:
         dataset, method = cell["dataset"], cell["method"]
         if f"{dataset}|{method}" != cell_name:
             raise ValueError(f"cell key {cell_name!r} does not match its dataset/method fields")
-        if method not in METHOD_OPTIMIZERS:
-            raise ValueError(f"{cell_name}: unsupported method {method!r}")
+        template = templates.get((dataset, method))
+        if template is None:
+            raise ValueError(f"{cell_name}: no screen-manifest template row for this cell")
         winner = cell["winner"]
         lr, cm = float(winner["lr"]), float(winner["cm"])
         run_ids_by_seed = winner["run_ids"]
@@ -103,24 +121,33 @@ def prepare(winners_path: Path, output_dir: Path) -> dict:
             f"det_stability_alpha0p1_{dataset}_{method}_seed0_alpha0p1_"
             f"lr{_token(lr)}_cm{_token(cm)}"
         )
-        rows.append({
+        row = dict(template)
+        row.update({
             "run_id": run_id,
-            "dataset": dataset,
-            "method": method,
+            "protocol_version": "highdim_deterministic_stability_alpha0p1_v1",
+            "run_group": "highdim_deterministic_stability_alpha0p1_20260826",
             "seed": "0",
             "alpha": "0.1",
             "learning_rate": f"{lr:g}",
             "critic_multiplier": f"{cm:g}",
-            "client_optimizer": METHOD_OPTIMIZERS[method],
             "comm_round": "500",
+            "output_root": RESULT_ROOT,
             "final_result_dir": f"{RESULT_ROOT}/{dataset}/{method}/seed_0/{run_id}",
+            "run_status": "not_started",
+            "preflight_required": "True",
+            "preflight_status": "bn_buffer_diagnostic_certified",
             "server_buffer_policy": "direct_client_aggregate",
             "source_v4_run_id": run_ids_by_seed["0"],
+            "notes": (
+                f"alpha=0.1 stability check of V4 winner {cell_name} "
+                f"(lr={lr:g}, cm={cm:g}); fresh initialization, no state reused."
+            ),
         })
+        rows.append(row)
 
     manifest_path = output_dir / "stability_manifest.csv"
     with manifest_path.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=FIELDNAMES)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -133,12 +160,14 @@ def prepare(winners_path: Path, output_dir: Path) -> dict:
         "seed": 0,
         "server_buffer_policy": "direct_client_aggregate",
         "source_v4_winners": _relative_or_str(winners_path),
+        "source_screen_manifest": _relative_or_str(screen_manifest_path),
     }, indent=2, sort_keys=True) + "\n")
 
     hashed_paths = [
         manifest_path,
         summary_path,
         winners_path,
+        screen_manifest_path,
         *(REPO_ROOT / source for source in CORE_SOURCES),
         *(REPO_ROOT / dataset for dataset in CORE_DATASET_FILES),
         REPO_ROOT / "scripts/validate_highdim_stability_alpha0p1_20260826.py",
@@ -156,10 +185,13 @@ def prepare(winners_path: Path, output_dir: Path) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--v4-winners", type=Path, required=True)
+    parser.add_argument("--screen-manifest", type=Path, default=DEFAULT_SCREEN_MANIFEST)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     args = parser.parse_args()
     try:
-        result = prepare(args.v4_winners.resolve(), args.output_dir.resolve())
+        result = prepare(
+            args.v4_winners.resolve(), args.screen_manifest.resolve(), args.output_dir.resolve(),
+        )
     except (OSError, json.JSONDecodeError, KeyError, ValueError) as exc:
         print(f"STABILITY PREPARATION BLOCKED: {exc}")
         return 2

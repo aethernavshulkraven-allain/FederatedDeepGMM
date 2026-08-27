@@ -2,7 +2,9 @@
 
 Covers the row-count/unresolved-blocking guards with cheap fixtures, plus one
 full 180-trajectory happy path proving test metrics unlock correctly once
-every planned trajectory is resolved.
+every planned trajectory is resolved. Uses the finals_evidence_ledger.json
+contract (not a flat CSV manifest) -- reused entries carry their real
+run_id, matching what validate_artifacts() requires.
 """
 
 from __future__ import annotations
@@ -25,11 +27,6 @@ DATASETS = ["femnist_x", "femnist_z", "femnist_xz", "cifar10_x", "cifar10_z", "c
 METHODS = ("fedgda_d", "fedogda_d")
 ALPHAS = (0.1, 0.5, 1.0)
 SEEDS = (0, 1, 2, 3, 4)
-FIELDNAMES = [
-    "run_id", "dataset", "method", "seed", "alpha", "learning_rate",
-    "critic_multiplier", "client_optimizer", "comm_round", "final_result_dir",
-    "server_buffer_policy", "reused", "source_stage", "source_run_id",
-]
 
 
 def _write_run(run_dir: Path, run_id: str, *, dataset="fixture", method="fedgda_d",
@@ -75,52 +72,89 @@ def _write_run(run_dir: Path, run_id: str, *, dataset="fixture", method="fedgda_
             ])
 
 
+def _entry(run_id, dataset, method, seed, alpha, final_result_dir, reused=False, source_stage=""):
+    return {
+        "run_id": run_id, "dataset": dataset, "method": method, "seed": seed, "alpha": alpha,
+        "client_optimizer": "sgd" if method == "fedgda_d" else "ogda",
+        "final_result_dir": str(final_result_dir), "reused": reused, "source_stage": source_stage,
+    }
+
+
 class AggregateGuardTest(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(dir=REPO_ROOT))
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
 
-    def _write_manifest(self, rows) -> Path:
-        manifest_path = self.tmp / "finals_manifest.csv"
-        with manifest_path.open("w", newline="") as handle:
-            writer = csv.DictWriter(handle, fieldnames=FIELDNAMES)
-            writer.writeheader()
-            writer.writerows(rows)
-        return manifest_path
+    def _write_ledger(self, trajectories, *, status="complete") -> Path:
+        ledger_path = self.tmp / "finals_evidence_ledger.json"
+        ledger_path.write_text(json.dumps({
+            "status": status,
+            "total_trajectories": len(trajectories),
+            "reused_trajectories": sum(1 for t in trajectories if t.get("reused")),
+            "new_trajectories": sum(1 for t in trajectories if not t.get("reused")),
+            "trajectories": trajectories,
+        }))
+        return ledger_path
 
-    def test_wrong_row_count_rejected(self):
-        manifest_path = self._write_manifest([{
-            "run_id": "only_one", "dataset": "d", "method": "fedgda_d", "seed": "0",
-            "alpha": "0.5", "client_optimizer": "sgd",
-            "final_result_dir": "x", "reused": "False",
-        }])
-        with self.assertRaisesRegex(ValueError, "exactly 180 rows"):
-            aggregate_finals.aggregate(manifest_path)
+    def test_wrong_trajectory_count_rejected(self):
+        ledger_path = self._write_ledger([_entry("only_one", "d", "fedgda_d", 0, 0.5, "x")])
+        with self.assertRaisesRegex(ValueError, "exactly 180 trajectories"):
+            aggregate_finals.aggregate(ledger_path)
+
+    def test_incomplete_ledger_status_rejected(self):
+        ledger_path = self._write_ledger([], status="in_progress")
+        with self.assertRaisesRegex(ValueError, "absent or incomplete"):
+            aggregate_finals.aggregate(ledger_path)
 
     def test_unresolved_trajectory_locks_the_whole_report(self):
-        rows = []
+        trajectories = []
         for i in range(180):
             run_dir = self.tmp / f"run_{i}"
             run_id = f"run_{i}"
-            if i == 0:
-                pass  # deliberately never written -- unresolved
-            else:
+            if i != 0:
                 _write_run(run_dir, run_id, dataset="d", method="fedgda_d")
-            rows.append({
-                "run_id": run_id, "dataset": "d", "method": "fedgda_d", "seed": "0",
-                "alpha": "0.5", "client_optimizer": "sgd",
-                "final_result_dir": str(run_dir), "reused": "False",
-            })
-        manifest_path = self._write_manifest(rows)
+            # i == 0 deliberately never written -- unresolved
+            trajectories.append(_entry(run_id, "d", "fedgda_d", 0, 0.5, run_dir))
+        ledger_path = self._write_ledger(trajectories)
         with self.assertRaisesRegex(ValueError, "not yet auditably resolved"):
-            aggregate_finals.aggregate(manifest_path)
+            aggregate_finals.aggregate(ledger_path)
+
+    def test_duplicate_run_id_rejected(self):
+        trajectories = []
+        for i in range(180):
+            run_dir = self.tmp / f"run_{i}"
+            run_id = "same_run_id" if i < 2 else f"run_{i}"
+            trajectories.append(_entry(run_id, "d", "fedgda_d", 0, 0.5, run_dir))
+        ledger_path = self._write_ledger(trajectories)
+        with self.assertRaisesRegex(ValueError, "duplicate run_ids"):
+            aggregate_finals.aggregate(ledger_path)
+
+
+class AggregateReusedEntryTest(unittest.TestCase):
+    """The exact bug this covers: a reused entry's run_id must match what's
+    really on disk, or validate_artifacts() rejects it."""
+
+    def test_reused_entry_with_real_run_id_validates_successfully(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
+            tmp = Path(tmp)
+            run_dir = tmp / "v4_result"
+            real_run_id = "det_adjudicate_v4_femnist_x_fedgda_d_seed0_lr0p001_cm5"
+            _write_run(run_dir, real_run_id, dataset="femnist_x", method="fedgda_d", seed=0)
+            entry = _entry(
+                real_run_id, "femnist_x", "fedgda_d", 0, 0.5, run_dir,
+                reused=True, source_stage="psi_adjudication_post_bn_v4",
+            )
+            report = aggregate_finals._row_report(run_dir, entry)
+            self.assertFalse(report["terminal_ineligible"])
+            self.assertEqual(report["final_test_mse"], 0.25)
+            self.assertTrue(report["reused"])
 
 
 class AggregateFullMatrixTest(unittest.TestCase):
     def test_full_180_matrix_unlocks_test_metrics_and_summarizes_by_cell_alpha(self):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
             tmp = Path(tmp)
-            rows = []
+            trajectories = []
             terminal_run_id = None
             for dataset in DATASETS:
                 for method in METHODS:
@@ -138,24 +172,19 @@ class AggregateFullMatrixTest(unittest.TestCase):
                                 run_dir, run_id, dataset=dataset, method=method,
                                 seed=seed, terminal=terminal,
                             )
-                            rows.append({
-                                "run_id": run_id, "dataset": dataset, "method": method,
-                                "seed": str(seed), "alpha": f"{alpha:g}",
-                                "client_optimizer": "sgd" if method == "fedgda_d" else "ogda",
-                                "final_result_dir": str(run_dir), "reused": "False",
-                            })
-            manifest_path = tmp / "finals_manifest.csv"
-            with manifest_path.open("w", newline="") as handle:
-                writer = csv.DictWriter(handle, fieldnames=FIELDNAMES)
-                writer.writeheader()
-                writer.writerows(rows)
+                            trajectories.append(_entry(run_id, dataset, method, seed, alpha, run_dir))
+            ledger_path = tmp / "finals_evidence_ledger.json"
+            ledger_path.write_text(json.dumps({
+                "status": "complete", "total_trajectories": len(trajectories),
+                "reused_trajectories": 0, "new_trajectories": len(trajectories),
+                "trajectories": trajectories,
+            }))
 
-            result = aggregate_finals.aggregate(manifest_path)
+            result = aggregate_finals.aggregate(ledger_path)
             self.assertEqual(result["status"], "complete")
             self.assertEqual(len(result["trajectories"]), 180)
             self.assertEqual(len(result["cross_seed_summary"]), 36)  # 12 cells x 3 alphas
 
-            # The one deliberately-terminal trajectory is reported, not hidden.
             terminal_entries = [
                 t for t in result["trajectories"] if t["run_id"] == terminal_run_id
             ]
@@ -163,10 +192,8 @@ class AggregateFullMatrixTest(unittest.TestCase):
             self.assertTrue(terminal_entries[0]["terminal_ineligible"])
             self.assertIsNone(terminal_entries[0]["final_test_mse"])
 
-            # A stable trajectory reports real test metrics.
             stable_entries = [
-                t for t in result["trajectories"]
-                if t["run_id"] != terminal_run_id
+                t for t in result["trajectories"] if t["run_id"] != terminal_run_id
             ]
             self.assertTrue(all(t["final_test_mse"] == 0.25 for t in stable_entries))
 

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# 3-alpha x 5-seed final matrix. Reused rows (V4/stability) are recognized as
-# already complete by run_manifest.py's own resume-skip check against their
-# real final_result_dir -- this launcher never re-runs them.
+# 3-alpha x 5-seed final matrix. Only the 132 genuinely new trajectories are
+# ever launched (finals_launch_manifest.csv) -- the 48 reused V4/stability
+# trajectories are never passed to run_manifest.py, since it has no reuse
+# concept; they are accounted for solely in finals_evidence_ledger.json,
+# which the aggregator reads directly against their real, original run dirs.
 set -euo pipefail
 
 repo_root="/home/arnav22103/FederatedDeepGMM"
@@ -35,18 +37,18 @@ diagnostic_campaign="experiments/highdim_coauthor_protocol_v1/bn_diagnostic_fres
   --launch-hashes "$diagnostic_campaign/diagnostic_launch_hashes.json"
 
 "$python_bin" scripts/run_manifest.py \
-  --manifest "$campaign/finals_manifest.csv" \
+  --manifest "$campaign/finals_launch_manifest.csv" \
   --config-dir "$campaign/generated_configs" \
   --output-root "$result_root" \
   --gpu-ids "$gpu_ids" --max-parallel "$visible_count" \
   --resume-skip-completed --overwrite-incomplete --keep-going \
   --results-json "$campaign/finals_launcher_results.json"
 "$python_bin" scripts/check_manifest_stage_complete.py \
-  --manifest "$campaign/finals_manifest.csv" \
+  --manifest "$campaign/finals_launch_manifest.csv" \
   --results "$campaign/finals_launcher_results.json" \
   --validate-artifacts
 "$python_bin" scripts/aggregate_highdim_deterministic_finals_post_bn_20260826.py \
-  --manifest "$campaign/finals_manifest.csv" \
+  --ledger "$campaign/finals_evidence_ledger.json" \
   --out "$campaign/finals_report.json"
 
 echo "FINAL DETERMINISTIC MATRIX COMPLETE. Test metrics unlocked in finals_report.json."

@@ -197,13 +197,24 @@ class V4PreparationTests(unittest.TestCase):
                     for row in rows
                 ))
 
-    def test_v4_is_blocked_until_the_fresh_diagnostic_actually_exists(self) -> None:
-        # Real current repo state (closeout plan SS4.6): DIAGNOSTIC_CERTIFICATION
-        # was rewired to a fresh namespace that Phase 3 has not populated yet.
-        # V4 packet generation must fail closed, not silently fall back to v3.
-        self.assertFalse(prepare_v4.DIAGNOSTIC_CERTIFICATION.exists())
-        with self.assertRaises(FileNotFoundError):
-            prepare_v4._load_json(prepare_v4.DIAGNOSTIC_CERTIFICATION)
+    def test_fresh_diagnostic_is_now_certified_post_phase_3(self) -> None:
+        # Real current repo state (closeout plan SS4.6 + SS6.1): Phase 3
+        # populated the fresh diagnostic namespace and it certified passed --
+        # V4 packet generation is no longer blocked on this specific gate.
+        self.assertTrue(prepare_v4.DIAGNOSTIC_CERTIFICATION.exists())
+        certification = prepare_v4._load_json(prepare_v4.DIAGNOSTIC_CERTIFICATION)
+        self.assertEqual(certification["certification_status"], "passed")
+
+    def test_v4_is_still_blocked_on_the_missing_frozen_screen_results(self) -> None:
+        # V4 packet generation is blocked on a separate, still-unmet gate:
+        # screen_results.json is not written until Phase 4's boundary review
+        # is resolved (closeout plan SS7), which this pass has not done.
+        screen_results = (
+            REPO_ROOT
+            / "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822"
+            / "screen_results.json"
+        )
+        self.assertFalse(screen_results.exists())
 
     def test_diagnostic_hash_bundle_mismatch_is_rejected_not_just_status(self) -> None:
         with (SCREEN_DIR / "screen_manifest.csv").open(newline="") as handle:
