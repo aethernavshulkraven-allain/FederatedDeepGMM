@@ -213,12 +213,75 @@ class PrepareFinalsTest(unittest.TestCase):
         self.assertEqual(summary["launchable"], 132)
         self.assertEqual(summary["skipped_unlaunchable"], 0)
 
-    def test_retune_required_cell_blocks_the_whole_matrix(self):
+    def test_retune_required_cell_blocks_the_whole_matrix_without_retune_results(self):
         results_path, stability_manifest_path = _fake_stability(self.tmp, all_pass=False)
         with self.assertRaisesRegex(ValueError, "retune"):
             prepare_finals.prepare(
                 self.winners_path, results_path, stability_manifest_path,
                 self.screen_manifest_path, self.tmp / "finals",
+            )
+
+    def test_retuned_cell_uses_the_retuned_lr_cm_for_all_five_alpha0p1_seeds(self):
+        # SS9.3: a retuned cell's original failed stability run does not
+        # count as a final winner trajectory -- ALL 5 alpha=0.1 seeds become
+        # new rows at the RETUNED (lr, cm), none reused; alpha=0.5/alpha=1.0
+        # are untouched (still the V4-winner's lr/cm, still reused where
+        # applicable).
+        results_path, stability_manifest_path = _fake_stability(self.tmp, all_pass=False)
+        retuned_cell = f"{DATASETS[0]}|{METHODS[0]}"  # matches _fake_stability's flagged cell
+        retune_results_path = self.tmp / "retune_results.json"
+        retune_results_path.write_text(json.dumps({
+            "status": "complete",
+            "cells": {retuned_cell: {"winner": {"lr": 0.5, "cm": 99.0, "run_id": "retune_winner"}}},
+        }))
+        output_dir = self.tmp / "finals"
+        result = prepare_finals.prepare(
+            self.winners_path, results_path, stability_manifest_path,
+            self.screen_manifest_path, output_dir, retune_results_path,
+        )
+        # One fewer reused (the retuned cell's alpha=0.1 seed-0 is no longer
+        # reused), one more new (it becomes a 5th new alpha=0.1 row instead
+        # of 4 new + 1 reused).
+        self.assertEqual(result["total"], 180)
+        self.assertEqual(result["reused"], 47)
+        self.assertEqual(result["new"], 133)
+
+        ledger = json.loads((output_dir / "finals_evidence_ledger.json").read_text())
+        dataset, method = retuned_cell.split("|", 1)
+        alpha0p1_entries = [
+            e for e in ledger["trajectories"]
+            if e["dataset"] == dataset and e["method"] == method and e["alpha"] == 0.1
+        ]
+        self.assertEqual(len(alpha0p1_entries), 5)
+        self.assertTrue(all(not e["reused"] for e in alpha0p1_entries))
+        self.assertEqual({e["seed"] for e in alpha0p1_entries}, {0, 1, 2, 3, 4})
+
+        with (output_dir / "finals_launch_manifest.csv").open(newline="") as handle:
+            launch_rows = list(csv.DictReader(handle))
+        retuned_launch_rows = [
+            r for r in launch_rows if r["dataset"] == dataset and r["method"] == method and r["alpha"] == "0.1"
+        ]
+        self.assertEqual(len(retuned_launch_rows), 5)
+        self.assertTrue(all(r["learning_rate"] == "0.5" for r in retuned_launch_rows))
+        self.assertTrue(all(r["critic_multiplier"] == "99" for r in retuned_launch_rows))
+
+        # alpha=0.5 (untouched by retuning: 3 reused V4 seeds + 2 new seeds,
+        # all still at the V4 winner's lr/cm).
+        alpha0p5_entries = [
+            e for e in ledger["trajectories"]
+            if e["dataset"] == dataset and e["method"] == method and e["alpha"] == 0.5
+        ]
+        self.assertEqual(len(alpha0p5_entries), 5)
+        self.assertEqual(sum(1 for e in alpha0p5_entries if e["reused"]), 3)
+
+    def test_missing_retune_result_for_a_flagged_cell_blocked(self):
+        results_path, stability_manifest_path = _fake_stability(self.tmp, all_pass=False)
+        retune_results_path = self.tmp / "retune_results.json"
+        retune_results_path.write_text(json.dumps({"status": "complete", "cells": {}}))
+        with self.assertRaisesRegex(ValueError, "missing these cells"):
+            prepare_finals.prepare(
+                self.winners_path, results_path, stability_manifest_path,
+                self.screen_manifest_path, self.tmp / "finals", retune_results_path,
             )
 
     def test_reused_alpha0p5_entries_use_the_real_v4_run_id_not_an_alias(self):

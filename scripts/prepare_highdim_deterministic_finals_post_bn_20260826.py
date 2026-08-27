@@ -135,7 +135,8 @@ def _ledger_entry(*, dataset, method, seed, alpha, run_id, final_result_dir, reu
 
 
 def prepare(winners_path: Path, stability_results_path: Path, stability_manifest_path: Path,
-            screen_manifest_path: Path, output_dir: Path) -> dict:
+            screen_manifest_path: Path, output_dir: Path,
+            retune_results_path: Path | None = None) -> dict:
     winners = _load_json(winners_path)
     if winners.get("status") != "complete":
         raise ValueError("V4 winners are absent or incomplete")
@@ -151,15 +152,27 @@ def prepare(winners_path: Path, stability_results_path: Path, stability_manifest
     stability_cells = stability.get("cells")
     if not isinstance(stability_cells, dict) or len(stability_cells) != 12:
         raise ValueError("stability results must contain exactly 12 cells")
-    retune_required = [
+    retune_required = sorted(
         name for name, cell in stability_cells.items() if cell.get("outcome") != "pass"
-    ]
+    )
+    retune_winners: dict[str, dict] = {}
     if retune_required:
-        raise ValueError(
-            "cannot generate the final matrix: these cells require the frozen "
-            f"per-cell alpha=0.1 retune escape hatch first (closeout plan SS9.3), "
-            f"which this preparer does not perform automatically: {sorted(retune_required)}"
-        )
+        if retune_results_path is None:
+            raise ValueError(
+                "cannot generate the final matrix: these cells require the frozen "
+                f"per-cell alpha=0.1 retune escape hatch first (closeout plan SS9.1/SS9.3, "
+                f"scripts/prepare_highdim_stability_retune_alpha0p1_20260827.py): {retune_required}"
+            )
+        retune_results = _load_json(retune_results_path)
+        if retune_results.get("status") != "complete":
+            raise ValueError("alpha=0.1 retune results are absent or incomplete")
+        retune_cells = retune_results.get("cells")
+        if not isinstance(retune_cells, dict):
+            raise ValueError("alpha=0.1 retune results must contain a cells object")
+        missing_retunes = sorted(set(retune_required) - set(retune_cells))
+        if missing_retunes:
+            raise ValueError(f"alpha=0.1 retune results are missing these cells: {missing_retunes}")
+        retune_winners = {name: retune_cells[name] for name in retune_required}
 
     with stability_manifest_path.open(newline="") as handle:
         stability_rows = {row["run_id"]: row for row in csv.DictReader(handle)}
@@ -211,23 +224,38 @@ def prepare(winners_path: Path, stability_results_path: Path, stability_manifest
                 ),
                 reused=True, source_stage="psi_adjudication_post_bn_v4",
             ))
-        # alpha=0.1, seed 0: reused from the stability stage verbatim (12 entries).
-        stability_run_id = stability_run_id_by_cell[cell_name]
-        ledger.append(_ledger_entry(
-            dataset=dataset, method=method, seed=0, alpha=0.1,
-            run_id=stability_run_id,
-            final_result_dir=stability_rows[stability_run_id]["final_result_dir"],
-            reused=True, source_stage="deterministic_stability_alpha0p1_20260826",
-        ))
-        # New rows: alpha=0.1 seeds 1-4 (48), alpha=0.5 seeds 3-4 (24),
-        # alpha=1.0 seeds 0-4 (60) = 132 total, actually launched.
-        new_specs = (
-            [(seed, 0.1) for seed in (1, 2, 3, 4)]
-            + [(seed, 0.5) for seed in (3, 4)]
-            + [(seed, 1.0) for seed in (0, 1, 2, 3, 4)]
-        )
-        for seed, alpha in new_specs:
-            row = _new_row(template, dataset, method, seed, alpha, lr, cm)
+        if cell_name in retune_winners:
+            # SS9.3: a retuned cell's original failed stability run does not
+            # count as a final winner trajectory -- the newly selected
+            # alpha=0.1 winner runs across ALL required final seeds (0-4),
+            # none reused. alpha=0.5/alpha=1.0 are untouched -- retuning is
+            # alpha=0.1-specific.
+            retune_lr = float(retune_winners[cell_name]["winner"]["lr"])
+            retune_cm = float(retune_winners[cell_name]["winner"]["cm"])
+            new_specs = (
+                [(seed, 0.1, retune_lr, retune_cm) for seed in (0, 1, 2, 3, 4)]
+                + [(seed, 0.5, lr, cm) for seed in (3, 4)]
+                + [(seed, 1.0, lr, cm) for seed in (0, 1, 2, 3, 4)]
+            )
+        else:
+            # alpha=0.1, seed 0: reused from the stability stage verbatim.
+            stability_run_id = stability_run_id_by_cell[cell_name]
+            ledger.append(_ledger_entry(
+                dataset=dataset, method=method, seed=0, alpha=0.1,
+                run_id=stability_run_id,
+                final_result_dir=stability_rows[stability_run_id]["final_result_dir"],
+                reused=True, source_stage="deterministic_stability_alpha0p1_20260826",
+            ))
+            new_specs = (
+                [(seed, 0.1, lr, cm) for seed in (1, 2, 3, 4)]
+                + [(seed, 0.5, lr, cm) for seed in (3, 4)]
+                + [(seed, 1.0, lr, cm) for seed in (0, 1, 2, 3, 4)]
+            )
+        # New rows: 12 per non-retuned cell (48+24+60=132 total across 12
+        # cells), 15 per retuned cell (its alpha=0.1 slice grows from 4 new
+        # + 1 reused to 5 new).
+        for seed, alpha, row_lr, row_cm in new_specs:
+            row = _new_row(template, dataset, method, seed, alpha, row_lr, row_cm)
             new_rows.append(row)
             ledger.append(_ledger_entry(
                 dataset=dataset, method=method, seed=seed, alpha=alpha,
@@ -270,6 +298,7 @@ def prepare(winners_path: Path, stability_results_path: Path, stability_manifest
     hashed_paths = [
         launch_manifest_path, ledger_path, summary_path,
         winners_path, stability_results_path, stability_manifest_path, screen_manifest_path,
+        *([retune_results_path] if retune_results_path is not None else []),
         *(REPO_ROOT / source for source in CORE_SOURCES),
         *(REPO_ROOT / dataset for dataset in CORE_DATASET_FILES),
         *(REPO_ROOT / doc for doc in CORE_PROTOCOL_DOCS),
@@ -298,12 +327,18 @@ def main() -> int:
     parser.add_argument("--stability-manifest", type=Path, required=True)
     parser.add_argument("--screen-manifest", type=Path, default=DEFAULT_SCREEN_MANIFEST)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument(
+        "--retune-results", type=Path, default=None,
+        help="scripts/score_highdim_stability_retune_alpha0p1_20260827.py's output; "
+        "required only if any cell's stability outcome is not 'pass'.",
+    )
     args = parser.parse_args()
     try:
         result = prepare(
             args.v4_winners.resolve(), args.stability_results.resolve(),
             args.stability_manifest.resolve(), args.screen_manifest.resolve(),
             args.output_dir.resolve(),
+            args.retune_results.resolve() if args.retune_results else None,
         )
     except (OSError, json.JSONDecodeError, KeyError, ValueError) as exc:
         print(f"FINALS PREPARATION BLOCKED: {exc}")

@@ -1,22 +1,12 @@
 #!/usr/bin/env bash
-# 3-alpha x 5-seed final matrix. Only the 132 genuinely new trajectories are
-# ever launched (finals_launch_manifest.csv) -- the 48 reused V4/stability
-# trajectories are never passed to run_manifest.py, since it has no reuse
-# concept; they are accounted for solely in finals_evidence_ledger.json,
-# which the aggregator reads directly against their real, original run dirs.
-#
-# This launcher only runs run_manifest.py against an already-prepared
-# manifest; it does not invoke the preparer. If any cell's stability outcome
-# was not "pass", scripts/prepare_highdim_deterministic_finals_post_bn_20260826.py
-# must first be re-run with --retune-results pointing at
-# scripts/score_highdim_stability_retune_alpha0p1_20260827.py's output
-# (closeout plan SS9.1/SS9.3) -- before this launcher is invoked.
+# Per-cell alpha=0.1 retune fallback (closeout plan SS9.1). Only ever
+# launched for cells the stability stage flagged retune_required.
 set -euo pipefail
 
 repo_root="/home/arnav22103/FederatedDeepGMM"
 python_bin="/home/arnav22103/miniconda3/envs/fedgmm/bin/python"
-campaign="experiments/highdim_coauthor_protocol_v1/deterministic_finals_post_bn_20260826"
-result_root="results/highdim_deterministic_finals_post_bn_20260826"
+campaign="experiments/highdim_coauthor_protocol_v1/deterministic_stability_retune_alpha0p1_20260827"
+result_root="results/highdim_deterministic_stability_retune_alpha0p1_20260827"
 
 if [ -z "${GPU_BROKER_JOB:-}" ]; then
   echo "REFUSING TO RUN: invoke this launcher through gpurun." >&2
@@ -44,18 +34,18 @@ diagnostic_campaign="experiments/highdim_coauthor_protocol_v1/bn_diagnostic_fres
   --launch-hashes "$diagnostic_campaign/diagnostic_launch_hashes.json"
 
 "$python_bin" scripts/run_manifest.py \
-  --manifest "$campaign/finals_launch_manifest.csv" \
+  --manifest "$campaign/retune_manifest.csv" \
   --config-dir "$campaign/generated_configs" \
   --output-root "$result_root" \
   --gpu-ids "$gpu_ids" --max-parallel "$visible_count" \
   --resume-skip-completed --overwrite-incomplete --keep-going \
-  --results-json "$campaign/finals_launcher_results.json"
+  --results-json "$campaign/retune_launcher_results.json"
 "$python_bin" scripts/check_manifest_stage_complete.py \
-  --manifest "$campaign/finals_launch_manifest.csv" \
-  --results "$campaign/finals_launcher_results.json" \
+  --manifest "$campaign/retune_manifest.csv" \
+  --results "$campaign/retune_launcher_results.json" \
   --validate-artifacts
-"$python_bin" scripts/aggregate_highdim_deterministic_finals_post_bn_20260826.py \
-  --ledger "$campaign/finals_evidence_ledger.json" \
-  --out "$campaign/finals_report.json"
+"$python_bin" scripts/score_highdim_stability_retune_alpha0p1_20260827.py \
+  --manifest "$campaign/retune_manifest.csv" \
+  --out "$campaign/retune_results.json"
 
-echo "FINAL DETERMINISTIC MATRIX COMPLETE. Test metrics unlocked in finals_report.json."
+echo "ALPHA=0.1 RETUNE COMPLETE. Feed retune_results.json into the finals preparer's --retune-results."
