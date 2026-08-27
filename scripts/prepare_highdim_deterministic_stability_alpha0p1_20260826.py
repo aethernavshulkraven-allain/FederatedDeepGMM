@@ -54,7 +54,7 @@ DEFAULT_SCREEN_MANIFEST = (
 )
 DEFAULT_OUTPUT_DIR = PROTOCOL_ROOT / "deterministic_stability_alpha0p1_20260826"
 RESULT_ROOT = "results/highdim_deterministic_stability_alpha0p1_20260826"
-EXTRA_FIELDS = ("source_v4_run_id",)
+EXTRA_FIELDS = ("source_v4_run_id", "compact_predictions_only")
 
 
 def _token(value: float) -> str:
@@ -137,6 +137,10 @@ def prepare(winners_path: Path, screen_manifest_path: Path, output_dir: Path) ->
             "preflight_required": "True",
             "preflight_status": "bn_buffer_diagnostic_certified",
             "server_buffer_policy": "direct_client_aggregate",
+            # Every dataset in this campaign is a femnist_*/cifar10_* image
+            # scenario; skip the ~10 GiB-scale full test-tensor write for
+            # every future run (closeout plan Phase 1 SS4.4).
+            "compact_predictions_only": "True",
             "source_v4_run_id": run_ids_by_seed["0"],
             "notes": (
                 f"alpha=0.1 stability check of V4 winner {cell_name} "

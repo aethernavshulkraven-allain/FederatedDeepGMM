@@ -28,6 +28,11 @@ export WANDB_MODE=disabled
 "$python_bin" scripts/verify_protocol_hashes.py \
   --hashes "$campaign/generated_artifact_hashes.json"
 
+# Read by main.py's exception handler and recorded verbatim in any
+# pretraining_failure.json this launch produces, so a reader can trace
+# exactly which frozen hash bundle certified the failure.
+export FEDGMM_HASH_BUNDLE_ID="$campaign/generated_artifact_hashes.json"
+
 "$python_bin" scripts/run_manifest.py \
   --manifest "$campaign/screen_failure_certification_manifest.csv" \
   --config-dir "$campaign/generated_configs" \

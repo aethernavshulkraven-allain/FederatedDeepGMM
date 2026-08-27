@@ -1,9 +1,9 @@
 [
   {
-    "attempt_id": "1787772378707603690-4114530",
+    "attempt_id": "1787835902368346805-297508",
     "best_validation_round": null,
     "final_test_mse": null,
-    "resolved_timestamp_ns": 1787772438774175056,
+    "resolved_timestamp_ns": 1787835962439199374,
     "returncode": 1,
     "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_screen_failure_certification_20260826/femnist_z/fedgda_d/seed_0/screen_failure_cert_20260826_det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p1_cm5",
     "run_id": "screen_failure_cert_20260826_det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p1_cm5",
@@ -14,10 +14,10 @@
     "test_mse_at_best_validation": null
   },
   {
-    "attempt_id": "1787772378707603690-4114530",
+    "attempt_id": "1787835902368346805-297508",
     "best_validation_round": null,
     "final_test_mse": null,
-    "resolved_timestamp_ns": 1787772533872157046,
+    "resolved_timestamp_ns": 1787836057535520527,
     "returncode": 1,
     "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_screen_failure_certification_20260826/cifar10_x/fedgda_d/seed_0/screen_failure_cert_20260826_det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10",
     "run_id": "screen_failure_cert_20260826_det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10",
@@ -28,10 +28,10 @@
     "test_mse_at_best_validation": null
   },
   {
-    "attempt_id": "1787772378707603690-4114530",
+    "attempt_id": "1787835902368346805-297508",
     "best_validation_round": null,
     "final_test_mse": null,
-    "resolved_timestamp_ns": 1787772593936874770,
+    "resolved_timestamp_ns": 1787836117602313935,
     "returncode": 1,
     "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_screen_failure_certification_20260826/femnist_x/fedgda_d/seed_0/screen_failure_cert_20260826_det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10",
     "run_id": "screen_failure_cert_20260826_det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10",
@@ -42,10 +42,10 @@
     "test_mse_at_best_validation": null
   },
   {
-    "attempt_id": "1787772378707603690-4114530",
+    "attempt_id": "1787835902368346805-297508",
     "best_validation_round": null,
     "final_test_mse": null,
-    "resolved_timestamp_ns": 1787772654002874519,
+    "resolved_timestamp_ns": 1787836177668101742,
     "returncode": 1,
     "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_screen_failure_certification_20260826/femnist_x/fedgda_d/seed_0/screen_failure_cert_20260826_det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm20",
     "run_id": "screen_failure_cert_20260826_det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm20",

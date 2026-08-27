@@ -29,7 +29,7 @@
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/experiment_utils.py",
-    "sha256": "b8695dbbe1bdde08dfe5ac7a040e2d6033c50de095fe1cefe596acd1acf7627f"
+    "sha256": "e13668feac00a0b42d4090b439bd5d8e5e5ae2a741af411a1942f3a4b8468f98"
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/MNIST/data_loader.py",
@@ -61,7 +61,7 @@
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py",
-    "sha256": "7091b04785d302b996474cd3ee0dd432925b97c9e45a514fe9dbf930e6e7eeb1"
+    "sha256": "3bd9f49a8a18bc96c9eb90cc082fd1adead44b4db199379befd0e3204e5b1fd4"
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/game_objectives/abstract_objective.py",
@@ -77,7 +77,7 @@
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/main.py",
-    "sha256": "08fa2fc68f7255babbfcc9e1b8e3a0494ab8681d473705dbc0e6b94735217774"
+    "sha256": "594d0af76c06ebb06d62e6575344dd96654421c30fb63fe97401f05a08ada3a4"
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/abstract_learning_eval.py",
@@ -129,7 +129,7 @@
   },
   {
     "path": "scripts/check_manifest_stage_complete.py",
-    "sha256": "7e1d7de6a1cea0a9810ac8f21d8fc03a1fa9bf347250e8f2551111eeb0016a6d"
+    "sha256": "c9388c1ff23829d43f48436c9665d913b589e231f471f41d0b43c31b75f321e2"
   },
   {
     "path": "scripts/prepare_highdim_screen_failure_certification_20260826.py",
@@ -137,7 +137,7 @@
   },
   {
     "path": "scripts/run_manifest.py",
-    "sha256": "0fcf61cf74d8b2545351ab18ecd2e77f5fd493a217ce08314131be0060f5dfc5"
+    "sha256": "d5b5e084ca4666b78702f1c8e23df61660f898134794731ca322a3fc2096d14d"
   },
   {
     "path": "scripts/verify_protocol_hashes.py",

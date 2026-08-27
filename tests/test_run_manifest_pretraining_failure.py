@@ -38,6 +38,10 @@ def _valid_payload(run_id: str, **overrides) -> dict:
     payload = {
         "schema_version": 1,
         "run_id": run_id,
+        # Placeholder -- _write() below overwrites this with the real
+        # recomputed checksum of whatever effective_config.json it writes,
+        # unless the caller passes an explicit override (e.g. to test a
+        # deliberate mismatch).
         "effective_config_checksum": "deadbeef" * 8,
         "failure_phase": "model_selection",
         "federated_rounds_started": 0,
@@ -63,9 +67,13 @@ class ValidatePretrainingFailureArtifactTest(unittest.TestCase):
         self.addCleanup(__import__("shutil").rmtree, self.tmp, ignore_errors=True)
         self.row = _row()
 
-    def _write(self, run_dir: Path, payload: dict) -> None:
+    def _write(self, run_dir: Path, payload: dict, *, effective_config=None,
+               match_checksum: bool = True) -> None:
         run_dir.mkdir(parents=True, exist_ok=True)
-        (run_dir / "effective_config.json").write_text(json.dumps({"run_id": self.row["run_id"]}))
+        effective_config = effective_config or {"run_id": self.row["run_id"]}
+        (run_dir / "effective_config.json").write_text(json.dumps(effective_config))
+        if match_checksum:
+            payload = {**payload, "effective_config_checksum": run_manifest.config_checksum(effective_config)}
         (run_dir / "pretraining_failure.json").write_text(json.dumps(payload))
 
     def test_valid_artifact_classifies_as_terminal_pretraining_ineligible(self):
@@ -173,6 +181,15 @@ class ValidatePretrainingFailureArtifactTest(unittest.TestCase):
         with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "schema_version"):
             run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
 
+    def test_effective_config_checksum_mismatch_rejected(self):
+        # The checksum must be a fresh recomputation from the real
+        # effective_config.json in the same directory, not merely a
+        # non-empty string -- a stale or copy-pasted checksum must be caught.
+        run_dir = self.tmp / "run"
+        self._write(run_dir, _valid_payload(self.row["run_id"]), match_checksum=False)
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "does not match a fresh recomputation"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
     def test_generic_return_code_with_no_artifact_is_not_reclassified(self):
         # No pretraining_failure.json at all -- validate_artifacts must take
         # the normal path and raise "missing artifacts", exactly like today,
@@ -182,6 +199,71 @@ class ValidatePretrainingFailureArtifactTest(unittest.TestCase):
         (run_dir / "effective_config.json").write_text(json.dumps({"run_id": self.row["run_id"]}))
         with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "missing artifacts"):
             run_manifest.validate_artifacts(run_dir, self.row)
+
+
+class CertificationLedgerTest(unittest.TestCase):
+    """resolve_certified_run/load_certification_ledger (closeout plan SS6.2):
+    the original directory is never touched -- only effective_config.json
+    ever exists there -- validation is redirected to an independent
+    reproduction's own directory, which carries its own real run_id."""
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(dir=REPO_ROOT))
+        self.addCleanup(__import__("shutil").rmtree, self.tmp, ignore_errors=True)
+
+    def test_load_ledger_none_path_is_empty(self):
+        self.assertEqual(run_manifest.load_certification_ledger(None), {})
+
+    def test_load_malformed_ledger_entry_rejected(self):
+        path = self.tmp / "ledger.json"
+        path.write_text(json.dumps({"some_run_id": {"certified_run_id": "x"}}))  # missing certified_run_dir
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "certified_run_dir"):
+            run_manifest.load_certification_ledger(path)
+
+    def test_resolve_with_no_entry_returns_unchanged(self):
+        row = _row("no_ledger_entry")
+        run_dir = self.tmp / "run"
+        resolved_dir, resolved_row = run_manifest.resolve_certified_run(
+            "no_ledger_entry", row, run_dir, {}
+        )
+        self.assertEqual(resolved_dir, run_dir)
+        self.assertEqual(resolved_row, row)
+
+    def test_original_directory_untouched_validation_redirects_to_real_evidence(self):
+        original_row = _row("original_run")
+        original_dir = self.tmp / "original"
+        original_dir.mkdir(parents=True)
+        original_dir_config = {"run_id": "original_run"}
+        (original_dir / "effective_config.json").write_text(json.dumps(original_dir_config))
+        # The original directory has ONLY what the failing process itself
+        # wrote before dying -- no pretraining_failure.json.
+        self.assertFalse((original_dir / "pretraining_failure.json").exists())
+
+        cert_row = _row("cert_reproduction_run")
+        cert_dir = self.tmp / "certification"
+        cert_config = {"run_id": "cert_reproduction_run"}
+        (cert_dir).mkdir(parents=True)
+        (cert_dir / "effective_config.json").write_text(json.dumps(cert_config))
+        payload = {
+            **_valid_payload("cert_reproduction_run"),
+            "effective_config_checksum": run_manifest.config_checksum(cert_config),
+        }
+        (cert_dir / "pretraining_failure.json").write_text(json.dumps(payload))
+
+        ledger = {"original_run": {
+            "certified_run_id": "cert_reproduction_run",
+            "certified_run_dir": str(cert_dir),
+        }}
+        resolved_dir, resolved_row = run_manifest.resolve_certified_run(
+            "original_run", original_row, original_dir, ledger
+        )
+        self.assertEqual(resolved_dir, cert_dir)
+        self.assertEqual(resolved_row["run_id"], "cert_reproduction_run")
+
+        result = run_manifest.validate_artifacts(resolved_dir, resolved_row)
+        self.assertTrue(result["terminal_pretraining_ineligible"])
+        # The original directory is still untouched by any of this.
+        self.assertFalse((original_dir / "pretraining_failure.json").exists())
 
 
 class StageCompleteCrossCheckTest(unittest.TestCase):
@@ -198,10 +280,13 @@ class StageCompleteCrossCheckTest(unittest.TestCase):
         row = _row()
         run_dir = self.tmp / "run"
         run_dir.mkdir(parents=True)
-        (run_dir / "effective_config.json").write_text(json.dumps({"run_id": row["run_id"]}))
-        (run_dir / "pretraining_failure.json").write_text(
-            json.dumps(_valid_payload(row["run_id"]))
-        )
+        effective_config = {"run_id": row["run_id"]}
+        (run_dir / "effective_config.json").write_text(json.dumps(effective_config))
+        payload = {
+            **_valid_payload(row["run_id"]),
+            "effective_config_checksum": run_manifest.config_checksum(effective_config),
+        }
+        (run_dir / "pretraining_failure.json").write_text(json.dumps(payload))
         manifest_row = {**row, "final_result_dir": str(run_dir)}
         manifest_path = self.tmp / "manifest.csv"
         import csv
@@ -217,6 +302,72 @@ class StageCompleteCrossCheckTest(unittest.TestCase):
             manifest_path, results_path, validate_stage_artifacts=True,
         )
         self.assertEqual(summary["terminal_ineligible"], 1)
+
+    def test_ledger_certified_failed_process_row_passes_the_cross_check(self):
+        # The original row's own directory has ONLY effective_config.json --
+        # exactly what a real failed process leaves -- and its launcher
+        # status is still the original "failed_process". A certification
+        # ledger entry pointing at a real, independently-validated
+        # reproduction must let this resolve without touching the original
+        # directory or its stale recorded status.
+        original_row = _row("original_screen_row")
+        original_dir = self.tmp / "original"
+        original_dir.mkdir(parents=True)
+        (original_dir / "effective_config.json").write_text(
+            json.dumps({"run_id": "original_screen_row"})
+        )
+
+        cert_dir = self.tmp / "certification"
+        cert_dir.mkdir(parents=True)
+        cert_config = {"run_id": "cert_run"}
+        (cert_dir / "effective_config.json").write_text(json.dumps(cert_config))
+        cert_payload = {
+            **_valid_payload("cert_run"),
+            "effective_config_checksum": run_manifest.config_checksum(cert_config),
+        }
+        (cert_dir / "pretraining_failure.json").write_text(json.dumps(cert_payload))
+
+        manifest_row = {**original_row, "final_result_dir": str(original_dir)}
+        manifest_path = self.tmp / "manifest.csv"
+        import csv
+        with manifest_path.open("w", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(manifest_row.keys()))
+            writer.writeheader()
+            writer.writerow(manifest_row)
+        results_path = self.tmp / "results.json"
+        results_path.write_text(json.dumps([
+            {"run_id": "original_screen_row", "status": "failed_process", "run_dir": str(original_dir)}
+        ]))
+        ledger_path = self.tmp / "ledger.json"
+        ledger_path.write_text(json.dumps({
+            "original_screen_row": {"certified_run_id": "cert_run", "certified_run_dir": str(cert_dir)},
+        }))
+
+        summary = stage_complete.check_stage(
+            manifest_path, results_path, validate_stage_artifacts=True,
+            certification_ledger_path=ledger_path,
+        )
+        self.assertEqual(summary["terminal_ineligible"], 1)
+        self.assertFalse((original_dir / "pretraining_failure.json").exists())
+
+    def test_failed_process_without_ledger_entry_stays_unresolved(self):
+        row = _row("unresolved_row")
+        run_dir = self.tmp / "run"
+        run_dir.mkdir(parents=True)
+        (run_dir / "effective_config.json").write_text(json.dumps({"run_id": "unresolved_row"}))
+        manifest_row = {**row, "final_result_dir": str(run_dir)}
+        manifest_path = self.tmp / "manifest.csv"
+        import csv
+        with manifest_path.open("w", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(manifest_row.keys()))
+            writer.writeheader()
+            writer.writerow(manifest_row)
+        results_path = self.tmp / "results.json"
+        results_path.write_text(json.dumps([
+            {"run_id": "unresolved_row", "status": "failed_process", "run_dir": str(run_dir)}
+        ]))
+        with self.assertRaisesRegex(ValueError, "unresolved launcher statuses"):
+            stage_complete.check_stage(manifest_path, results_path, validate_stage_artifacts=True)
 
 
 if __name__ == "__main__":

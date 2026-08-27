@@ -15,7 +15,12 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
-from run_manifest import ManifestLaunchError, validate_artifacts  # noqa: E402
+from run_manifest import (  # noqa: E402
+    ManifestLaunchError,
+    load_certification_ledger,
+    resolve_certified_run,
+    validate_artifacts,
+)
 from score_highdim_screen_by_psi import boundary_flags, rank_cell  # noqa: E402
 
 EXPECTED_CELLS = 12
@@ -82,7 +87,7 @@ def _atomic_json(path: Path, value: object) -> None:
     os.replace(temporary, path)
 
 
-def score_screen(manifest_path: Path) -> dict:
+def score_screen(manifest_path: Path, certification_ledger_path: Path | None = None) -> dict:
     with manifest_path.open(newline="") as handle:
         rows = list(csv.DictReader(handle))
     if len(rows) != 108:
@@ -90,6 +95,7 @@ def score_screen(manifest_path: Path) -> dict:
     run_ids = [row["run_id"] for row in rows]
     if len(set(run_ids)) != len(run_ids):
         raise ValueError("corrected screen manifest contains duplicate run_ids")
+    ledger = load_certification_ledger(certification_ledger_path)
 
     cells: dict[tuple[str, str], list[dict]] = defaultdict(list)
     invalid = []
@@ -100,8 +106,15 @@ def score_screen(manifest_path: Path) -> dict:
         run_dir = Path(row["final_result_dir"])
         if not run_dir.is_absolute():
             run_dir = REPO_ROOT / run_dir
+        # A certified pre-round-0 failure's real evidence lives in an
+        # independent reproduction's own directory, never copied into this
+        # row's own final_result_dir (closeout plan SS6.2) -- redirect only
+        # for validation purposes; the run reported below is still this row.
+        effective_run_dir, effective_row = resolve_certified_run(
+            row["run_id"], row, run_dir, ledger
+        )
         try:
-            validation = validate_artifacts(run_dir, row)
+            validation = validate_artifacts(effective_run_dir, effective_row)
         except ManifestLaunchError as exc:
             invalid.append({"run_id": row["run_id"], "reason": str(exc)})
             continue
@@ -221,9 +234,17 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument(
+        "--certification-ledger", type=Path, default=None,
+        help="Links pre-round-0 terminal run_ids to their independent reproduction "
+        "evidence (closeout plan SS6.2); see resolve_certified_run().",
+    )
     args = parser.parse_args()
     try:
-        result = score_screen(args.manifest.resolve())
+        result = score_screen(
+            args.manifest.resolve(),
+            args.certification_ledger.resolve() if args.certification_ledger else None,
+        )
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         print(f"SCREEN SCORING BLOCKED: {exc}")
         return 2

@@ -1645,14 +1645,22 @@ def save_predictions_npz_compact(
     best_prediction,
     final_prediction,
     metadata,
+    filename="predictions_compact.npz",
 ):
     """Versioned compact prediction artifact (closeout plan Phase 1 SS4.4):
     sample IDs/coordinate, ground truth, best/final prediction, and run
     metadata -- deliberately omits the full test input tensor that makes
     save_predictions_npz's predictions.npz ~10 GiB across an image campaign.
-    Additive only: writes predictions_compact.npz alongside the existing
-    predictions.npz, which keeps its current schema unchanged for every
-    downstream script that already reads it."""
+
+    Default filename (predictions_compact.npz) is additive: it writes
+    alongside an existing predictions.npz, e.g. for
+    derive_compact_predictions_20260826.py deriving a compact copy of an
+    already-completed run, keeping predictions.npz's schema unchanged for
+    every downstream script that already reads it. fedavg_api.py instead
+    passes filename="predictions.npz" for a run whose config opts fully into
+    the compact schema (closeout plan Phase 1 SS4.4's requirement that
+    future image runs not save the full test tensor at all) -- there is no
+    separate full predictions.npz for such a run to be additive to."""
     import numpy as np
 
     x = _to_numpy(test_split.x)
@@ -1667,7 +1675,7 @@ def save_predictions_npz_compact(
         # coordinate; a stable sample index is the compact identifier.
         indices = np.arange(x.shape[0])
         sample_coordinate = indices.astype(np.int64)
-    path = os.path.join(run_dir, "predictions_compact.npz")
+    path = os.path.join(run_dir, filename)
     np.savez(
         path,
         schema_version=np.asarray(COMPACT_PREDICTION_SCHEMA_VERSION),

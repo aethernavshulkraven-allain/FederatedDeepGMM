@@ -60,6 +60,7 @@ from experiment_utils import (
     run_dir_from_config,
     RuntimeProfiler,
     save_predictions_npz,
+    save_predictions_npz_compact,
     metric_values_are_finite,
     state_is_finite,
     structural_mse,
@@ -268,6 +269,13 @@ class FedAvgAPI(object):
         self.test_mse_rows = []
         self.aggregation_weight_rows = []
         self.log_test_mse_by_round = bool(self.effective_config.get("log_test_mse_by_round", False))
+        # closeout plan Phase 1 SS4.4: future image runs (V4/stability/finals)
+        # opt into the compact prediction schema instead of the ~10 GiB-
+        # across-the-campaign full test-tensor one. Defaults False so every
+        # other campaign's predictions.npz schema is completely unaffected.
+        self.compact_predictions_only = bool(
+            self.effective_config.get("compact_predictions_only", False)
+        )
         self.best_validation_mse = float("inf")
         self.best_validation_round = None
         self.best_g_state = None
@@ -1339,13 +1347,27 @@ class FedAvgAPI(object):
         self._load_training_state(self.best_state)
 
         with self.profiler.span("save_predictions_npz"):
-            save_predictions_npz(
-                self.run_dir,
-                self.test_global,
-                best_prediction,
-                final_prediction,
-                self.effective_config,
-            )
+            if self.compact_predictions_only:
+                # Drops the full test-input tensor entirely -- writes the
+                # compact schema *as* predictions.npz, since there is no
+                # separate full artifact for this run to be additive to;
+                # this run's predictions.npz never has an x array.
+                save_predictions_npz_compact(
+                    self.run_dir,
+                    self.test_global,
+                    best_prediction,
+                    final_prediction,
+                    self.effective_config,
+                    filename="predictions.npz",
+                )
+            else:
+                save_predictions_npz(
+                    self.run_dir,
+                    self.test_global,
+                    best_prediction,
+                    final_prediction,
+                    self.effective_config,
+                )
 
         # Stability diagnostics (metric_policy.md "Stability metrics"):
         # final-minus-best gaps and the spread of the primary (equal-client

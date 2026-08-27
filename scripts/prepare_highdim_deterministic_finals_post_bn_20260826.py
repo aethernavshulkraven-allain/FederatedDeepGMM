@@ -104,6 +104,10 @@ def _new_row(template, dataset, method, seed, alpha, lr, cm):
         "preflight_required": "True",
         "preflight_status": "bn_buffer_diagnostic_certified",
         "server_buffer_policy": "direct_client_aggregate",
+        # Every dataset in this campaign is a femnist_*/cifar10_* image
+        # scenario; skip the ~10 GiB-scale full test-tensor write for every
+        # new final-matrix run (closeout plan Phase 1 SS4.4).
+        "compact_predictions_only": "True",
         "notes": (
             f"Final-matrix trajectory for {dataset}/{method} at alpha={alpha:g}, "
             f"seed={seed} (lr={lr:g}, cm={cm:g}); fresh initialization."
@@ -168,6 +172,8 @@ def prepare(winners_path: Path, stability_results_path: Path, stability_manifest
         templates: dict[tuple[str, str], dict[str, str]] = {}
         for row in reader:
             templates.setdefault((row["dataset"], row["method"]), row)
+    if "compact_predictions_only" not in fieldnames:
+        fieldnames.append("compact_predictions_only")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     new_rows = []

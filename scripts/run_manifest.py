@@ -26,6 +26,9 @@ from typing import Any
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT / "fedgmm" / "sp_decentralized_mnist_lr_example"))
+from experiment_utils import config_checksum  # noqa: E402
+
 DEFAULT_MANIFEST = REPO_ROOT / "experiments" / "rerun_protocol_v1" / "manifest.csv"
 DEFAULT_CONFIG_DIR = REPO_ROOT / "experiments" / "rerun_protocol_v1" / "generated_configs"
 DEFAULT_MAIN = REPO_ROOT / "fedgmm" / "sp_decentralized_mnist_lr_example" / "main.py"
@@ -428,6 +431,7 @@ def build_config(
             else _as_int(_config_value(row, "model_selection_max_samples", 0), "model_selection_max_samples")
         ),
         "log_test_mse_by_round": _truthy(_config_value(row, "log_test_mse_by_round", False)),
+        "compact_predictions_only": _truthy(_config_value(row, "compact_predictions_only", False)),
         "test_mse_used_for_selection": test_mse_used_for_selection,
         "selection_metric_source": selection_metric_source,
         "skip_model_selection": skip_model_selection,
@@ -567,6 +571,7 @@ def write_config(path: Path, config: dict[str, Any]) -> None:
             "enable_legacy_outputs": config["enable_legacy_outputs"],
             "require_multibatch_stochastic": config["require_multibatch_stochastic"],
             "log_test_mse_by_round": config["log_test_mse_by_round"],
+            "compact_predictions_only": config["compact_predictions_only"],
             "test_mse_used_for_selection": config["test_mse_used_for_selection"],
             "selection_metric_source": config["selection_metric_source"],
             "primary_selection_metric": config["primary_selection_metric"],
@@ -859,6 +864,49 @@ def _validate_round_curve(
     return rows, terminal_ineligible
 
 
+def load_certification_ledger(path: Path | None) -> dict[str, dict[str, str]]:
+    """A certification ledger maps an original run_id to the run_id/run_dir
+    of an independent reproduction that produced real, process-authored
+    pretraining_failure.json evidence for it (closeout plan SS6.2). Unlike
+    an earlier design, nothing is ever copied or synthesized into the
+    original run's own directory -- validate_pretraining_failure_artifact
+    always validates evidence in the directory the failing process itself
+    actually wrote to."""
+    if path is None:
+        return {}
+    with path.open() as handle:
+        ledger = json.load(handle)
+    if not isinstance(ledger, dict):
+        raise ManifestLaunchError(f"{path} must contain a JSON object")
+    for run_id, entry in ledger.items():
+        if not isinstance(entry, dict) or "certified_run_id" not in entry or "certified_run_dir" not in entry:
+            raise ManifestLaunchError(
+                f"certification ledger entry for {run_id!r} must have "
+                "certified_run_id and certified_run_dir"
+            )
+    return ledger
+
+
+def resolve_certified_run(
+    run_id: str, row: dict[str, str], run_dir: Path, ledger: dict[str, dict[str, str]]
+) -> tuple[Path, dict[str, str]]:
+    """If run_id has a certification-ledger entry, returns the independent
+    reproduction's own directory and a row carrying its own real run_id --
+    so validate_artifacts' exact run_id match succeeds against that
+    directory's real, process-authored evidence -- instead of the original
+    row/run_dir (whose directory was never touched and still contains only
+    what the original process actually wrote). Otherwise returns
+    (run_dir, row) unchanged."""
+    entry = ledger.get(run_id)
+    if entry is None:
+        return run_dir, row
+    certified_run_dir = Path(entry["certified_run_dir"])
+    if not certified_run_dir.is_absolute():
+        certified_run_dir = REPO_ROOT / certified_run_dir
+    certified_row = {**row, "run_id": entry["certified_run_id"]}
+    return certified_run_dir, certified_row
+
+
 def validate_pretraining_failure_artifact(
     run_dir: Path,
     row: dict[str, str],
@@ -919,6 +967,14 @@ def validate_pretraining_failure_artifact(
     if not isinstance(checksum, str) or not checksum.strip():
         raise ManifestLaunchError(
             "pretraining_failure.json effective_config_checksum must be a non-empty string"
+        )
+    effective_config = _load_json_object(run_dir / "effective_config.json")
+    recomputed_checksum = config_checksum(effective_config)
+    if checksum != recomputed_checksum:
+        raise ManifestLaunchError(
+            "pretraining_failure.json effective_config_checksum does not match a fresh "
+            f"recomputation from effective_config.json: recorded {checksum!r}, "
+            f"recomputed {recomputed_checksum!r}"
         )
     if "hash_bundle_id" not in payload:
         raise ManifestLaunchError("pretraining_failure.json is missing hash_bundle_id")

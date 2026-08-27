@@ -1101,6 +1101,26 @@ class CompactPredictionArtifactTest(unittest.TestCase):
                 "best_validation_prediction", "final_prediction", "true_g",
             })
 
+    def test_filename_override_lets_the_compact_schema_replace_predictions_npz(self):
+        # fedavg_api.py's compact_predictions_only path (closeout plan Phase
+        # 1 SS4.4) writes the compact schema AS predictions.npz -- there is
+        # no separate full artifact for such a run to be additive to.
+        import numpy as np
+
+        x = np.arange(2 * 3 * 2 * 2, dtype=np.float32).reshape(2, 3, 2, 2)
+        split = SimpleNamespace(x=x, g=np.asarray([[1.0], [2.0]]))
+        best = np.asarray([[1.1], [2.1]])
+        final = np.asarray([[1.2], [2.2]])
+        metadata = {"dataset": "femnist_z", "random_seed": 0, "run_id": "fixture_run"}
+        with tempfile.TemporaryDirectory() as run_dir:
+            path = save_predictions_npz_compact(
+                run_dir, split, best, final, metadata, filename="predictions.npz",
+            )
+            self.assertEqual(os.path.basename(path), "predictions.npz")
+            with np.load(path) as saved:
+                self.assertNotIn("x", saved.files)
+                self.assertEqual(saved["schema_version"].item(), 1)
+
     def test_low_dim_compact_uses_sorted_scalar_coordinate(self):
         import numpy as np
 

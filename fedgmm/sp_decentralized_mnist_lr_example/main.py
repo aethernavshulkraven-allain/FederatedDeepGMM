@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import traceback
@@ -17,6 +18,7 @@ import fedml
 from fedml import FedMLRunner
 import torch
 from experiment_utils import (
+    ModelSelectionFailure,
     RuntimeProfiler,
     get_effective_config,
     run_dir_from_config,
@@ -73,24 +75,49 @@ if __name__ == "__main__":
         runtime_profiler.stop(extra={"exit_status": "completed"})
     except Exception as exc:
         runtime_profiler.stop(extra={"exit_status": "exception", "exception": repr(exc)})
-        # A ModelSelectionFailure (closeout plan Phase 1 SS4.2) is the only
+        # ModelSelectionFailure (closeout plan Phase 1 SS4.2) is the only
         # exception type that may classify this run as
-        # terminal_pretraining_ineligible; every other exception stays an
-        # unexplained process failure with no such artifact written.
-        diagnostics = getattr(exc, "diagnostics", None)
-        if isinstance(diagnostics, dict):
+        # terminal_pretraining_ineligible -- checked by type, not merely by
+        # duck-typing a .diagnostics attribute, so no other exception can
+        # accidentally qualify. Every other exception stays an unexplained
+        # process failure with no such artifact written.
+        if isinstance(exc, ModelSelectionFailure) and isinstance(exc.diagnostics, dict):
+            traceback_text = traceback.format_exc()
+            # FedAvgAPI.__init__ independently recomputes and writes its own
+            # effective_config.json (get_effective_config(self.args) at a
+            # later point than this module's own profile_config snapshot,
+            # after args may have been mutated by intervening fedml calls)
+            # -- read the real on-disk file so the recorded checksum always
+            # matches a fresh recomputation, rather than risk a stale
+            # early snapshot that looks like tampering later.
+            effective_config_path = os.path.join(str(actual_run_dir), "effective_config.json")
+            try:
+                with open(effective_config_path) as handle:
+                    written_effective_config = json.load(handle)
+            except (OSError, json.JSONDecodeError):
+                written_effective_config = profile_config
             sys.stdout.flush()
+            # Write the traceback ourselves and exit via sys.exit() (raises
+            # SystemExit, which the interpreter does not print a traceback
+            # for) instead of re-raising the original exception. re-raising
+            # would let Python's default top-level handler print this same
+            # traceback to stderr *after* we have already hashed the file,
+            # leaving stderr_sha256 permanently stale relative to the final
+            # stderr.log. This way the recorded hash is of the complete,
+            # final file, computed after nothing more can be appended.
+            sys.stderr.write(traceback_text)
             sys.stderr.flush()
             write_pretraining_failure_artifact(
                 actual_run_dir,
                 run_id=str(getattr(args, "run_id", "")),
-                effective_config=profile_config,
-                per_epoch_diagnostics=diagnostics.get("per_epoch"),
-                best_score=diagnostics.get("best_score"),
+                effective_config=written_effective_config,
+                per_epoch_diagnostics=exc.diagnostics.get("per_epoch"),
+                best_score=exc.diagnostics.get("best_score"),
                 terminal_reason=str(exc),
-                traceback_text=traceback.format_exc(),
+                traceback_text=traceback_text,
                 stdout_path=os.environ.get("FEDGMM_JOB_STDOUT_LOG"),
                 stderr_path=os.environ.get("FEDGMM_JOB_STDERR_LOG"),
                 hash_bundle_id=os.environ.get("FEDGMM_HASH_BUNDLE_ID"),
             )
+            sys.exit(1)
         raise
