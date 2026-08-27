@@ -97,9 +97,10 @@ class ScreenTieHandlingTest(unittest.TestCase):
         self._counter = 0
 
     def _add_row(self, *, dataset, method, gmm_eval, val_mse,
-                 gmm_eval_by_round=None, val_mse_by_round=None):
+                 gmm_eval_by_round=None, val_mse_by_round=None, critic_multiplier=None):
         self._counter += 1
-        seed, lr, cm = 0, round(0.01 * self._counter, 6), 5.0
+        seed, lr = 0, round(0.01 * self._counter, 6)
+        cm = 5.0 if critic_multiplier is None else critic_multiplier
         run_id = f"det_screen_postbn_{dataset}_{method}_{self._counter}"
         run_dir = self.results_root / dataset / method / f"seed_{seed}" / run_id
         write_run(
@@ -209,6 +210,59 @@ class ScreenTieHandlingTest(unittest.TestCase):
         # for ranking -- A's huge spike shows up here despite A losing rank 1.
         self.assertEqual(result_cell["psi_rank_2"]["best_gmm_eval_diagnostic"], 100.0)
         self.assertEqual(result_cell["mse_winner"]["run_id"], b_run_id)
+
+    def test_mse_winner_at_boundary_does_not_trigger_review_when_psi_rank1_is_not(self):
+        # BOUNDARY_RULE_AMENDMENT_20260818.md's replacement rule step 1 is
+        # scoped to "the Psi rank-1 candidate" only. A cell whose MSE winner
+        # happens to sit at the tested critic-multiplier max, while the Psi
+        # rank-1 winner does not, must NOT be flagged for boundary review --
+        # score_highdim_screen_by_psi.py's reference implementation likewise
+        # only ever checks the Psi-ranked top candidate.
+        cell = ("fixture0", "fedgda_d")
+        psi_winner_run_id = None
+        mse_winner_run_id = None
+        self._add_row(
+            dataset=cell[0], method=cell[1], gmm_eval=2.0, val_mse=0.9, critic_multiplier=5.0,
+        )
+        psi_winner_run_id = self.rows[-1]["run_id"]
+        self._add_row(
+            dataset=cell[0], method=cell[1], gmm_eval=1.9, val_mse=0.85, critic_multiplier=5.0,
+        )
+        self._add_row(
+            dataset=cell[0], method=cell[1], gmm_eval=1.0, val_mse=0.1, critic_multiplier=10.0,
+        )
+        mse_winner_run_id = self.rows[-1]["run_id"]
+        self._add_cell_filler(cell, self.ROWS_PER_CELL - 3)
+        self._fill_remaining_cells_uncontroversially(skip=cell)
+        manifest_path = self._write_manifest()
+        result = scorer.score_screen(manifest_path)
+        result_cell = result["cells"]["fixture0|fedgda_d"]
+        self.assertEqual(result_cell["psi_rank_1"]["run_id"], psi_winner_run_id)
+        self.assertEqual(result_cell["psi_rank_1"]["cm"], 5.0)
+        self.assertEqual(result_cell["mse_winner"]["run_id"], mse_winner_run_id)
+        self.assertEqual(result_cell["mse_winner"]["cm"], 10.0)
+        self.assertEqual(result_cell["boundary_detail"]["psi_rank_1"], [])
+        self.assertNotEqual(result_cell["boundary_detail"]["mse_winner"], [])
+        self.assertFalse(result_cell["boundary_review_required"])
+        self.assertNotIn("fixture0|fedgda_d", result["boundary_review_cells"])
+
+    def test_psi_rank1_at_boundary_does_trigger_review(self):
+        # The inverse case: when the Psi rank-1 winner itself sits at the
+        # tested max, review IS required, regardless of the MSE winner.
+        cell = ("fixture0", "fedgda_d")
+        self._add_row(
+            dataset=cell[0], method=cell[1], gmm_eval=2.0, val_mse=0.9, critic_multiplier=10.0,
+        )
+        psi_winner_run_id = self.rows[-1]["run_id"]
+        self._add_cell_filler(cell, self.ROWS_PER_CELL - 1)
+        self._fill_remaining_cells_uncontroversially(skip=cell)
+        manifest_path = self._write_manifest()
+        result = scorer.score_screen(manifest_path)
+        result_cell = result["cells"]["fixture0|fedgda_d"]
+        self.assertEqual(result_cell["psi_rank_1"]["run_id"], psi_winner_run_id)
+        self.assertNotEqual(result_cell["boundary_detail"]["psi_rank_1"], [])
+        self.assertTrue(result_cell["boundary_review_required"])
+        self.assertIn("fixture0|fedgda_d", result["boundary_review_cells"])
 
 
 _CURVE_HEADER = [

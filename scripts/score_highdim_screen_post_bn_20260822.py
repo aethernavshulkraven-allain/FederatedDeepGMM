@@ -177,9 +177,16 @@ def score_screen(manifest_path: Path) -> dict:
         if len(mse_winners) != 1:
             raise ValueError(f"{cell_key} has an unresolved exact validation-MSE tie")
         mse_winner = mse_winners[0]
+        # BOUNDARY_RULE_AMENDMENT_20260818.md SS"Replacement rule" step 1 is
+        # scoped to "the Psi rank-1 candidate" only -- score_highdim_screen_
+        # by_psi.py's reference implementation likewise only ever checks
+        # rank_cell's top candidate. mse_flags is retained as diagnostic
+        # metadata (it's informative that the MSE winner also sits at a
+        # boundary) but must not itself trigger the frozen review/expansion
+        # rule -- that would review/expand a candidate the rule never named.
         psi_flags = boundary_flags(psi_ranked[0], planned_by_cell[cell_key])
         mse_flags = boundary_flags(mse_winner, planned_by_cell[cell_key])
-        review_required = bool(psi_flags or mse_flags)
+        review_required = bool(psi_flags)
         cell_name = f"{cell_key[0]}|{cell_key[1]}"
         if review_required:
             boundary_review_cells.append(cell_name)
