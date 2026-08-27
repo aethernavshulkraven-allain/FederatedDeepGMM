@@ -17,6 +17,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from highdim_protocol_hash_closure_20260822 import (  # noqa: E402
     CORE_DATASET_FILES,
+    CORE_PROTOCOL_DOCS,
     CORE_SOURCES,
     git_provenance,
 )
@@ -92,8 +93,10 @@ def main() -> int:
 
     hashed_paths = sorted({
         manifest_path,
+        SCREEN_MANIFEST,
         *(REPO_ROOT / source for source in CORE_SOURCES),
         *(REPO_ROOT / dataset for dataset in CORE_DATASET_FILES),
+        *(REPO_ROOT / doc for doc in CORE_PROTOCOL_DOCS),
         Path(__file__),
     })
     hashes_path = OUTPUT_DIR / "generated_artifact_hashes.json"

@@ -60,6 +60,39 @@ CORE_SOURCES: tuple[str, ...] = (
     # Optimizer implementations -- also omitted before 2026-08-26.
     "fedgmm/sp_decentralized_mnist_lr_example/optimizers/optimizer_factory.py",
     "fedgmm/sp_decentralized_mnist_lr_example/optimizers/Customsgd.py",
+    "fedgmm/sp_decentralized_mnist_lr_example/optimizers/ogda.py",
+    "fedgmm/sp_decentralized_mnist_lr_example/optimizers/oadam.py",
+    "fedgmm/sp_decentralized_mnist_lr_example/optimizers/extragradient.py",
+    # Directly imported by fedavg_api.py (`.client`, `.multiprocess_client`)
+    # and model_selection_class.py (`from model_selection.learning_eval
+    # import f_history_g_eval` -- the base learning_eval.py, not just its
+    # NoStop subclass above) -- omitted before 2026-08-27, found via a
+    # review plus confirmation against fedavg_api.py's actual import list.
+    "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/client.py",
+    "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/multiprocess_client.py",
+    "fedgmm/sp_decentralized_mnist_lr_example/model_selection/learning_eval.py",
+    "fedgmm/sp_decentralized_mnist_lr_example/plotting.py",
+    # main.py's FedMLRunner(...) call resolves through these two files --
+    # confirmed directly from a real traceback captured 2026-08-27 (a
+    # genuine ModelSelectionFailure during the screen-failure certification
+    # reruns), not just static analysis:
+    #   fedml/runner.py:53 in __init__
+    #   fedml/simulation/simulator.py:41 in __init__
+    #   fedml/simulation/sp/fedavg/fedavg_api.py:562 in __init__
+    # Their own top-level imports (fedml/constants.py, fedml/core/__init__.py)
+    # are included too, since Python executes both files' module bodies on
+    # import regardless of which names actually get used. fedml/core/__init__.py
+    # itself re-exports classes from the same excluded vendored subsystems
+    # named in this file's module docstring (contribution assessment,
+    # differential privacy, security attacker/defender, distributed comm) --
+    # those deeper files are not included, on the same "never invoked by
+    # this campaign" basis, since nothing in this campaign ever instantiates
+    # or calls any of them; only fedml/core/__init__.py's own shallow
+    # re-export list is execution-critical here.
+    "fedgmm/sp_decentralized_mnist_lr_example/fedml/runner.py",
+    "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/simulator.py",
+    "fedgmm/sp_decentralized_mnist_lr_example/fedml/constants.py",
+    "fedgmm/sp_decentralized_mnist_lr_example/fedml/core/__init__.py",
     "scripts/run_manifest.py",
     "scripts/verify_protocol_hashes.py",
     "scripts/check_manifest_stage_complete.py",
@@ -76,6 +109,18 @@ CORE_DATASET_FILES: tuple[str, ...] = (
     "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_x/main.npz",
     "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_z/main.npz",
     "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_xz/main.npz",
+)
+
+# The frozen protocol rules every scorer/preparer in this campaign actually
+# implements -- omitted from every stage's hash closure before 2026-08-27,
+# including this document's own explicit promise in SS7 that it and every
+# script depending on it would be covered. A silent edit to any of these
+# would change scoring/boundary outcomes exactly like a silently-changed .py
+# file would, so they belong in the same closure.
+CORE_PROTOCOL_DOCS: tuple[str, ...] = (
+    "experiments/highdim_coauthor_protocol_v1/deterministic_screen_20260813/PSI_SUMMARY_STATISTIC_AMENDMENT_20260819.md",
+    "experiments/highdim_coauthor_protocol_v1/deterministic_screen_20260813/BOUNDARY_RULE_AMENDMENT_20260818.md",
+    "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/PROTOCOL_DECISION_ADDENDUM_20260826.md",
 )
 
 

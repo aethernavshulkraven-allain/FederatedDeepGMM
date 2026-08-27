@@ -34,6 +34,7 @@
     "server_buffer_policy": "direct_client_aggregate"
   },
   "launch_hash_record": "experiments/highdim_coauthor_protocol_v1/bn_diagnostic_fresh_20260826/diagnostic_launch_hashes.json",
+  "launch_hash_record_sha256": "118e377234c375e39b9e908b6d36d6c5333cfc60473abe36bbd1df058696232d",
   "minimum_f_bn_running_variance": 9.897330425614937e-07,
   "run_id": "bn_diagnostic_fresh_20260826_femnist_z_fedogda_d_seed1_lr0p001_cm10"
 }

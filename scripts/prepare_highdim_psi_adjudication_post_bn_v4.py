@@ -13,7 +13,11 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
-from highdim_protocol_hash_closure_20260822 import CORE_DATASET_FILES, CORE_SOURCES  # noqa: E402
+from highdim_protocol_hash_closure_20260822 import (  # noqa: E402
+    CORE_DATASET_FILES,
+    CORE_PROTOCOL_DOCS,
+    CORE_SOURCES,
+)
 from verify_protocol_hashes import verify_hashes  # noqa: E402
 
 PROTOCOL_ROOT = REPO_ROOT / "experiments/highdim_coauthor_protocol_v1"
@@ -229,9 +233,11 @@ def prepare(
 
     provenance_paths = [
         screen_results_path,
+        screen_manifest_path,
         DIAGNOSTIC_CERTIFICATION,
         *(REPO_ROOT / source for source in CORE_SOURCES),
         *(REPO_ROOT / dataset for dataset in CORE_DATASET_FILES),
+        *(REPO_ROOT / doc for doc in CORE_PROTOCOL_DOCS),
         REPO_ROOT / "scripts/score_highdim_adjudication_20260819.py",
         REPO_ROOT / "scripts/launch_highdim_psi_adjudication_post_bn_v4_signal.sh",
         REPO_ROOT / "scripts/launch_highdim_psi_adjudication_post_bn_v4_x.sh",

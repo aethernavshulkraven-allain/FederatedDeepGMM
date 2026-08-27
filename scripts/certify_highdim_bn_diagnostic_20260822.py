@@ -136,6 +136,15 @@ def certify(
         },
         "minimum_f_bn_running_variance": min(f_bn_values),
         "launch_hash_record": str(launch_hashes_path.relative_to(REPO_ROOT)),
+        # A path string alone doesn't protect against the launch-hashes file
+        # itself being silently replaced with a different set of records
+        # after certification (e.g. regenerated to match newer source) --
+        # verify_highdim_bn_diagnostic_certification_20260822.py's fresh-
+        # recomputation comparison only re-derives from *whatever* currently
+        # lives at that path, so it can't detect that kind of swap on its
+        # own. This checksum pins the launch-hashes file's own content at
+        # certification time, closing that gap.
+        "launch_hash_record_sha256": sha256_file(launch_hashes_path),
         "artifact_hashes": [
             {"path": name, "sha256": sha256_file(run_dir / name)}
             for name in artifact_names

@@ -48,7 +48,11 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
-from highdim_protocol_hash_closure_20260822 import CORE_DATASET_FILES, CORE_SOURCES  # noqa: E402
+from highdim_protocol_hash_closure_20260822 import (  # noqa: E402
+    CORE_DATASET_FILES,
+    CORE_PROTOCOL_DOCS,
+    CORE_SOURCES,
+)
 
 PROTOCOL_ROOT = REPO_ROOT / "experiments/highdim_coauthor_protocol_v1"
 DEFAULT_SCREEN_MANIFEST = (
@@ -268,6 +272,7 @@ def prepare(winners_path: Path, stability_results_path: Path, stability_manifest
         winners_path, stability_results_path, stability_manifest_path, screen_manifest_path,
         *(REPO_ROOT / source for source in CORE_SOURCES),
         *(REPO_ROOT / dataset for dataset in CORE_DATASET_FILES),
+        *(REPO_ROOT / doc for doc in CORE_PROTOCOL_DOCS),
         REPO_ROOT / "scripts/launch_highdim_deterministic_finals_post_bn_20260826.sh",
         REPO_ROOT / "scripts/aggregate_highdim_deterministic_finals_post_bn_20260826.py",
         Path(__file__),
