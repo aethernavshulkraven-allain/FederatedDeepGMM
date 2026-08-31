@@ -1,0 +1,20 @@
+{
+  "campaign_dir": "/home/arnav22103/FederatedDeepGMM/experiments/highdim_coauthor_protocol_v1/deterministic_runtime_profile_20260805",
+  "manifest": "/home/arnav22103/FederatedDeepGMM/experiments/highdim_coauthor_protocol_v1/deterministic_runtime_profile_20260805/profile_manifest.csv",
+  "output_root": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_runtime_profile_20260805",
+  "scenarios": [
+    "femnist_z",
+    "femnist_x",
+    "cifar10_xz"
+  ],
+  "method": "fedgda_d",
+  "comm_round": 6,
+  "learning_rate": 0.03,
+  "critic_multiplier": 3.0,
+  "aux_arms": [
+    "auxon",
+    "auxoff"
+  ],
+  "purpose": "Measure per-phase deterministic round cost to refresh the protocol-v2 GPU-hour projection and locate optimization targets.",
+  "rows": 6
+}

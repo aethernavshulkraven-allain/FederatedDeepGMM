@@ -46,6 +46,6 @@ diagnostic_campaign="experiments/highdim_coauthor_protocol_v1/bn_diagnostic_fres
   --validate-artifacts
 "$python_bin" scripts/score_highdim_stability_retune_alpha0p1_20260827.py \
   --manifest "$campaign/retune_manifest.csv" \
-  --out "$campaign/retune_results.json"
+  --out "$campaign/retune_screen_results.json"
 
-echo "ALPHA=0.1 RETUNE COMPLETE. Feed retune_results.json into the finals preparer's --retune-results."
+echo "ALPHA=0.1 RETUNE SCREEN STAGE COMPLETE. Feed retune_screen_results.json into scripts/prepare_highdim_stability_retune_rank_alpha0p1_20260827.py -- this Screen stage never promotes a winner by itself (Rank/Confirm/Promote must run first)."

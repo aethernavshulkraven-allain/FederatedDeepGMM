@@ -52,4 +52,9 @@ diagnostic_campaign="experiments/highdim_coauthor_protocol_v1/bn_diagnostic_fres
 "$python_bin" scripts/score_highdim_adjudication_20260819.py \
   --cells x --campaign-dir "$campaign" --results-root "$result_root" \
   --run-id-prefix det_adjudicate_v4
-echo "POST-FIX V4 ADJUDICATION COMPLETE."
+
+"$python_bin" scripts/build_highdim_psi_adjudication_post_bn_v4_winners.py \
+  --signal-results "$campaign/adjudication_signal_results.json" \
+  --x-results "$campaign/adjudication_x_results.json" \
+  --out "$campaign/v4_winners.json"
+echo "POST-FIX V4 ADJUDICATION COMPLETE. v4_winners.json written."

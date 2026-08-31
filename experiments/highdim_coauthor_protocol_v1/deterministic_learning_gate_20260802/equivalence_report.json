@@ -1,0 +1,38 @@
+{
+  "methods": [
+    {
+      "aux_off_projected_150_round_seconds": 3906.2799525260925,
+      "aux_off_runtime_seconds": 260.4186635017395,
+      "aux_on_runtime_seconds": 262.4962205886841,
+      "checks": {
+        "best_f_exact": true,
+        "best_g_exact": true,
+        "curve_exact": true,
+        "final_f_exact": true,
+        "final_g_exact": true,
+        "selection_metrics_exact": true
+      },
+      "method": "fedgda_d",
+      "passed": true
+    },
+    {
+      "aux_off_projected_150_round_seconds": 3785.343554019928,
+      "aux_off_runtime_seconds": 252.35623693466187,
+      "aux_on_runtime_seconds": 230.6550636291504,
+      "checks": {
+        "best_f_exact": true,
+        "best_g_exact": true,
+        "curve_exact": true,
+        "final_f_exact": true,
+        "final_g_exact": true,
+        "selection_metrics_exact": true
+      },
+      "method": "fedogda_d",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "projected_gate_gpu_hours_conservative": 25.638745021820068,
+  "projected_two_gpu_wall_hours_conservative": 12.819372510910034,
+  "projection_note": "Linear 10-to-150 round projection includes setup 15 times and is conservative."
+}

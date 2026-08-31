@@ -139,6 +139,7 @@ EFFECTIVE_CONFIG_FIELDS = (
     "selection_source",
     "scenario_scope",
     "study_claim",
+    "compact_predictions_only",
 )
 
 
@@ -537,6 +538,14 @@ def get_effective_config(args):
         "enable_legacy_outputs": bool(getattr(args, "enable_legacy_outputs", True)),
         "enable_legacy_plot": bool(getattr(args, "enable_legacy_plot", False)),
         "overwrite": bool(getattr(args, "overwrite", False)),
+        # fedavg_api.py reads self.compact_predictions_only from
+        # self.effective_config (this dict), never from args directly --
+        # omitted here, every run would silently write the full ~10 GiB-
+        # scale predictions.npz regardless of what the manifest/config
+        # actually requested (found live, 2026-08-28: a real V4 signal run
+        # had compact_predictions_only=true in its generated YAML but wrote
+        # a full-size prediction file).
+        "compact_predictions_only": bool(getattr(args, "compact_predictions_only", False)),
     })
 
 
@@ -1127,6 +1136,22 @@ def write_pretraining_failure_artifact(
         "stdout_sha256": _sha256_file_or_none(stdout_path),
         "stderr_sha256": _sha256_file_or_none(stderr_path),
         "hash_bundle_id": hash_bundle_id,
+        # A path alone is a mutable label -- binding the bundle file's own
+        # content hash here means a later swap of the file at that path
+        # (not just a source-tree drift the bundle's own recorded hashes
+        # would catch) is also detectable (closeout review hardening).
+        # hash_bundle_id is conventionally REPO_ROOT-relative (every
+        # launcher exports it that way, matching source_manifest/
+        # final_result_dir elsewhere in this campaign) -- resolved against
+        # this module's own REPO_ROOT rather than the process's current
+        # working directory, since main.py chdir()s to its own file's
+        # directory near the top of the script, well before this ever
+        # runs. A bare CWD-relative lookup here would silently resolve
+        # against the wrong directory and always miss.
+        "hash_bundle_sha256": _sha256_file_or_none(
+            hash_bundle_id if hash_bundle_id and os.path.isabs(hash_bundle_id)
+            else (os.path.join(REPO_ROOT, hash_bundle_id) if hash_bundle_id else hash_bundle_id)
+        ),
     }
     path = os.path.join(run_dir, "pretraining_failure.json")
     with open(path, "w") as f:

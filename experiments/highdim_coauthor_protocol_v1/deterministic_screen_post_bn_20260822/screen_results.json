@@ -1,0 +1,1986 @@
+{
+  "boundary_review_cells": [
+    "cifar10_xz|fedgda_d",
+    "cifar10_z|fedgda_d",
+    "cifar10_z|fedogda_d",
+    "femnist_x|fedgda_d",
+    "femnist_x|fedogda_d",
+    "femnist_z|fedogda_d"
+  ],
+  "boundary_review_required": true,
+  "cells": {
+    "cifar10_xz|fedgda_d": {
+      "boundary_detail": {
+        "mse_winner": [
+          "cm=10 at tested max [1.0, 5.0, 10.0]"
+        ],
+        "psi_rank_1": [
+          "cm=10 at tested max [1.0, 5.0, 10.0]"
+        ]
+      },
+      "boundary_review_required": true,
+      "dataset": "cifar10_xz",
+      "eligible_candidates": 7,
+      "method": "fedgda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": 0.008786723099918972,
+        "cm": 10.0,
+        "gmm_eval": 0.0063961629813931884,
+        "lr": 0.003,
+        "run_id": "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm10",
+        "val_mse": 0.4447740637398618
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": 0.008786723099918972,
+        "cm": 10.0,
+        "gmm_eval": 0.0063961629813931884,
+        "lr": 0.003,
+        "run_id": "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm10",
+        "val_mse": 0.4447740637398618
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": 0.007201456551938223,
+        "cm": 5.0,
+        "gmm_eval": 0.002393450803236724,
+        "lr": 0.003,
+        "run_id": "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+        "val_mse": 0.5588727874111
+      },
+      "terminal_candidates": 0
+    },
+    "cifar10_xz|fedogda_d": {
+      "boundary_detail": {
+        "mse_winner": [],
+        "psi_rank_1": []
+      },
+      "boundary_review_required": false,
+      "dataset": "cifar10_xz",
+      "eligible_candidates": 9,
+      "method": "fedogda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": 0.012784946190347698,
+        "cm": 5.0,
+        "gmm_eval": 0.002899377097467614,
+        "lr": 0.001,
+        "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+        "val_mse": 0.29990702607966924
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": 0.012784946190347698,
+        "cm": 5.0,
+        "gmm_eval": 0.002899377097467614,
+        "lr": 0.001,
+        "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+        "val_mse": 0.29990702607966924
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": -0.0007156270690544227,
+        "cm": 1.0,
+        "gmm_eval": -0.010710361209481807,
+        "lr": 0.001,
+        "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm1",
+        "val_mse": 0.334596419499852
+      },
+      "terminal_candidates": 0
+    },
+    "cifar10_x|fedgda_d": {
+      "boundary_detail": {
+        "mse_winner": [
+          "cm=20 at tested max [5.0, 10.0, 20.0]"
+        ],
+        "psi_rank_1": []
+      },
+      "boundary_review_required": false,
+      "dataset": "cifar10_x",
+      "eligible_candidates": 9,
+      "method": "fedgda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": 2.5558810636642314e-06,
+        "cm": 20.0,
+        "gmm_eval": -0.0002044693038835153,
+        "lr": 0.1,
+        "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p1_cm20",
+        "val_mse": 1.3979912466572355
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": 2.7862996963722703e-05,
+        "cm": 10.0,
+        "gmm_eval": -0.00018700379611523953,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p01_cm10",
+        "val_mse": 1.5070672126644629
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": 2.5558810636642314e-06,
+        "cm": 20.0,
+        "gmm_eval": -0.0002044693038835153,
+        "lr": 0.1,
+        "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p1_cm20",
+        "val_mse": 1.3979912466572355
+      },
+      "terminal_candidates": 1
+    },
+    "cifar10_x|fedogda_d": {
+      "boundary_detail": {
+        "mse_winner": [
+          "lr=0.03 at tested max [0.001, 0.003, 0.01, 0.03]"
+        ],
+        "psi_rank_1": []
+      },
+      "boundary_review_required": false,
+      "dataset": "cifar10_x",
+      "eligible_candidates": 10,
+      "method": "fedogda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": -6.960278438367736e-05,
+        "cm": 20.0,
+        "gmm_eval": -0.0004738023112041008,
+        "lr": 0.03,
+        "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p03_cm20",
+        "val_mse": 1.1481763338429567
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": -0.00024733314891231046,
+        "cm": 10.0,
+        "gmm_eval": -0.00046542793463924553,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p01_cm10",
+        "val_mse": 1.4519509385006524
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": -6.960278438367736e-05,
+        "cm": 20.0,
+        "gmm_eval": -0.0004738023112041008,
+        "lr": 0.03,
+        "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p03_cm20",
+        "val_mse": 1.1481763338429567
+      },
+      "terminal_candidates": 0
+    },
+    "cifar10_z|fedgda_d": {
+      "boundary_detail": {
+        "mse_winner": [],
+        "psi_rank_1": [
+          "cm=20 at tested max [1.0, 5.0, 10.0, 20.0]"
+        ]
+      },
+      "boundary_review_required": true,
+      "dataset": "cifar10_z",
+      "eligible_candidates": 8,
+      "method": "fedgda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": 0.008918493126072485,
+        "cm": 5.0,
+        "gmm_eval": -0.006692127459106112,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+        "val_mse": 0.19592701643625351
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": 0.07293439843219808,
+        "cm": 20.0,
+        "gmm_eval": 0.022532456763614574,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm20",
+        "val_mse": 0.23929123030246285
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": 0.008918493126072485,
+        "cm": 5.0,
+        "gmm_eval": -0.006692127459106112,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+        "val_mse": 0.19592701643625351
+      },
+      "terminal_candidates": 0
+    },
+    "cifar10_z|fedogda_d": {
+      "boundary_detail": {
+        "mse_winner": [
+          "lr=0.01 at tested max [0.001, 0.003, 0.009, 0.01]"
+        ],
+        "psi_rank_1": [
+          "cm=5 at tested max [1.0, 2.0, 5.0]"
+        ]
+      },
+      "boundary_review_required": true,
+      "dataset": "cifar10_z",
+      "eligible_candidates": 9,
+      "method": "fedogda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": 0.02051582777635262,
+        "cm": 1.0,
+        "gmm_eval": -0.0006585715027247326,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p01_cm1",
+        "val_mse": 0.223959418406314
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": 0.09487065290873889,
+        "cm": 5.0,
+        "gmm_eval": 0.02924971321678332,
+        "lr": 0.003,
+        "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+        "val_mse": 0.22803350211473117
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": 0.08936679761442476,
+        "cm": 2.0,
+        "gmm_eval": 0.028302580898243022,
+        "lr": 0.009,
+        "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm2",
+        "val_mse": 0.22412170050581082
+      },
+      "terminal_candidates": 0
+    },
+    "femnist_xz|fedgda_d": {
+      "boundary_detail": {
+        "mse_winner": [],
+        "psi_rank_1": []
+      },
+      "boundary_review_required": false,
+      "dataset": "femnist_xz",
+      "eligible_candidates": 9,
+      "method": "fedgda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": 0.032121445540564536,
+        "cm": 5.0,
+        "gmm_eval": 0.009880541093016504,
+        "lr": 0.003,
+        "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+        "val_mse": 0.40797396381500356
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": 0.2438757490852913,
+        "cm": 1.0,
+        "gmm_eval": 0.1806975499248434,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p01_cm1",
+        "val_mse": 1.2988060762561104
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": 0.07561502176008919,
+        "cm": 1.0,
+        "gmm_eval": 0.02773379113066293,
+        "lr": 0.03,
+        "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p03_cm1",
+        "val_mse": 4.29138416498413
+      },
+      "terminal_candidates": 0
+    },
+    "femnist_xz|fedogda_d": {
+      "boundary_detail": {
+        "mse_winner": [],
+        "psi_rank_1": []
+      },
+      "boundary_review_required": false,
+      "dataset": "femnist_xz",
+      "eligible_candidates": 7,
+      "method": "fedogda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": 0.11920832555751013,
+        "cm": 5.0,
+        "gmm_eval": 0.10438743892295627,
+        "lr": 0.001,
+        "run_id": "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+        "val_mse": 0.4601213041575462
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": 1.8937586942563303,
+        "cm": 5.0,
+        "gmm_eval": 1.7959251663892144,
+        "lr": 0.003,
+        "run_id": "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+        "val_mse": 1.5903130323954873
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": 0.11920832555751013,
+        "cm": 5.0,
+        "gmm_eval": 0.10438743892295627,
+        "lr": 0.001,
+        "run_id": "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+        "val_mse": 0.4601213041575462
+      },
+      "terminal_candidates": 0
+    },
+    "femnist_x|fedgda_d": {
+      "boundary_detail": {
+        "mse_winner": [
+          "cm=20 at tested max [5.0, 10.0, 20.0]"
+        ],
+        "psi_rank_1": [
+          "cm=20 at tested max [5.0, 10.0, 20.0]"
+        ]
+      },
+      "boundary_review_required": true,
+      "dataset": "femnist_x",
+      "eligible_candidates": 9,
+      "method": "fedgda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": -7.588326964532642e-05,
+        "cm": 20.0,
+        "gmm_eval": -0.04754089157609832,
+        "lr": 0.1,
+        "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p1_cm20",
+        "val_mse": 0.18297900317362067
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": -7.588326964532642e-05,
+        "cm": 20.0,
+        "gmm_eval": -0.04754089157609832,
+        "lr": 0.1,
+        "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p1_cm20",
+        "val_mse": 0.18297900317362067
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": 5.508085697278742e-05,
+        "cm": 10.0,
+        "gmm_eval": -0.07498286626076647,
+        "lr": 0.1,
+        "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p1_cm10",
+        "val_mse": 0.45899675080005986
+      },
+      "terminal_candidates": 2
+    },
+    "femnist_x|fedogda_d": {
+      "boundary_detail": {
+        "mse_winner": [],
+        "psi_rank_1": [
+          "cm=20 at tested max [5.0, 10.0, 20.0]"
+        ]
+      },
+      "boundary_review_required": true,
+      "dataset": "femnist_x",
+      "eligible_candidates": 10,
+      "method": "fedogda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": -0.03254550901993444,
+        "cm": 5.0,
+        "gmm_eval": -0.035506313455903236,
+        "lr": 0.001,
+        "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+        "val_mse": 0.22293396851631664
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": -0.0004975079515920867,
+        "cm": 20.0,
+        "gmm_eval": -0.0007403320538795543,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p01_cm20",
+        "val_mse": 0.5409283449307787
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": -2.4348540142723664e-05,
+        "cm": 10.0,
+        "gmm_eval": -0.0012691810327825756,
+        "lr": 0.03,
+        "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p03_cm10",
+        "val_mse": 0.3457066911475905
+      },
+      "terminal_candidates": 0
+    },
+    "femnist_z|fedgda_d": {
+      "boundary_detail": {
+        "mse_winner": [],
+        "psi_rank_1": []
+      },
+      "boundary_review_required": false,
+      "dataset": "femnist_z",
+      "eligible_candidates": 8,
+      "method": "fedgda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": 0.0275869392129135,
+        "cm": 5.0,
+        "gmm_eval": -0.00030367184664499883,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+        "val_mse": 0.15643011469011187
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": 0.23475494598795568,
+        "cm": 5.0,
+        "gmm_eval": 0.13760783984949115,
+        "lr": 0.03,
+        "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p03_cm5",
+        "val_mse": 0.2575976160486776
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": 0.0275869392129135,
+        "cm": 5.0,
+        "gmm_eval": -0.00030367184664499883,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+        "val_mse": 0.15643011469011187
+      },
+      "terminal_candidates": 1
+    },
+    "femnist_z|fedogda_d": {
+      "boundary_detail": {
+        "mse_winner": [],
+        "psi_rank_1": [
+          "cm=10 at tested max [1.0, 5.0, 10.0]"
+        ]
+      },
+      "boundary_review_required": true,
+      "dataset": "femnist_z",
+      "eligible_candidates": 9,
+      "method": "fedogda_d",
+      "mse_winner": {
+        "best_gmm_eval_diagnostic": -0.020315347772416448,
+        "cm": 1.0,
+        "gmm_eval": -0.03155226852065152,
+        "lr": 0.01,
+        "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p01_cm1",
+        "val_mse": 0.19150815054369916
+      },
+      "psi_rank_1": {
+        "best_gmm_eval_diagnostic": 0.1368893124305488,
+        "cm": 10.0,
+        "gmm_eval": 0.12625870601522604,
+        "lr": 0.001,
+        "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+        "val_mse": 0.2339186335214554
+      },
+      "psi_rank_2": {
+        "best_gmm_eval_diagnostic": 0.03778164004905554,
+        "cm": 5.0,
+        "gmm_eval": 0.027244816135528583,
+        "lr": 0.001,
+        "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+        "val_mse": 0.23598384120747767
+      },
+      "terminal_candidates": 0
+    }
+  },
+  "git_provenance": {
+    "dirty_diff_sha256": "ab43b31b17a6fcab2a05292b61fb9f0e93ed2191903c885b94da3b3a63fd642e",
+    "git_revision": "20cd80025baaced0a4bded51eaa3a3f0b84eac53"
+  },
+  "manifest": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/screen_manifest.csv",
+  "planned_runs": 108,
+  "row_dispositions": [
+    {
+      "best_gmm_eval_diagnostic": -0.010775015537086735,
+      "cm": 1.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.01155833884103205,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "76cf2703dc2d9f9c1a418468b8901fefa57b9ef6f33961fd02b3e605dd570b5f",
+      "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p003_cm1",
+      "val_mse": 0.23576831470355553
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.001517333368010798,
+      "cm": 5.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.009854561218946147,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "2a5fa6bc5c2c8541591efe5387ea609198c37618d9246ce0ad3c768b543b7abd",
+      "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 0.21958259764092117
+    },
+    {
+      "best_gmm_eval_diagnostic": -8.556477635291782e-05,
+      "cm": 1.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.018090725089221944,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "fa1fe7febe7401bec13068c9af7e1e636e0da759b4fc0684cb2839cf1f10c952",
+      "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p01_cm1",
+      "val_mse": 0.18290103562902954
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.0275869392129135,
+      "cm": 5.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.00030367184664499883,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "c3fb33f033023212b333ecd2eeaeb7f33cbae6151930dd1253f54525ee467305",
+      "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 0.15643011469011187
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.08867699030643743,
+      "cm": 1.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.05221654903537997,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "2acf586ea1120735fc15d9d28319ed183017f0ae537b6884a873c8b2cbc6c6f6",
+      "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p03_cm1",
+      "val_mse": 0.16317501097195727
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.23475494598795568,
+      "cm": 5.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": 0.13760783984949115,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "28c6afaa336597be761f5b2e29538ee352adb6c367ce68cc3cb6eef08e5f9a50",
+      "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p03_cm5",
+      "val_mse": 0.2575976160486776
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.003650397097155006,
+      "cm": 1.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.7642391502382939,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "01d31faf72def6d80ece77401fc2df0ac0e03ea84784a20ec5a76c92f2bdbaf1",
+      "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm1",
+      "val_mse": 1.5634532909887495
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.03778164004905554,
+      "cm": 5.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": 0.027244816135528583,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "5e55ead1d02218b98d782fb6e122b14a3a5e50a318e22505101a712bf656b15b",
+      "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+      "val_mse": 0.23598384120747767
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.007296338492779358,
+      "cm": 1.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.01429597117458372,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "e95965cf8f9a5aacee1077a373dc0f3cdf1a6bdfc713f0ad588d07f81e0ababb",
+      "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p003_cm1",
+      "val_mse": 0.23270966256232561
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.03678249807930989,
+      "cm": 5.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.04446535549922216,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "8deef91a74885dc1253ce7c645a2715832f3dc17a2bce89823688361ebfa13be",
+      "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 0.2342797044610888
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.020315347772416448,
+      "cm": 1.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.03155226852065152,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "cc64433143ce7c09c0fcd8073dd1668c69e83a87e69fa344a097e3bba6f98cf8",
+      "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p01_cm1",
+      "val_mse": 0.19150815054369916
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.05981751392521219,
+      "cm": 5.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.2061079639610408,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "d778f4575fec6bf5f2cd1a86a5cf6fa71f396b2bdc13e927e0f07743a7720059",
+      "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 0.4821408559242288
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.014326421647074854,
+      "cm": 5.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.35102549580855247,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "9eb0ba6ff0b3c6f4ef3e256a7e87cbbda090a34618ab48120ae20407d3573a9e",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 11.788785329104401
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.02055001161398006,
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.09881872382495203,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "422210c3c5bd1807b4977e223040eb0a629eb5066212ca6447ed6e01e66728b7",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p003_cm10",
+      "val_mse": 1.9474453090749901
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.003237049216709625,
+      "cm": 5.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.23865777116247877,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "1eef5b5b8a2188e55b1d2bf51fac04888da9b27351424b050a5bb6d980ecb46c",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 3.2041827831902827
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0025289987304511763,
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.17453725491651134,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "51dda1d7553ad4a09c66b385dfbcd95f90315aa9ecadf478be36fae9424760d9",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p01_cm10",
+      "val_mse": 2.652551625751404
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.00596211641827188,
+      "cm": 5.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -1.7635767209923805,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "5e9ae470a9e0767c95a2bd30e08d3b47b26fbba7c00c0685cae30ded2f198368",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p03_cm5",
+      "val_mse": 81.46084485455395
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0015882435936797278,
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.1393204198684069,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "618417b6399f647749343b5ed817b08b7453ef92c38b1f17dcb57f977a253fe5",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p03_cm10",
+      "val_mse": 2.5733490676415323
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.03254550901993444,
+      "cm": 5.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.035506313455903236,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "44c49133920e31d5945063642ec2a95a6608a1823f114763b929be78283bc518",
+      "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+      "val_mse": 0.22293396851631664
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.030377861909798784,
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.11181421155664202,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "ebac57bb349baab8832bf2fa11bc6c16d0f3a81378bfc0e3ee26319cfed3d39b",
+      "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+      "val_mse": 0.7204406719260542
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.032624469310137225,
+      "cm": 5.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.21968857853417742,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "3154f67bee730fa2673c7a3c963844e3bdc66458fde979f10fefb47a005fbea1",
+      "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 4.9038541415882655
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.012040793056972917,
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.08080797078856193,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "07512a12b40afa6b33b2abb5ba53895be5c61942487769a62b693a20449d4042",
+      "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p003_cm10",
+      "val_mse": 1.4979697679243085
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0014655610473283238,
+      "cm": 5.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.10259270889695753,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "f90c6882b7776dbbbac524b582aca1aa507f7683f74b359e195df28f1f936e32",
+      "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 2.141651907380354
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.00011628459534936747,
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.04574968845771358,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "290a6505df7621216ef8b359698345dbbc4fe1ad2035fcbb3404eddb30aa09b2",
+      "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p01_cm10",
+      "val_mse": 0.6132507315812715
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.04099766184826998,
+      "cm": 1.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": 0.02412140347305124,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "1596d163a5a702547fbc3d811a641e616a3f85478b41e28e94bf3392a1648343",
+      "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm1",
+      "val_mse": 0.45294911121211984
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.032121445540564536,
+      "cm": 5.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": 0.009880541093016504,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "f0cd0bbd39506d4cd8f1d9ee63bbff32c412887c9861aa6bd68e82cd07fdc34b",
+      "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 0.40797396381500356
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.2438757490852913,
+      "cm": 1.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": 0.1806975499248434,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "79149e8eef51a1e354a818fbe7dc06d4d0725d5aaa425cd203aa02c130ad12db",
+      "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p01_cm1",
+      "val_mse": 1.2988060762561104
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.005211573957433386,
+      "cm": 5.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": -1.8440857313658185,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "0c3c16587267fe70916f9db38d919ab15edcfe00dd84d73ed3d707f129c56654",
+      "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 2.3226672227928087
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.07561502176008919,
+      "cm": 1.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": 0.02773379113066293,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "38c75c28d6211b990ed80555b11008648ec9988cf7d142f7dbc558fbe512b5be",
+      "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p03_cm1",
+      "val_mse": 4.29138416498413
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.0032425245137288196,
+      "cm": 5.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.3563918129491326,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "690448f285580566f1d88752e9af1e0ae77e93e074f455e9598114ec63afefda",
+      "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p03_cm5",
+      "val_mse": 2.2425434122493284
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.031121520036044764,
+      "cm": 1.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.025262743946851417,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "f7da5bfe126f0c89c56d2b04967abc88d116b44433b9a68c5bbbbf29edb07538",
+      "run_id": "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm1",
+      "val_mse": 0.5557988338825894
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.11920832555751013,
+      "cm": 5.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": 0.10438743892295627,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "d2d87f46927698e3573bf8509f3b46153dbfe10aacf158aa744279b062e68ca3",
+      "run_id": "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+      "val_mse": 0.4601213041575462
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.03551288818082365,
+      "cm": 1.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.17736508004711396,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "b84ba78f0e87227dc3c8f08d16e0c54a363cf52ac52499a7968449489fe3b8b5",
+      "run_id": "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm1",
+      "val_mse": 1.0691368161738726
+    },
+    {
+      "best_gmm_eval_diagnostic": 1.8937586942563303,
+      "cm": 5.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": 1.7959251663892144,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "05fd8b4f75e37f1a560263290dd81a812f48f44c4a565394ebc122ba75614c1a",
+      "run_id": "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 1.5903130323954873
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.004852220466885077,
+      "cm": 1.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.37062388556371895,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "d4611a4ba00c63eb4bef6658c6eddaa9e845413d5bfe4832207048850e51629a",
+      "run_id": "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p01_cm1",
+      "val_mse": 3.6011911952868605
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.05072225517934822,
+      "cm": 5.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.3477763098854742,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "4184cb15062b39d509cd66c88b097fdfecd20ab6d6e4957df70c8d72b4c0f445",
+      "run_id": "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 3.570323643921749
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.013586961094965017,
+      "cm": 1.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.09632279753099626,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "c74b373ba38b8259162db279e38cf43b63fdf575eeb2865e6966db02655f57b2",
+      "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p003_cm1",
+      "val_mse": 0.45884125292119643
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.022405111831908166,
+      "cm": 5.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.06461000899417944,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "15247abf07ae2f9fa322ae44f308fc58d7484e6ad227f54f0ec0d50c5c56ab42",
+      "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 0.2805722796620596
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0034166777520984893,
+      "cm": 1.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.009343437571496457,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "7c8a4690efdf777865d61dd4e88bd0dccaa7b199fa45071f9a8354cc3e0a0991",
+      "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm1",
+      "val_mse": 0.22815205571903888
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.008918493126072485,
+      "cm": 5.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.006692127459106112,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "f81d1ddcac614cefe4bdfb187b842f1503b0c971299a7b6254261f0d2c13ee50",
+      "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 0.19592701643625351
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.023784069617496954,
+      "cm": 1.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -13.63137801842006,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "fbb0c8433a65e656bd3c312134b4f49bb6ed66c8c741d88a9a541bf32a475128",
+      "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p03_cm1",
+      "val_mse": 477.9401385130806
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.007914881891430033,
+      "cm": 5.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -1.209400080913094,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "6a9117b790ce61984d8025c8b04e3826c30368cefd5ea24d350f459dce153d98",
+      "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p03_cm5",
+      "val_mse": 2.2796484065975413
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0077885127812322985,
+      "cm": 1.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.3140378695902148,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "ff496425233d19ac8b3b7a279b9373b4e4916a8f74d63c99b2aecfb6d773ac45",
+      "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p001_cm1",
+      "val_mse": 0.7582155765803108
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.03543767311329665,
+      "cm": 5.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.16149657733554437,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "bcfdc082df9bece969beaf08a30de15d45d9fa6f9764fd1d3ea4f4552560f450",
+      "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+      "val_mse": 0.39009356882236623
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.02788648249042469,
+      "cm": 1.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.041881752162082224,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "7d1db5f7a05cb633092ff42c81f41c81638fb0d3215b4ddc6f44963a071ba48b",
+      "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm1",
+      "val_mse": 0.29719074739389434
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.09487065290873889,
+      "cm": 5.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": 0.02924971321678332,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "79ed87768e4a236bd3549e6eb22a09dccaac461a634c3cb7ca09e77cd68502c6",
+      "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 0.22803350211473117
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.02051582777635262,
+      "cm": 1.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.0006585715027247326,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "ec6eaffa5ab930aa84e6ec002eb1848f539a800a6ef101b15fd36a016045df7f",
+      "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p01_cm1",
+      "val_mse": 0.223959418406314
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.007594152061011689,
+      "cm": 5.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.07890184016861682,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "38199deb8e55b0a555d7fb0f3fea59c0772c89c6f5499a97fc50fd34a52001cc",
+      "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 0.2519164461661449
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0009621781737208737,
+      "cm": 5.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.05758897968957851,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "87770c818a40f909794f8c2f20a57b7bcaee6d80093ecdbb7b7b95e65b58a087",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 1.615948568585654
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.00014103900102259976,
+      "cm": 10.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.027742787039964894,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "e406c4df654b00947c79271de6d7e763a21bee9836fb9f027aaaf170d882bad7",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p003_cm10",
+      "val_mse": 1.529875162912668
+    },
+    {
+      "best_gmm_eval_diagnostic": -4.5269652896824187e-05,
+      "cm": 5.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.001104389025242108,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "a731fa580d5bece1e3973498ea904f9e2d5c014e7665373d2351719c91110b81",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 1.5541774067331457
+    },
+    {
+      "best_gmm_eval_diagnostic": 2.7862996963722703e-05,
+      "cm": 10.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.00018700379611523953,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "333ca1188868e80938807999d97f5ea725ec22235e1095823e9964107482f157",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p01_cm10",
+      "val_mse": 1.5070672126644629
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.00010046871575334634,
+      "cm": 5.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.00022138384881342785,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "89ecb92dc104276ffec18d700f0be68af9308c67bff7d2596d36807ace8b3091",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p03_cm5",
+      "val_mse": 1.5412604980015485
+    },
+    {
+      "best_gmm_eval_diagnostic": -4.605390294207696e-05,
+      "cm": 10.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.011203937338038539,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "3e283575af7d6f15f9add648aaf671d0bae3653ba870a0a4f296b120dd106b88",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p03_cm10",
+      "val_mse": 1.6294879057071565
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0007570731735493636,
+      "cm": 5.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.0007943797258321789,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "82ed4e9e4ddc15445d7c4c5d843f6927e5e080972e7fa5d9248b06429144afeb",
+      "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+      "val_mse": 1.2884639517669614
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0008597901414700863,
+      "cm": 10.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.0011101017437971895,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "b8bb666993b4238b0ba86059db6a3f8d3f49e16caed04b21ddb25a109315fcd8",
+      "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+      "val_mse": 1.3021899485600814
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.000313366339970558,
+      "cm": 5.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.023918870496639946,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "b19ebf7a413f84b45f8165c0edd79d92e3e57b922533b4797ee69579a8bc2ab6",
+      "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 1.4592837072321414
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0005829779111672234,
+      "cm": 10.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.08086724832377153,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "8c017e45038f60a10db525417fad924c93f683ff748c46cd420db456af417de2",
+      "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p003_cm10",
+      "val_mse": 1.696762976219143
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0002394986636588173,
+      "cm": 5.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.02096870982449224,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "5ab5ab93a7ade5f48eef6aea7e15e5799b2cf6b273a4d93c426fdc7f5cfe96de",
+      "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 1.5944728380757802
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.00024733314891231046,
+      "cm": 10.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.00046542793463924553,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "ad39b2f50b30c9ef870f1cb9ca359948661a2422147f11fdc711004f6b7a83bb",
+      "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p01_cm10",
+      "val_mse": 1.4519509385006524
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.006400884917375942,
+      "cm": 1.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.004791697094826341,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "7872138a609b02d7a686219531b6cf8f9218dff50bc714edd7f5f557604bf66e",
+      "run_id": "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm1",
+      "val_mse": 0.8483539172687387
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.007201456551938223,
+      "cm": 5.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": 0.002393450803236724,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "511155bc0fb9cceaa0d16a3325761b19c629cdbe1597d71e43788f4f29f1cb51",
+      "run_id": "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 0.5588727874111
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.00123910035227451,
+      "cm": 1.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.01650176633740061,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "5ab375cdb2f5e12112cc4103042e27b60267289d9bedf462b0d0c53737a97891",
+      "run_id": "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p01_cm1",
+      "val_mse": 1.8528434733301191
+    },
+    {
+      "best_gmm_eval_diagnostic": -5.094864060116542e-05,
+      "cm": 5.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.0071120875937915615,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "6038d26d55c115d85c8a16ea62ee9a1e7fdebe8d7ddda4a4c03b83aa52bbe92e",
+      "run_id": "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 0.9915669532391795
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.001111954792122275,
+      "cm": 1.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.06353325185702573,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "0c26e16dea14fb53e27e5ba027d35f8f9c37ecc7ac51bbd141488338022c52b7",
+      "run_id": "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p03_cm1",
+      "val_mse": 5.185163872314816
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0008353898819838527,
+      "cm": 5.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.08646203930597222,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "f3b0ebf03d0b38fd808d1cb2ac9e4a82bfc720efdf84725941a72f54ee920f56",
+      "run_id": "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p03_cm5",
+      "val_mse": 2.8700753775781886
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0007156270690544227,
+      "cm": 1.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.010710361209481807,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "7ed2e67296afe525ddf30a38987eb2f88dcf65f5982ed380dc69a691437797ae",
+      "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm1",
+      "val_mse": 0.334596419499852
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.012784946190347698,
+      "cm": 5.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": 0.002899377097467614,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "10925280793a32be97d2b77716038c58604e888f47a5baa2122c79074924108c",
+      "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+      "val_mse": 0.29990702607966924
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.0004602322263638258,
+      "cm": 1.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.06041689758702306,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "20ea94d9f46cd6d7bec80c87d3882654ed964108dc0914791ca4dff8f3686e17",
+      "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm1",
+      "val_mse": 1.0874915215105825
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.014647640790209273,
+      "cm": 5.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.021691721379573214,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "c1a57d75a37325b03076263bdede5bfd1371a5c810093848c4c7e4eb5b3ae694",
+      "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+      "val_mse": 0.7337942274101779
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.005943797743570003,
+      "cm": 1.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.06197150669056817,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "97a49da42521f65e3f9c5572f4c39d0c0a451a55f8a118c9d817c13d728b5632",
+      "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p01_cm1",
+      "val_mse": 2.9969092814112996
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.016133832473801714,
+      "cm": 5.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.04329522691137834,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "5127b4f00c6b8d14d652bc4309074b7e053172914ad279a5bf2c9c16b0b1a761",
+      "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p01_cm5",
+      "val_mse": 1.6866892719113784
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.004537568932835585,
+      "cm": 1.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -1.087387381793995,
+      "lr": 0.1,
+      "method": "fedgda_d",
+      "result_sha256": "fb73a0bb2e6ca279cd5fe848677699369f0e7bfafb365001b4cfe70d138f0dd4",
+      "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p1_cm1",
+      "val_mse": 1.4623153838093372
+    },
+    {
+      "cm": 5.0,
+      "dataset": "femnist_z",
+      "disposition": "terminal_pretraining_ineligible",
+      "lr": 0.1,
+      "method": "fedgda_d",
+      "result_sha256": "39b53c74b34c160a975bbc7283d2e55cdc12047c203e09669a628e7668015f78",
+      "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p1_cm5",
+      "terminal_reason": "No valid model-selection candidate was selected before federated training started; dataset=femnist_z, seed=0, simple_model_selection_epochs=100, f_history_model_selection_epochs=60, model_selection_batch_size=200, learning_rate=0.1, critic_multiplier=5.0, f_learning_rate=0.5, client_optimizer=sgd, best_score=-inf; federated training never started"
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.1118672867223642,
+      "cm": 1.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -1.994244641055952,
+      "lr": 0.03,
+      "method": "fedogda_d",
+      "result_sha256": "64b121a19b6cc58254651c1171653b1053d4b0ab730e58aefc2f58c17a6ff159",
+      "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p03_cm1",
+      "val_mse": 2.4621228219911133
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.011619930383038983,
+      "cm": 5.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.42904511172113197,
+      "lr": 0.03,
+      "method": "fedogda_d",
+      "result_sha256": "31bfb30dfe424aee8018c5953301f30c2af4ac05779417886e73908a828f32a5",
+      "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p03_cm5",
+      "val_mse": 2.5234226012554886
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.00015249008342185284,
+      "cm": 5.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": -2.614427575656657,
+      "lr": 0.1,
+      "method": "fedgda_d",
+      "result_sha256": "72229f1448e895ce61032c0a251957208cba4c880a67d2920ddde00587c57bff",
+      "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p1_cm5",
+      "val_mse": 14.150899977169377
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0017276958975205108,
+      "cm": 10.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.31394321757639365,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "f642257642b4242d076d88bcfea014342f57b8b7095d3cc9ee12d73a0f682270",
+      "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p03_cm10",
+      "val_mse": 3.598828763425157
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0006301461581796883,
+      "cm": 10.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": -3.0270658891194073,
+      "lr": 0.1,
+      "method": "fedgda_d",
+      "result_sha256": "3c0a7155ed8c64466168af6c0d5865549afaee37b6b7ebe0bb27afc328d63a06",
+      "run_id": "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p1_cm10",
+      "val_mse": 11.342133535513177
+    },
+    {
+      "best_gmm_eval_diagnostic": -1.8549840541763028e-05,
+      "cm": 5.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.23625658810800482,
+      "lr": 0.1,
+      "method": "fedgda_d",
+      "result_sha256": "b86df09cf9c081d23310f17b1d4af349eeb3aa49158211c16bab8382f277e716",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p1_cm5",
+      "val_mse": 16.365511614081825
+    },
+    {
+      "best_gmm_eval_diagnostic": 5.508085697278742e-05,
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.07498286626076647,
+      "lr": 0.1,
+      "method": "fedgda_d",
+      "result_sha256": "337b6285d88571effe3e0749618cb708651527ed8699dbf4d2b7eb6564306cfd",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p1_cm10",
+      "val_mse": 0.45899675080005986
+    },
+    {
+      "best_gmm_eval_diagnostic": -2.4348540142723664e-05,
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.0012691810327825756,
+      "lr": 0.03,
+      "method": "fedogda_d",
+      "result_sha256": "edf41ad33e4601370379022ff2b8162e4a46b57544af1ecd828d0decef09871f",
+      "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p03_cm10",
+      "val_mse": 0.3457066911475905
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0004975079515920867,
+      "cm": 20.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.0007403320538795543,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "210e94a7a2044860bd18d8b88242a8218d81c2b79c40e2ae9fa5fe7ea2773a53",
+      "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p01_cm20",
+      "val_mse": 0.5409283449307787
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0008570046389680605,
+      "cm": 20.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.7792380061896601,
+      "lr": 0.03,
+      "method": "fedogda_d",
+      "result_sha256": "685dd22fa1a5d101dabfc108443f6c97d71a2f703bff8d014129e858ca047a6c",
+      "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p03_cm20",
+      "val_mse": 51.725228525050646
+    },
+    {
+      "best_gmm_eval_diagnostic": 9.020222994190623e-06,
+      "cm": 10.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.033635553928982015,
+      "lr": 0.1,
+      "method": "fedgda_d",
+      "result_sha256": "9921a4b6979a7086e59b685bcf8bb02bd9fc55b4d970a5478b009dc73053cafd",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p1_cm10",
+      "val_mse": 2.0265369487317644
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0007108975757782324,
+      "cm": 20.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.08427942825264483,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "ef802dc032256c4c0f7b915285dab53fb15492c414d287e0fab47f8e18b5c812",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p03_cm20",
+      "val_mse": 2.2189742665584307
+    },
+    {
+      "best_gmm_eval_diagnostic": 2.5558810636642314e-06,
+      "cm": 20.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.0002044693038835153,
+      "lr": 0.1,
+      "method": "fedgda_d",
+      "result_sha256": "4989ea927ecca8e1d36ed36e735d321ea048f9e94e1fb65a396363eaa8c824ee",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p1_cm20",
+      "val_mse": 1.3979912466572355
+    },
+    {
+      "best_gmm_eval_diagnostic": -3.8600104584045115e-06,
+      "cm": 10.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.00432621167674356,
+      "lr": 0.03,
+      "method": "fedogda_d",
+      "result_sha256": "75d1d5614f33b8b2081d3e7e13169e7f937f1a30ee4ddb98e4073307e13e0002",
+      "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p03_cm10",
+      "val_mse": 1.993474808827899
+    },
+    {
+      "best_gmm_eval_diagnostic": 6.879606797828372e-05,
+      "cm": 20.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.02122335620910494,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "794ee7639aaedfc6e2c794d159aa7ccd14ebaceb6a8f08cac8ecd1c993afda7d",
+      "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p01_cm20",
+      "val_mse": 1.705612759318748
+    },
+    {
+      "best_gmm_eval_diagnostic": -6.960278438367736e-05,
+      "cm": 20.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.0004738023112041008,
+      "lr": 0.03,
+      "method": "fedogda_d",
+      "result_sha256": "52539d9549cccc3bcfca0e4a51140c5fa26367506f9139a21262f5e22e962d97",
+      "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p03_cm20",
+      "val_mse": 1.1481763338429567
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.056898794449298844,
+      "cm": 10.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.04801874242525441,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "a943db0b271680e117d32dc81b58e51ac51c777659d8fc8492db317bf1acd061",
+      "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm10",
+      "val_mse": 0.3414201431690349
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.008786723099918972,
+      "cm": 10.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": 0.0063961629813931884,
+      "lr": 0.003,
+      "method": "fedgda_d",
+      "result_sha256": "dbf17cb505a5f2d98d5893f49596c7301147431b756ae26492ce6a513bbe27b7",
+      "run_id": "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm10",
+      "val_mse": 0.4447740637398618
+    },
+    {
+      "cm": 10.0,
+      "dataset": "cifar10_x",
+      "disposition": "terminal_pretraining_ineligible",
+      "lr": 0.333333,
+      "method": "fedgda_d",
+      "result_sha256": "36ff21b9f12b898610efb774b78394d806f77b5367bc05c372fe49f0a4dadcc2",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10",
+      "terminal_reason": "No valid model-selection candidate was selected before federated training started; dataset=cifar10_x, seed=0, simple_model_selection_epochs=100, f_history_model_selection_epochs=60, model_selection_batch_size=200, learning_rate=0.333333, critic_multiplier=10.0, f_learning_rate=3.33333, client_optimizer=sgd, best_score=-inf; federated training never started"
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.07293439843219808,
+      "cm": 20.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": 0.022532456763614574,
+      "lr": 0.01,
+      "method": "fedgda_d",
+      "result_sha256": "a3baf0310bebf341c4a19ce061b012ff412e6fe0a87eb1def5b9057d07375500",
+      "run_id": "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm20",
+      "val_mse": 0.23929123030246285
+    },
+    {
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "disposition": "terminal_pretraining_ineligible",
+      "lr": 0.333333,
+      "method": "fedgda_d",
+      "result_sha256": "77ef77ce01a1e9b3229d8f706ff7dad8c0cfc6206da8c574254965ab61213c44",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10",
+      "terminal_reason": "No valid model-selection candidate was selected before federated training started; dataset=femnist_x, seed=0, simple_model_selection_epochs=100, f_history_model_selection_epochs=60, model_selection_batch_size=200, learning_rate=0.333333, critic_multiplier=10.0, f_learning_rate=3.33333, client_optimizer=sgd, best_score=-inf; federated training never started"
+    },
+    {
+      "best_gmm_eval_diagnostic": -7.588326964532642e-05,
+      "cm": 20.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.04754089157609832,
+      "lr": 0.1,
+      "method": "fedgda_d",
+      "result_sha256": "c050177d3232d2ca01fcbd58d189514f8a3a72fae37c248f7f63c97b69d98722",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p1_cm20",
+      "val_mse": 0.18297900317362067
+    },
+    {
+      "cm": 20.0,
+      "dataset": "femnist_x",
+      "disposition": "terminal_pretraining_ineligible",
+      "lr": 0.333333,
+      "method": "fedgda_d",
+      "result_sha256": "a4c8f4433330dcdcd0650d77f747bc3ebef0a0e723cea5514f35081e53cbe7be",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm20",
+      "terminal_reason": "No valid model-selection candidate was selected before federated training started; dataset=femnist_x, seed=0, simple_model_selection_epochs=100, f_history_model_selection_epochs=60, model_selection_batch_size=200, learning_rate=0.333333, critic_multiplier=20.0, f_learning_rate=6.66666, client_optimizer=sgd, best_score=-inf; federated training never started"
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.06806853688171927,
+      "cm": 10.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.13030213437720206,
+      "lr": 0.03,
+      "method": "fedgda_d",
+      "result_sha256": "b89cc38426f8c10708f005eb7fb0049bb243c9c4052719ffb919f28a16867919",
+      "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p03_cm10",
+      "val_mse": 0.4487016900729405
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.00888531508834358,
+      "cm": 5.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.03660132750506513,
+      "lr": 0.009,
+      "method": "fedogda_d",
+      "result_sha256": "424ebb3709881a34a955a827b04ec06648c9398532f5967615751ee7bc84f738",
+      "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p009_cm5",
+      "val_mse": 1.8165018284207521
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.001350978952380256,
+      "cm": 10.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.01139203694519273,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "d88d51f39cbb1d5208abaa6744ee8d84226bbe802d09f831cee1d9a11d7d316c",
+      "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm10",
+      "val_mse": 0.6150816413724848
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.007230202991741319,
+      "cm": 10.0,
+      "dataset": "cifar10_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.02791556030041296,
+      "lr": 0.009,
+      "method": "fedogda_d",
+      "result_sha256": "693d100e70e7b5999989f6738f7ae8475bf32e70ca75ee675dd2a8df0e7b6388",
+      "run_id": "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p009_cm10",
+      "val_mse": 1.2689908411214108
+    },
+    {
+      "best_gmm_eval_diagnostic": -8.410082851469378e-05,
+      "cm": 40.0,
+      "dataset": "cifar10_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.025441360298146524,
+      "lr": 0.01,
+      "method": "fedogda_d",
+      "result_sha256": "4d26eaf065cfb64c445f9515fb87b1ae9e1164f600db5369f6f8efe201bec869",
+      "run_id": "det_screen_postbn_cifar10_x_fedogda_d_seed0_alpha0p5_lr0p01_cm40",
+      "val_mse": 1.4738745913874194
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.033060565865113176,
+      "cm": 1.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": 0.028220320419279896,
+      "lr": 0.009,
+      "method": "fedogda_d",
+      "result_sha256": "1a69bceb1aadb0edc618d5e7e3fbc1b2a755167a19739229e256e9c328721c19",
+      "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm1",
+      "val_mse": 0.23119717882850824
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.021903371650098855,
+      "cm": 2.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": -0.035074479652218125,
+      "lr": 0.003,
+      "method": "fedogda_d",
+      "result_sha256": "86fe6bc4cdc4e437218e00d6a0de8f28ebb1dae0dd5ac74e54b4c3527b910810",
+      "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm2",
+      "val_mse": 0.2318428824105162
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.08936679761442476,
+      "cm": 2.0,
+      "dataset": "cifar10_z",
+      "disposition": "eligible",
+      "gmm_eval": 0.028302580898243022,
+      "lr": 0.009,
+      "method": "fedogda_d",
+      "result_sha256": "17095b953e006ddf0c6d517bcc4bbaa1eb6e3ddf84fd5fa26d09164657cc3b9d",
+      "run_id": "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm2",
+      "val_mse": 0.22412170050581082
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.07749364350999449,
+      "cm": 10.0,
+      "dataset": "femnist_xz",
+      "disposition": "eligible",
+      "gmm_eval": -0.05656904670542223,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "4ec9367487a7d74854ecb23ab7ff1af5acd41fc92d8b00cb128a7277c1571881",
+      "run_id": "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+      "val_mse": 0.6135169222200593
+    },
+    {
+      "best_gmm_eval_diagnostic": -0.0041015920777529,
+      "cm": 10.0,
+      "dataset": "femnist_x",
+      "disposition": "eligible",
+      "gmm_eval": -0.14058155701611533,
+      "lr": 0.09,
+      "method": "fedogda_d",
+      "result_sha256": "9181489ab920047aef85606690dff016c8bedac0e44fe1dda525971e4e1126b6",
+      "run_id": "det_screen_postbn_femnist_x_fedogda_d_seed0_alpha0p5_lr0p09_cm10",
+      "val_mse": 0.5094641588016029
+    },
+    {
+      "best_gmm_eval_diagnostic": 0.1368893124305488,
+      "cm": 10.0,
+      "dataset": "femnist_z",
+      "disposition": "eligible",
+      "gmm_eval": 0.12625870601522604,
+      "lr": 0.001,
+      "method": "fedogda_d",
+      "result_sha256": "71110bf7eef18f9d49b940d03c8d5627ca8053971675c734f21bc61716840793",
+      "run_id": "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+      "val_mse": 0.2339186335214554
+    }
+  ],
+  "screen_manifest_sha256": "f4d2636495a2e20e6e979df210926e99fc23849fdfecd3ab9866e36f64eaa66b",
+  "server_buffer_policy": "direct_client_aggregate",
+  "source_hashes": [
+    {
+      "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_20260813/BOUNDARY_RULE_AMENDMENT_20260818.md",
+      "sha256": "65c544c02d3d749d7450dbd29e53a8c4b57b97ada22c8bc0873ad6f2aafc6400"
+    },
+    {
+      "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_20260813/PSI_SUMMARY_STATISTIC_AMENDMENT_20260819.md",
+      "sha256": "69459416bdfd4a80f27ff8f4e9479866bede5725e57c0588933e876aed3f42dd"
+    },
+    {
+      "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/HIGH_DIM_DETERMINISTIC_CLOSEOUT_PLAN_20260826.md",
+      "sha256": "e3fb927cdf9b061423d2f58a3cc2f0f1c0840dcfa1909521e50203b22da7535e"
+    },
+    {
+      "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/PROTOCOL_DECISION_ADDENDUM_20260826.md",
+      "sha256": "71354c23e6c8dde8097d1e142e1392f095e67b977aa24ad0f36da5f9cb19d9ba"
+    },
+    {
+      "path": "experiments/highdim_coauthor_protocol_v1/doe_review_and_revised_grid.md",
+      "sha256": "0b78712f8fc367928b368c2a646649314100550702f9acece8e68ab00076b9f4"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_x/main.npz",
+      "sha256": "ca5aea225a2e5b72545b6664c8256d794460ea5b335144cba8e7685e6d23a84e"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_xz/main.npz",
+      "sha256": "ec0033d4773125937fc1c33c97eeefa57f033cd04af603d67d4cffb52425e7fd"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_z/main.npz",
+      "sha256": "28a986f9a521b3fb8b96df72455d30bb21da66fbfc18d4949abec98466786109"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_x/main.npz",
+      "sha256": "1f88d17b29d3e4cf4ec0951a7fab53e0c27f2207cdfd158df855835858992b44"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_xz/main.npz",
+      "sha256": "0cb3b5af2edc011fcf55bd1ad4cc1c3c6c58fb009333f2e62ca29832f4319b5c"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_z/main.npz",
+      "sha256": "582b49c9c64186a4660817a816312e214e51f897053cb560b517b89cb35da5c4"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/experiment_utils.py",
+      "sha256": "b739e39fbb4af98dc8d375cbb52abc4e22ac4a2ea8d59f4faa5baf4e6ad13435"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/constants.py",
+      "sha256": "1f29a2aa02d8cfa55350d30191928876725d9976659dcbbe2da19ebb8cab0931"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/core/__init__.py",
+      "sha256": "2cfb4970e3bd28abb16a9654a261e3b511b6c7f63cb32a2cda90dfe56a0b60dd"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/MNIST/data_loader.py",
+      "sha256": "d8b911aaf9ddab64a3bd412f9a25fe4152219b83d7e773ed618f0e8b235b7d10"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/cifar10/efficient_loader.py",
+      "sha256": "7682f97414822238caa6aea6504cb170f429c44460656a3c37d575c57cca2218"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/cifar10/without_reload.py",
+      "sha256": "0985d453ea89c662516b36c03e23d50cfbced5bc8a4d3370f362481879847fd3"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/data_loader.py",
+      "sha256": "c4ab465e0a770ed4cca2960449b611cc8a3bdea74933df1a1a28e35cdf9295ac"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/my_model_trainer_classification.py",
+      "sha256": "61284c228fef38911e29ed731f0cc11c29dd34ac7bad296633b3ff4908b78328"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/trainer_creator.py",
+      "sha256": "1107d8cecfdc6eb2bb2a2488d5e2fcb01a1b24793a064775fe4f92c3ed65dacc"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/model/model_hub.py",
+      "sha256": "1f0eb55d5b3ec50794f9f6af8bef73b02b618ad5fcef61a9ea405a5a44329a26"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/runner.py",
+      "sha256": "63778d79846d33dab234ff4814f619ed1a6fcdb9eb63408966ee20a50aec802f"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/simulator.py",
+      "sha256": "68769f212a4cbb5b76e440b469b17ae6108775b21e244e922a69bf8331210cb4"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/client.py",
+      "sha256": "5ffd118e747d67a2230e7b09975e142f481941eb600a1432c805df9505c7d653"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py",
+      "sha256": "b61c80efddc0646b15c64c8cec028124e692d3076f87e7757d2158a0a9dc1d2d"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/multiprocess_client.py",
+      "sha256": "5f25157cd21ed1311b6e7db7e18e4844a57c267ebce5f978d62ef156ead7bebb"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/game_objectives/abstract_objective.py",
+      "sha256": "a7eda37d76b874122a178472afab4f664fa50ae07827174d29f1b62e3a53b218"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/game_objectives/approximate_psi_objective.py",
+      "sha256": "1e1980149b8a76eee2fd683af86874b1f5c39b609f432ac61296926258e444bb"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/game_objectives/simple_moment_objective.py",
+      "sha256": "cc0e2c0b68e34ece157ec87957e82e319c55cac48c50350d636804bd6f7b14dd"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/main.py",
+      "sha256": "594d0af76c06ebb06d62e6575344dd96654421c30fb63fe97401f05a08ada3a4"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/abstract_learning_eval.py",
+      "sha256": "6b33e6760d197d2bf7fc6e3842578eac2d4a3acd5eb33fdd7918aa503a774e93"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/learning_eval.py",
+      "sha256": "fc365066acb590c73f7a97454676b87a35845b2f7329e9ec1b908ce3d8c9fdda"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/learning_eval_nostop.py",
+      "sha256": "a8b98e48282c2b510346cece8a05e0c4f7de9813956cb95a12d705e5e254fc8e"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/simple_model_eval.py",
+      "sha256": "3b5999b2d98fa5023fb45c46cee08008d46976a8906eaa35894c5b207e5a0e62"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection_class.py",
+      "sha256": "b33e597bdf3c227701d5596520d87007c2644e509e19e1ec942c333e14a8544c"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/models/cnn_models.py",
+      "sha256": "ec916ce4cf271061fc96cd601402a878e6241f234915e059535a9cfe995ce76a"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/models/mlp_model.py",
+      "sha256": "1c5ae0c0c7377fa007930605dfe38658bcab8b38b45f8203c08d5901a2dd642c"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/Customsgd.py",
+      "sha256": "911ef0e49ca3b75c8a09802603f68d3552e31522c07850d8fb2ae1ffc6630b5e"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/extragradient.py",
+      "sha256": "dd55b8537f8df3cedbbb9c7704d085d7322f66cb6e4c75b2d009c0377202e62e"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/oadam.py",
+      "sha256": "f10fc99c4a4a88d388481345b268abcb7fc955b1f5daf117467c0ace14142882"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/ogda.py",
+      "sha256": "f299e462ef5c649a5597d411f643a11b6a019c5a6bab05b3a0d042a8f0c6f773"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/optimizer_factory.py",
+      "sha256": "205a74a0a8392366e8d7021e6f82d20d082869b008d6e2fe9b6b164780863031"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/plotting.py",
+      "sha256": "a7ba64cff83cc5aa47e19c03fb1cbadbca6ba44f605810d37818dc4fb9912ef9"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/abstract_scenario.py",
+      "sha256": "0598dbc94f79a744a9cbfd65386566b09e3d1510cc5933dad72a0eba35f24e18"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/cifar10_scenario.py",
+      "sha256": "d29848d73180e742eeb04a850a4f25f5977aedfbb14a80ea7bbe74dffbe90b57"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/mnist_scenarios.py",
+      "sha256": "ed7901dd66d957d201a0b033ffa8736ff4b7cb77f3c9a7d3db56b4aab7623f27"
+    },
+    {
+      "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/toy_scenarios.py",
+      "sha256": "a84fd99bb3a3fcbf352421fb735cea4de2cd8bb4ab866846446106ba77875efc"
+    },
+    {
+      "path": "scripts/check_manifest_stage_complete.py",
+      "sha256": "c9388c1ff23829d43f48436c9665d913b589e231f471f41d0b43c31b75f321e2"
+    },
+    {
+      "path": "scripts/run_manifest.py",
+      "sha256": "f970a9ad29e6febe5a5eee4b0e41c8957a803a9cefaaa038cf93a9ac200d56c0"
+    },
+    {
+      "path": "scripts/score_highdim_screen_by_psi.py",
+      "sha256": "505972f5f238ec635f0b073f2fd9408e5f11ed4209609ae3ddb63cc77b9a2561"
+    },
+    {
+      "path": "scripts/score_highdim_screen_post_bn_20260822.py",
+      "sha256": "b952f56bde68832c5f9149f13167cb95d7e83e1271a8779a733361557023c72e"
+    },
+    {
+      "path": "scripts/verify_protocol_hashes.py",
+      "sha256": "470716d7b59f8ad4ec1cd32912c4af9b0af578a65c8f11cb32d8330b7cdf7c05"
+    },
+    {
+      "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/BOUNDARY_REVIEW_20260827.md",
+      "sha256": "9b715128b3470e1ba63361e0767db57f9e647262e1228a6e02654af9b88a2793"
+    }
+  ],
+  "status": "complete",
+  "terminal_ineligible_runs": [
+    {
+      "reason": "No valid model-selection candidate was selected before federated training started; dataset=femnist_z, seed=0, simple_model_selection_epochs=100, f_history_model_selection_epochs=60, model_selection_batch_size=200, learning_rate=0.1, critic_multiplier=5.0, f_learning_rate=0.5, client_optimizer=sgd, best_score=-inf; federated training never started",
+      "run_id": "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p1_cm5"
+    },
+    {
+      "reason": "No valid model-selection candidate was selected before federated training started; dataset=cifar10_x, seed=0, simple_model_selection_epochs=100, f_history_model_selection_epochs=60, model_selection_batch_size=200, learning_rate=0.333333, critic_multiplier=10.0, f_learning_rate=3.33333, client_optimizer=sgd, best_score=-inf; federated training never started",
+      "run_id": "det_screen_postbn_cifar10_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10"
+    },
+    {
+      "reason": "No valid model-selection candidate was selected before federated training started; dataset=femnist_x, seed=0, simple_model_selection_epochs=100, f_history_model_selection_epochs=60, model_selection_batch_size=200, learning_rate=0.333333, critic_multiplier=10.0, f_learning_rate=3.33333, client_optimizer=sgd, best_score=-inf; federated training never started",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm10"
+    },
+    {
+      "reason": "No valid model-selection candidate was selected before federated training started; dataset=femnist_x, seed=0, simple_model_selection_epochs=100, f_history_model_selection_epochs=60, model_selection_batch_size=200, learning_rate=0.333333, critic_multiplier=20.0, f_learning_rate=6.66666, client_optimizer=sgd, best_score=-inf; federated training never started",
+      "run_id": "det_screen_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p333333_cm20"
+    }
+  ]
+}

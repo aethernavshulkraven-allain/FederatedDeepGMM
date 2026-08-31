@@ -7,6 +7,10 @@
 set -uo pipefail
 cd /home/arnav22103/FederatedDeepGMM
 
+echo "REFUSING TO RUN: the v2 adjudication campaign is legacy and scientifically ineligible." >&2
+echo "Use the post-fix screening workflow; do not resume or mix v2 trajectories." >&2
+exit 1
+
 while true; do
   idle=$(gpurun --status | awk '$2=="idle"{c++} END{print c+0}')
   echo "$(date -Is) idle_gpus=${idle}"

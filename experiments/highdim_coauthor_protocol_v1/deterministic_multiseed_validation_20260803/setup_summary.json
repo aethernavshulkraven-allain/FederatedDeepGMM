@@ -1,0 +1,40 @@
+{
+  "alpha": 0.5,
+  "auxiliary_regression": false,
+  "batch_size": 0,
+  "campaign": "highdim_deterministic_multiseed_validation_20260803",
+  "candidates": [
+    {
+      "critic_multiplier": 3.0,
+      "learning_rate": 0.03,
+      "method": "fedgda_d",
+      "role": "best_clean_gate_candidate"
+    },
+    {
+      "critic_multiplier": 1.0,
+      "learning_rate": 0.03,
+      "method": "fedogda_d",
+      "role": "best_fully_finite_gate_candidate"
+    },
+    {
+      "critic_multiplier": 3.0,
+      "learning_rate": 0.01,
+      "method": "fedogda_d",
+      "role": "lower_lr_stability_fallback"
+    }
+  ],
+  "clients_per_round": 1000,
+  "clients_total": 1000,
+  "communication_rounds": 150,
+  "dataset": "femnist_z",
+  "local_epochs": 3,
+  "output_root": "results/highdim_deterministic_multiseed_validation_20260803",
+  "runs": 6,
+  "seeds": [
+    1,
+    2
+  ],
+  "selection_metric_source": "validation",
+  "source_manifest": "experiments/highdim_coauthor_protocol_v1/deterministic_learning_gate_20260802/gate_manifest.csv",
+  "test_mse_used_for_selection": false
+}

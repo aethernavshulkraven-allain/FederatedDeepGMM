@@ -1,0 +1,10 @@
+[
+  {
+    "best_validation_round": 0,
+    "final_test_mse": 0.2563233563762546,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_runtime_profile_20260805/profiled/femnist_z/fedgda_d/seed_0/det_profile_femnist_z_fedgda_d_seed0_alpha0p5_auxoff_r6",
+    "run_id": "det_profile_femnist_z_fedgda_d_seed0_alpha0p5_auxoff_r6",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.24126636072417879
+  }
+]

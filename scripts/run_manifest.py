@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import os
@@ -27,7 +28,9 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "fedgmm" / "sp_decentralized_mnist_lr_example"))
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from experiment_utils import config_checksum  # noqa: E402
+from verify_protocol_hashes import verify_hashes  # noqa: E402
 
 DEFAULT_MANIFEST = REPO_ROOT / "experiments" / "rerun_protocol_v1" / "manifest.csv"
 DEFAULT_CONFIG_DIR = REPO_ROOT / "experiments" / "rerun_protocol_v1" / "generated_configs"
@@ -260,6 +263,23 @@ def _require_launch_eligible(row: dict[str, str]) -> None:
             f"run {run_id} is a registered pre-BatchNorm-fix legacy trajectory "
             f"({LEGACY_TRAJECTORY_REGISTRY.relative_to(REPO_ROOT)}); not launch-eligible"
         )
+    # A manifest's "alpha" column is a human-readable label for the Dirichlet
+    # partition concentration; "partition_alpha" is the only field
+    # build_config() actually feeds into the training process (see
+    # partition_alpha below). A generator that updates one column without the
+    # other silently launches at a different alpha than its own run_id/label
+    # claims -- this check catches that class of bug before launch rather
+    # than after the run has already trained at the wrong alpha.
+    alpha_label, partition_alpha = row.get("alpha"), row.get("partition_alpha")
+    if not _blank(alpha_label) and not _blank(partition_alpha):
+        alpha_value = _as_float(alpha_label, "alpha")
+        partition_alpha_value = _as_float(partition_alpha, "partition_alpha")
+        if not math.isclose(alpha_value, partition_alpha_value, rel_tol=1e-9, abs_tol=1e-12):
+            raise ManifestLaunchError(
+                f"run {run_id}: alpha label {alpha_value:g} != executable "
+                f"partition_alpha {partition_alpha_value:g} -- this run would train "
+                "at a different alpha than its label claims"
+            )
 
 
 def build_config(
@@ -907,6 +927,43 @@ def resolve_certified_run(
     return certified_run_dir, certified_row
 
 
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _validate_recorded_log_digest(run_dir: Path, log_name: str, recorded_digest: Any) -> None:
+    """A recorded stdout/stderr sha256 is only evidence if it is independently
+    recomputable from the actual log file next to it, right now -- otherwise
+    a certification claiming a specific hash could never be checked against
+    anything. If the log file is genuinely absent (e.g. this job's stdout/
+    stderr were never captured), the recorded digest must be null to match;
+    a non-null digest with no file to recompute it from is itself a defect."""
+    log_path = run_dir / log_name
+    if not log_path.exists():
+        if recorded_digest is not None:
+            raise ManifestLaunchError(
+                f"pretraining_failure.json records {log_name}_sha256={recorded_digest!r} "
+                f"but {log_name} is not present in {run_dir} to recompute it from"
+            )
+        return
+    if not isinstance(recorded_digest, str) or not recorded_digest.strip():
+        raise ManifestLaunchError(
+            f"pretraining_failure.json {log_name}_sha256 must be a non-empty string "
+            f"when {log_name} is present"
+        )
+    recomputed = _sha256_file(log_path)
+    if recomputed != recorded_digest:
+        raise ManifestLaunchError(
+            f"pretraining_failure.json {log_name}_sha256 does not match a fresh "
+            f"recomputation from {log_name}: recorded {recorded_digest!r}, "
+            f"recomputed {recomputed!r}"
+        )
+
+
 def validate_pretraining_failure_artifact(
     run_dir: Path,
     row: dict[str, str],
@@ -914,9 +971,12 @@ def validate_pretraining_failure_artifact(
     """Validates pretraining_failure.json -- the only artifact that may
     classify a run whose training process never wrote round-curve artifacts
     as terminal_pretraining_ineligible rather than an unexplained process
-    failure. Structural/consistency validation only; the recorded
-    effective_config_checksum is cross-verified at protocol hash-freeze time,
-    not here."""
+    failure. Verifies exact configuration equivalence against the manifest
+    row (dataset, method, seed, learning rate, critic multiplier, partition
+    alpha, horizon, ...) via the same _validate_effective_config() the
+    normal completed-run path uses, and independently recomputes the
+    stdout/stderr digests rather than trusting the values the failing
+    process itself recorded."""
     payload = _load_json_object(run_dir / "pretraining_failure.json")
     if payload.get("schema_version") != 1:
         raise ManifestLaunchError("pretraining_failure.json schema_version must be 1")
@@ -976,8 +1036,68 @@ def validate_pretraining_failure_artifact(
             f"recomputation from effective_config.json: recorded {checksum!r}, "
             f"recomputed {recomputed_checksum!r}"
         )
-    if "hash_bundle_id" not in payload:
-        raise ManifestLaunchError("pretraining_failure.json is missing hash_bundle_id")
+    # A pretraining failure happens before federated round 0, so
+    # _validate_round_curve never runs for this artifact -- this is the only
+    # place that proves the reproduction actually used the same dataset,
+    # method, seed, learning rate, critic multiplier, partition alpha, and
+    # horizon as the row it is meant to be certifying, rather than merely
+    # being internally self-consistent.
+    _validate_effective_config(effective_config, row)
+    hash_bundle_id = payload.get("hash_bundle_id")
+    if not isinstance(hash_bundle_id, str) or not hash_bundle_id.strip():
+        raise ManifestLaunchError(
+            "pretraining_failure.json hash_bundle_id must be a non-empty string, "
+            f"got {hash_bundle_id!r}"
+        )
+    # A non-empty string alone proves nothing -- it could name a bundle that
+    # was never generated, or one whose recorded hashes no longer match the
+    # actual source tree. Resolve it and run the real hash verifier so this
+    # is provenance, not just a label.
+    bundle_path = Path(hash_bundle_id)
+    if bundle_path.is_absolute() or ".." in bundle_path.parts:
+        raise ManifestLaunchError(
+            f"pretraining_failure.json hash_bundle_id has an unsafe path: {hash_bundle_id!r}"
+        )
+    bundle_path = REPO_ROOT / bundle_path
+    if not bundle_path.is_file():
+        raise ManifestLaunchError(
+            f"pretraining_failure.json hash_bundle_id does not exist: {hash_bundle_id!r}"
+        )
+    # A clean relative path can still resolve (e.g. through a symlink) to
+    # somewhere outside REPO_ROOT -- the unsafe-path check above only rejects
+    # ".." literally appearing in the string, not what the path actually
+    # resolves to on disk.
+    resolved_bundle_path = bundle_path.resolve()
+    resolved_repo_root = REPO_ROOT.resolve()
+    if resolved_bundle_path != resolved_repo_root and resolved_repo_root not in resolved_bundle_path.parents:
+        raise ManifestLaunchError(
+            f"pretraining_failure.json hash_bundle_id resolves outside the repository: "
+            f"{hash_bundle_id!r} -> {resolved_bundle_path}"
+        )
+    # The path alone is a mutable label -- a bundle file swapped in-place at
+    # the same path would still verify against its own (now-different)
+    # recorded hashes. Binding to the bundle file's own content hash, taken
+    # at the moment the failure was recorded, closes that gap.
+    bundle_sha256 = payload.get("hash_bundle_sha256")
+    if not isinstance(bundle_sha256, str) or not bundle_sha256.strip():
+        raise ManifestLaunchError(
+            "pretraining_failure.json hash_bundle_sha256 must be a non-empty string, "
+            f"got {bundle_sha256!r}"
+        )
+    actual_bundle_sha256 = hashlib.sha256(resolved_bundle_path.read_bytes()).hexdigest()
+    if bundle_sha256 != actual_bundle_sha256:
+        raise ManifestLaunchError(
+            f"pretraining_failure.json hash_bundle_sha256 does not match {hash_bundle_id!r}'s "
+            f"current content: recorded {bundle_sha256!r}, actual {actual_bundle_sha256!r}"
+        )
+    try:
+        verify_hashes(bundle_path)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise ManifestLaunchError(
+            f"pretraining_failure.json hash_bundle_id {hash_bundle_id!r} failed verification: {exc}"
+        ) from exc
+    _validate_recorded_log_digest(run_dir, "stdout.log", payload.get("stdout_sha256"))
+    _validate_recorded_log_digest(run_dir, "stderr.log", payload.get("stderr_sha256"))
     return {
         "run_dir": str(run_dir),
         "test_mse_at_best_validation": None,

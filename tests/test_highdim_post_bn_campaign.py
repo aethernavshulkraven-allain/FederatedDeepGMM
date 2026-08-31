@@ -196,6 +196,12 @@ class V4PreparationTests(unittest.TestCase):
                     row["server_buffer_policy"] == "direct_client_aggregate"
                     for row in rows
                 ))
+                # Every dataset in this campaign is a femnist_*/cifar10_*
+                # image scenario -- V4 rows must skip the ~10 GiB-scale full
+                # test-tensor write, same as every later stage.
+                self.assertTrue(all(
+                    row["compact_predictions_only"] == "True" for row in rows
+                ))
 
     def test_fresh_diagnostic_is_now_certified_post_phase_3(self) -> None:
         # Real current repo state (closeout plan SS4.6 + SS6.1): Phase 3
@@ -205,16 +211,38 @@ class V4PreparationTests(unittest.TestCase):
         certification = prepare_v4._load_json(prepare_v4.DIAGNOSTIC_CERTIFICATION)
         self.assertEqual(certification["certification_status"], "passed")
 
-    def test_v4_is_still_blocked_on_the_missing_frozen_screen_results(self) -> None:
-        # V4 packet generation is blocked on a separate, still-unmet gate:
-        # screen_results.json is not written until Phase 4's boundary review
-        # is resolved (closeout plan SS7), which this pass has not done.
-        screen_results = (
+    def test_screen_results_and_boundary_decision_are_now_frozen_post_phase_4(self) -> None:
+        # Real current repo state (closeout plan Phase 4 SS7): the 4
+        # pre-round-0 certifications were refreshed under the hardened
+        # hash_bundle_sha256 check, the corrected screen was rescored
+        # against them, and the boundary decision (cm=2 sufficed for
+        # cifar10_z|fedogda_d, no cm=10 run) was frozen as a machine-
+        # readable artifact tied to screen_results.json's exact hash. V4
+        # packet generation is no longer blocked on this gate either.
+        screen_results_path = (
             REPO_ROOT
             / "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822"
             / "screen_results.json"
         )
-        self.assertFalse(screen_results.exists())
+        self.assertTrue(screen_results_path.exists())
+        screen_results = json.loads(screen_results_path.read_text())
+        self.assertEqual(screen_results["status"], "complete")
+        self.assertEqual(screen_results["planned_runs"], 108)
+        self.assertEqual(len(screen_results["cells"]), 12)
+        self.assertEqual(len(screen_results["terminal_ineligible_runs"]), 4)
+        self.assertEqual(len(screen_results["boundary_review_cells"]), 6)
+
+        boundary_path = (
+            REPO_ROOT
+            / "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822"
+            / "BOUNDARY_REVIEW_20260827.json"
+        )
+        self.assertTrue(boundary_path.exists())
+        boundary = json.loads(boundary_path.read_text())
+        expected_hash = hashlib.sha256(screen_results_path.read_bytes()).hexdigest()
+        self.assertEqual(boundary["screen_results_sha256"], expected_hash)
+        self.assertEqual(set(boundary["decisions"]), set(screen_results["boundary_review_cells"]))
+        self.assertTrue(all(v == "accepted_for_adjudication" for v in boundary["decisions"].values()))
 
     def test_diagnostic_hash_bundle_mismatch_is_rejected_not_just_status(self) -> None:
         with (SCREEN_DIR / "screen_manifest.csv").open(newline="") as handle:

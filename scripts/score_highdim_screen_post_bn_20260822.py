@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import os
@@ -15,6 +16,12 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
+from highdim_protocol_hash_closure_20260822 import (  # noqa: E402
+    CORE_DATASET_FILES,
+    CORE_PROTOCOL_DOCS,
+    CORE_SOURCES,
+    git_provenance,
+)
 from run_manifest import (  # noqa: E402
     ManifestLaunchError,
     load_certification_ledger,
@@ -78,6 +85,28 @@ def _load_json(path: Path) -> dict:
     return value
 
 
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+# The last-50-mean ranking that decides every winner in this file is
+# computed from mse_by_round.csv, not metrics.json -- a result_sha256 that
+# hashed only metrics.json (closeout review finding) could stay unchanged
+# while the actual round curve the ranking was based on silently changed.
+# Binds all three of a run's authoritative artifacts together, in a fixed,
+# filename-prefixed order so no combination of edits produces a collision.
+_ELIGIBLE_RESULT_FILES = ("effective_config.json", "metrics.json", "mse_by_round.csv")
+
+
+def _eligible_result_sha256(run_dir: Path) -> str:
+    digest = hashlib.sha256()
+    for name in _ELIGIBLE_RESULT_FILES:
+        digest.update(name.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update((run_dir / name).read_bytes())
+    return digest.hexdigest()
+
+
 def _atomic_json(path: Path, value: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.tmp-{os.getpid()}")
@@ -100,6 +129,11 @@ def score_screen(manifest_path: Path, certification_ledger_path: Path | None = N
     cells: dict[tuple[str, str], list[dict]] = defaultdict(list)
     invalid = []
     terminal = []
+    # Phase 4 SS7.1 requires screen_results.json to account for all 108
+    # planned rows individually (not just the 12 per-cell summaries) plus a
+    # result hash per row -- built alongside the existing per-row loop so it
+    # can never drift from what that loop actually decided about each row.
+    dispositions = []
     for row in rows:
         if row.get("server_buffer_policy") != "direct_client_aggregate":
             raise ValueError(f"{row['run_id']} does not freeze the corrected buffer policy")
@@ -113,6 +147,13 @@ def score_screen(manifest_path: Path, certification_ledger_path: Path | None = N
         effective_run_dir, effective_row = resolve_certified_run(
             row["run_id"], row, run_dir, ledger
         )
+        disposition_base = {
+            "run_id": row["run_id"],
+            "dataset": row["dataset"],
+            "method": row["method"],
+            "lr": float(row["learning_rate"]),
+            "cm": float(row["critic_multiplier"]),
+        }
         try:
             validation = validate_artifacts(effective_run_dir, effective_row)
         except ManifestLaunchError as exc:
@@ -122,6 +163,12 @@ def score_screen(manifest_path: Path, certification_ledger_path: Path | None = N
             terminal.append({
                 "run_id": row["run_id"],
                 "reason": validation["terminal_reason"],
+            })
+            dispositions.append({
+                **disposition_base,
+                "disposition": "terminal_pretraining_ineligible",
+                "terminal_reason": validation["terminal_reason"],
+                "result_sha256": _sha256(effective_run_dir / "pretraining_failure.json"),
             })
             continue
         metrics = _load_json(run_dir / "metrics.json")
@@ -145,10 +192,22 @@ def score_screen(manifest_path: Path, certification_ledger_path: Path | None = N
             "val_mse": mse_last50,
             "best_gmm_eval_diagnostic": best_gmm_eval_diagnostic,
         })
+        dispositions.append({
+            **disposition_base,
+            "disposition": "eligible",
+            "gmm_eval": psi_last50,
+            "val_mse": mse_last50,
+            "best_gmm_eval_diagnostic": best_gmm_eval_diagnostic,
+            "result_sha256": _eligible_result_sha256(run_dir),
+        })
 
     if invalid:
         raise ValueError(
             f"screen is incomplete or malformed ({len(invalid)} runs); first={invalid[0]}"
+        )
+    if len(dispositions) != len(rows):
+        raise ValueError(
+            f"internal error: {len(dispositions)} row dispositions for {len(rows)} planned rows"
         )
     if len(cells) != EXPECTED_CELLS:
         raise ValueError(f"expected {EXPECTED_CELLS} image cells, got {len(cells)}")
@@ -218,6 +277,40 @@ def score_screen(manifest_path: Path, certification_ledger_path: Path | None = N
             "boundary_review_required": review_required,
             "boundary_detail": {"psi_rank_1": psi_flags, "mse_winner": mse_flags},
         }
+    # Phase 4 SS7.1: screen_results.json must itself carry source, manifest,
+    # and result hashes, not just a manifest path string -- source_hashes
+    # mirrors every other stage's generated_artifact_hashes.json (CORE_
+    # SOURCES + CORE_DATASET_FILES + CORE_PROTOCOL_DOCS), embedded here
+    # instead of a sibling file since the plan asks for this file to
+    # *contain* them. Also includes this scorer's own code, its ranking
+    # dependency, and the protocol/DOE documents that define scoring and
+    # boundary outcomes -- a silent edit to any of these would change this
+    # very output without CORE_SOURCES (scoped to main.py's training
+    # execution path, not post-hoc scoring) ever catching it.
+    required_scorer_paths = (
+        "scripts/score_highdim_screen_post_bn_20260822.py",
+        "scripts/score_highdim_screen_by_psi.py",
+        "experiments/highdim_coauthor_protocol_v1/doe_review_and_revised_grid.md",
+        "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/"
+        "HIGH_DIM_DETERMINISTIC_CLOSEOUT_PLAN_20260826.md",
+    )
+    # BOUNDARY_REVIEW_20260827.md is a reactive decision artifact written
+    # only after a first scoring pass identifies which cells are flagged
+    # (closeout plan SS7.1 then SS7.2) -- hashed when present, so it's bound
+    # into the *final*, post-review freeze, without making an earlier
+    # discovery pass fail closed on a file that cannot exist yet.
+    optional_scorer_paths = (
+        "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/"
+        "BOUNDARY_REVIEW_20260827.md",
+    )
+    source_hashes = [
+        {"path": path, "sha256": _sha256(REPO_ROOT / path)}
+        for path in sorted({*CORE_SOURCES, *CORE_DATASET_FILES, *CORE_PROTOCOL_DOCS, *required_scorer_paths})
+    ] + [
+        {"path": path, "sha256": _sha256(REPO_ROOT / path)}
+        for path in sorted(optional_scorer_paths)
+        if (REPO_ROOT / path).is_file()
+    ]
     return {
         "status": "complete",
         "manifest": str(manifest_path.relative_to(REPO_ROOT)),
@@ -227,6 +320,10 @@ def score_screen(manifest_path: Path, certification_ledger_path: Path | None = N
         "boundary_review_required": bool(boundary_review_cells),
         "boundary_review_cells": boundary_review_cells,
         "cells": output_cells,
+        "row_dispositions": dispositions,
+        "screen_manifest_sha256": _sha256(manifest_path),
+        "source_hashes": source_hashes,
+        "git_provenance": git_provenance(),
     }
 
 

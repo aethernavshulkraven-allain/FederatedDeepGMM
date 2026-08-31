@@ -186,7 +186,13 @@ class PrepareFinalsTest(unittest.TestCase):
             for field in required:
                 self.assertIn(field, row)
                 self.assertNotEqual(row[field], "")
-        self.assertTrue(all(row["partition_alpha"] == "0.5" for row in rows))
+        # This campaign's "alpha" IS the Dirichlet partition concentration,
+        # and finals rows span alpha 0.1/0.5/1.0 -- partition_alpha must
+        # track each row's own alpha, not stay pinned at a single value.
+        self.assertTrue(all(row["partition_alpha"] == row["alpha"] for row in rows))
+        self.assertEqual(
+            {row["alpha"] for row in rows}, {"0.1", "0.5", "1"},
+        )
         self.assertTrue(all(row["comm_round"] == "500" for row in rows))
 
     def test_launch_manifest_is_launchable_by_real_run_manifest_dry_run(self):
@@ -232,6 +238,7 @@ class PrepareFinalsTest(unittest.TestCase):
         retune_results_path = self.tmp / "retune_results.json"
         retune_results_path.write_text(json.dumps({
             "status": "complete",
+            "stage": "promote",
             "cells": {retuned_cell: {"winner": {"lr": 0.5, "cm": 99.0, "run_id": "retune_winner"}}},
         }))
         output_dir = self.tmp / "finals"
@@ -277,7 +284,7 @@ class PrepareFinalsTest(unittest.TestCase):
     def test_missing_retune_result_for_a_flagged_cell_blocked(self):
         results_path, stability_manifest_path = _fake_stability(self.tmp, all_pass=False)
         retune_results_path = self.tmp / "retune_results.json"
-        retune_results_path.write_text(json.dumps({"status": "complete", "cells": {}}))
+        retune_results_path.write_text(json.dumps({"status": "complete", "stage": "promote", "cells": {}}))
         with self.assertRaisesRegex(ValueError, "missing these cells"):
             prepare_finals.prepare(
                 self.winners_path, results_path, stability_manifest_path,

@@ -1,0 +1,50 @@
+[
+  {
+    "best_validation_round": 148,
+    "final_test_mse": 0.07360223882971467,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_multiseed_validation_20260803/femnist_z/fedgda_d/seed_1/det_multiseed_femnist_z_fedgda_d_seed1_alpha0p5_lr0p03_cm3",
+    "run_id": "det_multiseed_femnist_z_fedgda_d_seed1_alpha0p5_lr0p03_cm3",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.06611114017310991
+  },
+  {
+    "best_validation_round": 145,
+    "final_test_mse": 0.0844235550042856,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_multiseed_validation_20260803/femnist_z/fedgda_d/seed_2/det_multiseed_femnist_z_fedgda_d_seed2_alpha0p5_lr0p03_cm3",
+    "run_id": "det_multiseed_femnist_z_fedgda_d_seed2_alpha0p5_lr0p03_cm3",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.07535131939765227
+  },
+  {
+    "best_validation_round": 140,
+    "final_test_mse": 0.12769893392876872,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_multiseed_validation_20260803/femnist_z/fedogda_d/seed_1/det_multiseed_femnist_z_fedogda_d_seed1_alpha0p5_lr0p03_cm1",
+    "run_id": "det_multiseed_femnist_z_fedogda_d_seed1_alpha0p5_lr0p03_cm1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.10101371658332901
+  },
+  {
+    "best_validation_round": 139,
+    "final_test_mse": 0.3726389398921039,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_multiseed_validation_20260803/femnist_z/fedogda_d/seed_2/det_multiseed_femnist_z_fedogda_d_seed2_alpha0p5_lr0p03_cm1",
+    "run_id": "det_multiseed_femnist_z_fedogda_d_seed2_alpha0p5_lr0p03_cm1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.10397009963763276
+  },
+  {
+    "best_validation_round": 143,
+    "final_test_mse": 0.20540625460583348,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_multiseed_validation_20260803/femnist_z/fedogda_d/seed_1/det_multiseed_femnist_z_fedogda_d_seed1_alpha0p5_lr0p01_cm3",
+    "run_id": "det_multiseed_femnist_z_fedogda_d_seed1_alpha0p5_lr0p01_cm3",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.19295143456664557
+  },
+  {
+    "best_validation_round": 148,
+    "final_test_mse": 0.23252148484267682,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_multiseed_validation_20260803/femnist_z/fedogda_d/seed_2/det_multiseed_femnist_z_fedogda_d_seed2_alpha0p5_lr0p01_cm3",
+    "run_id": "det_multiseed_femnist_z_fedogda_d_seed2_alpha0p5_lr0p01_cm3",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.19749540800445528
+  }
+]

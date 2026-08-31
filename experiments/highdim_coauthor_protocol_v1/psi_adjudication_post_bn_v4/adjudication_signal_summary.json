@@ -1,0 +1,272 @@
+{
+  "campaign": "highdim_psi_adjudication_post_bn_v4",
+  "fresh_initialization": true,
+  "model_state_reuse": false,
+  "new_runs": 57,
+  "plan": [
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm5"
+          ]
+        },
+        {
+          "cm": 10.0,
+          "labels": [
+            "psi_rank1",
+            "mse_winner"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm10"
+          ]
+        }
+      ],
+      "dataset": "cifar10_xz",
+      "method": "fedgda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 1.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.001,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm1"
+          ]
+        },
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank1",
+            "mse_winner"
+          ],
+          "lr": 0.001,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5"
+          ]
+        }
+      ],
+      "dataset": "cifar10_xz",
+      "method": "fedogda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank2",
+            "mse_winner"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5"
+          ]
+        },
+        {
+          "cm": 20.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm20"
+          ]
+        }
+      ],
+      "dataset": "cifar10_z",
+      "method": "fedgda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm5"
+          ]
+        },
+        {
+          "cm": 2.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.009,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm2"
+          ]
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p01_cm1"
+          ]
+        }
+      ],
+      "dataset": "cifar10_z",
+      "method": "fedogda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm5"
+          ]
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p01_cm1"
+          ]
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.03,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p03_cm1"
+          ]
+        }
+      ],
+      "dataset": "femnist_xz",
+      "method": "fedgda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank2",
+            "mse_winner"
+          ],
+          "lr": 0.001,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5"
+          ]
+        },
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.003,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm5"
+          ]
+        }
+      ],
+      "dataset": "femnist_xz",
+      "method": "fedogda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank2",
+            "mse_winner"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5"
+          ]
+        },
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.03,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_femnist_z_fedgda_d_seed0_alpha0p5_lr0p03_cm5"
+          ]
+        }
+      ],
+      "dataset": "femnist_z",
+      "method": "fedgda_d"
+    },
+    {
+      "candidates": [
+        {
+          "cm": 5.0,
+          "labels": [
+            "psi_rank2"
+          ],
+          "lr": 0.001,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm5"
+          ]
+        },
+        {
+          "cm": 10.0,
+          "labels": [
+            "psi_rank1"
+          ],
+          "lr": 0.001,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm10"
+          ]
+        },
+        {
+          "cm": 1.0,
+          "labels": [
+            "mse_winner"
+          ],
+          "lr": 0.01,
+          "reused_from_finals": false,
+          "source_screen_run_ids": [
+            "det_screen_postbn_femnist_z_fedogda_d_seed0_alpha0p5_lr0p01_cm1"
+          ]
+        }
+      ],
+      "dataset": "femnist_z",
+      "method": "fedogda_d"
+    }
+  ],
+  "server_buffer_policy": "direct_client_aggregate",
+  "source_screen_results": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/screen_results.json"
+}

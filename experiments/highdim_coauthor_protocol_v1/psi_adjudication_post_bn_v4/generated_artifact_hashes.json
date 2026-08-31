@@ -1,0 +1,250 @@
+[
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/bn_diagnostic_fresh_20260826/bn_buffer_diagnostic_certification.json",
+    "sha256": "97ac3a7f881b43908678dd6391b4154f0c44a8465252ffd750d038c611490892"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_20260813/BOUNDARY_RULE_AMENDMENT_20260818.md",
+    "sha256": "65c544c02d3d749d7450dbd29e53a8c4b57b97ada22c8bc0873ad6f2aafc6400"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_20260813/PSI_SUMMARY_STATISTIC_AMENDMENT_20260819.md",
+    "sha256": "69459416bdfd4a80f27ff8f4e9479866bede5725e57c0588933e876aed3f42dd"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/BOUNDARY_REVIEW_20260827.json",
+    "sha256": "8a7e6fb2acc4b763e708efd09a14bdb192d72265d30940315a8e7559e7d3e533"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/PROTOCOL_DECISION_ADDENDUM_20260826.md",
+    "sha256": "71354c23e6c8dde8097d1e142e1392f095e67b977aa24ad0f36da5f9cb19d9ba"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/screen_manifest.csv",
+    "sha256": "f4d2636495a2e20e6e979df210926e99fc23849fdfecd3ab9866e36f64eaa66b"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/screen_results.json",
+    "sha256": "08576ab915a8084458fb3e0cb0e6dc5b3d209768623e216d59740b251fd7e006"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/psi_adjudication_post_bn_v4/adjudication_signal_manifest.csv",
+    "sha256": "999cb5abb99a9d736296cafa19f09173de9fd10b359ea016d5ae9792c356185c"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/psi_adjudication_post_bn_v4/adjudication_signal_summary.json",
+    "sha256": "07147e7adfcfd41410e5959312c3ae027f2241d9ea869c38e81a7292b2f3bfaf"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/psi_adjudication_post_bn_v4/adjudication_x_manifest.csv",
+    "sha256": "56912f92d1bb518ffd6943b6e05772107faa3df43dd2ec47e387cc50c8013469"
+  },
+  {
+    "path": "experiments/highdim_coauthor_protocol_v1/psi_adjudication_post_bn_v4/adjudication_x_summary.json",
+    "sha256": "64f1d4d090deb379c4c4e9419bebb895220564d82b477b12ccdd0853280324f7"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_x/main.npz",
+    "sha256": "ca5aea225a2e5b72545b6664c8256d794460ea5b335144cba8e7685e6d23a84e"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_xz/main.npz",
+    "sha256": "ec0033d4773125937fc1c33c97eeefa57f033cd04af603d67d4cffb52425e7fd"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/cifar10_z/main.npz",
+    "sha256": "28a986f9a521b3fb8b96df72455d30bb21da66fbfc18d4949abec98466786109"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_x/main.npz",
+    "sha256": "1f88d17b29d3e4cf4ec0951a7fab53e0c27f2207cdfd158df855835858992b44"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_xz/main.npz",
+    "sha256": "0cb3b5af2edc011fcf55bd1ad4cc1c3c6c58fb009333f2e62ca29832f4319b5c"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/data/femnist_z/main.npz",
+    "sha256": "582b49c9c64186a4660817a816312e214e51f897053cb560b517b89cb35da5c4"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/experiment_utils.py",
+    "sha256": "b319a1bcfab19e49e17b0642cb0f9cdc4cdec5590e5136ba39a12ba1aef73fbd"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/constants.py",
+    "sha256": "1f29a2aa02d8cfa55350d30191928876725d9976659dcbbe2da19ebb8cab0931"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/core/__init__.py",
+    "sha256": "2cfb4970e3bd28abb16a9654a261e3b511b6c7f63cb32a2cda90dfe56a0b60dd"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/MNIST/data_loader.py",
+    "sha256": "d8b911aaf9ddab64a3bd412f9a25fe4152219b83d7e773ed618f0e8b235b7d10"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/cifar10/efficient_loader.py",
+    "sha256": "7682f97414822238caa6aea6504cb170f429c44460656a3c37d575c57cca2218"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/cifar10/without_reload.py",
+    "sha256": "0985d453ea89c662516b36c03e23d50cfbced5bc8a4d3370f362481879847fd3"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/data/data_loader.py",
+    "sha256": "c4ab465e0a770ed4cca2960449b611cc8a3bdea74933df1a1a28e35cdf9295ac"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/my_model_trainer_classification.py",
+    "sha256": "61284c228fef38911e29ed731f0cc11c29dd34ac7bad296633b3ff4908b78328"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/ml/trainer/trainer_creator.py",
+    "sha256": "1107d8cecfdc6eb2bb2a2488d5e2fcb01a1b24793a064775fe4f92c3ed65dacc"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/model/model_hub.py",
+    "sha256": "1f0eb55d5b3ec50794f9f6af8bef73b02b618ad5fcef61a9ea405a5a44329a26"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/runner.py",
+    "sha256": "63778d79846d33dab234ff4814f619ed1a6fcdb9eb63408966ee20a50aec802f"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/simulator.py",
+    "sha256": "68769f212a4cbb5b76e440b469b17ae6108775b21e244e922a69bf8331210cb4"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/client.py",
+    "sha256": "5ffd118e747d67a2230e7b09975e142f481941eb600a1432c805df9505c7d653"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py",
+    "sha256": "b61c80efddc0646b15c64c8cec028124e692d3076f87e7757d2158a0a9dc1d2d"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/multiprocess_client.py",
+    "sha256": "5f25157cd21ed1311b6e7db7e18e4844a57c267ebce5f978d62ef156ead7bebb"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/game_objectives/abstract_objective.py",
+    "sha256": "a7eda37d76b874122a178472afab4f664fa50ae07827174d29f1b62e3a53b218"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/game_objectives/approximate_psi_objective.py",
+    "sha256": "1e1980149b8a76eee2fd683af86874b1f5c39b609f432ac61296926258e444bb"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/game_objectives/simple_moment_objective.py",
+    "sha256": "cc0e2c0b68e34ece157ec87957e82e319c55cac48c50350d636804bd6f7b14dd"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/main.py",
+    "sha256": "594d0af76c06ebb06d62e6575344dd96654421c30fb63fe97401f05a08ada3a4"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/abstract_learning_eval.py",
+    "sha256": "6b33e6760d197d2bf7fc6e3842578eac2d4a3acd5eb33fdd7918aa503a774e93"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/learning_eval.py",
+    "sha256": "fc365066acb590c73f7a97454676b87a35845b2f7329e9ec1b908ce3d8c9fdda"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/learning_eval_nostop.py",
+    "sha256": "a8b98e48282c2b510346cece8a05e0c4f7de9813956cb95a12d705e5e254fc8e"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection/simple_model_eval.py",
+    "sha256": "3b5999b2d98fa5023fb45c46cee08008d46976a8906eaa35894c5b207e5a0e62"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection_class.py",
+    "sha256": "b33e597bdf3c227701d5596520d87007c2644e509e19e1ec942c333e14a8544c"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/models/cnn_models.py",
+    "sha256": "ec916ce4cf271061fc96cd601402a878e6241f234915e059535a9cfe995ce76a"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/models/mlp_model.py",
+    "sha256": "1c5ae0c0c7377fa007930605dfe38658bcab8b38b45f8203c08d5901a2dd642c"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/Customsgd.py",
+    "sha256": "911ef0e49ca3b75c8a09802603f68d3552e31522c07850d8fb2ae1ffc6630b5e"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/extragradient.py",
+    "sha256": "dd55b8537f8df3cedbbb9c7704d085d7322f66cb6e4c75b2d009c0377202e62e"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/oadam.py",
+    "sha256": "f10fc99c4a4a88d388481345b268abcb7fc955b1f5daf117467c0ace14142882"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/ogda.py",
+    "sha256": "f299e462ef5c649a5597d411f643a11b6a019c5a6bab05b3a0d042a8f0c6f773"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/optimizers/optimizer_factory.py",
+    "sha256": "205a74a0a8392366e8d7021e6f82d20d082869b008d6e2fe9b6b164780863031"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/plotting.py",
+    "sha256": "a7ba64cff83cc5aa47e19c03fb1cbadbca6ba44f605810d37818dc4fb9912ef9"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/abstract_scenario.py",
+    "sha256": "0598dbc94f79a744a9cbfd65386566b09e3d1510cc5933dad72a0eba35f24e18"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/cifar10_scenario.py",
+    "sha256": "d29848d73180e742eeb04a850a4f25f5977aedfbb14a80ea7bbe74dffbe90b57"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/mnist_scenarios.py",
+    "sha256": "ed7901dd66d957d201a0b033ffa8736ff4b7cb77f3c9a7d3db56b4aab7623f27"
+  },
+  {
+    "path": "fedgmm/sp_decentralized_mnist_lr_example/scenarios/toy_scenarios.py",
+    "sha256": "a84fd99bb3a3fcbf352421fb735cea4de2cd8bb4ab866846446106ba77875efc"
+  },
+  {
+    "path": "scripts/certify_highdim_bn_diagnostic_20260822.py",
+    "sha256": "8390bb25e9b0826475d2394230b19b8e7852bfcb35a298ad2d40fc08957cd940"
+  },
+  {
+    "path": "scripts/check_manifest_stage_complete.py",
+    "sha256": "c9388c1ff23829d43f48436c9665d913b589e231f471f41d0b43c31b75f321e2"
+  },
+  {
+    "path": "scripts/launch_highdim_psi_adjudication_post_bn_v4_signal.sh",
+    "sha256": "5d3d7aaf3a6b6ee93215250466f9a6fbfe5db024e746a5e81c81aa87ba1c4c63"
+  },
+  {
+    "path": "scripts/launch_highdim_psi_adjudication_post_bn_v4_x.sh",
+    "sha256": "5caf9b10903709f42d9196fd39628a563af2ee307fc54e056a5b0fc98a8fa1ce"
+  },
+  {
+    "path": "scripts/prepare_highdim_psi_adjudication_post_bn_v4.py",
+    "sha256": "c289bbb30b0dec9ab0e7be12b8ba0dd9b8411824503a07ba8929a2e355bd41b5"
+  },
+  {
+    "path": "scripts/run_manifest.py",
+    "sha256": "f970a9ad29e6febe5a5eee4b0e41c8957a803a9cefaaa038cf93a9ac200d56c0"
+  },
+  {
+    "path": "scripts/score_highdim_adjudication_20260819.py",
+    "sha256": "b866ccf48b1e9de3a56037de7c8f22182982616f4b755e0dddf3b9a42f45790a"
+  },
+  {
+    "path": "scripts/verify_highdim_bn_diagnostic_certification_20260822.py",
+    "sha256": "4e98525c0d147ce417487df26a3b6b1bfa28776fc4f7bbb65f737d6b73fda49e"
+  },
+  {
+    "path": "scripts/verify_protocol_hashes.py",
+    "sha256": "470716d7b59f8ad4ec1cd32912c4af9b0af578a65c8f11cb32d8330b7cdf7c05"
+  }
+]

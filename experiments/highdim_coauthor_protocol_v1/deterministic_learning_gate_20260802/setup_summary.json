@@ -1,0 +1,37 @@
+{
+  "alpha": 0.5,
+  "batch_size": 0,
+  "campaign": "highdim_deterministic_learning_gate_20260802",
+  "client_num_in_total": 1000,
+  "client_num_per_round": 1000,
+  "critic_multipliers": [
+    1.0,
+    3.0,
+    10.0
+  ],
+  "dataset": "femnist_z",
+  "equivalence_rounds": 10,
+  "equivalence_runs": 4,
+  "gate_auxiliary_regression": false,
+  "gate_rounds": 150,
+  "gate_runs": 24,
+  "gradient_clip_norm": 1.0,
+  "learning_rates": [
+    0.001,
+    0.003,
+    0.01,
+    0.03
+  ],
+  "local_epochs": 3,
+  "methods": [
+    "fedgda_d",
+    "fedogda_d"
+  ],
+  "output_root": "results/highdim_deterministic_learning_gate_20260802",
+  "seed": 0,
+  "selection_metric_source": "validation",
+  "server_learning_rate": 1.5,
+  "source_manifest": "experiments/highdim_coauthor_protocol_v1/alpha0p5/tuning_manifest_deterministic.csv",
+  "test_mse_used_for_selection": false,
+  "weight_decay": 0.001
+}

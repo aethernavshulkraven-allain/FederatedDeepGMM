@@ -1,12 +1,12 @@
 [
   {
-    "attempt_id": "1787772014704409301-4107924",
+    "attempt_id": "1787919698564193762-816575",
     "best_validation_round": 86,
     "final_test_mse": 1.2269210751991824,
-    "resolved_timestamp_ns": 1787772370069044182,
+    "resolved_timestamp_ns": 1787919698567449485,
     "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_bn_diagnostic_fresh_20260826/femnist_z/fedogda_d/seed_1/bn_diagnostic_fresh_20260826_femnist_z_fedogda_d_seed1_lr0p001_cm10",
     "run_id": "bn_diagnostic_fresh_20260826_femnist_z_fedogda_d_seed1_lr0p001_cm10",
-    "status": "passed",
+    "status": "skipped_completed",
     "terminal_ineligible": false,
     "terminal_pretraining_ineligible": false,
     "terminal_reason": null,

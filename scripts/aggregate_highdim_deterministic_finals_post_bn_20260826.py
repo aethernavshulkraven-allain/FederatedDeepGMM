@@ -27,8 +27,17 @@ from statistics import median
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from run_manifest import ManifestLaunchError, validate_artifacts  # noqa: E402
+# run_manifest's own import above already added fedgmm/sp_decentralized_mnist_lr_example
+# to sys.path as a side effect -- experiment_utils is only importable after that.
+from experiment_utils import config_checksum  # noqa: E402
 
 STABILITY_WINDOW = 50
+EXPECTED_DATASETS = frozenset({
+    "femnist_x", "femnist_z", "femnist_xz", "cifar10_x", "cifar10_z", "cifar10_xz",
+})
+EXPECTED_METHODS = frozenset({"fedgda_d", "fedogda_d"})
+EXPECTED_ALPHAS = frozenset({0.1, 0.5, 1.0})
+EXPECTED_SEEDS = frozenset({0, 1, 2, 3, 4})
 
 
 def _load_json(path: Path) -> dict:
@@ -59,19 +68,29 @@ def _bn_min_running_var(metrics: dict) -> float | None:
 
 
 def _row_report(run_dir: Path, entry: dict) -> dict:
-    # Minimal row: validate_artifacts only hard-requires dataset/method
-    # ("variant")/run_id/client_optimizer to match exactly (_validate_
-    # effective_config's exact_fields); every numeric field it might also
-    # check is optional and read from the real on-disk config when absent
-    # here (see _expected_value's fallback), so this deliberately does not
-    # try to reconstruct the full manifest row.
+    # The ledger's own seed/alpha/learning_rate/critic_multiplier/
+    # partition_alpha/comm_round labels are exactly the fields a preparer
+    # bug (closeout review finding: alpha relabeled without moving
+    # partition_alpha with it) could get wrong -- passing them through to
+    # validate_artifacts() means _validate_effective_config() cross-checks
+    # every one of them against the run's real, on-disk effective_config.json
+    # rather than the ledger's labels being trusted un-verified. seed in
+    # particular was missing here until a review caught it: without it, a
+    # trajectory recorded as seed 4 in the ledger could silently be a run
+    # whose effective_config.json actually says random_seed=0.
     row = {
         "run_id": entry["run_id"],
         "dataset": entry["dataset"],
         "method": entry["method"],
         "client_optimizer": entry["client_optimizer"],
+        "seed": entry["seed"],
+        "learning_rate": entry["learning_rate"],
+        "critic_multiplier": entry["critic_multiplier"],
+        "partition_alpha": entry["partition_alpha"],
+        "comm_round": entry["comm_round"],
     }
     validation = validate_artifacts(run_dir, row)
+    effective_config = _load_json(run_dir / "effective_config.json")
     report = {
         "run_id": entry["run_id"],
         "dataset": entry["dataset"],
@@ -79,6 +98,12 @@ def _row_report(run_dir: Path, entry: dict) -> dict:
         "alpha": float(entry["alpha"]),
         "seed": int(entry["seed"]),
         "reused": bool(entry["reused"]),
+        "source_stage": entry.get("source_stage", ""),
+        # Freshly recomputed from the real on-disk config right now -- never
+        # trusted from the ledger, which was written before the run existed
+        # for new (non-reused) trajectories -- so downstream consumers have
+        # something to pin/compare against.
+        "effective_config_checksum": config_checksum(effective_config),
         "terminal_ineligible": validation["terminal_ineligible"],
         "terminal_reason": validation["terminal_reason"],
     }
@@ -140,15 +165,56 @@ def aggregate(ledger_path: Path) -> dict:
             "planned trajectory resolves (closeout plan Phase 7 rule 2)"
         )
 
+    # A trajectory carrying an unexpected dataset, method, or alpha would
+    # still pass the per-(cell, alpha) "5 seeds" check below as long as its
+    # own group happened to also total 5 -- these set-equality checks catch
+    # that class of error directly, rather than relying on counts alone.
+    actual_datasets = {entry["dataset"] for entry in entries}
+    if actual_datasets != EXPECTED_DATASETS:
+        raise ValueError(
+            f"finals evidence ledger covers unexpected datasets: "
+            f"missing={sorted(EXPECTED_DATASETS - actual_datasets)}, "
+            f"unexpected={sorted(actual_datasets - EXPECTED_DATASETS)}"
+        )
+    actual_methods = {entry["method"] for entry in entries}
+    if actual_methods != EXPECTED_METHODS:
+        raise ValueError(
+            f"finals evidence ledger covers unexpected methods: "
+            f"missing={sorted(EXPECTED_METHODS - actual_methods)}, "
+            f"unexpected={sorted(actual_methods - EXPECTED_METHODS)}"
+        )
+    actual_alphas = {entry["alpha"] for entry in entries}
+    if actual_alphas != EXPECTED_ALPHAS:
+        raise ValueError(
+            f"finals evidence ledger covers unexpected alphas: "
+            f"missing={sorted(EXPECTED_ALPHAS - actual_alphas)}, "
+            f"unexpected={sorted(actual_alphas - EXPECTED_ALPHAS)}"
+        )
+
     by_cell_alpha: dict[tuple[str, str, float], list[dict]] = defaultdict(list)
     for entry in entries:
         by_cell_alpha[(entry["dataset"], entry["method"], entry["alpha"])].append(entry)
+    expected_groups = {
+        (dataset, method, alpha)
+        for dataset in EXPECTED_DATASETS for method in EXPECTED_METHODS for alpha in EXPECTED_ALPHAS
+    }
+    if set(by_cell_alpha) != expected_groups:
+        raise ValueError(
+            f"finals evidence ledger is missing (dataset, method, alpha) groups: "
+            f"{sorted(expected_groups - set(by_cell_alpha))}"
+        )
 
     cross_seed_summary = {}
     for (dataset, method, alpha), seed_entries in sorted(by_cell_alpha.items()):
         if len(seed_entries) != 5:
             raise ValueError(
                 f"{dataset}/{method}/alpha={alpha}: expected 5 seeds, got {len(seed_entries)}"
+            )
+        actual_seeds = {e["seed"] for e in seed_entries}
+        if actual_seeds != EXPECTED_SEEDS:
+            raise ValueError(
+                f"{dataset}/{method}/alpha={alpha}: expected seeds "
+                f"{sorted(EXPECTED_SEEDS)}, got {sorted(actual_seeds)}"
             )
         finite_final_test_mse = [
             e["final_test_mse"] for e in seed_entries if e["final_test_mse"] is not None

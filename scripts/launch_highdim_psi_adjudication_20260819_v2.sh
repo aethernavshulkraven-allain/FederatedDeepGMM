@@ -37,6 +37,19 @@
 #
 # Order (per the approved review packet): signal confirmation before _x
 # adjudication.
+#
+# RETIRED 2026-08-22: the server-update math this stage ran under corrupted
+# BatchNorm buffers (running_var/num_batches_tracked) on every round -- see
+# experiments/highdim_coauthor_protocol_v1/psi_adjudication_20260822_v3/CORRECTION_ADDENDUM_20260822.md
+# and experiments/highdim_coauthor_protocol_v1/psi_adjudication_20260819_v2/LEGACY_20260822.md.
+# v2 is not resumable as scientific evidence -- its completed/partial
+# artifacts are preserved in place for audit, untouched, but this launcher
+# must not run again. Use scripts/launch_highdim_psi_adjudication_20260822_v3.sh.
+echo "REFUSING TO RUN: this v2 stage is retired (post-fix v3 supersedes it)." >&2
+echo "See experiments/highdim_coauthor_protocol_v1/psi_adjudication_20260819_v2/LEGACY_20260822.md" >&2
+echo "Use: gpurun -g <1 or 2> bash scripts/launch_highdim_psi_adjudication_20260822_v3.sh" >&2
+exit 1
+
 set -uo pipefail
 repo_root="/home/arnav22103/FederatedDeepGMM"
 python_bin="/home/arnav22103/miniconda3/envs/fedgmm/bin/python"

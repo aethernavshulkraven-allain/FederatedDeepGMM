@@ -41,7 +41,7 @@
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/experiment_utils.py",
-    "sha256": "e13668feac00a0b42d4090b439bd5d8e5e5ae2a741af411a1942f3a4b8468f98"
+    "sha256": "b319a1bcfab19e49e17b0642cb0f9cdc4cdec5590e5136ba39a12ba1aef73fbd"
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/constants.py",
@@ -93,7 +93,7 @@
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/fedavg_api.py",
-    "sha256": "3bd9f49a8a18bc96c9eb90cc082fd1adead44b4db199379befd0e3204e5b1fd4"
+    "sha256": "b61c80efddc0646b15c64c8cec028124e692d3076f87e7757d2158a0a9dc1d2d"
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/fedml/simulation/sp/fedavg/multiprocess_client.py",
@@ -133,7 +133,7 @@
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/model_selection_class.py",
-    "sha256": "dfd392dbc27d4a2a006b5ea94202bd05581cdfaaff7fa5a42f8b5af7dfd925f4"
+    "sha256": "b33e597bdf3c227701d5596520d87007c2644e509e19e1ec942c333e14a8544c"
   },
   {
     "path": "fedgmm/sp_decentralized_mnist_lr_example/models/cnn_models.py",
@@ -193,7 +193,7 @@
   },
   {
     "path": "scripts/run_manifest.py",
-    "sha256": "d5b5e084ca4666b78702f1c8e23df61660f898134794731ca322a3fc2096d14d"
+    "sha256": "f970a9ad29e6febe5a5eee4b0e41c8957a803a9cefaaa038cf93a9ac200d56c0"
   },
   {
     "path": "scripts/verify_protocol_hashes.py",

@@ -1,0 +1,50 @@
+{
+  "alpha": 0.5,
+  "auxiliary_regression": false,
+  "batch_size": 0,
+  "campaign": "highdim_deterministic_screen_20260813",
+  "client_num_in_total": 10,
+  "client_num_per_round": 10,
+  "comm_round": 150,
+  "critic_multipliers": {
+    "x": [
+      5.0,
+      10.0
+    ],
+    "z_xz": [
+      1.0,
+      5.0
+    ]
+  },
+  "learning_rates": {
+    "fedgda_d": [
+      0.003,
+      0.01,
+      0.03
+    ],
+    "fedogda_d": [
+      0.001,
+      0.003,
+      0.01
+    ]
+  },
+  "methods": [
+    "fedgda_d",
+    "fedogda_d"
+  ],
+  "next_step": "Score by validation MSE per (scenario, method) cell, freeze the winning lr/critic_multiplier, then generate the final-evaluation manifest (500 rounds, 3 alphas, 3 seeds each -- Option 2) from the winners.",
+  "output_root": "results/highdim_deterministic_screen_20260813",
+  "runs": 72,
+  "scenarios": [
+    "femnist_z",
+    "femnist_x",
+    "femnist_xz",
+    "cifar10_z",
+    "cifar10_x",
+    "cifar10_xz"
+  ],
+  "seed": 0,
+  "selection_metric_source": "validation",
+  "source_manifest": "experiments/highdim_coauthor_protocol_v1/alpha0p5/tuning_manifest_deterministic.csv",
+  "test_mse_used_for_selection": false
+}

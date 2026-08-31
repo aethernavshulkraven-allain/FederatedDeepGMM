@@ -69,11 +69,14 @@ def _make_selection(g_models, f_models, learning_args_list, learning_eval, failu
 
 class FailClosedAssertionTest(unittest.TestCase):
     def test_more_than_one_combination_raises_assertion_error(self):
+        # A real exception, not `assert` -- assertions are stripped under
+        # `python -O`/PYTHONOPTIMIZE, which would silently let a
+        # multi-candidate config through instead of failing closed.
         selection = _make_selection(
             [_FakeModel(), _FakeModel()], [_FakeModel()],
             [_learning_args()], _FakeLearningEval([]),
         )
-        with self.assertRaisesRegex(AssertionError, "exactly one"):
+        with self.assertRaisesRegex(RuntimeError, "exactly one"):
             selection.do_model_selection(
                 x_train=None, z_train=None, y_train=None,
                 x_dev=None, z_dev=None, y_dev=None,
@@ -84,7 +87,7 @@ class FailClosedAssertionTest(unittest.TestCase):
             [_FakeModel()], [_FakeModel()],
             [_learning_args(), _learning_args()], _FakeLearningEval([]),
         )
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(RuntimeError):
             selection.do_model_selection(
                 x_train=None, z_train=None, y_train=None,
                 x_dev=None, z_dev=None, y_dev=None,
@@ -92,7 +95,7 @@ class FailClosedAssertionTest(unittest.TestCase):
 
     def test_exactly_one_combination_does_not_raise_the_assertion(self):
         # Still fails downstream (max_approx_psi_eval mocked to -inf), but
-        # must get past the assertion itself without raising AssertionError.
+        # must get past the fail-closed check itself without raising.
         diagnostics = [{"epoch": 0, "epsilon_dev_finite": True, "f_of_z_dev_finite": True}]
         selection = _make_selection(
             [_FakeModel()], [_FakeModel()], [_learning_args()],

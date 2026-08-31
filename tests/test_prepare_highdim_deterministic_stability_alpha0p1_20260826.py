@@ -154,9 +154,11 @@ class PrepareStabilityTest(unittest.TestCase):
             for field in required:
                 self.assertIn(field, row, f"missing column {field!r}")
                 self.assertNotEqual(row[field], "", f"blank {field!r} in {row['run_id']}")
-        # partition_alpha (data heterogeneity, frozen at 0.5) must not be
-        # confused with alpha (this campaign's game parameter, 0.1 here).
-        self.assertTrue(all(row["partition_alpha"] == "0.5" for row in rows))
+        # This campaign's "alpha" IS the Dirichlet partition concentration
+        # (that's the whole point of an alpha=0.1 stability check), so the
+        # executable partition_alpha must move together with the alpha
+        # label, not stay pinned at the inherited screen-template value.
+        self.assertTrue(all(row["partition_alpha"] == "0.1" for row in rows))
         self.assertTrue(all(row["alpha"] == "0.1" for row in rows))
         self.assertTrue(all(row["client_num_in_total"] == "10" for row in rows))
         self.assertTrue(all(row["client_num_per_round"] == "10" for row in rows))

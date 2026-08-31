@@ -244,6 +244,26 @@ class ExperimentUtilsTest(unittest.TestCase):
         for field in EFFECTIVE_CONFIG_FIELDS:
             self.assertIn(field, config)
 
+    def test_compact_predictions_only_defaults_false_and_threads_through(self):
+        # fedavg_api.py reads self.compact_predictions_only from
+        # self.effective_config, never from args directly -- if this field
+        # were dropped from get_effective_config()'s output, every run
+        # would silently write the full ~10 GiB-scale predictions.npz
+        # regardless of what the manifest/config actually requested (a real
+        # bug caught live on a running V4 GPU job, 2026-08-28: the manifest
+        # and generated YAML both correctly said compact_predictions_only=
+        # true, but effective_config.json still came back with the key
+        # missing entirely).
+        base_args = dict(
+            dataset="femnist_z", client_optimizer="sgd", batch_size=0, epochs=1,
+            comm_round=3, client_num_in_total=10, client_num_per_round=10,
+            frequency_of_the_test=1, learning_rate=0.01, random_seed=0,
+            run_id="fixture", output_dir="local_results",
+        )
+        self.assertFalse(get_effective_config(SimpleNamespace(**base_args))["compact_predictions_only"])
+        config = get_effective_config(SimpleNamespace(**base_args, compact_predictions_only=True))
+        self.assertTrue(config["compact_predictions_only"])
+
     def test_test_mse_logging_config_metadata(self):
         config = get_effective_config(SimpleNamespace(
             dataset="sin",
@@ -1196,11 +1216,74 @@ class WritePretrainingFailureArtifactTest(unittest.TestCase):
         self.assertEqual(payload["first_nonfinite_epoch"]["epoch"], 20)
         self.assertEqual(payload["first_nonfinite_epoch"]["components"], ["epsilon_dev_finite"])
         self.assertEqual(payload["hash_bundle_id"], "bundle-123")
+        # "bundle-123" is not a real file relative to CWD -- the content
+        # hash can't be computed and must come back None, not raise or
+        # silently omit the key.
+        self.assertIsNone(payload["hash_bundle_sha256"])
         self.assertIsNotNone(payload["effective_config_checksum"])
         self.assertEqual(
             payload["effective_config_checksum"],
             config_checksum({"dataset": "femnist_z", "run_id": "fixture_run"}),
         )
+
+    def test_hash_bundle_sha256_computed_from_the_real_bundle_file(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as tmpdir:
+            run_dir = os.path.join(tmpdir, "run")
+            os.makedirs(run_dir)
+            bundle_path = os.path.join(tmpdir, "hash_bundle.json")
+            with open(bundle_path, "w") as f:
+                f.write('[{"path": "x", "sha256": "y"}]')
+            path = write_pretraining_failure_artifact(
+                run_dir, run_id="fixture_run", effective_config={"run_id": "fixture_run"},
+                per_epoch_diagnostics=[], best_score=None,
+                terminal_reason="reason", traceback_text="tb",
+                hash_bundle_id=bundle_path,
+            )
+            payload = json.loads(open(path).read())
+            with open(bundle_path, "rb") as f:
+                expected = hashlib.sha256(f.read()).hexdigest()
+        self.assertEqual(payload["hash_bundle_sha256"], expected)
+
+    def test_hash_bundle_sha256_resolves_correctly_after_main_py_chdirs(self):
+        # main.py chdir()s to its own file's directory near the top of the
+        # script, well before its except-block calls this function -- a
+        # REPO_ROOT-relative hash_bundle_id (the convention every launcher
+        # uses) must still resolve correctly, not silently look in the
+        # wrong directory and come back None. Reproduces the exact bug
+        # found via a real GPU certification run (2026-08-28): every
+        # produced pretraining_failure.json had hash_bundle_sha256=null.
+        import hashlib
+        import shutil
+        from fedgmm.sp_decentralized_mnist_lr_example.experiment_utils import REPO_ROOT
+
+        tmp_in_repo = tempfile.mkdtemp(dir=REPO_ROOT)
+        self.addCleanup(shutil.rmtree, tmp_in_repo, ignore_errors=True)
+        bundle_path = os.path.join(tmp_in_repo, "hash_bundle.json")
+        with open(bundle_path, "w") as f:
+            f.write('[{"path": "x", "sha256": "y"}]')
+        relative_hash_bundle_id = os.path.relpath(bundle_path, REPO_ROOT)
+
+        original_cwd = os.getcwd()
+        with tempfile.TemporaryDirectory() as elsewhere:
+            os.chdir(elsewhere)
+            try:
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    run_dir = os.path.join(tmpdir, "run")
+                    os.makedirs(run_dir)
+                    path = write_pretraining_failure_artifact(
+                        run_dir, run_id="fixture_run", effective_config={"run_id": "fixture_run"},
+                        per_epoch_diagnostics=[], best_score=None,
+                        terminal_reason="reason", traceback_text="tb",
+                        hash_bundle_id=relative_hash_bundle_id,
+                    )
+                    payload = json.loads(open(path).read())
+            finally:
+                os.chdir(original_cwd)
+        with open(bundle_path, "rb") as f:
+            expected = hashlib.sha256(f.read()).hexdigest()
+        self.assertIsNotNone(payload["hash_bundle_sha256"])
+        self.assertEqual(payload["hash_bundle_sha256"], expected)
 
     def test_all_finite_epochs_report_no_first_nonfinite_epoch(self):
         diagnostics = [{"epoch": 0, "epsilon_dev_finite": True, "f_of_z_dev_finite": True}]

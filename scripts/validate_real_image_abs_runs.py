@@ -86,7 +86,14 @@ def validate_run(row: dict[str, str]) -> list[str]:
                 errors.append("best_validation_mse does not match history minimum")
     try:
         with np.load(run_dir / "predictions.npz") as predictions:
-            keys = ("x", "true_g", "best_validation_prediction", "final_prediction")
+            required_keys = ("true_g", "best_validation_prediction", "final_prediction")
+            # save_predictions_npz_compact()'s schema (opted into via a row's
+            # compact_predictions_only=True) deliberately omits the full test
+            # input tensor "x" to avoid the ~10 GiB-scale write across an
+            # image campaign -- its absence is expected there, not a defect,
+            # so it is only required when this run used the full schema.
+            compact_schema = bool(config.get("compact_predictions_only", False))
+            keys = required_keys if compact_schema else ("x", *required_keys)
             for key in keys:
                 if key not in predictions:
                     errors.append(f"predictions.npz missing {key}")
@@ -94,7 +101,7 @@ def validate_run(row: dict[str, str]) -> list[str]:
                 lengths = [predictions[key].shape[0] for key in keys]
                 if len(set(lengths)) != 1 or lengths[0] == 0:
                     errors.append(f"prediction sample dimensions disagree: {lengths}")
-                for key in keys[1:]:
+                for key in required_keys:
                     if not np.all(np.isfinite(predictions[key])):
                         errors.append(f"predictions.npz {key} contains non-finite values")
     except Exception as exc:

@@ -132,6 +132,7 @@ def prepare(winners_path: Path, screen_manifest_path: Path, output_dir: Path) ->
             "run_group": "highdim_deterministic_stability_alpha0p1_20260826",
             "seed": "0",
             "alpha": "0.1",
+            "partition_alpha": "0.1",
             "learning_rate": f"{lr:g}",
             "critic_multiplier": f"{cm:g}",
             "comm_round": "500",
@@ -146,6 +147,11 @@ def prepare(winners_path: Path, screen_manifest_path: Path, output_dir: Path) ->
             # every future run (closeout plan Phase 1 SS4.4).
             "compact_predictions_only": "True",
             "source_v4_run_id": run_ids_by_seed["0"],
+            # The template row's own source_manifest/source_run_id describe
+            # that screen row's ancestry, not this new stability row's; this
+            # row's real lineage is source_v4_run_id above.
+            "source_manifest": "",
+            "source_run_id": "",
             "notes": (
                 f"alpha=0.1 stability check of V4 winner {cell_name} "
                 f"(lr={lr:g}, cm={cm:g}); fresh initialization, no state reused."

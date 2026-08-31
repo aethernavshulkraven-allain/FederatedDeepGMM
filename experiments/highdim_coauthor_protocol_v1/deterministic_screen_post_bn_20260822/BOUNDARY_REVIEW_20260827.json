@@ -1,0 +1,14 @@
+{
+  "decided": "2026-08-28",
+  "decisions": {
+    "cifar10_xz|fedgda_d": "accepted_for_adjudication",
+    "cifar10_z|fedgda_d": "accepted_for_adjudication",
+    "cifar10_z|fedogda_d": "accepted_for_adjudication",
+    "femnist_x|fedgda_d": "accepted_for_adjudication",
+    "femnist_x|fedogda_d": "accepted_for_adjudication",
+    "femnist_z|fedogda_d": "accepted_for_adjudication"
+  },
+  "screen_results_path": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/screen_results.json",
+  "screen_results_sha256": "08576ab915a8084458fb3e0cb0e6dc5b3d209768623e216d59740b251fd7e006",
+  "source_document": "experiments/highdim_coauthor_protocol_v1/deterministic_screen_post_bn_20260822/BOUNDARY_REVIEW_20260827.md"
+}

@@ -43,6 +43,11 @@ DEFAULT_SCREEN_MANIFEST = (
 )
 DEFAULT_OUTPUT_DIR = PROTOCOL_ROOT / "deterministic_stability_retune_alpha0p1_20260827"
 RESULT_ROOT = "results/highdim_deterministic_stability_retune_alpha0p1_20260827"
+# compact_predictions_only isn't a screen_manifest.csv column, and
+# source_screen_run_id is new to this stage -- both must be added to the
+# generated manifest's own fieldnames or DictWriter's extrasaction="ignore"
+# silently drops them from every written row.
+EXTRA_FIELDS = ("compact_predictions_only", "source_screen_run_id")
 
 
 def _token(value: float) -> str:
@@ -91,6 +96,9 @@ def prepare(stability_results_path: Path, screen_manifest_path: Path, output_dir
         for row in reader:
             cell_name = f"{row['dataset']}|{row['method']}"
             screen_rows_by_cell.setdefault(cell_name, []).append(row)
+    for field in EXTRA_FIELDS:
+        if field not in fieldnames:
+            fieldnames.append(field)
 
     output_dir.mkdir(parents=True, exist_ok=True)
     rows = []
@@ -115,6 +123,7 @@ def prepare(stability_results_path: Path, screen_manifest_path: Path, output_dir
                 "run_group": "highdim_deterministic_stability_retune_alpha0p1_20260827",
                 "seed": "0",
                 "alpha": "0.1",
+                "partition_alpha": "0.1",
                 "learning_rate": f"{lr:g}",
                 "critic_multiplier": f"{cm:g}",
                 "comm_round": "150",
@@ -125,6 +134,16 @@ def prepare(stability_results_path: Path, screen_manifest_path: Path, output_dir
                 "preflight_status": "bn_buffer_diagnostic_certified",
                 "server_buffer_policy": "direct_client_aggregate",
                 "compact_predictions_only": "True",
+                # This row's real, direct lineage is the exact screen row
+                # whose (lr, cm) it reuses -- recorded precisely here.
+                # source_manifest/source_run_id on `source` describe a
+                # different, two-hops-removed thing (where the screen row's
+                # own hyperparameter combo was discovered), which is no
+                # longer accurate for this new retune row and is cleared
+                # rather than carried forward.
+                "source_manifest": "",
+                "source_run_id": "",
+                "source_screen_run_id": source["run_id"],
                 "notes": (
                     f"alpha=0.1 per-cell retune for {cell_name} (closeout plan SS9.1 "
                     "fallback) -- same (lr, cm) grid already tested for this cell in "

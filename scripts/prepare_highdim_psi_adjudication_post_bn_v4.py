@@ -161,7 +161,7 @@ def prepare(
             )
             if actual != expected:
                 raise ValueError(f"{field} does not match its corrected-screen manifest row")
-    for field in ("server_buffer_policy", "source_screen_run_ids"):
+    for field in ("server_buffer_policy", "source_screen_run_ids", "compact_predictions_only"):
         if field not in fieldnames:
             fieldnames.append(field)
 
@@ -206,7 +206,23 @@ def prepare(
                         "learning_rate": f"{lr:g}",
                         "critic_multiplier": f"{cm:g}",
                         "server_buffer_policy": "direct_client_aggregate",
+                        # Every dataset in this campaign is a femnist_*/cifar10_*
+                        # image scenario; skip the ~10 GiB-scale full test-tensor
+                        # write for every V4 run (closeout plan Phase 1 SS4.4) --
+                        # same as every later stage in this pipeline.
+                        "compact_predictions_only": "True",
                         "source_screen_run_ids": ";".join(candidate["source_screen_run_ids"]),
+                        # The template row's own source_manifest/source_run_id
+                        # describe *that* screen row's provenance (e.g. which
+                        # expansion manifest it came from) -- an artifact of
+                        # whichever row happened to be picked as the template
+                        # for this (dataset, method) cell, not this new V4
+                        # row's provenance. This row's real lineage is already
+                        # recorded precisely in source_screen_run_ids above;
+                        # carrying the template's stale fields forward would
+                        # misattribute this row to an unrelated ancestor.
+                        "source_manifest": "",
+                        "source_run_id": "",
                         "notes": (
                             f"Fresh corrected-screen promotion ({','.join(candidate['labels'])}); "
                             "no pre-fix model state or optimizer state is reused."

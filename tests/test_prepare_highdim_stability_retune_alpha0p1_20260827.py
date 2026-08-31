@@ -119,6 +119,10 @@ class PrepareRetuneTest(unittest.TestCase):
             rows = list(csv.DictReader(handle))
         self.assertEqual(len(rows), 6)
         self.assertTrue(all(row["alpha"] == "0.1" for row in rows))
+        # This campaign's "alpha" IS the Dirichlet partition concentration,
+        # so partition_alpha must move to 0.1 with it rather than staying
+        # pinned at the inherited screen-template value of 0.5.
+        self.assertTrue(all(row["partition_alpha"] == "0.1" for row in rows))
         self.assertTrue(all(row["seed"] == "0" for row in rows))
         self.assertTrue(all(row["comm_round"] == "150" for row in rows))
         cells_seen = {(row["dataset"], row["method"]) for row in rows}

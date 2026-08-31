@@ -1423,7 +1423,7 @@ class FedAvgAPI(object):
             "test_mse_used_for_selection": False,
             "selection_metric_source": "validation",
             "selection_metric": self.effective_config.get(
-                "primary_selection_metric", "equal_client_validation_mse"
+                "primary_selection_metric", "pooled_validation_mse"
             ),
             "selection_source": self.effective_config.get(
                 "selection_source", "validation_only"

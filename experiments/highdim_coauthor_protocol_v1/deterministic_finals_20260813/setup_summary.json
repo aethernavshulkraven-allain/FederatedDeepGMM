@@ -1,0 +1,39 @@
+{
+  "alphas": [
+    0.1,
+    0.5,
+    1.0
+  ],
+  "auxiliary_regression": false,
+  "batch_size": 0,
+  "campaign": "highdim_deterministic_finals_20260813",
+  "client_num_in_total": 10,
+  "client_num_per_round": 10,
+  "comm_round": 500,
+  "methods": [
+    "fedgda_d",
+    "fedogda_d"
+  ],
+  "note": "Config frozen from deterministic_screen_20260813; test MSE for these runs is reported only after selection, never used to pick hyperparameters.",
+  "parent_campaigns": [
+    "highdim_deterministic_screen_20260813",
+    "highdim_deterministic_screen_20260813 (boundary expansion)"
+  ],
+  "runs": 108,
+  "scenarios": [
+    "femnist_z",
+    "femnist_x",
+    "femnist_xz",
+    "cifar10_z",
+    "cifar10_x",
+    "cifar10_xz"
+  ],
+  "seed_schedule": "option_2_uniform_3_seeds",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "selection_metric_source": "validation",
+  "test_mse_used_for_selection": false
+}

@@ -7,6 +7,7 @@ terminal_pretraining_ineligible."""
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import tempfile
@@ -18,6 +19,27 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 import run_manifest  # noqa: E402
 import check_manifest_stage_complete as stage_complete  # noqa: E402
+
+# validate_pretraining_failure_artifact() now resolves hash_bundle_id and
+# runs the real hash verifier against it (closeout review finding), not
+# just checks the string is non-empty -- fixtures need a genuinely
+# verifiable bundle, not a placeholder string.
+_HASH_BUNDLE_TARGET = REPO_ROOT / "scripts" / "verify_protocol_hashes.py"
+
+
+def _real_hash_bundle_fields(tmp: Path) -> dict:
+    """hash_bundle_id (a path) and hash_bundle_sha256 (that bundle FILE's own
+    content hash) together -- validate_pretraining_failure_artifact() now
+    requires both."""
+    digest = hashlib.sha256(_HASH_BUNDLE_TARGET.read_bytes()).hexdigest()
+    bundle_path = tmp / "hash_bundle.json"
+    bundle_path.write_text(json.dumps([
+        {"path": "scripts/verify_protocol_hashes.py", "sha256": digest},
+    ]))
+    return {
+        "hash_bundle_id": str(bundle_path.relative_to(REPO_ROOT)),
+        "hash_bundle_sha256": hashlib.sha256(bundle_path.read_bytes()).hexdigest(),
+    }
 
 
 def _row(run_id: str = "pretrain_fail_fixture") -> dict[str, str]:
@@ -31,6 +53,25 @@ def _row(run_id: str = "pretrain_fail_fixture") -> dict[str, str]:
         "learning_rate": "0.333333",
         "critic_multiplier": "10",
         "server_buffer_policy": "direct_client_aggregate",
+    }
+
+
+def _matching_effective_config(row: dict[str, str]) -> dict:
+    """An effective_config.json that actually matches `row` on every field
+    _validate_effective_config() checks -- validate_pretraining_failure_
+    artifact() now cross-verifies exact configuration equivalence, not just
+    internal self-consistency, so a fixture's config must agree with its
+    own row's dataset/method/seed/lr/cm to be a *valid* fixture."""
+    return {
+        "run_id": row["run_id"],
+        "dataset": row["dataset"],
+        "variant": row["method"],
+        "client_optimizer": row["client_optimizer"],
+        "random_seed": int(row["seed"]),
+        "comm_round": int(row["comm_round"]),
+        "learning_rate": float(row["learning_rate"]),
+        "critic_multiplier": float(row["critic_multiplier"]),
+        "server_buffer_policy": row["server_buffer_policy"],
     }
 
 
@@ -55,7 +96,12 @@ def _valid_payload(run_id: str, **overrides) -> dict:
         "traceback": "Traceback (most recent call last):\n  ...\nRuntimeError: ...",
         "stdout_sha256": None,
         "stderr_sha256": None,
-        "hash_bundle_id": None,
+        "hash_bundle_id": "bundle_deadbeef",
+        # Placeholder -- only correct for tests that fail before reaching
+        # the hash_bundle_sha256 check itself (a bad/missing/unsafe
+        # hash_bundle_id). Tests exercising that check specifically must
+        # override this with the real bundle file's own hash.
+        "hash_bundle_sha256": "deadbeef" * 8,
     }
     payload.update(overrides)
     return payload
@@ -68,12 +114,14 @@ class ValidatePretrainingFailureArtifactTest(unittest.TestCase):
         self.row = _row()
 
     def _write(self, run_dir: Path, payload: dict, *, effective_config=None,
-               match_checksum: bool = True) -> None:
+               match_checksum: bool = True, valid_hash_bundle: bool = True) -> None:
         run_dir.mkdir(parents=True, exist_ok=True)
-        effective_config = effective_config or {"run_id": self.row["run_id"]}
+        effective_config = effective_config or _matching_effective_config(self.row)
         (run_dir / "effective_config.json").write_text(json.dumps(effective_config))
         if match_checksum:
             payload = {**payload, "effective_config_checksum": run_manifest.config_checksum(effective_config)}
+        if valid_hash_bundle:
+            payload = {**payload, **_real_hash_bundle_fields(self.tmp)}
         (run_dir / "pretraining_failure.json").write_text(json.dumps(payload))
 
     def test_valid_artifact_classifies_as_terminal_pretraining_ineligible(self):
@@ -190,6 +238,187 @@ class ValidatePretrainingFailureArtifactTest(unittest.TestCase):
         with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "does not match a fresh recomputation"):
             run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
 
+    def test_dataset_mismatch_against_manifest_row_rejected(self):
+        # Internal self-consistency (checksum, run_id) is not enough -- the
+        # reproduction must have actually used the same dataset as the row
+        # it claims to certify.
+        run_dir = self.tmp / "run"
+        wrong_config = {**_matching_effective_config(self.row), "dataset": "cifar10_x"}
+        self._write(run_dir, _valid_payload(self.row["run_id"]), effective_config=wrong_config)
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "dataset mismatch"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_seed_mismatch_against_manifest_row_rejected(self):
+        run_dir = self.tmp / "run"
+        wrong_config = {**_matching_effective_config(self.row), "random_seed": 999}
+        self._write(run_dir, _valid_payload(self.row["run_id"]), effective_config=wrong_config)
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "random_seed mismatch"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_learning_rate_mismatch_against_manifest_row_rejected(self):
+        run_dir = self.tmp / "run"
+        wrong_config = {**_matching_effective_config(self.row), "learning_rate": 0.5}
+        self._write(run_dir, _valid_payload(self.row["run_id"]), effective_config=wrong_config)
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "learning_rate mismatch"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_critic_multiplier_mismatch_against_manifest_row_rejected(self):
+        run_dir = self.tmp / "run"
+        wrong_config = {**_matching_effective_config(self.row), "critic_multiplier": 1.0}
+        self._write(run_dir, _valid_payload(self.row["run_id"]), effective_config=wrong_config)
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "critic_multiplier mismatch"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_null_hash_bundle_id_rejected(self):
+        run_dir = self.tmp / "run"
+        self._write(
+            run_dir, _valid_payload(self.row["run_id"], hash_bundle_id=None),
+            valid_hash_bundle=False,
+        )
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "hash_bundle_id"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_blank_hash_bundle_id_rejected(self):
+        run_dir = self.tmp / "run"
+        self._write(
+            run_dir, _valid_payload(self.row["run_id"], hash_bundle_id="   "),
+            valid_hash_bundle=False,
+        )
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "hash_bundle_id"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_hash_bundle_id_pointing_outside_repo_root_rejected(self):
+        run_dir = self.tmp / "run"
+        self._write(
+            run_dir, _valid_payload(self.row["run_id"], hash_bundle_id="../../etc/passwd"),
+            valid_hash_bundle=False,
+        )
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "unsafe path"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_hash_bundle_id_pointing_at_nonexistent_file_rejected(self):
+        run_dir = self.tmp / "run"
+        self._write(
+            run_dir, _valid_payload(self.row["run_id"], hash_bundle_id="scripts/does_not_exist_20260828.json"),
+            valid_hash_bundle=False,
+        )
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "does not exist"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_hash_bundle_id_with_stale_recorded_hash_rejected(self):
+        # The bundle file itself exists and is well-formed, and its own
+        # content hash checks out (hash_bundle_sha256 is correct), but its
+        # recorded hash *for the target file* no longer matches that file's
+        # real content -- proves this is genuine verification of what the
+        # bundle asserts, not just an existence/content-binding check.
+        run_dir = self.tmp / "run"
+        bundle_path = self.tmp / "stale_bundle.json"
+        bundle_path.write_text(json.dumps([
+            {"path": "scripts/verify_protocol_hashes.py", "sha256": "deadbeef" * 8},
+        ]))
+        self._write(
+            run_dir,
+            _valid_payload(
+                self.row["run_id"],
+                hash_bundle_id=str(bundle_path.relative_to(REPO_ROOT)),
+                hash_bundle_sha256=hashlib.sha256(bundle_path.read_bytes()).hexdigest(),
+            ),
+            valid_hash_bundle=False,
+        )
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "failed verification"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_hash_bundle_sha256_mismatch_rejected(self):
+        # The bundle file's own content no longer matches the sha256 that
+        # was recorded for it at failure time -- e.g. the file at that path
+        # was swapped after the fact. This must be caught even though the
+        # bundle's own internal hashes still verify against whatever content
+        # is there now.
+        run_dir = self.tmp / "run"
+        bundle_fields = _real_hash_bundle_fields(self.tmp)
+        self._write(
+            run_dir,
+            _valid_payload(
+                self.row["run_id"],
+                hash_bundle_id=bundle_fields["hash_bundle_id"],
+                hash_bundle_sha256="deadbeef" * 8,
+            ),
+            valid_hash_bundle=False,
+        )
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "hash_bundle_sha256 does not match"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_hash_bundle_id_symlink_escaping_repo_root_rejected(self):
+        # A clean relative path (no ".." literally in the string) can still
+        # resolve outside REPO_ROOT via a symlink -- the unsafe-path string
+        # check alone would miss this.
+        outside_dir = Path(tempfile.mkdtemp())
+        self.addCleanup(__import__("shutil").rmtree, outside_dir, ignore_errors=True)
+        outside_target = outside_dir / "outside_bundle.json"
+        outside_target.write_text(json.dumps([
+            {"path": "scripts/verify_protocol_hashes.py", "sha256": "deadbeef" * 8},
+        ]))
+        symlink_path = self.tmp / "escape_link.json"
+        symlink_path.symlink_to(outside_target)
+        run_dir = self.tmp / "run"
+        self._write(
+            run_dir,
+            _valid_payload(
+                self.row["run_id"],
+                hash_bundle_id=str(symlink_path.relative_to(REPO_ROOT)),
+                hash_bundle_sha256=hashlib.sha256(outside_target.read_bytes()).hexdigest(),
+            ),
+            valid_hash_bundle=False,
+        )
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "resolves outside the repository"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_stdout_digest_independently_recomputed_and_verified(self):
+        run_dir = self.tmp / "run"
+        run_dir.mkdir(parents=True)
+        (run_dir / "stdout.log").write_bytes(b"real captured stdout\n")
+        real_digest = run_manifest._sha256_file(run_dir / "stdout.log")
+        self._write(run_dir, _valid_payload(self.row["run_id"], stdout_sha256=real_digest))
+        result = run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+        self.assertTrue(result["terminal_pretraining_ineligible"])
+
+    def test_stdout_digest_mismatch_rejected(self):
+        # The recorded hash must match what the log file on disk actually
+        # hashes to right now -- a stale or fabricated digest must be caught,
+        # not merely a hash *string* being present (closeout review finding).
+        run_dir = self.tmp / "run"
+        run_dir.mkdir(parents=True)
+        (run_dir / "stdout.log").write_bytes(b"real captured stdout\n")
+        self._write(run_dir, _valid_payload(self.row["run_id"], stdout_sha256="deadbeef" * 8))
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "stdout.log_sha256 does not match"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_stderr_digest_mismatch_rejected(self):
+        run_dir = self.tmp / "run"
+        run_dir.mkdir(parents=True)
+        (run_dir / "stderr.log").write_bytes(b"real captured stderr\n")
+        self._write(run_dir, _valid_payload(self.row["run_id"], stderr_sha256="deadbeef" * 8))
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "stderr.log_sha256 does not match"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_recorded_digest_with_no_log_file_present_rejected(self):
+        # A non-null digest that cannot be recomputed from anything on disk
+        # is itself a defect, not evidence.
+        run_dir = self.tmp / "run"
+        self._write(run_dir, _valid_payload(self.row["run_id"], stdout_sha256="deadbeef" * 8))
+        with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "stdout.log is not present"):
+            run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+
+    def test_absent_log_files_with_null_digests_accepted(self):
+        # The common real case: stdout/stderr were never captured for this
+        # job (STDOUT_LOG_ENV/STDERR_LOG_ENV unset), so both the log files
+        # and their recorded digests are absent/null -- consistent, not an
+        # error.
+        run_dir = self.tmp / "run"
+        self._write(run_dir, _valid_payload(self.row["run_id"]))
+        result = run_manifest.validate_pretraining_failure_artifact(run_dir, self.row)
+        self.assertTrue(result["terminal_pretraining_ineligible"])
+
     def test_generic_return_code_with_no_artifact_is_not_reclassified(self):
         # No pretraining_failure.json at all -- validate_artifacts must take
         # the normal path and raise "missing artifacts", exactly like today,
@@ -241,12 +470,13 @@ class CertificationLedgerTest(unittest.TestCase):
 
         cert_row = _row("cert_reproduction_run")
         cert_dir = self.tmp / "certification"
-        cert_config = {"run_id": "cert_reproduction_run"}
+        cert_config = _matching_effective_config(cert_row)
         (cert_dir).mkdir(parents=True)
         (cert_dir / "effective_config.json").write_text(json.dumps(cert_config))
         payload = {
             **_valid_payload("cert_reproduction_run"),
             "effective_config_checksum": run_manifest.config_checksum(cert_config),
+            **_real_hash_bundle_fields(self.tmp),
         }
         (cert_dir / "pretraining_failure.json").write_text(json.dumps(payload))
 
@@ -280,11 +510,12 @@ class StageCompleteCrossCheckTest(unittest.TestCase):
         row = _row()
         run_dir = self.tmp / "run"
         run_dir.mkdir(parents=True)
-        effective_config = {"run_id": row["run_id"]}
+        effective_config = _matching_effective_config(row)
         (run_dir / "effective_config.json").write_text(json.dumps(effective_config))
         payload = {
             **_valid_payload(row["run_id"]),
             "effective_config_checksum": run_manifest.config_checksum(effective_config),
+            **_real_hash_bundle_fields(self.tmp),
         }
         (run_dir / "pretraining_failure.json").write_text(json.dumps(payload))
         manifest_row = {**row, "final_result_dir": str(run_dir)}
@@ -319,11 +550,12 @@ class StageCompleteCrossCheckTest(unittest.TestCase):
 
         cert_dir = self.tmp / "certification"
         cert_dir.mkdir(parents=True)
-        cert_config = {"run_id": "cert_run"}
+        cert_config = _matching_effective_config({**_row("cert_run")})
         (cert_dir / "effective_config.json").write_text(json.dumps(cert_config))
         cert_payload = {
             **_valid_payload("cert_run"),
             "effective_config_checksum": run_manifest.config_checksum(cert_config),
+            **_real_hash_bundle_fields(self.tmp),
         }
         (cert_dir / "pretraining_failure.json").write_text(json.dumps(cert_payload))
 

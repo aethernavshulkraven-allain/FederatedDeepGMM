@@ -1,0 +1,1386 @@
+{
+  "cifar10_xz/fedgda_d": {
+    "all_candidates": [
+      {
+        "candidate_id": "cifar10_xz/fedgda_d/lr0.003_cm5",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank2",
+        "median_mse": 0.919542579712403,
+        "median_psi": 0.013386443479828791,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.008166873064527633,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 1.0399822209839074,
+            "note": "",
+            "psi_last50_mean": 0.0014730686209336024,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedgda_d/seed_0/det_adjudicate_v4_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.04853573964719028,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.8539241378904301,
+            "note": "",
+            "psi_last50_mean": 0.0481963129423234,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedgda_d/seed_1/det_adjudicate_v4_cifar10_xz_fedgda_d_seed1_alpha0p5_lr0p003_cm5",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.016002637945227736,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.919542579712403,
+            "note": "",
+            "psi_last50_mean": 0.013386443479828791,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedgda_d/seed_2/det_adjudicate_v4_cifar10_xz_fedgda_d_seed2_alpha0p5_lr0p003_cm5",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "cifar10_xz/fedgda_d/lr0.003_cm10",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank1,mse_winner",
+        "median_mse": 0.8064564555694185,
+        "median_psi": 0.0066910884703961435,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.009632521882302673,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.8064564555694185,
+            "note": "",
+            "psi_last50_mean": 0.0066910884703961435,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedgda_d/seed_0/det_adjudicate_v4_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm10",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.009460969068499591,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.7058891480375842,
+            "note": "",
+            "psi_last50_mean": 0.0025411438980606996,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedgda_d/seed_1/det_adjudicate_v4_cifar10_xz_fedgda_d_seed1_alpha0p5_lr0p003_cm10",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.039381131105408106,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.8442289248813768,
+            "note": "",
+            "psi_last50_mean": 0.02885965927946275,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedgda_d/seed_2/det_adjudicate_v4_cifar10_xz_fedgda_d_seed2_alpha0p5_lr0p003_cm10",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      }
+    ],
+    "dataset": "cifar10_xz",
+    "detail": "practical tie among ['cifar10_xz/fedgda_d/lr0.003_cm5', 'cifar10_xz/fedgda_d/lr0.003_cm10'], resolved by lowest median MSE",
+    "eligible_candidates": [
+      "cifar10_xz/fedgda_d/lr0.003_cm5",
+      "cifar10_xz/fedgda_d/lr0.003_cm10"
+    ],
+    "excluded_candidates": [],
+    "method": "fedgda_d",
+    "outcome": "tie_resolved_by_mse",
+    "tie_set": [
+      "cifar10_xz/fedgda_d/lr0.003_cm5",
+      "cifar10_xz/fedgda_d/lr0.003_cm10"
+    ],
+    "winner": {
+      "candidate_id": "cifar10_xz/fedgda_d/lr0.003_cm10",
+      "eligible": true,
+      "incomplete": false,
+      "label": "psi_rank1,mse_winner",
+      "median_mse": 0.8064564555694185,
+      "median_psi": 0.0066910884703961435,
+      "seeds": [
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.009632521882302673,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.8064564555694185,
+          "note": "",
+          "psi_last50_mean": 0.0066910884703961435,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedgda_d/seed_0/det_adjudicate_v4_cifar10_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm10",
+          "seed": 0,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.009460969068499591,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.7058891480375842,
+          "note": "",
+          "psi_last50_mean": 0.0025411438980606996,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedgda_d/seed_1/det_adjudicate_v4_cifar10_xz_fedgda_d_seed1_alpha0p5_lr0p003_cm10",
+          "seed": 1,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.039381131105408106,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.8442289248813768,
+          "note": "",
+          "psi_last50_mean": 0.02885965927946275,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedgda_d/seed_2/det_adjudicate_v4_cifar10_xz_fedgda_d_seed2_alpha0p5_lr0p003_cm10",
+          "seed": 2,
+          "status": "complete"
+        }
+      ]
+    }
+  },
+  "cifar10_xz/fedogda_d": {
+    "all_candidates": [
+      {
+        "candidate_id": "cifar10_xz/fedogda_d/lr0.001_cm1",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank2",
+        "median_mse": 1.0817058684757652,
+        "median_psi": -0.0010762051746144705,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": -0.0007156270690544227,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 1.394172406872539,
+            "note": "",
+            "psi_last50_mean": -0.16577804850478411,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedogda_d/seed_0/det_adjudicate_v4_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm1",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.200432617404423,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 1.0817058684757652,
+            "note": "",
+            "psi_last50_mean": 0.17429796534668768,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedogda_d/seed_1/det_adjudicate_v4_cifar10_xz_fedogda_d_seed1_alpha0p5_lr0p001_cm1",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.0024677131309395243,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.7872066452265714,
+            "note": "",
+            "psi_last50_mean": -0.0010762051746144705,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedogda_d/seed_2/det_adjudicate_v4_cifar10_xz_fedogda_d_seed2_alpha0p5_lr0p001_cm1",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "cifar10_xz/fedogda_d/lr0.001_cm5",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank1,mse_winner",
+        "median_mse": 0.5817092816042285,
+        "median_psi": -0.0026700819679281226,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.013244774379938377,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.6960790711975587,
+            "note": "",
+            "psi_last50_mean": -0.025457585025104534,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedogda_d/seed_0/det_adjudicate_v4_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.19396837763693128,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.5817092816042285,
+            "note": "",
+            "psi_last50_mean": 0.1678435164350682,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedogda_d/seed_1/det_adjudicate_v4_cifar10_xz_fedogda_d_seed1_alpha0p5_lr0p001_cm5",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.05686892764091503,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.5548112459466927,
+            "note": "",
+            "psi_last50_mean": -0.0026700819679281226,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedogda_d/seed_2/det_adjudicate_v4_cifar10_xz_fedogda_d_seed2_alpha0p5_lr0p001_cm5",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      }
+    ],
+    "dataset": "cifar10_xz",
+    "detail": "practical tie among ['cifar10_xz/fedogda_d/lr0.001_cm1', 'cifar10_xz/fedogda_d/lr0.001_cm5'], resolved by lowest median MSE",
+    "eligible_candidates": [
+      "cifar10_xz/fedogda_d/lr0.001_cm1",
+      "cifar10_xz/fedogda_d/lr0.001_cm5"
+    ],
+    "excluded_candidates": [],
+    "method": "fedogda_d",
+    "outcome": "tie_resolved_by_mse",
+    "tie_set": [
+      "cifar10_xz/fedogda_d/lr0.001_cm1",
+      "cifar10_xz/fedogda_d/lr0.001_cm5"
+    ],
+    "winner": {
+      "candidate_id": "cifar10_xz/fedogda_d/lr0.001_cm5",
+      "eligible": true,
+      "incomplete": false,
+      "label": "psi_rank1,mse_winner",
+      "median_mse": 0.5817092816042285,
+      "median_psi": -0.0026700819679281226,
+      "seeds": [
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.013244774379938377,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.6960790711975587,
+          "note": "",
+          "psi_last50_mean": -0.025457585025104534,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedogda_d/seed_0/det_adjudicate_v4_cifar10_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+          "seed": 0,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.19396837763693128,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.5817092816042285,
+          "note": "",
+          "psi_last50_mean": 0.1678435164350682,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedogda_d/seed_1/det_adjudicate_v4_cifar10_xz_fedogda_d_seed1_alpha0p5_lr0p001_cm5",
+          "seed": 1,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.05686892764091503,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.5548112459466927,
+          "note": "",
+          "psi_last50_mean": -0.0026700819679281226,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_xz/fedogda_d/seed_2/det_adjudicate_v4_cifar10_xz_fedogda_d_seed2_alpha0p5_lr0p001_cm5",
+          "seed": 2,
+          "status": "complete"
+        }
+      ]
+    }
+  },
+  "cifar10_z/fedgda_d": {
+    "all_candidates": [
+      {
+        "candidate_id": "cifar10_z/fedgda_d/lr0.01_cm5",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank2,mse_winner",
+        "median_mse": 0.2530340710040526,
+        "median_psi": 0.0757327335139745,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.17361988765214015,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.23639011891226436,
+            "note": "",
+            "psi_last50_mean": 0.09923651663532616,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedgda_d/seed_0/det_adjudicate_v4_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.0945235873418435,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.2530340710040526,
+            "note": "",
+            "psi_last50_mean": 0.0757327335139745,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedgda_d/seed_1/det_adjudicate_v4_cifar10_z_fedgda_d_seed1_alpha0p5_lr0p01_cm5",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.03671481427926371,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.2537079453954239,
+            "note": "",
+            "psi_last50_mean": -0.026125121137810993,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedgda_d/seed_2/det_adjudicate_v4_cifar10_z_fedgda_d_seed2_alpha0p5_lr0p01_cm5",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "cifar10_z/fedgda_d/lr0.01_cm20",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank1",
+        "median_mse": 0.2438639853980714,
+        "median_psi": 0.008663393579041796,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.17265389447096147,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.2498160510554551,
+            "note": "",
+            "psi_last50_mean": 0.09020649050449084,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedgda_d/seed_0/det_adjudicate_v4_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm20",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.08654943677899916,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.2438639853980714,
+            "note": "",
+            "psi_last50_mean": 0.008663393579041796,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedgda_d/seed_1/det_adjudicate_v4_cifar10_z_fedgda_d_seed1_alpha0p5_lr0p01_cm20",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.10542325417310394,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.2368233275020486,
+            "note": "",
+            "psi_last50_mean": -0.03664127173251916,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedgda_d/seed_2/det_adjudicate_v4_cifar10_z_fedgda_d_seed2_alpha0p5_lr0p01_cm20",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      }
+    ],
+    "dataset": "cifar10_z",
+    "detail": "practical tie among ['cifar10_z/fedgda_d/lr0.01_cm5', 'cifar10_z/fedgda_d/lr0.01_cm20'], resolved by lowest median MSE",
+    "eligible_candidates": [
+      "cifar10_z/fedgda_d/lr0.01_cm5",
+      "cifar10_z/fedgda_d/lr0.01_cm20"
+    ],
+    "excluded_candidates": [],
+    "method": "fedgda_d",
+    "outcome": "tie_resolved_by_mse",
+    "tie_set": [
+      "cifar10_z/fedgda_d/lr0.01_cm5",
+      "cifar10_z/fedgda_d/lr0.01_cm20"
+    ],
+    "winner": {
+      "candidate_id": "cifar10_z/fedgda_d/lr0.01_cm20",
+      "eligible": true,
+      "incomplete": false,
+      "label": "psi_rank1",
+      "median_mse": 0.2438639853980714,
+      "median_psi": 0.008663393579041796,
+      "seeds": [
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.17265389447096147,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.2498160510554551,
+          "note": "",
+          "psi_last50_mean": 0.09020649050449084,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedgda_d/seed_0/det_adjudicate_v4_cifar10_z_fedgda_d_seed0_alpha0p5_lr0p01_cm20",
+          "seed": 0,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.08654943677899916,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.2438639853980714,
+          "note": "",
+          "psi_last50_mean": 0.008663393579041796,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedgda_d/seed_1/det_adjudicate_v4_cifar10_z_fedgda_d_seed1_alpha0p5_lr0p01_cm20",
+          "seed": 1,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.10542325417310394,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.2368233275020486,
+          "note": "",
+          "psi_last50_mean": -0.03664127173251916,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedgda_d/seed_2/det_adjudicate_v4_cifar10_z_fedgda_d_seed2_alpha0p5_lr0p01_cm20",
+          "seed": 2,
+          "status": "complete"
+        }
+      ]
+    }
+  },
+  "cifar10_z/fedogda_d": {
+    "all_candidates": [
+      {
+        "candidate_id": "cifar10_z/fedogda_d/lr0.003_cm5",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank1",
+        "median_mse": 0.21036669277699047,
+        "median_psi": 0.06521121701984313,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.14167434534216203,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.17557962108636999,
+            "note": "",
+            "psi_last50_mean": 0.07255919586807708,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_0/det_adjudicate_v4_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.07551607924778886,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.2376285926678669,
+            "note": "",
+            "psi_last50_mean": 0.06521121701984313,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_1/det_adjudicate_v4_cifar10_z_fedogda_d_seed1_alpha0p5_lr0p003_cm5",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.09105132010587988,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.21036669277699047,
+            "note": "",
+            "psi_last50_mean": 0.057612993776740284,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_2/det_adjudicate_v4_cifar10_z_fedogda_d_seed2_alpha0p5_lr0p003_cm5",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "cifar10_z/fedogda_d/lr0.009_cm2",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank2",
+        "median_mse": 0.24850708897019616,
+        "median_psi": 0.08023797054058761,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.1963057330311444,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.24850708897019616,
+            "note": "",
+            "psi_last50_mean": 0.0680427484016352,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_0/det_adjudicate_v4_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p009_cm2",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.17944872299369027,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.18269525322691937,
+            "note": "",
+            "psi_last50_mean": 0.08023797054058761,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_1/det_adjudicate_v4_cifar10_z_fedogda_d_seed1_alpha0p5_lr0p009_cm2",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.45505234640207515,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.37982362826753047,
+            "note": "",
+            "psi_last50_mean": 0.18357565598279643,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_2/det_adjudicate_v4_cifar10_z_fedogda_d_seed2_alpha0p5_lr0p009_cm2",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "cifar10_z/fedogda_d/lr0.01_cm1",
+        "eligible": true,
+        "incomplete": false,
+        "label": "mse_winner",
+        "median_mse": 0.2234890765419017,
+        "median_psi": 0.040699278199873144,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.13448220191678484,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.2234890765419017,
+            "note": "",
+            "psi_last50_mean": 0.040699278199873144,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_0/det_adjudicate_v4_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p01_cm1",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.18494714885314584,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.11244821881953024,
+            "note": "",
+            "psi_last50_mean": 0.07836834925942777,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_1/det_adjudicate_v4_cifar10_z_fedogda_d_seed1_alpha0p5_lr0p01_cm1",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.11635737194453391,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.40329361229496186,
+            "note": "",
+            "psi_last50_mean": -0.10110345215813617,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_2/det_adjudicate_v4_cifar10_z_fedogda_d_seed2_alpha0p5_lr0p01_cm1",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      }
+    ],
+    "dataset": "cifar10_z",
+    "detail": "practical tie among ['cifar10_z/fedogda_d/lr0.009_cm2', 'cifar10_z/fedogda_d/lr0.003_cm5', 'cifar10_z/fedogda_d/lr0.01_cm1'], resolved by lowest median MSE",
+    "eligible_candidates": [
+      "cifar10_z/fedogda_d/lr0.003_cm5",
+      "cifar10_z/fedogda_d/lr0.009_cm2",
+      "cifar10_z/fedogda_d/lr0.01_cm1"
+    ],
+    "excluded_candidates": [],
+    "method": "fedogda_d",
+    "outcome": "tie_resolved_by_mse",
+    "tie_set": [
+      "cifar10_z/fedogda_d/lr0.009_cm2",
+      "cifar10_z/fedogda_d/lr0.003_cm5",
+      "cifar10_z/fedogda_d/lr0.01_cm1"
+    ],
+    "winner": {
+      "candidate_id": "cifar10_z/fedogda_d/lr0.003_cm5",
+      "eligible": true,
+      "incomplete": false,
+      "label": "psi_rank1",
+      "median_mse": 0.21036669277699047,
+      "median_psi": 0.06521121701984313,
+      "seeds": [
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.14167434534216203,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.17557962108636999,
+          "note": "",
+          "psi_last50_mean": 0.07255919586807708,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_0/det_adjudicate_v4_cifar10_z_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+          "seed": 0,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.07551607924778886,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.2376285926678669,
+          "note": "",
+          "psi_last50_mean": 0.06521121701984313,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_1/det_adjudicate_v4_cifar10_z_fedogda_d_seed1_alpha0p5_lr0p003_cm5",
+          "seed": 1,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.09105132010587988,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.21036669277699047,
+          "note": "",
+          "psi_last50_mean": 0.057612993776740284,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/cifar10_z/fedogda_d/seed_2/det_adjudicate_v4_cifar10_z_fedogda_d_seed2_alpha0p5_lr0p003_cm5",
+          "seed": 2,
+          "status": "complete"
+        }
+      ]
+    }
+  },
+  "femnist_xz/fedgda_d": {
+    "all_candidates": [
+      {
+        "candidate_id": "femnist_xz/fedgda_d/lr0.003_cm5",
+        "eligible": true,
+        "incomplete": false,
+        "label": "mse_winner",
+        "median_mse": 0.5747910556808502,
+        "median_psi": -0.0016332564471155785,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.032121445540564536,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.5747910556808502,
+            "note": "",
+            "psi_last50_mean": -0.0016332564471155785,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_0/det_adjudicate_v4_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.07404767464364467,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.8650770067542431,
+            "note": "",
+            "psi_last50_mean": -0.036112534587619566,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_1/det_adjudicate_v4_femnist_xz_fedgda_d_seed1_alpha0p5_lr0p003_cm5",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.0070444903103405445,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.49139583004381554,
+            "note": "",
+            "psi_last50_mean": 0.0029080343595292825,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_2/det_adjudicate_v4_femnist_xz_fedgda_d_seed2_alpha0p5_lr0p003_cm5",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "femnist_xz/fedgda_d/lr0.01_cm1",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank1",
+        "median_mse": 5.563283196417348,
+        "median_psi": -0.45694459071699156,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.24755033090424478,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 5.563283196417348,
+            "note": "",
+            "psi_last50_mean": 0.06611348424003996,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_0/det_adjudicate_v4_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p01_cm1",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.0061311961358638195,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 7.713763202896217,
+            "note": "",
+            "psi_last50_mean": -0.5120612270631503,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_1/det_adjudicate_v4_femnist_xz_fedgda_d_seed1_alpha0p5_lr0p01_cm1",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.016527145882508185,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 4.181930525892388,
+            "note": "",
+            "psi_last50_mean": -0.45694459071699156,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_2/det_adjudicate_v4_femnist_xz_fedgda_d_seed2_alpha0p5_lr0p01_cm1",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "femnist_xz/fedgda_d/lr0.03_cm1",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank2",
+        "median_mse": 6.472310417515952,
+        "median_psi": -0.5791322612794131,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.07660544200282177,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 4.361447220379228,
+            "note": "",
+            "psi_last50_mean": 0.033039629179637264,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_0/det_adjudicate_v4_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p03_cm1",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.020224461718362743,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 6.472310417515952,
+            "note": "",
+            "psi_last50_mean": -0.5791322612794131,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_1/det_adjudicate_v4_femnist_xz_fedgda_d_seed1_alpha0p5_lr0p03_cm1",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.019119195754541483,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 94.65405818265255,
+            "note": "",
+            "psi_last50_mean": -3.563580199961493,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_2/det_adjudicate_v4_femnist_xz_fedgda_d_seed2_alpha0p5_lr0p03_cm1",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      }
+    ],
+    "dataset": "femnist_xz",
+    "detail": "practical tie among ['femnist_xz/fedgda_d/lr0.003_cm5', 'femnist_xz/fedgda_d/lr0.01_cm1', 'femnist_xz/fedgda_d/lr0.03_cm1'], resolved by lowest median MSE",
+    "eligible_candidates": [
+      "femnist_xz/fedgda_d/lr0.003_cm5",
+      "femnist_xz/fedgda_d/lr0.01_cm1",
+      "femnist_xz/fedgda_d/lr0.03_cm1"
+    ],
+    "excluded_candidates": [],
+    "method": "fedgda_d",
+    "outcome": "tie_resolved_by_mse",
+    "tie_set": [
+      "femnist_xz/fedgda_d/lr0.003_cm5",
+      "femnist_xz/fedgda_d/lr0.01_cm1",
+      "femnist_xz/fedgda_d/lr0.03_cm1"
+    ],
+    "winner": {
+      "candidate_id": "femnist_xz/fedgda_d/lr0.003_cm5",
+      "eligible": true,
+      "incomplete": false,
+      "label": "mse_winner",
+      "median_mse": 0.5747910556808502,
+      "median_psi": -0.0016332564471155785,
+      "seeds": [
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.032121445540564536,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.5747910556808502,
+          "note": "",
+          "psi_last50_mean": -0.0016332564471155785,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_0/det_adjudicate_v4_femnist_xz_fedgda_d_seed0_alpha0p5_lr0p003_cm5",
+          "seed": 0,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.07404767464364467,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.8650770067542431,
+          "note": "",
+          "psi_last50_mean": -0.036112534587619566,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_1/det_adjudicate_v4_femnist_xz_fedgda_d_seed1_alpha0p5_lr0p003_cm5",
+          "seed": 1,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.0070444903103405445,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.49139583004381554,
+          "note": "",
+          "psi_last50_mean": 0.0029080343595292825,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedgda_d/seed_2/det_adjudicate_v4_femnist_xz_fedgda_d_seed2_alpha0p5_lr0p003_cm5",
+          "seed": 2,
+          "status": "complete"
+        }
+      ]
+    }
+  },
+  "femnist_xz/fedogda_d": {
+    "all_candidates": [
+      {
+        "candidate_id": "femnist_xz/fedogda_d/lr0.001_cm5",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank2,mse_winner",
+        "median_mse": 0.4979208214763949,
+        "median_psi": 0.02124868247416523,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.12242891365907255,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.776891905292667,
+            "note": "",
+            "psi_last50_mean": 0.008508161461921973,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedogda_d/seed_0/det_adjudicate_v4_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.06162311225761919,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.4305966871184526,
+            "note": "",
+            "psi_last50_mean": 0.02124868247416523,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedogda_d/seed_1/det_adjudicate_v4_femnist_xz_fedogda_d_seed1_alpha0p5_lr0p001_cm5",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.17174816274308216,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.4979208214763949,
+            "note": "",
+            "psi_last50_mean": 0.10255620146714095,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedogda_d/seed_2/det_adjudicate_v4_femnist_xz_fedogda_d_seed2_alpha0p5_lr0p001_cm5",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "femnist_xz/fedogda_d/lr0.003_cm5",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank1",
+        "median_mse": 1.9750541796048058,
+        "median_psi": -0.1393988975372295,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 1.9054021331795408,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 1.9750541796048058,
+            "note": "",
+            "psi_last50_mean": 1.7837742427520897,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedogda_d/seed_0/det_adjudicate_v4_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p003_cm5",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.046542936600172724,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 1.1686151517843257,
+            "note": "",
+            "psi_last50_mean": -0.1393988975372295,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedogda_d/seed_1/det_adjudicate_v4_femnist_xz_fedogda_d_seed1_alpha0p5_lr0p003_cm5",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.09267374404614864,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 2.9387609844066116,
+            "note": "",
+            "psi_last50_mean": -0.6648324014856374,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedogda_d/seed_2/det_adjudicate_v4_femnist_xz_fedogda_d_seed2_alpha0p5_lr0p003_cm5",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      }
+    ],
+    "dataset": "femnist_xz",
+    "detail": "practical tie among ['femnist_xz/fedogda_d/lr0.001_cm5', 'femnist_xz/fedogda_d/lr0.003_cm5'], resolved by lowest median MSE",
+    "eligible_candidates": [
+      "femnist_xz/fedogda_d/lr0.001_cm5",
+      "femnist_xz/fedogda_d/lr0.003_cm5"
+    ],
+    "excluded_candidates": [],
+    "method": "fedogda_d",
+    "outcome": "tie_resolved_by_mse",
+    "tie_set": [
+      "femnist_xz/fedogda_d/lr0.001_cm5",
+      "femnist_xz/fedogda_d/lr0.003_cm5"
+    ],
+    "winner": {
+      "candidate_id": "femnist_xz/fedogda_d/lr0.001_cm5",
+      "eligible": true,
+      "incomplete": false,
+      "label": "psi_rank2,mse_winner",
+      "median_mse": 0.4979208214763949,
+      "median_psi": 0.02124868247416523,
+      "seeds": [
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.12242891365907255,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.776891905292667,
+          "note": "",
+          "psi_last50_mean": 0.008508161461921973,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedogda_d/seed_0/det_adjudicate_v4_femnist_xz_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+          "seed": 0,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.06162311225761919,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.4305966871184526,
+          "note": "",
+          "psi_last50_mean": 0.02124868247416523,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedogda_d/seed_1/det_adjudicate_v4_femnist_xz_fedogda_d_seed1_alpha0p5_lr0p001_cm5",
+          "seed": 1,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.17174816274308216,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.4979208214763949,
+          "note": "",
+          "psi_last50_mean": 0.10255620146714095,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_xz/fedogda_d/seed_2/det_adjudicate_v4_femnist_xz_fedogda_d_seed2_alpha0p5_lr0p001_cm5",
+          "seed": 2,
+          "status": "complete"
+        }
+      ]
+    }
+  },
+  "femnist_z/fedgda_d": {
+    "all_candidates": [
+      {
+        "candidate_id": "femnist_z/fedgda_d/lr0.01_cm5",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank2,mse_winner",
+        "median_mse": 0.06190870759795475,
+        "median_psi": 0.06017990351937815,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.1256705453912255,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.056398432233010116,
+            "note": "",
+            "psi_last50_mean": 0.06017990351937815,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedgda_d/seed_0/det_adjudicate_v4_femnist_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.07355103544666013,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.06190870759795475,
+            "note": "",
+            "psi_last50_mean": 0.05456414030476539,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedgda_d/seed_1/det_adjudicate_v4_femnist_z_fedgda_d_seed1_alpha0p5_lr0p01_cm5",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.3958662887717972,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.06224485464613496,
+            "note": "",
+            "psi_last50_mean": 0.3478219586649716,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedgda_d/seed_2/det_adjudicate_v4_femnist_z_fedgda_d_seed2_alpha0p5_lr0p01_cm5",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "femnist_z/fedgda_d/lr0.03_cm5",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank1",
+        "median_mse": 0.21330323463003972,
+        "median_psi": 0.07428073840914647,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.34093199939305885,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.21330323463003972,
+            "note": "",
+            "psi_last50_mean": 0.18908104664243505,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedgda_d/seed_0/det_adjudicate_v4_femnist_z_fedgda_d_seed0_alpha0p5_lr0p03_cm5",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.1923068030205739,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.1976292547014582,
+            "note": "",
+            "psi_last50_mean": 0.07428073840914647,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedgda_d/seed_1/det_adjudicate_v4_femnist_z_fedgda_d_seed1_alpha0p5_lr0p03_cm5",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.1090749367945952,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.2702973870017724,
+            "note": "",
+            "psi_last50_mean": -0.17335340178030845,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedgda_d/seed_2/det_adjudicate_v4_femnist_z_fedgda_d_seed2_alpha0p5_lr0p03_cm5",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      }
+    ],
+    "dataset": "femnist_z",
+    "detail": "practical tie among ['femnist_z/fedgda_d/lr0.03_cm5', 'femnist_z/fedgda_d/lr0.01_cm5'], resolved by lowest median MSE",
+    "eligible_candidates": [
+      "femnist_z/fedgda_d/lr0.01_cm5",
+      "femnist_z/fedgda_d/lr0.03_cm5"
+    ],
+    "excluded_candidates": [],
+    "method": "fedgda_d",
+    "outcome": "tie_resolved_by_mse",
+    "tie_set": [
+      "femnist_z/fedgda_d/lr0.03_cm5",
+      "femnist_z/fedgda_d/lr0.01_cm5"
+    ],
+    "winner": {
+      "candidate_id": "femnist_z/fedgda_d/lr0.01_cm5",
+      "eligible": true,
+      "incomplete": false,
+      "label": "psi_rank2,mse_winner",
+      "median_mse": 0.06190870759795475,
+      "median_psi": 0.06017990351937815,
+      "seeds": [
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.1256705453912255,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.056398432233010116,
+          "note": "",
+          "psi_last50_mean": 0.06017990351937815,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedgda_d/seed_0/det_adjudicate_v4_femnist_z_fedgda_d_seed0_alpha0p5_lr0p01_cm5",
+          "seed": 0,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.07355103544666013,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.06190870759795475,
+          "note": "",
+          "psi_last50_mean": 0.05456414030476539,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedgda_d/seed_1/det_adjudicate_v4_femnist_z_fedgda_d_seed1_alpha0p5_lr0p01_cm5",
+          "seed": 1,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.3958662887717972,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.06224485464613496,
+          "note": "",
+          "psi_last50_mean": 0.3478219586649716,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedgda_d/seed_2/det_adjudicate_v4_femnist_z_fedgda_d_seed2_alpha0p5_lr0p01_cm5",
+          "seed": 2,
+          "status": "complete"
+        }
+      ]
+    }
+  },
+  "femnist_z/fedogda_d": {
+    "all_candidates": [
+      {
+        "candidate_id": "femnist_z/fedogda_d/lr0.001_cm5",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank2",
+        "median_mse": 0.21918408693193908,
+        "median_psi": -0.025533715434970135,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.03778164004905554,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.215797751936583,
+            "note": "",
+            "psi_last50_mean": 0.024304572882369944,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_0/det_adjudicate_v4_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm5",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": -0.030109506786466195,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.21918408693193908,
+            "note": "",
+            "psi_last50_mean": -0.031038579379134918,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_1/det_adjudicate_v4_femnist_z_fedogda_d_seed1_alpha0p5_lr0p001_cm5",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": -0.023297832534699716,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.2302151594028564,
+            "note": "",
+            "psi_last50_mean": -0.025533715434970135,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_2/det_adjudicate_v4_femnist_z_fedogda_d_seed2_alpha0p5_lr0p001_cm5",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "femnist_z/fedogda_d/lr0.001_cm10",
+        "eligible": true,
+        "incomplete": false,
+        "label": "psi_rank1",
+        "median_mse": 0.21708234980448235,
+        "median_psi": 0.15022718328946907,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.15835947567467593,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.21623329725867219,
+            "note": "",
+            "psi_last50_mean": 0.15022718328946907,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_0/det_adjudicate_v4_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.30267988234898857,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.21708234980448235,
+            "note": "",
+            "psi_last50_mean": 0.29978098956187893,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_1/det_adjudicate_v4_femnist_z_fedogda_d_seed1_alpha0p5_lr0p001_cm10",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.1481028307587579,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.23047137688618288,
+            "note": "",
+            "psi_last50_mean": 0.0988153698187085,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_2/det_adjudicate_v4_femnist_z_fedogda_d_seed2_alpha0p5_lr0p001_cm10",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      },
+      {
+        "candidate_id": "femnist_z/fedogda_d/lr0.01_cm1",
+        "eligible": true,
+        "incomplete": false,
+        "label": "mse_winner",
+        "median_mse": 0.2892173815641701,
+        "median_psi": -0.03386578025677777,
+        "seeds": [
+          {
+            "artifacts_complete": true,
+            "best_round_psi": -0.0018747807172422998,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.2892173815641701,
+            "note": "",
+            "psi_last50_mean": -0.14730461147547305,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_0/det_adjudicate_v4_femnist_z_fedogda_d_seed0_alpha0p5_lr0p01_cm1",
+            "seed": 0,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.02010128353945373,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.23866694632633603,
+            "note": "",
+            "psi_last50_mean": -0.03386578025677777,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_1/det_adjudicate_v4_femnist_z_fedogda_d_seed1_alpha0p5_lr0p01_cm1",
+            "seed": 1,
+            "status": "complete"
+          },
+          {
+            "artifacts_complete": true,
+            "best_round_psi": 0.1287815225093032,
+            "diverged": false,
+            "finite": true,
+            "mse_last50_mean": 0.35712429070860835,
+            "note": "",
+            "psi_last50_mean": -0.015198513608402964,
+            "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_2/det_adjudicate_v4_femnist_z_fedogda_d_seed2_alpha0p5_lr0p01_cm1",
+            "seed": 2,
+            "status": "complete"
+          }
+        ]
+      }
+    ],
+    "dataset": "femnist_z",
+    "detail": "practical tie among ['femnist_z/fedogda_d/lr0.001_cm10', 'femnist_z/fedogda_d/lr0.001_cm5', 'femnist_z/fedogda_d/lr0.01_cm1'], resolved by lowest median MSE",
+    "eligible_candidates": [
+      "femnist_z/fedogda_d/lr0.001_cm5",
+      "femnist_z/fedogda_d/lr0.001_cm10",
+      "femnist_z/fedogda_d/lr0.01_cm1"
+    ],
+    "excluded_candidates": [],
+    "method": "fedogda_d",
+    "outcome": "tie_resolved_by_mse",
+    "tie_set": [
+      "femnist_z/fedogda_d/lr0.001_cm10",
+      "femnist_z/fedogda_d/lr0.001_cm5",
+      "femnist_z/fedogda_d/lr0.01_cm1"
+    ],
+    "winner": {
+      "candidate_id": "femnist_z/fedogda_d/lr0.001_cm10",
+      "eligible": true,
+      "incomplete": false,
+      "label": "psi_rank1",
+      "median_mse": 0.21708234980448235,
+      "median_psi": 0.15022718328946907,
+      "seeds": [
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.15835947567467593,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.21623329725867219,
+          "note": "",
+          "psi_last50_mean": 0.15022718328946907,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_0/det_adjudicate_v4_femnist_z_fedogda_d_seed0_alpha0p5_lr0p001_cm10",
+          "seed": 0,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.30267988234898857,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.21708234980448235,
+          "note": "",
+          "psi_last50_mean": 0.29978098956187893,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_1/det_adjudicate_v4_femnist_z_fedogda_d_seed1_alpha0p5_lr0p001_cm10",
+          "seed": 1,
+          "status": "complete"
+        },
+        {
+          "artifacts_complete": true,
+          "best_round_psi": 0.1481028307587579,
+          "diverged": false,
+          "finite": true,
+          "mse_last50_mean": 0.23047137688618288,
+          "note": "",
+          "psi_last50_mean": 0.0988153698187085,
+          "run_dir": "results/highdim_psi_adjudication_post_bn_v4/femnist_z/fedogda_d/seed_2/det_adjudicate_v4_femnist_z_fedogda_d_seed2_alpha0p5_lr0p001_cm10",
+          "seed": 2,
+          "status": "complete"
+        }
+      ]
+    }
+  }
+}

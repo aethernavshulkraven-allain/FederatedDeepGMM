@@ -7,10 +7,13 @@
 #
 # This launcher only runs run_manifest.py against an already-prepared
 # manifest; it does not invoke the preparer. If any cell's stability outcome
-# was not "pass", scripts/prepare_highdim_deterministic_finals_post_bn_20260826.py
-# must first be re-run with --retune-results pointing at
-# scripts/score_highdim_stability_retune_alpha0p1_20260827.py's output
-# (closeout plan SS9.1/SS9.3) -- before this launcher is invoked.
+# was not "pass", the full Screen -> Rank -> Confirm -> Promote fallback
+# (closeout plan SS9.1/SS9.3, starting from
+# scripts/prepare_highdim_stability_retune_alpha0p1_20260827.py) must run
+# first, then scripts/prepare_highdim_deterministic_finals_post_bn_20260826.py
+# must be re-run with --retune-results pointing at
+# scripts/score_highdim_stability_retune_promote_alpha0p1_20260827.py's
+# output -- before this launcher is invoked.
 set -euo pipefail
 
 repo_root="/home/arnav22103/FederatedDeepGMM"

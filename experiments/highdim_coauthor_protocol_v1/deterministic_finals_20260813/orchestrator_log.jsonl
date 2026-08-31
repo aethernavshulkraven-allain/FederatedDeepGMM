@@ -1,0 +1,18 @@
+{"ts": "2026-08-13T18:13:10.032692+00:00", "event": "orchestrator_start", "total_cells": 18, "total_runs": 108, "order": ["femnist_x/alpha=0.1", "femnist_x/alpha=0.5", "femnist_x/alpha=1", "femnist_z/alpha=0.1", "femnist_z/alpha=0.5", "femnist_z/alpha=1", "femnist_xz/alpha=0.1", "femnist_xz/alpha=0.5", "femnist_xz/alpha=1", "cifar10_z/alpha=0.1", "cifar10_z/alpha=0.5", "cifar10_z/alpha=1", "cifar10_x/alpha=0.1", "cifar10_x/alpha=0.5", "cifar10_x/alpha=1", "cifar10_xz/alpha=0.1", "cifar10_xz/alpha=0.5", "cifar10_xz/alpha=1"]}
+{"ts": "2026-08-13T18:13:10.059588+00:00", "event": "wave_start", "wave": "01", "runs": 54, "cells": ["femnist_x/alpha=0.1", "femnist_x/alpha=0.5", "femnist_x/alpha=1", "femnist_z/alpha=0.1", "femnist_z/alpha=0.5", "femnist_z/alpha=1", "femnist_xz/alpha=0.1", "femnist_xz/alpha=0.5", "femnist_xz/alpha=1"]}
+{"ts": "2026-08-14T06:41:35.574212+00:00", "event": "wave_end", "wave": "01", "returncode": 1}
+{"ts": "2026-08-14T06:41:35.601954+00:00", "event": "waiting_for_quota", "remaining_h": 4.3, "cheapest_pending_cell_h": 5.0440000000000005, "pending_cells": 9, "sleep_s": 21600}
+{"ts": "2026-08-14T12:41:35.645457+00:00", "event": "waiting_for_quota", "remaining_h": 4.3, "cheapest_pending_cell_h": 5.0440000000000005, "pending_cells": 9, "sleep_s": 21600}
+{"ts": "2026-08-14T18:41:35.723590+00:00", "event": "waiting_for_quota", "remaining_h": 4.3, "cheapest_pending_cell_h": 5.0440000000000005, "pending_cells": 9, "sleep_s": 21600}
+{"ts": "2026-08-15T00:41:35.850315+00:00", "event": "waiting_for_quota", "remaining_h": 4.3, "cheapest_pending_cell_h": 5.0440000000000005, "pending_cells": 9, "sleep_s": 21600}
+{"ts": "2026-08-15T06:41:35.976863+00:00", "event": "waiting_for_quota", "remaining_h": 4.3, "cheapest_pending_cell_h": 5.0440000000000005, "pending_cells": 9, "sleep_s": 21600}
+{"ts": "2026-08-15T12:41:36.104497+00:00", "event": "waiting_for_quota", "remaining_h": 4.3, "cheapest_pending_cell_h": 5.0440000000000005, "pending_cells": 9, "sleep_s": 21600}
+{"ts": "2026-08-15T18:41:36.231028+00:00", "event": "waiting_for_quota", "remaining_h": 4.3, "cheapest_pending_cell_h": 5.0440000000000005, "pending_cells": 9, "sleep_s": 21600}
+{"ts": "2026-08-16T00:41:36.357137+00:00", "event": "waiting_for_quota", "remaining_h": 4.3, "cheapest_pending_cell_h": 5.0440000000000005, "pending_cells": 9, "sleep_s": 21600}
+{"ts": "2026-08-16T06:41:36.483767+00:00", "event": "waiting_for_quota", "remaining_h": 4.3, "cheapest_pending_cell_h": 5.0440000000000005, "pending_cells": 9, "sleep_s": 21600}
+{"ts": "2026-08-16T12:41:36.610768+00:00", "event": "waiting_for_quota", "remaining_h": 4.3, "cheapest_pending_cell_h": 5.0440000000000005, "pending_cells": 9, "sleep_s": 21600}
+{"ts": "2026-08-16T18:41:36.673336+00:00", "event": "wave_start", "wave": "02", "runs": 48, "cells": ["cifar10_z/alpha=0.1", "cifar10_z/alpha=0.5", "cifar10_z/alpha=1", "cifar10_x/alpha=0.1", "cifar10_x/alpha=0.5", "cifar10_x/alpha=1", "cifar10_xz/alpha=0.1", "cifar10_xz/alpha=0.5"]}
+{"ts": "2026-08-17T12:01:43.205949+00:00", "event": "wave_end", "wave": "02", "returncode": 1}
+{"ts": "2026-08-17T12:01:43.236017+00:00", "event": "wave_start", "wave": "03", "runs": 6, "cells": ["cifar10_xz/alpha=1"]}
+{"ts": "2026-08-17T15:46:26.744954+00:00", "event": "wave_end", "wave": "03", "returncode": 1}
+{"ts": "2026-08-17T15:46:26.748526+00:00", "event": "orchestrator_done", "total_cells": 18, "total_runs": 108}

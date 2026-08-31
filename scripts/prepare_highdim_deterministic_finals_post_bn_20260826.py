@@ -99,6 +99,7 @@ def _new_row(template, dataset, method, seed, alpha, lr, cm):
         "run_group": "highdim_deterministic_finals_post_bn_20260826",
         "seed": str(seed),
         "alpha": f"{alpha:g}",
+        "partition_alpha": f"{alpha:g}",
         "learning_rate": f"{lr:g}",
         "critic_multiplier": f"{cm:g}",
         "comm_round": "500",
@@ -112,6 +113,12 @@ def _new_row(template, dataset, method, seed, alpha, lr, cm):
         # scenario; skip the ~10 GiB-scale full test-tensor write for every
         # new final-matrix run (closeout plan Phase 1 SS4.4).
         "compact_predictions_only": "True",
+        # The template row's own source_manifest/source_run_id describe
+        # that (arbitrarily-picked) screen row's ancestry, not this new
+        # final-matrix row's -- this row's real lineage is the V4/stability
+        # ledger entries in finals_evidence_ledger.json, not a single field.
+        "source_manifest": "",
+        "source_run_id": "",
         "notes": (
             f"Final-matrix trajectory for {dataset}/{method} at alpha={alpha:g}, "
             f"seed={seed} (lr={lr:g}, cm={cm:g}); fresh initialization."
@@ -120,13 +127,26 @@ def _new_row(template, dataset, method, seed, alpha, lr, cm):
     return row
 
 
-def _ledger_entry(*, dataset, method, seed, alpha, run_id, final_result_dir, reused, source_stage):
+FINALS_COMM_ROUND = 500  # every finals-related trajectory (new or reused) is 500 rounds
+
+
+def _ledger_entry(*, dataset, method, seed, alpha, lr, cm, run_id, final_result_dir, reused, source_stage):
     return {
         "run_id": run_id,
         "dataset": dataset,
         "method": method,
         "seed": seed,
         "alpha": alpha,
+        # This campaign's "alpha" IS the Dirichlet partition concentration
+        # (closeout review finding: a preparer that relabels alpha without
+        # moving partition_alpha with it silently launches at the wrong
+        # alpha) -- recording it explicitly here, rather than only as
+        # "alpha", lets the aggregator cross-check it against the run's real
+        # effective_config.json instead of trusting the ledger's own label.
+        "partition_alpha": alpha,
+        "learning_rate": lr,
+        "critic_multiplier": cm,
+        "comm_round": FINALS_COMM_ROUND,
         "client_optimizer": METHOD_OPTIMIZERS[method],
         "final_result_dir": final_result_dir,
         "reused": reused,
@@ -160,12 +180,20 @@ def prepare(winners_path: Path, stability_results_path: Path, stability_manifest
         if retune_results_path is None:
             raise ValueError(
                 "cannot generate the final matrix: these cells require the frozen "
-                f"per-cell alpha=0.1 retune escape hatch first (closeout plan SS9.1/SS9.3, "
+                "per-cell alpha=0.1 retune escape hatch first (closeout plan SS9.1/SS9.3: "
+                "Screen -> Rank -> Confirm -> Promote, starting from "
                 f"scripts/prepare_highdim_stability_retune_alpha0p1_20260827.py): {retune_required}"
             )
         retune_results = _load_json(retune_results_path)
         if retune_results.get("status") != "complete":
             raise ValueError("alpha=0.1 retune results are absent or incomplete")
+        if retune_results.get("stage") != "promote":
+            raise ValueError(
+                f"--retune-results must be the Promote stage's own output "
+                f"(scripts/score_highdim_stability_retune_promote_alpha0p1_20260827.py), "
+                f"got stage={retune_results.get('stage')!r} -- the Screen stage's raw "
+                "output alone (SS9.1) is never eligible to promote a winner"
+            )
         retune_cells = retune_results.get("cells")
         if not isinstance(retune_cells, dict):
             raise ValueError("alpha=0.1 retune results must contain a cells object")
@@ -216,7 +244,7 @@ def prepare(winners_path: Path, stability_results_path: Path, stability_manifest
         for seed_str, source_run_id in sorted(run_ids_by_seed.items()):
             seed = int(seed_str)
             ledger.append(_ledger_entry(
-                dataset=dataset, method=method, seed=seed, alpha=0.5,
+                dataset=dataset, method=method, seed=seed, alpha=0.5, lr=lr, cm=cm,
                 run_id=source_run_id,
                 final_result_dir=(
                     f"results/highdim_psi_adjudication_post_bn_v4/{dataset}/{method}/"
@@ -241,7 +269,7 @@ def prepare(winners_path: Path, stability_results_path: Path, stability_manifest
             # alpha=0.1, seed 0: reused from the stability stage verbatim.
             stability_run_id = stability_run_id_by_cell[cell_name]
             ledger.append(_ledger_entry(
-                dataset=dataset, method=method, seed=0, alpha=0.1,
+                dataset=dataset, method=method, seed=0, alpha=0.1, lr=lr, cm=cm,
                 run_id=stability_run_id,
                 final_result_dir=stability_rows[stability_run_id]["final_result_dir"],
                 reused=True, source_stage="deterministic_stability_alpha0p1_20260826",
@@ -258,7 +286,7 @@ def prepare(winners_path: Path, stability_results_path: Path, stability_manifest
             row = _new_row(template, dataset, method, seed, alpha, row_lr, row_cm)
             new_rows.append(row)
             ledger.append(_ledger_entry(
-                dataset=dataset, method=method, seed=seed, alpha=alpha,
+                dataset=dataset, method=method, seed=seed, alpha=alpha, lr=row_lr, cm=row_cm,
                 run_id=row["run_id"], final_result_dir=row["final_result_dir"],
                 reused=False, source_stage="",
             ))
@@ -329,8 +357,9 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument(
         "--retune-results", type=Path, default=None,
-        help="scripts/score_highdim_stability_retune_alpha0p1_20260827.py's output; "
-        "required only if any cell's stability outcome is not 'pass'.",
+        help="scripts/score_highdim_stability_retune_promote_alpha0p1_20260827.py's "
+        "Promote-stage output (after Screen->Rank->Confirm); required only if any "
+        "cell's stability outcome is not 'pass'.",
     )
     args = parser.parse_args()
     try:

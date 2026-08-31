@@ -3,9 +3,9 @@ from scenarios.toy_scenarios import HingeLinearScenario, HeaviSideScenario, Zoo,
 import numpy as np
 import os
 current_file_dir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(current_file_dir)
+DEFAULT_ZOO_DIR = os.path.join(current_file_dir, "data", "zoo") + os.sep
 
-def create_dataset(function_name='step', dir="data/zoo/"):
+def create_dataset(function_name='step', dir=DEFAULT_ZOO_DIR):
     # set random seed
     seed = 527
     np.random.seed(seed)

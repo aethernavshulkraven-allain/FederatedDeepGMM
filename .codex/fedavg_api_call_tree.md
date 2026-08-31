@@ -59,11 +59,19 @@ fedml/simulation/simulator.py
         │               ├── OptimalMomentObjective.calc_objective()
         │               └── CustomSGD.step() or OGDA.step()
         ├── FedAvgAPI._aggregate()
+        │   └── experiment_utils.weighted_average_state_dicts()
+        │       ├── weighted aggregation for floating tensors
+        │       └── deterministic maximum for nonfloating counters
+        ├── experiment_utils.apply_parameter_server_update()
+        │   ├── server interpolation/optimism on named parameters only
+        │   └── direct aggregated state for model buffers
         ├── synchronized second client phase                    [fed_eg or fed_zo_eg]
         │   ├── serial/worker/stream -> Client.train()                                  [fed_eg]
         │   │   └── ModelTrainerCLS.train_gmm()
         │   └── serial/worker/stream -> Client.train_zo()                               [fed_zo_eg]
         │       └── ModelTrainerCLS.train_gmm_zo()
+        ├── experiment_utils.batchnorm_running_var_min()
+        │   └── reject nonfinite or negative BatchNorm running variance
         ├── FedAvgAPI.eval_global_model()
         │   ├── FedAvgAPI.calc_f_g_obj()
         │   │   └── OptimalMomentObjective.calc_objective()

@@ -1,6 +1,17 @@
 #!/usr/bin/env python3
-"""Score the alpha=0.1 per-cell retune fallback (closeout plan SS9.1) and
-freeze a winner per retuned cell.
+"""Score the alpha=0.1 per-cell retune fallback's 150-round Screen stage
+(closeout plan SS9.1) and select each retuned cell's top 2 candidates.
+
+This is the Screen stage of the frozen Screen->Rank->Confirm->Promote
+extended-plan fallback (doe_review_and_revised_grid.md's escape hatch,
+Part VI/VII): it never itself promotes a winner off a single noisy
+seed-0/150-round score. Its "top2" output is consumed by
+prepare_highdim_stability_retune_rank_alpha0p1_20260827.py and
+prepare_highdim_stability_retune_confirm_alpha0p1_20260827.py, and the
+actual winner is only frozen by
+score_highdim_stability_retune_promote_alpha0p1_20260827.py after both
+500-round stages complete (median-of-3-seeds rule, same as the frozen V4
+adjudication rule).
 
 Same last-50-round mean Psi ranking rule as the corrected screen
 (PSI_SUMMARY_STATISTIC_AMENDMENT_20260819.md) -- reuses score_highdim_
@@ -79,6 +90,7 @@ def score_retune(manifest_path: Path) -> dict:
     cells: dict[tuple[str, str], list[dict]] = defaultdict(list)
     invalid = []
     terminal = []
+    baseline_failed = []
     for row in rows:
         if row.get("server_buffer_policy") != "direct_client_aggregate":
             raise ValueError(f"{row['run_id']} does not freeze the corrected buffer policy")
@@ -100,6 +112,37 @@ def score_retune(manifest_path: Path) -> dict:
         except (OSError, ValueError) as exc:
             invalid.append({"run_id": row["run_id"], "reason": str(exc)})
             continue
+        # Same constant-predictor eligibility rule as the stability stage's
+        # own validator (validate_highdim_stability_alpha0p1_20260826.py) --
+        # doe_review_and_revised_grid.md's escape hatch is only meaningful if
+        # a retune candidate actually has to clear the baseline whose failure
+        # triggered retuning in the first place, not merely be finite and
+        # nondivergent. A candidate that fails this must never be ranked or
+        # advanced to Rank/Confirm, even if its Psi score looks good.
+        try:
+            metrics = _load_json(run_dir / "metrics.json")
+            constant_predictor_mse = float(metrics["val_target_variance"])
+        except (OSError, KeyError, TypeError, ValueError) as exc:
+            invalid.append({
+                "run_id": row["run_id"],
+                "reason": f"metrics.val_target_variance is missing or invalid: {exc}",
+            })
+            continue
+        if not math.isfinite(constant_predictor_mse) or constant_predictor_mse < 0.0:
+            invalid.append({
+                "run_id": row["run_id"],
+                "reason": "metrics.val_target_variance is not a valid variance",
+            })
+            continue
+        if mse_last50 >= constant_predictor_mse:
+            baseline_failed.append({
+                "run_id": row["run_id"],
+                "reason": (
+                    f"fails constant-predictor test: last50_val_mse={mse_last50} >= "
+                    f"constant_predictor_mse={constant_predictor_mse}"
+                ),
+            })
+            continue
         cells[(row["dataset"], row["method"])].append({
             "run_id": row["run_id"],
             "lr": float(row["learning_rate"]),
@@ -119,27 +162,51 @@ def score_retune(manifest_path: Path) -> dict:
 
     output_cells = {}
     terminal_ids = {entry["run_id"] for entry in terminal}
+    baseline_failed_ids = {entry["run_id"] for entry in baseline_failed}
     for cell_key in sorted(planned_by_cell):
         eligible = cells.get(cell_key, [])
         if not eligible:
-            raise ValueError(f"{cell_key} has zero eligible retune candidates")
-        ranked = rank_cell(eligible)
-        top_key = (round(ranked[0]["gmm_eval"], 9), ranked[0]["val_mse"])
-        tie_set = [c for c in ranked if (round(c["gmm_eval"], 9), c["val_mse"]) == top_key]
-        if len(tie_set) > 1:
             raise ValueError(
-                f"{cell_key} has an unresolved exact Psi tie among "
-                f"{[c['run_id'] for c in tie_set]}"
+                f"{cell_key} has zero eligible retune candidates -- every candidate "
+                "either diverged or failed the constant-predictor test; this extended-"
+                "plan fallback has no further automatic escalation, requires a dated "
+                "protocol decision, not a rerun"
+            )
+        ranked = rank_cell(eligible)
+        if len(ranked) < 2:
+            raise ValueError(
+                f"{cell_key} has only {len(ranked)} eligible screen candidate(s); "
+                "the frozen extended-plan fallback (doe_review_and_revised_grid.md "
+                "Part VI/VII escape hatch) requires a Rank stage over the top 2"
+            )
+        # This 150-round screen only selects WHICH two candidates advance to
+        # the 500-round Rank/Confirm stages -- it must never itself pick a
+        # cell's final winner (closeout plan SS9.1: "the fallback branch must
+        # not be designed after observing which cells fail" applies equally
+        # to not promoting off a single noisy seed-0/150-round score).
+        boundary_key = (round(ranked[1]["gmm_eval"], 9), ranked[1]["val_mse"])
+        boundary_tie = [
+            c for c in ranked
+            if (round(c["gmm_eval"], 9), c["val_mse"]) == boundary_key
+        ]
+        if len(boundary_tie) > 1:
+            raise ValueError(
+                f"{cell_key} has an unresolved exact Psi tie at the top-2/"
+                f"excluded boundary among {[c['run_id'] for c in boundary_tie]}"
             )
         cell_name = f"{cell_key[0]}|{cell_key[1]}"
         output_cells[cell_name] = {
             "dataset": cell_key[0],
             "method": cell_key[1],
-            "winner": ranked[0],
-            "runner_up": ranked[1] if len(ranked) > 1 else None,
+            "top2": ranked[:2],
             "eligible_candidates": len(eligible),
             "terminal_candidates": sum(
                 row["run_id"] in terminal_ids
+                for row in rows
+                if (row["dataset"], row["method"]) == cell_key
+            ),
+            "baseline_failed_candidates": sum(
+                row["run_id"] in baseline_failed_ids
                 for row in rows
                 if (row["dataset"], row["method"]) == cell_key
             ),
@@ -147,8 +214,10 @@ def score_retune(manifest_path: Path) -> dict:
         }
     return {
         "status": "complete",
+        "stage": "screen",
         "manifest": str(manifest_path.relative_to(REPO_ROOT)),
         "server_buffer_policy": "direct_client_aggregate",
+        "baseline_failed_runs": baseline_failed,
         "cells": output_cells,
     }
 

@@ -1,0 +1,48 @@
+[
+  {
+    "best_validation_round": 12,
+    "final_test_mse": 2.5610560910658386,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_finals_20260813/cifar10_xz/fedgda_d/seed_0/det_final_cifar10_xz_fedgda_d_seed0_alpha1_lr0p01_cm5",
+    "run_id": "det_final_cifar10_xz_fedgda_d_seed0_alpha1_lr0p01_cm5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.13797965855867664
+  },
+  {
+    "best_validation_round": 12,
+    "final_test_mse": 2.28496754438894,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_finals_20260813/cifar10_xz/fedgda_d/seed_1/det_final_cifar10_xz_fedgda_d_seed1_alpha1_lr0p01_cm5",
+    "run_id": "det_final_cifar10_xz_fedgda_d_seed1_alpha1_lr0p01_cm5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.1564506657380993
+  },
+  {
+    "best_validation_round": 14,
+    "final_test_mse": 1.3775767943512254,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_finals_20260813/cifar10_xz/fedgda_d/seed_2/det_final_cifar10_xz_fedgda_d_seed2_alpha1_lr0p01_cm5",
+    "run_id": "det_final_cifar10_xz_fedgda_d_seed2_alpha1_lr0p01_cm5",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.15468933537760404
+  },
+  {
+    "best_validation_round": 24,
+    "final_test_mse": 2.2427152368068786,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_finals_20260813/cifar10_xz/fedogda_d/seed_0/det_final_cifar10_xz_fedogda_d_seed0_alpha1_lr0p003_cm1",
+    "run_id": "det_final_cifar10_xz_fedogda_d_seed0_alpha1_lr0p003_cm1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.1502485936237078
+  },
+  {
+    "best_validation_round": 21,
+    "final_test_mse": 2.1605201206966003,
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_finals_20260813/cifar10_xz/fedogda_d/seed_1/det_final_cifar10_xz_fedogda_d_seed1_alpha1_lr0p003_cm1",
+    "run_id": "det_final_cifar10_xz_fedogda_d_seed1_alpha1_lr0p003_cm1",
+    "status": "passed",
+    "test_mse_at_best_validation": 0.14283760165014117
+  },
+  {
+    "error": "metrics.diverged is true",
+    "run_dir": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_finals_20260813/cifar10_xz/fedogda_d/seed_2/det_final_cifar10_xz_fedogda_d_seed2_alpha1_lr0p003_cm1",
+    "run_id": "det_final_cifar10_xz_fedogda_d_seed2_alpha1_lr0p003_cm1",
+    "status": "failed_validation"
+  }
+]

@@ -35,16 +35,21 @@ class FHistoryModelSelectionV3(object):
         e_dev_collections = []
         g_f_args_list = list(itertools.product(
             self.g_model_list, self.f_model_list, self.learning_args_list))
-        assert len(g_f_args_list) == 1, (
-            "this campaign's frozen legacy-Psi arithmetic is only numerically "
-            "correct for exactly one (g, f, learning_args) combination -- "
-            "f_of_z_dev_list.extend(f_of_z_dev_list) below pools a candidate's "
-            "history into itself rather than across candidates, which is "
-            "inert only when there is a single candidate. Got "
-            f"{len(g_f_args_list)} combinations for "
-            f"{dict(self.failure_context)}. Multi-candidate model selection "
-            "requires a separately versioned, fixed pooling implementation."
-        )
+        if len(g_f_args_list) != 1:
+            # A real exception, not `assert` -- assertions are stripped
+            # under `python -O`/PYTHONOPTIMIZE, which would silently let a
+            # multi-candidate config through and corrupt the pooled history
+            # below without ever raising (closeout plan SS3.3).
+            raise RuntimeError(
+                "this campaign's frozen legacy-Psi arithmetic is only numerically "
+                "correct for exactly one (g, f, learning_args) combination -- "
+                "f_of_z_dev_list.extend(f_of_z_dev_list) below pools a candidate's "
+                "history into itself rather than across candidates, which is "
+                "inert only when there is a single candidate. Got "
+                f"{len(g_f_args_list)} combinations for "
+                f"{dict(self.failure_context)}. Multi-candidate model selection "
+                "requires a separately versioned, fixed pooling implementation."
+            )
 
         per_candidate_diagnostics = []
         for i, (g, f, learning_args) in enumerate(g_f_args_list):

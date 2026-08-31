@@ -16,7 +16,10 @@ scorer's dataclass defaults.
 
 import os
 import sys
+import tempfile
 import unittest
+from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
@@ -25,6 +28,7 @@ from score_highdim_adjudication_20260819 import (  # noqa: E402
     SeedResult,
     score_cell,
 )
+import score_highdim_adjudication_20260819 as scorer_module  # noqa: E402
 
 
 def ok_seed(seed: int, psi: float, mse: float) -> SeedResult:
@@ -33,6 +37,7 @@ def ok_seed(seed: int, psi: float, mse: float) -> SeedResult:
 
 
 def bad_seed(seed: int, *, diverged: bool = False, missing: bool = False, nonfinite: bool = False) -> SeedResult:
+    status = "incomplete" if missing else "terminal_ineligible"
     return SeedResult(
         seed=seed,
         psi_last50_mean=None if nonfinite else 0.0,
@@ -40,6 +45,7 @@ def bad_seed(seed: int, *, diverged: bool = False, missing: bool = False, nonfin
         diverged=diverged,
         artifacts_complete=not missing,
         finite=not nonfinite,
+        status=status,
     )
 
 
@@ -93,27 +99,62 @@ class OneNonFiniteSeedExcludesCandidateTest(unittest.TestCase):
 
 
 class OnlyOneEligibleCandidateTest(unittest.TestCase):
-    def test_single_eligible_candidate_promoted_without_ranking(self):
+    def test_missing_candidate_blocks_promotion_as_incomplete(self):
         a = Candidate("A", "psi_rank1", (ok_seed(0, 1, 0.9), ok_seed(1, 1, 0.9), ok_seed(2, 1, 0.9)))
         b = Candidate("B", "psi_rank2", (ok_seed(0, 99, 0.01), bad_seed(1, missing=True), ok_seed(2, 99, 0.01)))
         c = Candidate("C", "mse_winner", (bad_seed(0, nonfinite=True), ok_seed(1, 50, 0.05), ok_seed(2, 50, 0.05)))
         outcome = score_cell([a, b, c])
+        self.assertEqual(outcome.outcome, "incomplete")
+        self.assertIsNone(outcome.winner)
+        self.assertEqual({e.candidate_id for e in outcome.excluded}, {"B", "C"})
+
+    def test_single_eligible_candidate_promoted_when_others_are_terminal(self):
+        a = Candidate("A", "psi_rank1", (ok_seed(0, 1, 0.9), ok_seed(1, 1, 0.9), ok_seed(2, 1, 0.9)))
+        b = Candidate("B", "psi_rank2", (ok_seed(0, 99, 0.01), bad_seed(1, diverged=True), ok_seed(2, 99, 0.01)))
+        outcome = score_cell([a, b])
         self.assertEqual(outcome.outcome, "promoted")
         self.assertEqual(outcome.winner.candidate_id, "A")
         self.assertEqual(outcome.detail, "only one eligible candidate, no ranking needed")
-        self.assertEqual({e.candidate_id for e in outcome.excluded}, {"B", "C"})
 
 
 class NoEligibleCandidateTest(unittest.TestCase):
     def test_all_candidates_fail_requires_retuning(self):
         a = Candidate("A", "psi_rank1", (ok_seed(0, 10, 0.1), ok_seed(1, 10, 0.1), bad_seed(2, diverged=True)))
         b = Candidate("B", "psi_rank2", (bad_seed(0, diverged=True), ok_seed(1, 5, 0.2), ok_seed(2, 5, 0.2)))
-        c = Candidate("C", "mse_winner", (bad_seed(0, missing=True), bad_seed(1, missing=True), bad_seed(2, missing=True)))
+        c = Candidate("C", "mse_winner", (bad_seed(0, diverged=True), bad_seed(1, diverged=True), bad_seed(2, diverged=True)))
         outcome = score_cell([a, b, c])
         self.assertEqual(outcome.outcome, "retune_required")
         self.assertIsNone(outcome.winner)
         self.assertEqual(len(outcome.eligible), 0)
         self.assertEqual(len(outcome.excluded), 3)
+
+
+class ExactMseTieTest(unittest.TestCase):
+    def test_exact_mse_tie_has_no_order_based_winner(self):
+        a = Candidate("A", "first", (ok_seed(0, 5.0, 0.2), ok_seed(1, 4.0, 0.2), ok_seed(2, 6.0, 0.2)))
+        b = Candidate("B", "second", (ok_seed(0, 4.9, 0.2), ok_seed(1, 5.9, 0.2), ok_seed(2, 3.9, 0.2)))
+        outcome = score_cell([a, b])
+        self.assertEqual(outcome.outcome, "mse_tie_unresolved")
+        self.assertIsNone(outcome.winner)
+
+
+class CliStageBarrierTest(unittest.TestCase):
+    def test_retune_outcome_is_written_but_blocks_next_stage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out_path = Path(tmp) / "results.json"
+            results = {
+                "fixture/cell": {
+                    "outcome": "retune_required",
+                    "winner": None,
+                    "detail": "no eligible candidate",
+                }
+            }
+            argv = ["score", "--cells", "signal", "--out", str(out_path)]
+            with mock.patch.object(scorer_module, "score_manifest", return_value=results):
+                with mock.patch.object(sys, "argv", argv):
+                    status = scorer_module.main()
+            self.assertEqual(status, 3)
+            self.assertTrue(out_path.exists())
 
 
 if __name__ == "__main__":

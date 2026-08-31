@@ -1,0 +1,18 @@
+{
+  "campaign_dir": "/home/arnav22103/FederatedDeepGMM/experiments/highdim_coauthor_protocol_v1/deterministic_10client_runtime_profile_20260807",
+  "manifest": "/home/arnav22103/FederatedDeepGMM/experiments/highdim_coauthor_protocol_v1/deterministic_10client_runtime_profile_20260807/profile_manifest.csv",
+  "output_root": "/home/arnav22103/FederatedDeepGMM/results/highdim_deterministic_10client_runtime_profile_20260807",
+  "scenarios": [
+    "femnist_z",
+    "femnist_x",
+    "cifar10_xz"
+  ],
+  "method": "fedgda_d",
+  "comm_round": 6,
+  "client_num_in_total": 10,
+  "client_num_per_round": 10,
+  "learning_rate": 0.03,
+  "critic_multiplier": 3.0,
+  "purpose": "Measure real per-round cost for the adopted 10-client full-participation deterministic design, replacing the TBD GPU-h placeholders in doe_review_and_revised_grid.md.",
+  "rows": 3
+}

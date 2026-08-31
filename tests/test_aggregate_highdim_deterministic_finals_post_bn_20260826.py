@@ -21,6 +21,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 import aggregate_highdim_deterministic_finals_post_bn_20260826 as aggregate_finals  # noqa: E402
+import run_manifest  # noqa: E402
 
 COMM_ROUND = 500
 DATASETS = ["femnist_x", "femnist_z", "femnist_xz", "cifar10_x", "cifar10_z", "cifar10_xz"]
@@ -30,7 +31,7 @@ SEEDS = (0, 1, 2, 3, 4)
 
 
 def _write_run(run_dir: Path, run_id: str, *, dataset="fixture", method="fedgda_d",
-                seed=0, terminal: bool = False) -> None:
+                seed=0, terminal: bool = False, alpha=0.5, lr=0.01, cm=5.0) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
     (run_dir / "checkpoints").mkdir(exist_ok=True)
     (run_dir / "checkpoints" / "best_validation.pt").write_bytes(b"fake")
@@ -43,6 +44,7 @@ def _write_run(run_dir: Path, run_id: str, *, dataset="fixture", method="fedgda_
         "server_buffer_policy": "direct_client_aggregate",
         "test_mse_used_for_selection": False, "selection_metric_source": "validation",
         "log_test_mse_by_round": False,
+        "learning_rate": lr, "critic_multiplier": cm, "partition_alpha": alpha,
     }))
     (run_dir / "metrics.json").write_text(json.dumps({
         "diverged": terminal, "best_gmm_eval": 1.0, "best_validation_mse": 0.1,
@@ -72,11 +74,14 @@ def _write_run(run_dir: Path, run_id: str, *, dataset="fixture", method="fedgda_
             ])
 
 
-def _entry(run_id, dataset, method, seed, alpha, final_result_dir, reused=False, source_stage=""):
+def _entry(run_id, dataset, method, seed, alpha, final_result_dir, reused=False, source_stage="",
+           lr=0.01, cm=5.0):
     return {
         "run_id": run_id, "dataset": dataset, "method": method, "seed": seed, "alpha": alpha,
         "client_optimizer": "sgd" if method == "fedgda_d" else "ogda",
         "final_result_dir": str(final_result_dir), "reused": reused, "source_stage": source_stage,
+        "learning_rate": lr, "critic_multiplier": cm, "partition_alpha": alpha,
+        "comm_round": COMM_ROUND,
     }
 
 
@@ -130,6 +135,25 @@ class AggregateGuardTest(unittest.TestCase):
             aggregate_finals.aggregate(ledger_path)
 
 
+class AggregateSeedBindingTest(unittest.TestCase):
+    """The exact bug a review caught: _row_report's row dict omitted "seed",
+    so validate_artifacts()'s random_seed cross-check silently no-op'd --
+    a ledger entry claiming seed=4 could point at a run whose real
+    effective_config.json says random_seed=0, undetected."""
+
+    def test_ledger_seed_mismatched_against_real_effective_config_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
+            tmp = Path(tmp)
+            run_dir = tmp / "run"
+            run_id = "det_finals_seed_mismatch"
+            # The run really trained at seed 0 (what's on disk)...
+            _write_run(run_dir, run_id, dataset="femnist_x", method="fedgda_d", seed=0)
+            # ...but the ledger entry claims it's the seed-4 trajectory.
+            entry = _entry(run_id, "femnist_x", "fedgda_d", 4, 0.5, run_dir)
+            with self.assertRaisesRegex(aggregate_finals.ManifestLaunchError, "random_seed mismatch"):
+                aggregate_finals._row_report(run_dir, entry)
+
+
 class AggregateReusedEntryTest(unittest.TestCase):
     """The exact bug this covers: a reused entry's run_id must match what's
     really on disk, or validate_artifacts() rejects it."""
@@ -148,6 +172,155 @@ class AggregateReusedEntryTest(unittest.TestCase):
             self.assertFalse(report["terminal_ineligible"])
             self.assertEqual(report["final_test_mse"], 0.25)
             self.assertTrue(report["reused"])
+            # Freshly recomputed provenance, not trusted from the ledger.
+            self.assertEqual(
+                report["effective_config_checksum"],
+                aggregate_finals.config_checksum(
+                    json.loads((run_dir / "effective_config.json").read_text())
+                ),
+            )
+
+
+class AggregateLabelCrossCheckTest(unittest.TestCase):
+    """The exact bug class this covers (closeout review finding): the ledger
+    labels a trajectory's alpha/lr/cm, but nothing used to check those
+    labels against what the run actually trained at -- a preparer bug (like
+    the alpha=0.1 stability/retune/finals partition_alpha bug) could mislabel
+    evidence and this aggregator would report it as if the label were true."""
+
+    def test_partition_alpha_mismatch_against_real_config_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
+            tmp = Path(tmp)
+            run_dir = tmp / "run"
+            run_id = "det_finals_postbn_femnist_x_fedgda_d_seed0_alpha0p1_lr0p01_cm5"
+            # The run actually trained at partition_alpha=0.5 ...
+            _write_run(run_dir, run_id, dataset="femnist_x", method="fedgda_d", seed=0, alpha=0.5)
+            # ... but the ledger labels it alpha=0.1.
+            entry = _entry(run_id, "femnist_x", "fedgda_d", 0, 0.1, run_dir)
+            with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "partition_alpha mismatch"):
+                aggregate_finals._row_report(run_dir, entry)
+
+    def test_learning_rate_mismatch_against_real_config_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
+            tmp = Path(tmp)
+            run_dir = tmp / "run"
+            run_id = "det_finals_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p01_cm5"
+            _write_run(run_dir, run_id, dataset="femnist_x", method="fedgda_d", seed=0, lr=0.01)
+            entry = _entry(run_id, "femnist_x", "fedgda_d", 0, 0.5, run_dir, lr=0.02)
+            with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "learning_rate mismatch"):
+                aggregate_finals._row_report(run_dir, entry)
+
+    def test_critic_multiplier_mismatch_against_real_config_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
+            tmp = Path(tmp)
+            run_dir = tmp / "run"
+            run_id = "det_finals_postbn_femnist_x_fedgda_d_seed0_alpha0p5_lr0p01_cm5"
+            _write_run(run_dir, run_id, dataset="femnist_x", method="fedgda_d", seed=0, cm=5.0)
+            entry = _entry(run_id, "femnist_x", "fedgda_d", 0, 0.5, run_dir, cm=10.0)
+            with self.assertRaisesRegex(run_manifest.ManifestLaunchError, "critic_multiplier mismatch"):
+                aggregate_finals._row_report(run_dir, entry)
+
+
+def _build_full_matrix(tmp: Path) -> list[dict]:
+    trajectories = []
+    for dataset in DATASETS:
+        for method in METHODS:
+            for alpha in ALPHAS:
+                for seed in SEEDS:
+                    run_id = f"final_{dataset}_{method}_a{alpha}_s{seed}"
+                    run_dir = tmp / "results" / run_id
+                    _write_run(run_dir, run_id, dataset=dataset, method=method, seed=seed, alpha=alpha)
+                    trajectories.append(_entry(run_id, dataset, method, seed, alpha, run_dir))
+    return trajectories
+
+
+def _write_ledger(tmp: Path, trajectories: list[dict]) -> Path:
+    ledger_path = tmp / "finals_evidence_ledger.json"
+    ledger_path.write_text(json.dumps({
+        "status": "complete", "total_trajectories": len(trajectories),
+        "reused_trajectories": 0, "new_trajectories": len(trajectories),
+        "trajectories": trajectories,
+    }))
+    return ledger_path
+
+
+class AggregateExactAxesTest(unittest.TestCase):
+    """A trajectory carrying a dataset/method/alpha/seed outside this
+    campaign's frozen six-dataset/two-method/three-alpha/five-seed matrix
+    must not silently pass just because its own group still totals 5 --
+    these are set-equality checks, not just counts."""
+
+    def test_unexpected_dataset_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
+            tmp = Path(tmp)
+            trajectories = _build_full_matrix(tmp)
+            bad = trajectories[0]
+            run_id = f"bogus_{bad['run_id']}"
+            run_dir = tmp / "results" / run_id
+            _write_run(
+                run_dir, run_id, dataset="femnist_bogus", method=bad["method"],
+                seed=bad["seed"], alpha=bad["alpha"],
+            )
+            trajectories[0] = _entry(run_id, "femnist_bogus", bad["method"], bad["seed"], bad["alpha"], run_dir)
+            ledger_path = _write_ledger(tmp, trajectories)
+            with self.assertRaisesRegex(ValueError, "unexpected datasets"):
+                aggregate_finals.aggregate(ledger_path)
+
+    def test_unexpected_method_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
+            tmp = Path(tmp)
+            trajectories = _build_full_matrix(tmp)
+            bad = trajectories[0]
+            run_id = f"bogus_{bad['run_id']}"
+            run_dir = tmp / "results" / run_id
+            _write_run(
+                run_dir, run_id, dataset=bad["dataset"], method="fed_eg_d",
+                seed=bad["seed"], alpha=bad["alpha"],
+            )
+            trajectories[0] = _entry(run_id, bad["dataset"], "fed_eg_d", bad["seed"], bad["alpha"], run_dir)
+            ledger_path = _write_ledger(tmp, trajectories)
+            with self.assertRaisesRegex(ValueError, "unexpected methods"):
+                aggregate_finals.aggregate(ledger_path)
+
+    def test_unexpected_alpha_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
+            tmp = Path(tmp)
+            trajectories = _build_full_matrix(tmp)
+            bad = trajectories[0]
+            run_id = f"bogus_{bad['run_id']}"
+            run_dir = tmp / "results" / run_id
+            _write_run(
+                run_dir, run_id, dataset=bad["dataset"], method=bad["method"],
+                seed=bad["seed"], alpha=0.7,
+            )
+            trajectories[0] = _entry(run_id, bad["dataset"], bad["method"], bad["seed"], 0.7, run_dir)
+            ledger_path = _write_ledger(tmp, trajectories)
+            with self.assertRaisesRegex(ValueError, "unexpected alphas"):
+                aggregate_finals.aggregate(ledger_path)
+
+    def test_duplicate_seed_masking_a_missing_seed_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
+            tmp = Path(tmp)
+            trajectories = _build_full_matrix(tmp)
+            target = next(
+                i for i, t in enumerate(trajectories)
+                if t["dataset"] == DATASETS[0] and t["method"] == METHODS[0]
+                and t["alpha"] == ALPHAS[0] and t["seed"] == 4
+            )
+            bad = trajectories[target]
+            # Same count (5 entries in this group), but seed 4 is silently
+            # replaced by a second seed-0 entry -- seed identity, not count,
+            # is what must catch this.
+            run_id = f"dupe_{bad['run_id']}"
+            run_dir = tmp / "results" / run_id
+            _write_run(
+                run_dir, run_id, dataset=bad["dataset"], method=bad["method"],
+                seed=0, alpha=bad["alpha"],
+            )
+            trajectories[target] = _entry(run_id, bad["dataset"], bad["method"], 0, bad["alpha"], run_dir)
+            ledger_path = _write_ledger(tmp, trajectories)
+            with self.assertRaisesRegex(ValueError, "expected seeds"):
+                aggregate_finals.aggregate(ledger_path)
 
 
 class AggregateFullMatrixTest(unittest.TestCase):
@@ -170,7 +343,7 @@ class AggregateFullMatrixTest(unittest.TestCase):
                                 terminal_run_id = run_id
                             _write_run(
                                 run_dir, run_id, dataset=dataset, method=method,
-                                seed=seed, terminal=terminal,
+                                seed=seed, terminal=terminal, alpha=alpha,
                             )
                             trajectories.append(_entry(run_id, dataset, method, seed, alpha, run_dir))
             ledger_path = tmp / "finals_evidence_ledger.json"
